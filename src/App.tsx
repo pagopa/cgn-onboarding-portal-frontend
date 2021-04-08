@@ -1,6 +1,8 @@
 import React from "react";
-
-import "./App.css";
+import "bootstrap-italia/dist/css/bootstrap-italia.min.css";
+import "typeface-titillium-web";
+import "typeface-roboto-mono";
+import "typeface-lora";
 
 function App() {
   return (
