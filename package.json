@@ -16,6 +16,7 @@
     "prettify": "prettier --write \"./**/*.{ts,tsx}\""
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "bootstrap-italia": "^1.4.3",
     "classnames": "^2.2.6",
