@@ -55,6 +55,8 @@ generated
 *.zip
 
 *.js
+!.eslintrc.js
+!prettierrc.js
 !jest.config.js
 !.release-it.js
 
