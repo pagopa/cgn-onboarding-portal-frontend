@@ -17,8 +17,10 @@
   },
   "dependencies": {
     "bootstrap": "^4.5.3",
+    "bootstrap-italia": "^1.4.3",
     "classnames": "^2.2.6",
     "date-fns": "^2.16.1",
+    "design-react-kit": "^3.3.3",
     "fp-ts": "1.17.4",
     "generated": "^0.0.3",
     "i18next": "^19.8.4",
