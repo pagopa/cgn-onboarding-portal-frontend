@@ -1,25 +1,26 @@
 import React from "react";
-import "bootstrap-italia/dist/css/bootstrap-italia.min.css";
+import "./styles/bootstrap-italia-custom.scss";
 import "typeface-titillium-web";
 import "typeface-roboto-mono";
 import "typeface-lora";
+import Activities from "./components/Activities";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <div className="row variable-gutters">
+        <div className="col-7 offset-1">
+          <p>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nisi, quam
+            minus magni distinctio amet nobis esse! Debitis neque voluptatum a
+            provident modi excepturi sunt, eos voluptatem iste, delectus
+            asperiores quibusdam?
+          </p>
+        </div>
+        <div className="col-3">
+          <Activities />
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,1 +1,23 @@
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;  
+}
+
+.text-base {
+    font-size: 1rem;
+    line-height: 1.25rem;    
+}
+
+.text-title {
+    font-size: 1rem; 
+    line-height: 1.5rem;
+}
+
+/* Letter spacing */
+.tracking {
+    letter-spacing: 0.5px;
+}
+
+
+
 @import "../../node_modules/bootstrap-italia/src/scss/bootstrap-italia.scss";
