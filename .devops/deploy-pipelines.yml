@@ -1,9 +1,5 @@
 # Azure DevOps pipeline to release a new version and deploy to production.
 
-variables:
-  NODE_VERSION: '15.14.0'
-  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
-
 parameters:
   - name: 'RELEASE_SEMVER'
     displayName: 'When packing a release, define the version bump to apply'
@@ -63,9 +59,6 @@ stages:
                   gitEmail: $(GIT_EMAIL)
                   gitUsername: $(GIT_USERNAME)
                   gitHubConnection: $(GITHUB_CONNECTION)
-                  nodeVersion: $(NODE_VERSION)
-                  pkg_cache_version_id: $(CACHE_VERSION_ID)
-                  pkg_cache_folder: $(YARN_CACHE_FOLDER)
 
           - ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/master') }}:
               - script: |
