@@ -1,26 +1,14 @@
 import React from "react";
-import "bootstrap-italia/dist/css/bootstrap-italia.min.css";
+import "./styles/bootstrap-italia-custom.scss";
 import "typeface-titillium-web";
-import "typeface-roboto-mono";
-import "typeface-lora";
+import { BrowserRouter } from "react-router-dom";
+import RouterConfig from "./navigation/RouterConfig";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <RouterConfig />
+    </BrowserRouter>
   );
 }
 

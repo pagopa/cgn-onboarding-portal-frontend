@@ -1,1 +1,2 @@
-// All the routes constants will go here
+export const ROOT = '/';
+export const CREATE_PROFILE = '/create-profile';

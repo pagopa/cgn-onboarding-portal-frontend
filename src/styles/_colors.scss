@@ -1,0 +1,25 @@
+/* Custom colors */
+$primary: #0273E6;
+$secondary: #01254C;
+$text-color: #000000;
+$background: #E6E9F2;
+$text-gray: #5C6F82;
+
+/* Text */
+.text-blue {
+    color: $primary;
+}
+
+.text-dark-blue {
+    color: $secondary; 
+}
+
+.text-gray {
+    color: $text-gray;
+}
+
+/* Background */
+
+.bg-background {
+    background-color: $background;
+}
