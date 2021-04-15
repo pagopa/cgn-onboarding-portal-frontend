@@ -1,35 +1,46 @@
 import React from "react";
-import { Field } from "formik";
+import { Field, FieldArray } from "formik";
 import { Link } from "react-router-dom";
 import { ROOT } from "../../../navigation/routes";
 import FormSection from "../FormSection";
-import InputField from "../CreateProfileForm/InputField";
-import Plus from "../../../assets/icons/plus.svg";
+import PlusIcon from "../../../assets/icons/plus.svg";
+import PlusCircleIcon from "../../../assets/icons/plus-circle.svg";
+import InputField from "../InputField";
 
-const ProfileDescription = () => (
+const FooterDescription = (
+  <p className="text-base font-weight-normal text-gray">
+    Il file deve avere le seguenti caratteristiche:
+    <br />
+    Dimensione del file: minimo 800x600px
+    <br />
+    Formato del file: JPG, PNG
+  </p>
+);
+
+const ProfileDescription = ({ formValues }: any) => (
   <>
     <FormSection
       hasIntroduction
       title="Immagine operatore"
       description="Caricare un'immagine che rappresenti i beni o i servizi trattati dall'Operatore"
+      footerDescription={FooterDescription}
       required
       isVisible
     >
-      <div className="upload-pictures-wall">
-        <input
-          type="file"
-          name="upload5"
-          id="upload5"
-          className="upload pictures-wall"
-        />
-        <label
-          htmlFor="photo"
-          className="d-flex flex-column justify-content-center align-items-center text-center"
-        >
-          <Plus />
-          <span>Add photo</span>
-        </label>
-      </div>
+      <ul className="upload-pictures-wall">
+        <li>
+          <input
+            type="file"
+            name="profileImage"
+            id="profileImage"
+            className="upload pictures-wall"
+          />
+          <label htmlFor="profileImage">
+            <PlusIcon className="icon icon-sm" />
+            <span>Add photo</span>
+          </label>
+        </li>
+      </ul>
     </FormSection>
     <FormSection
       title="Descrizione dell'operatore"
@@ -69,40 +80,72 @@ const ProfileDescription = () => (
         </label>
       </div>
     </FormSection>
-    <FormSection
-      title="Indirizzo"
-      description="Inserisci l'indirizzo del punto vendita, se si hanno più punti vendita inserisci gli indirizzi aggiuntivi"
-      required
-      isVisible
-    >
-      <InputField htmlFor="street" title="Indirizzo">
-        <Field id="street" name="street" type="text" />
-      </InputField>
-      <InputField htmlFor="street" title="CAP">
-        <Field
-          id="street"
-          name="street"
-          type="text"
-          placeholder="Inserisci il CAP"
-        />
-      </InputField>
-      <InputField htmlFor="street" title="Città">
-        <Field
-          id="street"
-          name="street"
-          type="text"
-          placeholder="Inserisci la città"
-        />
-      </InputField>
-      <InputField htmlFor="street" title="Provincia">
-        <Field
-          id="street"
-          name="street"
-          type="text"
-          placeholder="Inserisci la provincia"
-        />
-      </InputField>
-    </FormSection>
+
+    <FieldArray
+      name="address"
+      render={arrayHelpers => (
+        <FormSection
+          title="Indirizzo"
+          description="Inserisci l'indirizzo del punto vendita, se si hanno più punti vendita inserisci gli indirizzi aggiuntivi"
+          required
+          isVisible
+        >
+          {formValues.addresses.map((address: any, index: number) => (
+            <div key={index}>
+              <InputField htmlFor="street" title="Indirizzo">
+                <Field
+                  id="street"
+                  name={`address[${index}].street`}
+                  type="text"
+                />
+              </InputField>
+              <InputField htmlFor="zipCode" title="CAP">
+                <Field
+                  id="zipCode"
+                  name={`address[${index}].zipCode`}
+                  type="text"
+                  placeholder="Inserisci il CAP"
+                />
+              </InputField>
+              <InputField htmlFor="city" title="Città">
+                <Field
+                  id="city"
+                  name={`address[${index}].city`}
+                  type="text"
+                  placeholder="Inserisci la città"
+                />
+              </InputField>
+              <InputField htmlFor="district" title="Provincia">
+                <Field
+                  id="district"
+                  name={`address[${index}].district`}
+                  type="text"
+                  placeholder="Inserisci la provincia"
+                />
+              </InputField>
+
+              <div
+                className="mt-8"
+                onClick={() =>
+                  arrayHelpers.push({
+                    street: "",
+                    zipCode: "",
+                    city: "",
+                    district: ""
+                  })
+                }
+              >
+                <PlusCircleIcon className="mr-2" />
+                <span className="text-base font-weight-semibold text-blue">
+                  Aggiungi un indirizzo aggiuntivo
+                </span>
+              </div>
+            </div>
+          ))}
+        </FormSection>
+      )}
+    ></FieldArray>
+
     <FormSection
       title="Sito web"
       description="Inserire l'URL del proprio e-commerce"

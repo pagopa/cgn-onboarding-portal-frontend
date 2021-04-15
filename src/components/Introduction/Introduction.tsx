@@ -1,5 +1,5 @@
 import React from "react";
-import Paragraph from "../Base/Paragraph";
+import Paragraph from "../Paragraph/Paragraph";
 import IntroductionTabs from "./IntroductionTabs";
 
 type Props = {

@@ -1,5 +1,5 @@
 import React from "react";
-import Visible from "../../assets/icons/visible.svg";
+import VisibleIcon from "../../assets/icons/visible.svg";
 
 type Props = {
   hasIntroduction?: boolean;
@@ -8,6 +8,7 @@ type Props = {
   children: any;
   required?: boolean;
   isVisible?: boolean;
+  footerDescription?: any;
 };
 
 const FormSection = ({
@@ -16,6 +17,7 @@ const FormSection = ({
   description,
   required = false,
   isVisible = true,
+  footerDescription = "",
   children
 }: Props) => (
   <section className="mt-4 container bg-white">
@@ -34,13 +36,14 @@ const FormSection = ({
               {title}
               {required && "*"}
             </h1>
-            {isVisible && <Visible />}
+            {isVisible && <VisibleIcon />}
           </div>
         )}
         {description && (
           <p className="text-sm font-weight-normal text-black">{description}</p>
         )}
         {children}
+        {footerDescription !== "" && footerDescription}
       </div>
     </div>
   </section>

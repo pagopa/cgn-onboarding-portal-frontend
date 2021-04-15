@@ -1,9 +1,9 @@
-/* Grid */
-
-.grid {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-}
+/* Colors */
+$primary: #0273E6;
+$secondary: #01254C;
+$text-color: #000000;
+$background: #E6E9F2;
+$text-gray: #5C6F82;
 
 /* Spacers */
 
@@ -45,14 +45,59 @@ $spacers: (
     auto: auto
 );
 
-.list-none {
-    list-style-type: none;
+/* Base */
+
+html, body, #app, #app>div {
+    height: 100%;
 }
+
+html, body, #app {
+    background-color: $background;
+}
+
+#app {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+/* Text */
+
+.text-blue {
+    color: $primary;
+}
+
+.text-dark-blue {
+    color: $secondary; 
+}
+
+.text-gray {
+    color: $text-gray;
+}
+
+/* Font sizes */
+
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;  
+}
+
+.text-base {
+    font-size: 1rem;
+    line-height: 1.25rem;    
+}
+
+/* Letter spacing */
+
+.tracking {
+    letter-spacing: 0.5px;
+}
+
+/* Links */
 
 .no-underline {
     text-decoration: none;
 }
 
-@import "./text";
-@import "./colors";
+$link-hover-decoration: none;
+
 @import "../../node_modules/bootstrap-italia/src/scss/bootstrap-italia.scss";

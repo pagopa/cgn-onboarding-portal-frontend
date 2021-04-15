@@ -3,10 +3,10 @@ import { Field } from "formik";
 import { Link } from "react-router-dom";
 import FormSection from "../FormSection";
 import { ROOT } from "../../../navigation/routes";
-import InputField from "./InputField";
-import ToggleField from "./ToggleField";
+import InputField from "../InputField";
+import ToggleField from "../ToggleField";
 
-const ProfileData = () => (
+const ProfileData = ({ formValues }: any) => (
   <FormSection hasIntroduction isVisible={false}>
     <InputField
       htmlFor="fullName"
@@ -22,14 +22,16 @@ const ProfileData = () => (
     >
       <Field id="hasDifferentName" name="hasDifferentName" type="checkbox" />
     </ToggleField>
-    <InputField
-      htmlFor="name"
-      title="Nome Operatore visualizzato"
-      description="Può essere una semplificazione del nome dell'Operatore più riconoscibile dall'utente (es. PagoPA vs PagoPA SPA)"
-      required
-    >
-      <Field id="name" name="name" type="text" />
-    </InputField>
+    {formValues.hasDifferentName && (
+      <InputField
+        htmlFor="name"
+        title="Nome Operatore visualizzato"
+        description="Può essere una semplificazione del nome dell'Operatore più riconoscibile dall'utente (es. PagoPA vs PagoPA SPA)"
+        required
+      >
+        <Field id="name" name="name" type="text" />
+      </InputField>
+    )}
     <InputField
       htmlFor="taxCodeOrVat"
       title="Codice fiscale / Partita IVA"

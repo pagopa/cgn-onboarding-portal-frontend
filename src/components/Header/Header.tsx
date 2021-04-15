@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../Base/Logo";
+import Logo from "../Logo/Logo";
 
 const Header = () => (
   <header className="p-2 bg-white shadow">

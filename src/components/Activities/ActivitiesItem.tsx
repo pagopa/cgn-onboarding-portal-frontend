@@ -1,16 +1,16 @@
 import React from "react";
-import CheckCircle from "../../assets/icons/check-circle.svg";
-import Circle from "../../assets/icons/circle.svg";
+import CheckCircleIcon from "../../assets/icons/check-circle.svg";
+import CircleIcon from "../../assets/icons/circle.svg";
 
 type Props = {
-  title: string;
+  children: any;
   description: string;
   checked: boolean;
   hasBorderBottom: boolean;
 };
 
 const ActivitiesItem = ({
-  title,
+  children,
   description,
   checked,
   hasBorderBottom
@@ -21,8 +21,8 @@ const ActivitiesItem = ({
     }
   >
     <div className="d-flex justify-content-between">
-      <h1 className="text-base font-weight-semibold">{title}</h1>
-      {checked ? <CheckCircle /> : <Circle />}
+      {children}
+      {checked ? <CheckCircleIcon /> : <CircleIcon />}
     </div>
     <p className="text-sm m-0">{description}</p>
   </div>

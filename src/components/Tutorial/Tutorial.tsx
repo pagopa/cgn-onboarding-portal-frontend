@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CREATE_PROFILE } from "../../navigation/routes";
-import Paragraph from "../Base/Paragraph";
+import Paragraph from "../Paragraph/Paragraph";
 
 const Tutorial = () => (
   <section className="mt-2 py-20 bg-white text-center">
