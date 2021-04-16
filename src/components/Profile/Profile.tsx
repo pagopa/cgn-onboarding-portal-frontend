@@ -1,19 +1,59 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { CREATE_PROFILE } from "../../navigation/routes";
-import Paragraph from "../Paragraph/Paragraph";
+import ProfileSection from "./ProfileSection";
+import ProfileSectionItem from "./ProfileSectionItem";
 
 const Profile = () => (
-  <section className="mt-2 py-20 bg-white text-center">
-    <h1 className="h4 font-weight-bold text-dark-blue">
-      Per iniziare, compila i tuoi dati operatore
-    </h1>
-    <Paragraph color="gray">
-      Una volta compilati i dati, potrai aggiungere le tue agevolazioni
-    </Paragraph>
-    <Link to={CREATE_PROFILE} className="btn btn-outline-primary mt-9 px-14">
-      Compila i dati
-    </Link>
+  <section className="mt-2 px-8 py-10 bg-white">
+    <ProfileSection
+      className="border-bottom"
+      title="Dati relativi all'operatore"
+    >
+      <ProfileSectionItem
+        label="Ragione sociale operatore"
+        value="PagoPA S.p.A"
+      />
+      <ProfileSectionItem label="Nome Operatore visualizzato" value="PagoPA" />
+      <ProfileSectionItem
+        label="Codice Fiscale / Partita IVA"
+        value="15376371000"
+      />
+      <ProfileSectionItem label="Indirizzo PEC" value="PagoPA@pec.it" />
+      <ProfileSectionItem
+        className="mb-8"
+        label="Descrizione dell'operatore"
+        value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis dictum mi. Morbi auctor nibh ante, eget interdum urna malesuada in. Suspendisse at condimentum leo."
+      />
+    </ProfileSection>
+    <ProfileSection
+      className="mt-8 border-bottom"
+      title="Dati del referento incaricato"
+    >
+      <ProfileSectionItem label="Nome" value="Mario" />
+      <ProfileSectionItem label="Cognome" value="Rossi" />
+      <ProfileSectionItem
+        label="Indirizzo e-mail"
+        value="mariorossi@gmail.com"
+      />
+      <ProfileSectionItem
+        className="mb-8"
+        label="Numero di telefono"
+        value="347 9867145"
+      />
+    </ProfileSection>
+
+    <ProfileSection className="mt-8" title="Descrizione operatore">
+      <ProfileSectionItem label="Categorie merceologiche" value="Viaggi " />
+      <ProfileSectionItem label="Sito web" value="www.pagopa.gov.it" />
+      <ProfileSectionItem
+        label="Indirizzo"
+        value="Piazza Colonna 370, Roma, CAP 00187"
+      />
+      <ProfileSectionItem
+        className="mb-8"
+        label="Immagine operatore"
+        value=""
+      />
+    </ProfileSection>
   </section>
 );
 

@@ -12,7 +12,7 @@ function Home() {
       <Container className="mt-10 mb-20">
         <div className="col-7 offset-1">
           <Introduction name="Mario Rossi" />
-          <Tutorial />
+          <Profile />
         </div>
         <div className="col-3">
           <Activities />
