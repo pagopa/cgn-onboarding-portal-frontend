@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { Button } from "design-react-kit";
+import { useParams } from "react-router-dom";
 import Api from "../../../api";
 import { CreateDiscount } from "../../../api/generated";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -44,6 +45,7 @@ const EditDiscountForm = () => {
   const agreementState = useSelector(
     (state: RootState) => state.agreement.value
   );
+  const { discountId } = useParams();
 
   return (
     <Formik
@@ -61,7 +63,7 @@ const EditDiscountForm = () => {
       }}
     >
       {({ errors, touched }) => (
-        <Form>
+        <Form autoComplete="off">
           <DiscountInfo errors={errors} touched={touched} />
           <ProductCategories errors={errors} touched={touched} />
           <DiscountConditions errors={errors} touched={touched} />

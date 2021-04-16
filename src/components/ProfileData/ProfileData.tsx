@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Api from "../../api/index";
 import { RootState } from "../../store/store";
+import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
 import ProfileDataItem from "./ProfileDataItem";
 
 const ProfileData = () => {
@@ -55,6 +57,12 @@ const ProfileData = () => {
                 <ProfileDataItem label="Immagine operatore" />
               </tbody>
             </table>
+            <Link
+              className="mt-8 btn btn-outline-primary"
+              to={EDIT_OPERATOR_DATA}
+            >
+              Modifica dati
+            </Link>
           </section>
         </section>
       )}

@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Field } from "formik";
-import FormSection from "../../FormSection";
-import InputField from "../../InputField";
+import DatePicker from "react-datepicker";
+import InputField from "../../FormField";
 import FieldError from "../../FieldError";
+import "react-datepicker/dist/react-datepicker.css";
 
 type Props = {
   errors: any;
   touched: any;
+  formValues: any;
+  setFieldValue: any;
 };
 
-const DiscountInfo = ({ errors, touched }: Props) => (
-  <FormSection hasIntroduction>
+const DiscountInfo = ({
+  errors,
+  touched,
+  formValues,
+  setFieldValue
+}: Props) => (
+  <>
     <InputField
       htmlFor="name"
       title="Nome agevolazione"
@@ -40,11 +48,18 @@ const DiscountInfo = ({ errors, touched }: Props) => (
     <InputField
       htmlFor="startDate"
       title="Data di inizio dell'agevolazione"
-      description="Indicare il giorno e l’ora da cui lagevolazione diventa valida"
+      description="Indicare il giorno e l’ora da cui l'agevolazione diventa valida"
       isVisible
       required
     >
-      <Field id="startDate" name="startDate" type="text" />
+      <DatePicker
+        id="startDate"
+        name="startDate"
+        dateFormat="yyyy-MM-dd"
+        selected={formValues.startDate}
+        value={formValues.startDate}
+        onChange={date => setFieldValue("startDate", date)}
+      />
       <FieldError errors={errors.startDate} touched={touched.startDate} />
     </InputField>
     <InputField
@@ -54,7 +69,14 @@ const DiscountInfo = ({ errors, touched }: Props) => (
       isVisible
       required
     >
-      <Field id="endDate" name="endDate" type="text" />
+      <DatePicker
+        id="endDate"
+        name="endDate"
+        dateFormat="yyyy-MM-dd"
+        selected={formValues.endDate}
+        value={formValues.endDate}
+        onChange={date => setFieldValue("endDate", date)}
+      />
       <FieldError errors={errors.endDate} touched={touched.endDate} />
     </InputField>
     <InputField
@@ -67,7 +89,7 @@ const DiscountInfo = ({ errors, touched }: Props) => (
       <Field id="discount" name="discount" type="text" />
       <FieldError errors={errors.discount} touched={touched.discount} />
     </InputField>
-  </FormSection>
+  </>
 );
 
 export default DiscountInfo;

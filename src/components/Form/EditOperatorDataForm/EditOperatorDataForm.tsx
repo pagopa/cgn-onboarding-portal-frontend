@@ -12,7 +12,7 @@ import Api from "../../../api";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
 
-const EditProfileForm = () => {
+const EditOperatorDataForm = () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [currentProfile, setCurrentProfile] = useState<any>();
@@ -137,4 +137,4 @@ const EditProfileForm = () => {
   );
 };
 
-export default EditProfileForm;
+export default EditOperatorDataForm;

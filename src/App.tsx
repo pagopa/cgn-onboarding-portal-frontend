@@ -1,35 +1,36 @@
-import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getCookie } from "./utils/cookie";
-import { createAgreement } from "./store/agreement/agreementSlice";
+import { setCookie, getCookie } from "./utils/cookie";
+import { setUser } from "./store/user/userSlice";
 import CenteredLoading from "./components/CenteredLoading/CenteredLoading";
 import RouterConfig from "./navigation/RouterConfig";
+import Login from "./pages/Login";
 import "./styles/bootstrap-italia-custom.scss";
 import "typeface-titillium-web";
-import Login from "./pages/Login";
 import { RootState } from "./store/store";
 
 function App() {
-  const { value, loading } = useSelector((state: RootState) => state.agreement);
-  const token = getCookie();
   const dispatch = useDispatch();
+  const { data: user, loading } = useSelector((state: RootState) => state.user);
+  const token = getCookie();
+  const { search = "" } = window.location;
 
-  if (!token) {
+  useEffect(() => {
+    if (search) {
+      const urlToken = search.replace("?token=", "");
+      setCookie(urlToken);
+      window.location.replace("/");
+    }
+    if (token) {
+      dispatch(setUser(token));
+    }
+  }, []);
+
+  if (!token && !search) {
     return <Login />;
   }
 
-  if (!value.id && !loading) {
-    dispatch(createAgreement());
-  }
-
-  return loading ? (
-    <CenteredLoading />
-  ) : (
-    <BrowserRouter>
-      <RouterConfig state={value.state} />
-    </BrowserRouter>
-  );
+  return loading ? <CenteredLoading /> : <RouterConfig user={user} />;
 }
 
 export default App;

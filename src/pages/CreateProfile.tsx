@@ -4,7 +4,7 @@ import { DASHBOARD } from "../navigation/routes";
 import Layout from "../components/Layout/Layout";
 import Stepper from "../components/Stepper/Stepper";
 import Step from "../components/Stepper/Step";
-import Documentation from "../components/Form/CreateProfileForm/Documentation";
+import Documentation from "../components/Form/CreateProfileForm/Documentation/Documentation";
 import ProfileData from "../components/Form/CreateProfileForm/ProfileData/ProfileData";
 import DiscountData from "../components/Form/CreateProfileForm/DiscountData/DiscountData";
 import Documents from "../components/Form/CreateProfileForm/Documents";
@@ -60,8 +60,8 @@ const EditProfile = () => {
   };
 
   return (
-    <Layout>
-      <div className="container-fluid bg-white">
+    <Layout hasHeaderBorder>
+      <div className="bg-white">
         <div className="container p-10">
           <h1 className="h5 text-gray">Carta Giovani Nazionale</h1>
           <h2 className="h2 text-dark-blue font-weight-bold">
