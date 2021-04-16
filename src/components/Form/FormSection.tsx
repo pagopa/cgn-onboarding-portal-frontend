@@ -9,6 +9,7 @@ type Props = {
   required?: boolean;
   isVisible?: boolean;
   footerDescription?: any;
+  className?: any;
 };
 
 const FormSection = ({
@@ -18,16 +19,17 @@ const FormSection = ({
   required = false,
   isVisible = true,
   footerDescription = "",
-  children
+  children,
+  className
 }: Props) => (
-  <section className="mt-4 container bg-white">
+  <section className={`${className} mt-4 container bg-white`}>
     <div className="row">
       <div className="col-10 offset-1 py-8">
         {hasIntroduction && (
           <p className="mb-10 text-base font-weight-normal text-black">
             Le domande contrassegnate con il simbolo * sono obbligatorie
-            <br /> Le informazioni contrassegnate con il simbolo saranno
-            visibili in app.
+            <br /> Le informazioni contrassegnate con il simbolo <VisibleIcon />{" "}
+            saranno visibili in app.
           </p>
         )}
         {title && (

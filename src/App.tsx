@@ -1,13 +1,33 @@
 import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { getCookie } from "./utils/cookie";
+import { createAgreement } from "./store/agreement/agreementSlice";
+import CenteredLoading from "./components/CenteredLoading/CenteredLoading";
+import RouterConfig from "./navigation/RouterConfig";
 import "./styles/bootstrap-italia-custom.scss";
 import "typeface-titillium-web";
-import { BrowserRouter } from "react-router-dom";
-import RouterConfig from "./navigation/RouterConfig";
+import Login from "./pages/Login";
+import { RootState } from "./store/store";
 
 function App() {
-  return (
+  const { value, loading } = useSelector((state: RootState) => state.agreement);
+  const token = getCookie();
+  const dispatch = useDispatch();
+
+  if (!token) {
+    return <Login />;
+  }
+
+  if (!value.id && !loading) {
+    dispatch(createAgreement());
+  }
+
+  return loading ? (
+    <CenteredLoading />
+  ) : (
     <BrowserRouter>
-      <RouterConfig />
+      <RouterConfig state={value.state} />
     </BrowserRouter>
   );
 }
