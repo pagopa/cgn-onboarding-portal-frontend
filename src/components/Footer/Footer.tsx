@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../Base/Logo";
+import Logo from "../Logo/Logo";
 
 const Footer = () => (
   <footer className="p-8 bg-secondary text-white">
@@ -19,7 +19,7 @@ const Footer = () => (
       </div>
       <div className="row mt-4">
         <div className="col-12">
-          <ul className="p-0 mt-7 d-flex flex-row justify-content-start list-none">
+          <ul className="p-0 mt-7 d-flex flex-row justify-content-start list-unstyled">
             <li className="mr-8">
               <a className="text-gray no-underline" href="#">
                 Privacy Policy

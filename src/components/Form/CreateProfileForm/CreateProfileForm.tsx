@@ -1,19 +1,34 @@
 import React from "react";
-import FormikStepper from "../../Base/FormikStepper/FormikStepper";
-import FormikStep from "../../Base/FormikStepper/FormikStep";
+import FormikStepper from "../../FormikStepper/FormikStepper";
+import FormikStep from "../../FormikStepper/FormikStep";
 import ProfileData from "./ProfileData";
 import ReferentData from "./ReferentData";
 import ProfileDescription from "./ProfileDescription";
+
+type CreateProfileForm = {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  telephoneNumber: string;
+};
 
 const CreateProfileForm = () => (
   <FormikStepper
     initialValues={{
       fullName: "PagoPA S.p.A.",
+      hasDifferentName: false,
       name: "",
+      pecAddress: "",
+      firstName: "",
+      lastName: "",
+      emailAddress: "",
+      telephoneNumber: "",
       taxCodeOrVat: "15376371009",
-      pecAddress: ""
+      description: "",
+      salesChannel: "",
+      addresses: [{ street: "", zipCode: "", city: "", district: "" }]
     }}
-    onSubmit={async values => {
+    onSubmit={async (values: any) => {
       // eslint-disable-next-line no-console
       console.log("values", values);
     }}

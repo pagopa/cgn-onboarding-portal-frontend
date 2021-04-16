@@ -3,7 +3,7 @@ import { Field } from "formik";
 import { Link } from "react-router-dom";
 import { ROOT } from "../../../navigation/routes";
 import FormSection from "../FormSection";
-import InputField from "./InputField";
+import InputField from "../InputField";
 
 interface IProps {
   firstName: string;

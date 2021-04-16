@@ -29,21 +29,25 @@ const FormikStepper = ({ children, ...props }: FormikConfig<FormikValues>) => {
         }
       }}
     >
-      <Form autoComplete="off">
-        <Stepper>
-          {childrenArray.map((child, index) => (
-            <Step
-              key={child.props.label}
-              index={index + 1}
-              isActive={step === index}
-              handleChangeStep={() => setStep(index)}
-            >
-              {child.props.label}
-            </Step>
-          ))}
-        </Stepper>
-        {currentChild}
-      </Form>
+      {({ values }) => (
+        <Form autoComplete="off">
+          <Stepper>
+            {childrenArray.map((child, index) => (
+              <Step
+                key={child.props.label}
+                index={index + 1}
+                stepType={step === index ? "active" : ""}
+                handleChangeStep={() => setStep(index)}
+              >
+                {child.props.label}
+              </Step>
+            ))}
+          </Stepper>
+          {React.Children.map(currentChild, child =>
+            React.cloneElement(child, { formValues: values })
+          )}
+        </Form>
+      )}
     </Formik>
   );
 };
