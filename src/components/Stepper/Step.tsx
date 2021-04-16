@@ -5,11 +5,18 @@ type Props = {
   stepType?: "active" | "confirmed" | "";
   index?: number;
   children: string;
-  handleChangeStep: any;
+  handleChangeStep?: any;
 };
 
 const Step = ({ stepType = "", index, handleChangeStep, children }: Props) => (
-  <li className={stepType} onClick={handleChangeStep}>
+  <li
+    className={stepType}
+    onClick={handleChangeStep}
+    style={{
+      borderLeftWidth: index === 1 ? 0 : "1px",
+      borderRightWidth: index === 4 ? 0 : "1px"
+    }}
+  >
     <span className={stepType !== "confirmed" ? "steppers-number" : ""}>
       {stepType === "confirmed" && <CheckStepperIcon className="mr-2" />}
       <span className="sr-only">Step {index}</span>

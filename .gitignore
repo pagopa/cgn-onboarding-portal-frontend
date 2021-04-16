@@ -54,6 +54,7 @@ coverage
 yarn-error.log
 
 generated
+generated_backoffice
 *.zip
 
 *.js

@@ -1,3 +1,4 @@
+import { Icon } from "design-react-kit";
 import React from "react";
 import VisibleIcon from "../../assets/icons/visible.svg";
 
@@ -9,6 +10,9 @@ type Props = {
   required?: boolean;
   isVisible?: boolean;
   footerDescription?: any;
+  className?: any;
+  hasClose?: boolean;
+  handleClose?: any;
 };
 
 const FormSection = ({
@@ -18,17 +22,34 @@ const FormSection = ({
   required = false,
   isVisible = true,
   footerDescription = "",
-  children
+  children,
+  className,
+  hasClose = false,
+  handleClose
 }: Props) => (
-  <section className="mt-4 container bg-white">
+  <section className={`${className} mt-4 container bg-white`}>
     <div className="row">
       <div className="col-10 offset-1 py-8">
         {hasIntroduction && (
-          <p className="mb-10 text-base font-weight-normal text-black">
-            Le domande contrassegnate con il simbolo * sono obbligatorie
-            <br /> Le informazioni contrassegnate con il simbolo saranno
-            visibili in app.
-          </p>
+          <>
+            {hasClose && (
+              <div className="d-flex flex-row justify-content-between">
+                <p className="mb-10 text-base font-weight-normal text-black">
+                  Le domande contrassegnate con il simbolo * sono obbligatorie
+                  <br /> Le informazioni contrassegnate con il simbolo{" "}
+                  <VisibleIcon /> saranno visibili in app.
+                </p>
+                <Icon icon="it-close" onClick={handleClose} />
+              </div>
+            )}
+            {!hasClose && (
+              <p className="mb-10 text-base font-weight-normal text-black">
+                Le domande contrassegnate con il simbolo * sono obbligatorie
+                <br /> Le informazioni contrassegnate con il simbolo{" "}
+                <VisibleIcon /> saranno visibili in app.
+              </p>
+            )}
+          </>
         )}
         {title && (
           <div className="d-flex flex-row align-items-center">
