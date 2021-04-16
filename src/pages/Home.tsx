@@ -3,6 +3,7 @@ import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import Activities from "../components/Activities/Activities";
 import Tutorial from "../components/Tutorial/Tutorial";
+import Profile from "../components/Profile/Profile";
 import Introduction from "../components/Introduction/Introduction";
 
 function Home() {
