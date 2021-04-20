@@ -9,7 +9,7 @@
     "prebuild:tsc": "tsc --noEmit",
     "build": "parcel build src/index.html --out-dir build --public-url /",
     "test": "jest",
-    "test:coverage": "jest --passWithNoTests --coverage --coverageReporters=cobertura",
+    "test:coverage": "jest --coverage --coverageReporters=cobertura",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
     "generate:api": "gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/io-functions-template/master/openapi/index.yaml --no-strict --out-dir generated/api --request-types --response-decoders --client",
