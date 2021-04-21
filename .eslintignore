@@ -1,3 +1,11 @@
+# Never lint node_modules
+node_modules
+
+# We shouldn't lint assets nor generated files
+assets
+generated
+
+# Don't lint conf files
 .eslintrc.js
 jest.config.js
 Dangerfile.ts

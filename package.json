@@ -12,7 +12,7 @@
     "test:coverage": "jest --coverage --coverageReporters=cobertura",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
-    "generate:api": "gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/io-functions-template/master/openapi/index.yaml --no-strict --out-dir generated/api --request-types --response-decoders --client",
+    "generate:api": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/openapi.yaml --generator-name typescript-axios -o generated/api ",
     "generate": "npm-run-all generate:*",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\""
   },
@@ -43,6 +43,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.2.6",
     "@pagopa/danger-custom-rules": "^2.0.3",
     "@pagopa/eslint-config": "^1.1.1",
     "@pagopa/openapi-codegen-ts": "9.0.0",
