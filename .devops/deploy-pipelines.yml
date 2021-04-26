@@ -9,6 +9,29 @@ parameters:
       - minor
       - patch
     default: minor
+  - name: environment
+    displayName: Target Environment
+    type: string
+    default: uat
+    values:
+      - uat
+      - prod
+
+variables:
+  ${{ if eq(parameters['environment'], 'uat') }}:
+    azureSubscription: '$(UAT_AZURE_SUBSCRIPTION)'
+    storage: '$(UAT_STORAGE_ACCOUNT_NAME)'
+    containerName: '$(BLOB_CONTAINER_NAME)'
+    endpoint: '$(UAT_ENDPOINT_AZURE)'
+    profileName: '$(UAT_PROFILE_NAME_CDN_AZURE)'
+    resourceGroup: '$(UAT_RESOURCE_GROUP_AZURE)'
+  ${{ if eq(parameters['environment'], 'prod') }}:
+    azureSubscription: '$(PROD_AZURE_SUBSCRIPTION)'
+    storage: '$(PROD_STORAGE_ACCOUNT_NAME)'
+    containerName: '$(BLOB_CONTAINER_NAME)'
+    endpoint: '$(PROD_ENDPOINT_AZURE)'
+    profileName: '$(PROD_PROFILE_NAME_CDN_AZURE)'
+    resourceGroup: '$(PROD_RESOURCE_GROUP_AZURE)'
 
 # Only manual activations are intended
 trigger: none
@@ -103,10 +126,10 @@ stages:
           - task: AzureFileCopy@4
             inputs:
               sourcePath: '$(Pipeline.Workspace)/Bundle/*'
-              azureSubscription: '$(STAGING_AZURE_SUBSCRIPTION)'
+              azureSubscription: '$(azureSubscription)'
               destination: 'AzureBlob'
-              storage: '$(STAGING_STORAGE_ACCOUNT_NAME)'
-              containerName: '$(BLOB_CONTAINER_NAME)'
+              storage: '$(storage)'
+              containerName: '$(containerName)'
             displayName: Deploy to container blob
 
   # Check that the staging instance is healthy
@@ -118,8 +141,8 @@ stages:
         steps:
           - template: templates/rest-healthcheck/template.yaml@pagopaCommons
             parameters:
-              azureSubscription: '$(PRODUCTION_AZURE_SUBSCRIPTION)'
-              endpoint: 'https://$(ENDPOINT_AZURE).azureedge.net/$(MY_INDEX)'
+              azureSubscription: '$(azureSubscription)'
+              endpoint: 'https://$(endpoint).azureedge.net/$(MY_INDEX)'
               endpointType: 'public'
               appName: ''
               containerInstanceResourceGroup: ''
@@ -141,16 +164,16 @@ stages:
           - task: AzureFileCopy@4
             inputs:
               sourcePath: '$(Pipeline.Workspace)/Bundle/*'
-              azureSubscription: '$(PRODUCTION_AZURE_SUBSCRIPTION)'
+              azureSubscription: '$(azureSubscription)'
               destination: 'AzureBlob'
-              storage: '$(PRODUCTION_STORAGE_ACCOUNT_NAME)'
-              containerName: '$(BLOB_CONTAINER_NAME)'
+              storage: '$(storage)'
+              containerName: '$(containerName)'
             displayName: Deploy to container blob
 
           - task: AzureCLI@1
             displayName: 'Purge CDN'
             inputs:
-              azureSubscription: '$(PRODUCTION_AZURE_SUBSCRIPTION)'
+              azureSubscription: '$(azureSubscription)'
               scriptLocation: inlineScript
               inlineScript: |
-                call az cdn endpoint purge -g $(RESOURCE_GROUP_AZURE) -n $(ENDPOINT_AZURE) --profile-name $(PROFILE_NAME_CDN_AZURE) --content-paths "/*"
+                call az cdn endpoint purge -g $(resourceGroup) -n $(endpoint) --profile-name $(profileName) --content-paths "/*"
