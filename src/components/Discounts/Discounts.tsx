@@ -5,7 +5,11 @@ import Api from "../../api/index";
 import { Discounts } from "../../api/generated";
 import { Button, Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
-import { CREATE_DISCOUNT, DASHBOARD } from "../../navigation/routes";
+import {
+  CREATE_DISCOUNT,
+  DASHBOARD,
+  EDIT_PROFILE
+} from "../../navigation/routes";
 import { useHistory } from "react-router-dom";
 import ProfileItem from "../Profile/ProfileItem";
 import { makeProductCategoriesString } from "../../utils/strings";
@@ -174,15 +178,15 @@ const Discounts = () => {
             </tbody>
           </table>
           <div className="mt-10">
-            <Button color="secondary" outline icon tag="button">
-              <Icon
-                style={{ color: "#5C6F82" }}
-                icon="it-pencil"
-                padding={false}
-                size=""
-              />{" "}
+            <Link
+              to={{
+                pathname: EDIT_PROFILE,
+                state: { signupCompleted: true }
+              }}
+            >
               Modifica
-            </Button>
+            </Link>
+
             <Button color="primary" icon tag="button" className="ml-4">
               <Icon icon="it-delete" color="white" padding={false} size="" />{" "}
               Elimina
