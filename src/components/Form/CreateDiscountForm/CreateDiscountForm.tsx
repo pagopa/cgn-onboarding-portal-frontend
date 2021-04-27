@@ -25,9 +25,7 @@ const validationSchema = Yup.object().shape({
   name: Yup.string()
     .max(100)
     .required(),
-  description: Yup.string()
-    .max(250)
-    .required(),
+  description: Yup.string().max(250),
   startDate: Yup.date().required(),
   endDate: Yup.date().required(),
   discount: Yup.number()
@@ -73,6 +71,7 @@ const CreateDiscountForm = () => {
                 outline
                 color="primary"
                 tag="button"
+                type="submit"
               >
                 Salva
               </Button>

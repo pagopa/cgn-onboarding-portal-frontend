@@ -26,7 +26,6 @@ const DiscountInfo = ({ errors, touched }: Props) => (
       title="Descrizione agevolazione"
       description="Inserire una descrizione leggermente più approfondita dell'agevolazione, se lo ritenete necessario (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri"
       isVisible
-      required
     >
       <Field
         as="textarea"

@@ -33,7 +33,7 @@ const Profile = () => {
             <h2 className="h4 font-weight-bold text-dark-blue">
               Dati relativi all&apos;operatore
             </h2>
-            <table className="table table-hover border-bottom">
+            <table className="table border-bottom">
               <tbody>
                 <ProfileItem
                   label="Ragione sociale operatore"
@@ -64,7 +64,7 @@ const Profile = () => {
             <h2 className="h4 font-weight-bold text-dark-blue">
               Dati del referente incaricato
             </h2>
-            <table className="table table-hover">
+            <table className="table">
               <tbody>
                 <ProfileItem label="Nome" value={profile.referent.firstName} />
                 <ProfileItem

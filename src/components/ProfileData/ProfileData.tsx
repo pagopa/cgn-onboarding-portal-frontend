@@ -28,7 +28,7 @@ const ProfileData = () => {
             <h2 className="h4 font-weight-bold text-dark-blue">
               Dati relativi all&apos;operatore
             </h2>
-            <table className="table table-hover">
+            <table className="table">
               <tbody>
                 <ProfileDataItem
                   label="Nome Operatore visualizzato"

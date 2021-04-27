@@ -29,9 +29,11 @@ const Stepper = ({
                 : "null"
             }
             handleChangeStep={
+              () => handleChangeStep(index)
+              /*
               completedSteps.includes(index)
                 ? () => handleChangeStep(index)
-                : null
+                : null */
             }
           >
             {child.props.children}

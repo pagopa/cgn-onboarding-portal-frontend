@@ -3,10 +3,13 @@ import { useSelector } from "react-redux";
 import { useTable, useExpanded } from "react-table";
 import Api from "../../api/index";
 import { Discounts } from "../../api/generated";
-import { Icon } from "design-react-kit";
+import { Button, Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
 import { CREATE_DISCOUNT, DASHBOARD } from "../../navigation/routes";
-import { useHistory } from "react-router-dom":
+import { useHistory } from "react-router-dom";
+import ProfileItem from "../Profile/ProfileItem";
+import { makeProductCategoriesString } from "../../utils/strings";
+import { Badge } from "design-react-kit";
 
 const Discounts = () => {
   const history = useHistory();
@@ -16,6 +19,67 @@ const Discounts = () => {
   const getDiscounts = async (agreementId: string) => {
     const response = await Api.Discount.getDiscounts(agreementId);
     return response.data.items;
+  };
+
+  const getDiscountComponent = (state: string) => {
+    switch (state) {
+      case "draft":
+        return (
+          <Badge
+            className="font-weight-normal"
+            pill
+            tag="span"
+            style={{
+              backgroundColor: "white",
+              color: "#5C6F82",
+              border: "1px solid #5C6F82"
+            }}
+          >
+            Bozza
+          </Badge>
+        );
+
+      case "published":
+        return (
+          <Badge className="font-weight-normal" color="primary" pill tag="span">
+            Pubblicata
+          </Badge>
+        );
+
+      case "rejected":
+        return (
+          <Badge
+            className="font-weight-normal"
+            pill
+            tag="span"
+            style={{
+              backgroundColor: "white",
+              border: "1px solid #C02927",
+              color: "#C02927"
+            }}
+          >
+            Sospesa
+          </Badge>
+        );
+    }
+  };
+
+  const getVisibleComponent = (isVisible: boolean) => {
+    if (isVisible) {
+      return (
+        <span>
+          <Icon icon="it-password-visible" />
+          <span className="text-base font-weight-normal text-gray">SI</span>
+        </span>
+      );
+    } else {
+      return (
+        <span>
+          <Icon icon="it-password-invisible" />
+          <span className="text-base font-weight-normal text-gray">NO</span>
+        </span>
+      );
+    }
   };
 
   useEffect(() => {
@@ -38,7 +102,12 @@ const Discounts = () => {
       },
       {
         Header: "Stato",
-        accessor: "state"
+        accessor: "state",
+        Cell: ({ row }) => getDiscountComponent(row.values.state)
+      },
+      {
+        Header: "Visibile",
+        Cell: ({ row }) => getVisibleComponent(row.values.state === "published")
       },
       {
         Header: () => null,
@@ -57,9 +126,73 @@ const Discounts = () => {
     []
   );
 
-  const renderRowSubComponent = useCallback(({ row }) => {
-    if (discounts !== []) console.log(discounts);
-  }, []);
+  const renderRowSubComponent = useCallback(
+    ({ row }) => {
+      return (
+        <section className="px-6 py-4 bg-white">
+          <h1 className="h4 font-weight-bold text-dark-blue">Dettagli</h1>
+          <table className="table">
+            <tbody>
+              <ProfileItem
+                label="Nome agevolazione"
+                value={row.original.name}
+              />
+              {row.original.description && (
+                <ProfileItem
+                  label="Descrizione agevolazione"
+                  value={row.original.description}
+                />
+              )}
+              <ProfileItem
+                label="Stato agevolazione"
+                value={row.original.state}
+              />
+              <ProfileItem
+                label="Data di inizio dell'agevolazione"
+                value={row.original.startDate}
+              />
+              <ProfileItem
+                label="Data di fine agevolazione"
+                value={row.original.endDate}
+              />
+              <ProfileItem
+                label="Entità dello sconto"
+                value={`${row.original.discount}%`}
+              />
+              <ProfileItem
+                label="Categorie merceologiche"
+                value={makeProductCategoriesString(
+                  row.original.productCategories
+                )}
+              />
+              {row.original.conditions && (
+                <ProfileItem
+                  label="Condizioni dell’agevolazione"
+                  value={row.original.conditions}
+                />
+              )}
+            </tbody>
+          </table>
+          <div className="mt-10">
+            <Button color="secondary" outline icon tag="button">
+              <Icon
+                style={{ color: "#5C6F82" }}
+                icon="it-pencil"
+                padding={false}
+                size=""
+              />{" "}
+              Modifica
+            </Button>
+            <Button color="primary" icon tag="button" className="ml-4">
+              <Icon icon="it-delete" color="white" padding={false} size="" />{" "}
+              Elimina
+            </Button>
+          </div>
+        </section>
+      );
+    },
+    [discounts]
+  );
 
   const {
     getTableProps,
@@ -72,7 +205,7 @@ const Discounts = () => {
   } = useTable({ columns, data }, useExpanded);
 
   return (
-    <>
+    <div>
       <table
         {...getTableProps()}
         style={{ width: "100%" }}
@@ -92,7 +225,7 @@ const Discounts = () => {
                 // eslint-disable-next-line react/jsx-key
                 <th
                   {...column.getHeaderProps()}
-                  className="px-8 py-2 text-sm font-weight-bold text-gray text-uppercase"
+                  className="px-6 py-2 text-sm font-weight-bold text-gray text-uppercase"
                 >
                   {column.render("Header")}
                 </th>
@@ -104,11 +237,14 @@ const Discounts = () => {
           {rows.map(row => {
             prepareRow(row);
             return (
-              <React.Fragment {...row.getRowProps()}>
+              <React.Fragment key={row.getRowProps().key}>
                 <tr>
                   {row.cells.map(cell => {
                     return (
-                      <td className="px-8 py-2" {...cell.getCellProps()}>
+                      <td
+                        className="px-6 py-2 border-bottom text-sm"
+                        {...cell.getCellProps()}
+                      >
                         {cell.render("Cell")}
                       </td>
                     );
@@ -119,7 +255,7 @@ const Discounts = () => {
                     column that fills the entire length of the table.
                   */}
                 {row.isExpanded ? (
-                  <tr className="px-8 py-4 border-bottom text-base font-weight-normal text-black">
+                  <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
                     <td colSpan={visibleColumns.length}>
                       {/*
                           Inside it, call our renderRowSubComponent function. In reality,
@@ -142,7 +278,7 @@ const Discounts = () => {
           Nuova agevolazione
         </Link>
       </div>
-    </>
+    </div>
   );
 };
 
