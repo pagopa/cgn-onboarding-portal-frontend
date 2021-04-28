@@ -10,14 +10,28 @@ import RequestFilter from "./RequestsFilter";
 const Requests = () => {
   const [agreements, setAgreements] = useState<any>([]);
 
-  const getAgreements = async () => {
-    const response = await Api.Agreement.getAgreements();
+  const getAgreementsApi = async (params?: any) => {
+    const response = await Api.Agreement.getAgreements(
+      params.states,
+      params.assignee,
+      params.profileFullName,
+      params.requestDateFrom,
+      params.requestDateTo,
+      params.pageSize,
+      params.page
+    );
     return response.data.items;
+  };
+
+  const getAgreements = (params?: any) => {
+    void getAgreementsApi(params).then(response => {
+      setAgreements(response);
+    });
   };
 
   const getStateComponent = (state: string) => {
     switch (state) {
-      case "review":
+      case "PendingAgreement":
         return (
           <Badge
             className="font-weight-normal"
@@ -32,8 +46,7 @@ const Requests = () => {
             In Valutazione
           </Badge>
         );
-
-      case "evaluate":
+      case "AssignedAgreement":
         return (
           <Badge
             className="font-weight-normal"
@@ -48,13 +61,23 @@ const Requests = () => {
             Da Valutare
           </Badge>
         );
+      case "ApprovedAgreement":
+        return (
+          <Badge className="font-weight-normal" color="success" pill tag="span">
+            Approvato
+          </Badge>
+        );
+      case "RejectedAgreement":
+        return (
+          <Badge className="font-weight-normal" color="danger" pill tag="span">
+            Respinto
+          </Badge>
+        );
     }
   };
 
   useEffect(() => {
-    void getAgreements().then(response => {
-      setAgreements(response);
-    });
+    getAgreements({});
   }, []);
 
   const data = useMemo(() => agreements, [agreements]);
@@ -62,7 +85,7 @@ const Requests = () => {
     () => [
       {
         Header: "Operatore",
-        accessor: "operator"
+        accessor: "profile.fullName"
       },
       {
         Header: "Data Richiesta",
@@ -82,23 +105,22 @@ const Requests = () => {
   );
 
   const renderRowSubComponent = useCallback(
-    ({ row }) => (
+    ({ row: { original } }) => (
       <section className="px-6 py-4 bg-white">
         <h1 className="h4 font-weight-bold text-dark-blue">Dettagli</h1>
         <table className="table">
           <tbody>
             <ProfileItem
               label="Ragione sociale operatore"
-              value={row.original.name}
+              value={original.profile.fullName}
             />
             <ProfileItem
               label="Numero agevolazioni proposte"
-              value={row.original.state}
+              value={original.discounts.length}
             />
-            <ProfileItem
-              label="Agevolazione #1"
-              value={row.original.startDate}
-            />
+            {original.discounts.map((doc: { name: any }, i: number) => (
+              <ProfileItem label={`Agevolazione #${i + 1}`} value={doc.name} />
+            ))}
           </tbody>
         </table>
         <h1 className="h4 font-weight-bold text-dark-blue">
@@ -106,11 +128,17 @@ const Requests = () => {
         </h1>
         <table className="table">
           <tbody>
-            <ProfileItem label="Nome e cognome" value={row.original.name} />
-            <ProfileItem label="Indirizzo e-mail" value={row.original.state} />
+            <ProfileItem
+              label="Nome e cognome"
+              value={`${original.profile.referent.firstName} ${original.profile.referent.lastName}`}
+            />
+            <ProfileItem
+              label="Indirizzo e-mail"
+              value={original.profile.referent.emailAddress}
+            />
             <ProfileItem
               label="Numero di telefono"
-              value={row.original.startDate}
+              value={original.profile.referent.telephoneNumber}
             />
           </tbody>
         </table>
@@ -178,8 +206,7 @@ const Requests = () => {
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <RequestFilter />
-
+      <RequestFilter getAgreements={getAgreements} />
       <table
         {...getTableProps()}
         style={{ width: "100%" }}
