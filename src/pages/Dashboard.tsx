@@ -35,7 +35,7 @@ const Dashboard = () => {
       case 2:
         return <Profile />;
       default:
-        <div>error</div>;
+        return <div>error</div>;
     }
   }
 
