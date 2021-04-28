@@ -14,6 +14,7 @@
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
     "generate:api": "openapi-generator-cli generate -i ./src/api/api.yaml -g typescript-axios -o ./src/api/generated",
+    "generate:api_backoffice": "openapi-generator-cli generate -i ./src/api/api_backoffice.yaml -g typescript-axios -o ./src/api/generated_backoffice",
     "generate": "npm-run-all generate:*",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "typescript:dts": "node scripts/dts.js"

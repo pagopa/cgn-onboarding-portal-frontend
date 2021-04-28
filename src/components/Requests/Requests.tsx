@@ -2,20 +2,16 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useTable, useExpanded } from "react-table";
 import { Button, Icon, Badge, Chip, ChipLabel } from "design-react-kit";
-import { Link } from "react-router-dom";
-import Api from "../../api/index";
-import { Discounts } from "../../api/generated";
+import Api from "../../api/backoffice";
 import ProfileItem from "../Profile/ProfileItem";
-import { makeProductCategoriesString } from "../../utils/strings";
 import DocumentIcon from "../../assets/icons/document.svg";
 import RequestFilter from "./RequestsFilter";
 
 const Requests = () => {
-  const [requests, setRequests] = useState<any>([]);
-  const { value } = useSelector((state: any) => state.agreement);
+  const [agreements, setAgreements] = useState<any>([]);
 
-  const getRequests = async (agreementId: string) => {
-    const response = await Api.Discount.getRequests(agreementId);
+  const getAgreements = async () => {
+    const response = await Api.Agreement.getAgreements();
     return response.data.items;
   };
 
@@ -56,12 +52,12 @@ const Requests = () => {
   };
 
   useEffect(() => {
-    void getRequests(value.id).then(response => {
-      setRequests(response);
+    void getAgreements().then(response => {
+      setAgreements(response);
     });
   }, []);
 
-  const data = useMemo(() => requests, [requests]);
+  const data = useMemo(() => agreements, [agreements]);
   const columns = useMemo(
     () => [
       {
@@ -168,7 +164,7 @@ const Requests = () => {
         </div>
       </section>
     ),
-    [requests]
+    [agreements]
   );
 
   const {
