@@ -1,5 +1,6 @@
 import React from "react";
 import "./styles/bootstrap-italia-custom.scss";
+import "./styles/react-datepicker.css";
 import "typeface-titillium-web";
 import { BrowserRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
