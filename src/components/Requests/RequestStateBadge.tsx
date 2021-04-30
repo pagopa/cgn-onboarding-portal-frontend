@@ -32,18 +32,6 @@ const RequestStateBadge = (state: string) => {
           In valutazione
         </Badge>
       );
-    case "ApprovedAgreement":
-      return (
-        <Badge className="font-weight-normal" color="success" pill tag="span">
-          Approvato
-        </Badge>
-      );
-    case "RejectedAgreement":
-      return (
-        <Badge className="font-weight-normal" color="danger" pill tag="span">
-          Respinto
-        </Badge>
-      );
   }
 };
 

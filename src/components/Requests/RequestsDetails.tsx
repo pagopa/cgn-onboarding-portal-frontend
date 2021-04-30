@@ -1,26 +1,49 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Icon } from "design-react-kit";
 import DocumentIcon from "../../assets/icons/document.svg";
 import Api from "../../api/backoffice";
 import RequestItem from "./RequestsDetailsItem";
 
 const RequestsDetails = ({ original, updateList }) => {
+  const [rejectMode, setRejectMode] = useState(false);
+  const [rejectMessage, setRejectMessage] = useState("");
+  const [documents, setDocuments] = useState([]);
+
   const assignAgreementsApi = async () => {
-    const response = await Api.Agreement.assignAgreement(original.id);
+    await Api.Agreement.assignAgreement(original.id);
     updateList();
   };
 
   const approveAgreementApi = async () => {
-    const response = await Api.Agreement.approveAgreement(original.id);
-    return response.data;
+    await Api.Agreement.approveAgreement(original.id);
+    updateList();
   };
 
   const rejectAgreementApi = async () => {
-    const response = await Api.Agreement.rejectAgreement(original.id, {
-      reasonMessage: ""
+    await Api.Agreement.rejectAgreement(original.id, {
+      reasonMessage: rejectMessage
     });
-    return response.data;
+    updateList();
   };
+
+  const getDocumentsApi = async () => {
+    const response = await Api.Document.getDocuments(original.id);
+    setDocuments(response.data);
+  };
+
+  const uploadDocumentApi = async (documentType: string) => {
+    await Api.Document.uploadDocument(original.id, documentType);
+  };
+
+  const deleteDocumentApi = async (documentType: string) => {
+    await Api.Document.deleteDocument(original.id, documentType);
+  };
+
+  useEffect(() => {
+    getDocumentsApi();
+  }, []);
+
+  console.log(documents);
 
   return (
     <section className="px-6 py-4 bg-white">
@@ -78,48 +101,120 @@ const RequestsDetails = ({ original, updateList }) => {
                 </a>
               </div>
             </div>
-            <Button color="primary" icon size="sm" tag="button">
-              <Icon
-                color="white"
-                icon="it-upload"
-                padding={false}
-                size="xs"
-                className="mr-2"
-              />
-              Carica controfirmato
-            </Button>
+            {// TODO file non caricato
+            true ? (
+              <Button
+                color="primary"
+                icon
+                size="sm"
+                tag="button"
+                disabled={original.state === "PendingAgreement"}
+                onClick={() => uploadDocumentApi(doc.documentType)}
+              >
+                <Icon
+                  color="white"
+                  icon="it-upload"
+                  padding={false}
+                  size="xs"
+                  className="mr-2"
+                />
+                Carica controfirmato
+              </Button>
+            ) : (
+              <Button
+                color="primary"
+                outline
+                icon
+                size="sm"
+                tag="button"
+                onClick={() => deleteDocumentApi(doc.documentType)}
+              >
+                <Icon
+                  color="white"
+                  icon="it-delete"
+                  padding={false}
+                  size="xs"
+                  className="mr-2"
+                />
+                Elimina
+              </Button>
+            )}
           </div>
         </div>
       ))}
-      <div className="mt-10">
-        <Button
-          color="primary"
-          outline
-          tag="button"
-          className="ml-4"
-          disabled={original.state === "PendingAgreement"}
-        >
-          Rifiuta
-        </Button>
-        <Button
-          color="primary"
-          tag="button"
-          className="ml-4"
-          disabled={original.state === "PendingAgreement"}
-        >
-          Approva
-        </Button>
-        {original.state !== "AssignedAgreement" && (
+      {rejectMode ? (
+        <div className="mt-10">
+          <h6 className="text-gray">Aggiungi una nota</h6>
+          <p>
+            Inserisci una nota di spiegazione riguardo al motivo per cui
+            l’esercente non può essere convenzionato in questo momento. La nota
+            sarà visibile all’operatore.
+          </p>
+          <div className="form-group">
+            <textarea
+              id="rejectMessage"
+              value={rejectMessage}
+              onChange={e => setRejectMessage(e.target.value)}
+              rows={5}
+              maxLength={250}
+              placeholder="Inserisci una descrizione"
+            />
+          </div>
+          <Button
+            color="primary"
+            outline
+            tag="button"
+            className="ml-4"
+            onClick={() => {
+              setRejectMode(false);
+              setRejectMessage("");
+            }}
+          >
+            Annulla
+          </Button>
           <Button
             color="primary"
             tag="button"
             className="ml-4"
-            onClick={assignAgreementsApi}
+            onClick={rejectAgreementApi}
+            disabled={!rejectMessage.length}
           >
-            Prendi in carica
+            Invia rifiuto
           </Button>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="mt-10">
+          <Button
+            color="primary"
+            outline
+            tag="button"
+            className="ml-4"
+            onClick={() => setRejectMode(true)}
+            disabled={original.state === "PendingAgreement"}
+          >
+            Rifiuta
+          </Button>
+          <Button
+            color="primary"
+            tag="button"
+            className="ml-4"
+            onClick={approveAgreementApi}
+            disabled={original.state === "PendingAgreement"}
+          >
+            Approva
+          </Button>
+          {original.state !== "AssignedAgreement" && (
+            <Button
+              color="primary"
+              tag="button"
+              className="ml-4"
+              onClick={assignAgreementsApi}
+            >
+              Prendi in carica
+            </Button>
+          )}
+        </div>
+      )}
     </section>
   );
 };
