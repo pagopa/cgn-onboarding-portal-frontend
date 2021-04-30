@@ -64,13 +64,14 @@ const RequestsFilter = ({ getAgreements }) => {
   return (
     <Formik
       initialValues={{
-        search: "",
+        profileFullName: "",
         requestDateFrom: undefined,
         requestDateTo: undefined,
         states: undefined
       }}
       onSubmit={values => {
         const params = { ...values };
+        params.profileFullName = values.profileFullName || undefined;
         if (params.states && params.states.includes("AssignedAgreement")) {
           params.assignee = params.states.split("AssignedAgreement");
           params.states = "AssignedAgreement";
@@ -78,11 +79,22 @@ const RequestsFilter = ({ getAgreements }) => {
         getAgreements(params);
       }}
     >
-      {({ values, submitForm, setFieldValue }) => (
+      {({ values, submitForm, setFieldValue, resetForm, dirty }) => (
         <Form>
           <div className="d-flex justify-content-between">
             <h2 className="h4 font-weight-bold text-dark-blue">
               Richieste di convenzione
+              {dirty && (
+                <span
+                  className="primary-color mr-2 text-sm font-weight-regular"
+                  onClick={() => {
+                    resetForm();
+                    submitForm();
+                  }}
+                >
+                  Esci
+                </span>
+              )}
             </h2>
             <div className="d-flex justify-content-end flex-grow-1">
               <div className="chip chip-lg m-1" onClick={toggleDateModal}>
@@ -113,12 +125,12 @@ const RequestsFilter = ({ getAgreements }) => {
                 </button>
               </div>
               <Field
-                id="search"
-                name="search"
+                id="profileFullName"
+                name="profileFullName"
                 type="text"
                 placeholder="Cerca Richiesta"
                 onChange={e => {
-                  setFieldValue("search", e.target.value);
+                  setFieldValue("profileFullName", e.target.value);
                   if (timeout) clearTimeout(timeout);
                   timeout = setTimeout(() => {
                     submitForm();

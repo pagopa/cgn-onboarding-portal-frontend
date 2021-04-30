@@ -40,7 +40,6 @@ const Requests = () => {
             style={{
               backgroundColor: "#EA7614",
               color: "white",
-              border: "1px solid #5C6F82"
             }}
           >
             In Valutazione
@@ -99,6 +98,19 @@ const Requests = () => {
       {
         Header: "Revisore",
         accessor: "revisore"
+      },
+      {
+        Header: () => null,
+        id: "expander",
+        Cell: ({ row }) => (
+          <span {...row.getToggleRowExpandedProps()}>
+            {row.isExpanded ? (
+              <Icon icon="it-expand" color="primary" />
+            ) : (
+              <Icon icon="it-collapse" color="primary" />
+            )}
+          </span>
+        )
       }
     ],
     []
@@ -107,7 +119,7 @@ const Requests = () => {
   const renderRowSubComponent = useCallback(
     ({ row: { original } }) => (
       <section className="px-6 py-4 bg-white">
-        <h1 className="h4 font-weight-bold text-dark-blue">Dettagli</h1>
+        <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
         <table className="table">
           <tbody>
             <ProfileItem
@@ -123,7 +135,7 @@ const Requests = () => {
             ))}
           </tbody>
         </table>
-        <h1 className="h4 font-weight-bold text-dark-blue">
+        <h1 className="h5 font-weight-bold text-dark-blue">
           Dati del referente incaricato
         </h1>
         <table className="table">
@@ -142,7 +154,7 @@ const Requests = () => {
             />
           </tbody>
         </table>
-        <h1 className="h4 font-weight-bold text-dark-blue">Documenti</h1>
+        <h1 className="h5 font-weight-bold text-dark-blue">Documenti</h1>
         <div className="border-bottom py-8">
           <div className="d-flex flex-row justify-content-between">
             <div className="d-flex flex-row align-items-center">
