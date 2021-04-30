@@ -3,11 +3,13 @@ import { Button, Icon } from "design-react-kit";
 import DocumentIcon from "../../assets/icons/document.svg";
 import Api from "../../api/backoffice";
 import RequestItem from "./RequestsDetailsItem";
+import { useTooltip, Severity } from "../../context/tooltip";
 
 const RequestsDetails = ({ original, updateList }) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [documents, setDocuments] = useState([]);
+  const { triggerTooltip } = useTooltip();
 
   const assignAgreementsApi = async () => {
     await Api.Agreement.assignAgreement(original.id);
@@ -16,12 +18,22 @@ const RequestsDetails = ({ original, updateList }) => {
 
   const approveAgreementApi = async () => {
     await Api.Agreement.approveAgreement(original.id);
+    triggerTooltip({
+      severity: Severity.SUCCESS,
+      text: "La richiesta di convenzione è stata validata con successo.",
+      title: "Validazione Effettuata"
+    });
     updateList();
   };
 
   const rejectAgreementApi = async () => {
     await Api.Agreement.rejectAgreement(original.id, {
       reasonMessage: rejectMessage
+    });
+    triggerTooltip({
+      severity: Severity.SUCCESS,
+      text: "La richiesta di convenzione è stata rifiutata con successo.",
+      title: "Rifiuto inviato"
     });
     updateList();
   };
@@ -41,9 +53,12 @@ const RequestsDetails = ({ original, updateList }) => {
 
   useEffect(() => {
     getDocumentsApi();
+    triggerTooltip({
+      severity: Severity.SUCCESS,
+      text: "La richiesta di convenzione è stata validata con successo.",
+      title: "Validazione Effettuata"
+    });
   }, []);
-
-  console.log(documents);
 
   return (
     <section className="px-6 py-4 bg-white">
