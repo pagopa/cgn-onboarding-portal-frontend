@@ -130,6 +130,10 @@ textarea {
     text-decoration: none;
 }
 
+.cursor-pointer{
+    cursor: pointer;
+}
+
 $link-hover-decoration: none;
 
 @import "../../node_modules/bootstrap-italia/src/scss/bootstrap-italia.scss";

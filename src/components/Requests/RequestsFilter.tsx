@@ -5,7 +5,7 @@ import { Form, Formik, Field } from "formik";
 import DatePicker from "react-datepicker";
 import { format } from "date-fns";
 
-const RequestsFilter = ({ getAgreements }) => {
+const RequestsFilter = ({ getAgreements, refForm }) => {
   const [isOpenDateModal, setOpenDateModal] = useState(false);
   const [isOpenStateModal, setOpenStateModal] = useState(false);
   let timeout;
@@ -63,6 +63,7 @@ const RequestsFilter = ({ getAgreements }) => {
 
   return (
     <Formik
+      innerRef={refForm}
       initialValues={{
         profileFullName: "",
         requestDateFrom: undefined,
@@ -82,11 +83,11 @@ const RequestsFilter = ({ getAgreements }) => {
       {({ values, submitForm, setFieldValue, resetForm, dirty }) => (
         <Form>
           <div className="d-flex justify-content-between">
-            <h2 className="h4 font-weight-bold text-dark-blue">
-              Richieste di convenzione
-              {dirty && (
+            {dirty ? (
+              <h2 className="h4 font-weight-bold text-dark-blue">
+                Risultati della ricerca
                 <span
-                  className="primary-color mr-2 text-sm font-weight-regular"
+                  className="primary-color ml-2 text-sm font-weight-regular cursor-pointer"
                   onClick={() => {
                     resetForm();
                     submitForm();
@@ -94,8 +95,13 @@ const RequestsFilter = ({ getAgreements }) => {
                 >
                   Esci
                 </span>
-              )}
-            </h2>
+              </h2>
+            ) : (
+              <h2 className="h4 font-weight-bold text-dark-blue">
+                Richieste di convenzione
+              </h2>
+            )}
+
             <div className="d-flex justify-content-end flex-grow-1">
               <div className="chip chip-lg m-1" onClick={toggleDateModal}>
                 <span className="chip-label">

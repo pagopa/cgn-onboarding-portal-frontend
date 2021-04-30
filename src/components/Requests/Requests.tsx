@@ -1,14 +1,20 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useSelector } from "react-redux";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef
+} from "react";
 import { useTable, useExpanded } from "react-table";
-import { Button, Icon, Badge, Chip, ChipLabel } from "design-react-kit";
+import { Icon, Button } from "design-react-kit";
 import Api from "../../api/backoffice";
-import ProfileItem from "../Profile/ProfileItem";
-import DocumentIcon from "../../assets/icons/document.svg";
 import RequestFilter from "./RequestsFilter";
+import RequestStateBadge from "./RequestStateBadge";
+import RequestsDetails from "./RequestsDetails";
 
 const Requests = () => {
   const [agreements, setAgreements] = useState<any>([]);
+  const refForm = useRef();
 
   const getAgreementsApi = async (params?: any) => {
     const response = await Api.Agreement.getAgreements(
@@ -27,52 +33,51 @@ const Requests = () => {
     void getAgreementsApi(params).then(response => {
       setAgreements(response);
     });
-  };
-
-  const getStateComponent = (state: string) => {
-    switch (state) {
-      case "PendingAgreement":
-        return (
-          <Badge
-            className="font-weight-normal"
-            pill
-            tag="span"
-            style={{
-              backgroundColor: "#EA7614",
-              color: "white",
-            }}
-          >
-            In Valutazione
-          </Badge>
-        );
-      case "AssignedAgreement":
-        return (
-          <Badge
-            className="font-weight-normal"
-            style={{
-              backgroundColor: "#EA7614",
-              color: "#0073E6",
-              border: "1px solid #0073E6"
-            }}
-            pill
-            tag="span"
-          >
-            Da Valutare
-          </Badge>
-        );
-      case "ApprovedAgreement":
-        return (
-          <Badge className="font-weight-normal" color="success" pill tag="span">
-            Approvato
-          </Badge>
-        );
-      case "RejectedAgreement":
-        return (
-          <Badge className="font-weight-normal" color="danger" pill tag="span">
-            Respinto
-          </Badge>
-        );
-    }
+    // setAgreements([
+    //   {
+    //     id: "68681220-eddd-4ba3-8600-181bbcb773fa",
+    //     state: "PendingAgreement",
+    //     profile: {
+    //       id: "14",
+    //       agreementId: "68681220-eddd-4ba3-8600-181bbcb773fa",
+    //       fullName: "PagoPA S.p.A",
+    //       referent: {
+    //         firstName: "Mario ",
+    //         lastName: "Rossi",
+    //         emailAddress: "CiwCiuiB@UPbHFoxL.tc",
+    //         telephoneNumber: "123456"
+    //       }
+    //     },
+    //     discounts: [
+    //       {
+    //         id: "16",
+    //         agreementId: "68681220-eddd-4ba3-8600-181bbcb773fa",
+    //         state: "draft",
+    //         name: "dsadsad"
+    //       },
+    //       {
+    //         id: "17",
+    //         agreementId: "68681220-eddd-4ba3-8600-181bbcb773fa",
+    //         state: "draft",
+    //         name: "dsadsad"
+    //       }
+    //     ],
+    //     documents: [
+    //       {
+    //         documentType: "ManifestationOfInterest",
+    //         documentUrl:
+    //           "userdocuments/68681220-eddd-4ba3-8600-181bbcb773fa/manifestation_of_interest.pdf",
+    //         creationDate: "2021-04-28"
+    //       },
+    //       {
+    //         documentType: "Agreement",
+    //         documentUrl:
+    //           "userdocuments/68681220-eddd-4ba3-8600-181bbcb773fa/agreement.pdf",
+    //         creationDate: "2021-04-27"
+    //       }
+    //     ]
+    //   }
+    // ]);
   };
 
   useEffect(() => {
@@ -93,7 +98,7 @@ const Requests = () => {
       {
         Header: "Stato",
         accessor: "state",
-        Cell: ({ row }) => getStateComponent(row.values.state)
+        Cell: ({ row }) => RequestStateBadge(row.values.state)
       },
       {
         Header: "Revisore",
@@ -118,91 +123,10 @@ const Requests = () => {
 
   const renderRowSubComponent = useCallback(
     ({ row: { original } }) => (
-      <section className="px-6 py-4 bg-white">
-        <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
-        <table className="table">
-          <tbody>
-            <ProfileItem
-              label="Ragione sociale operatore"
-              value={original.profile.fullName}
-            />
-            <ProfileItem
-              label="Numero agevolazioni proposte"
-              value={original.discounts.length}
-            />
-            {original.discounts.map((doc: { name: any }, i: number) => (
-              <ProfileItem label={`Agevolazione #${i + 1}`} value={doc.name} />
-            ))}
-          </tbody>
-        </table>
-        <h1 className="h5 font-weight-bold text-dark-blue">
-          Dati del referente incaricato
-        </h1>
-        <table className="table">
-          <tbody>
-            <ProfileItem
-              label="Nome e cognome"
-              value={`${original.profile.referent.firstName} ${original.profile.referent.lastName}`}
-            />
-            <ProfileItem
-              label="Indirizzo e-mail"
-              value={original.profile.referent.emailAddress}
-            />
-            <ProfileItem
-              label="Numero di telefono"
-              value={original.profile.referent.telephoneNumber}
-            />
-          </tbody>
-        </table>
-        <h1 className="h5 font-weight-bold text-dark-blue">Documenti</h1>
-        <div className="border-bottom py-8">
-          <div className="d-flex flex-row justify-content-between">
-            <div className="d-flex flex-row align-items-center">
-              <DocumentIcon className="mr-4" />
-              <a href="#">Convenzione</a>
-            </div>
-            <Button color="primary" icon size="sm" tag="button">
-              <Icon
-                color="white"
-                icon="it-upload"
-                padding={false}
-                size="xs"
-                className="mr-2"
-              />
-              Carica controfirmato
-            </Button>
-          </div>
-        </div>
-        <div className="border-bottom py-8">
-          <div className="d-flex flex-row justify-content-between">
-            <div className="d-flex flex-row align-items-center">
-              <DocumentIcon className="mr-4" />
-              <a href="#">Allegato 1 - Manifestazione di interesse</a>
-            </div>
-            <Button color="primary" icon size="sm" tag="button">
-              <Icon
-                color="white"
-                icon="it-upload"
-                padding={false}
-                size="xs"
-                className="mr-2"
-              />
-              carica controfirmato
-            </Button>
-          </div>
-        </div>
-        <div className="mt-10">
-          <Button color="secondary" outline tag="button" className="ml-4">
-            Rifiuta
-          </Button>
-          <Button color="primary" tag="button" className="ml-4">
-            Approva
-          </Button>
-          <Button color="primary" tag="button" className="ml-4">
-            Prendi in carica
-          </Button>
-        </div>
-      </section>
+      <RequestsDetails
+        updateList={() => refForm.current.submitForm()}
+        original={original}
+      />
     ),
     [agreements]
   );
@@ -218,7 +142,7 @@ const Requests = () => {
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <RequestFilter getAgreements={getAgreements} />
+      <RequestFilter getAgreements={getAgreements} refForm={refForm} />
       <table
         {...getTableProps()}
         style={{ width: "100%" }}
@@ -271,6 +195,20 @@ const Requests = () => {
           })}
         </tbody>
       </table>
+      {!agreements.length && (
+        <div className="m-8 d-flex flex-column align-items-center">
+          <p>Nessun Risultato corrisponde alla tua ricerca</p>
+          <Button
+            color="primary"
+            outline
+            tag="button"
+            className="mt-3"
+            onClick={() => refForm.current.resetForm()}
+          >
+            Reimposta Tutto
+          </Button>
+        </div>
+      )}
     </section>
   );
 };
