@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Button, Icon } from "design-react-kit";
-import DocumentIcon from "../../assets/icons/document.svg";
+import { Button } from "design-react-kit";
+import { Agreement } from "../../api/generated_backoffice";
 import Api from "../../api/backoffice";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import { useTooltip, Severity } from "../../context/tooltip";
 
-const RequestsDetails = ({ original, updateList, setLoading }) => {
+const RequestsDetails = ({
+  original,
+  updateList,
+  setLoading
+}: {
+  original: Agreement;
+  updateList: () => void;
+  setLoading: (state: boolean) => void;
+}) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [checkAllDocs, setCheckAllDocs] = useState(false);
@@ -55,14 +63,14 @@ const RequestsDetails = ({ original, updateList, setLoading }) => {
       <div className="container">
         <RequestItem
           label="Ragione sociale operatore"
-          value={original.profile.fullName}
+          value={original.profile?.fullName}
         />
         <RequestItem
           label="Numero agevolazioni proposte"
-          value={original.discounts.length}
+          value={original.discounts?.length}
         />
         <div className="ml-3">
-          {original.discounts.map((doc: { name: any }, i: number) => (
+          {original.discounts?.map((doc: { name: any }, i: number) => (
             <RequestItem
               key={i}
               label={`Agevolazione #${i + 1}`}
@@ -77,15 +85,15 @@ const RequestsDetails = ({ original, updateList, setLoading }) => {
       <div className="container">
         <RequestItem
           label="Nome e cognome"
-          value={`${original.profile.referent.firstName} ${original.profile.referent.lastName}`}
+          value={`${original.profile?.referent.firstName} ${original.profile?.referent.lastName}`}
         />
         <RequestItem
           label="Indirizzo e-mail"
-          value={original.profile.referent.emailAddress}
+          value={original.profile?.referent.emailAddress}
         />
         <RequestItem
           label="Numero di telefono"
-          value={original.profile.referent.telephoneNumber}
+          value={original.profile?.referent.telephoneNumber}
         />
       </div>
       <RequestsDocuments

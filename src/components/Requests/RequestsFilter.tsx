@@ -1,14 +1,20 @@
 import React, { useState, forwardRef } from "react";
 import { Icon, Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Form, Formik, Field } from "formik";
+import { Form, Formik, Field, FieldInputProps } from "formik";
 import DatePicker from "react-datepicker";
 import { format } from "date-fns";
 
-const RequestsFilter = ({ getAgreements, refForm }) => {
+const RequestsFilter = ({
+  getAgreements,
+  refForm
+}: {
+  getAgreements: (params: any) => void;
+  refForm: React.Ref<typeof Formik>;
+}) => {
   const [isOpenDateModal, setOpenDateModal] = useState(false);
   const [isOpenStateModal, setOpenStateModal] = useState(false);
-  let timeout;
+  let timeout: any;
 
   const toggleDateModal = () => {
     setOpenDateModal(!isOpenDateModal);
@@ -18,23 +24,25 @@ const RequestsFilter = ({ getAgreements, refForm }) => {
     setOpenStateModal(!isOpenStateModal);
   };
 
-  const DatePickerInput = forwardRef((fieldProps, ref) => (
-    <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
-      <div className="form-group">
-        <input
-          {...fieldProps}
-          ref={ref}
-          className="form-control it-date-datepicker"
-          id={fieldProps.name}
-          type="text"
-          placeholder="gg/mm/aaaa"
-        />
-        <label htmlFor={fieldProps.name}>{fieldProps.label}</label>
+  const DatePickerInput = forwardRef(
+    (fieldProps: FieldInputProps<any>, ref) => (
+      <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
+        <div className="form-group">
+          <input
+            {...fieldProps}
+            ref={ref}
+            className="form-control it-date-datepicker"
+            id={fieldProps.name}
+            type="text"
+            placeholder="gg/mm/aaaa"
+          />
+          <label htmlFor={fieldProps.name}>{fieldProps.label}</label>
+        </div>
       </div>
-    </div>
-  ));
+    )
+  );
 
-  const getDateLabel = (requestDateFrom, requestDateTo): string => {
+  const getDateLabel = (requestDateFrom: Date, requestDateTo: Date): string => {
     if (requestDateFrom && requestDateTo) {
       return `Dal ${format(requestDateFrom, "dd/MM/yyyy")} al ${format(
         requestDateTo,
@@ -48,7 +56,7 @@ const RequestsFilter = ({ getAgreements, refForm }) => {
     return "Data";
   };
 
-  const getStatesLabel = (states): string => {
+  const getStatesLabel = (states: string): string => {
     switch (states) {
       case "PendingAgreement":
         return "Da valutare";
@@ -74,7 +82,7 @@ const RequestsFilter = ({ getAgreements, refForm }) => {
         const params = { ...values };
         params.profileFullName = values.profileFullName || undefined;
         if (params.states?.includes("AssignedAgreement")) {
-          params.assignee = params.states.split("AssignedAgreement").pop();
+          params.assignee = params.states?.split("AssignedAgreement").pop();
           params.states = "AssignedAgreement";
         }
         getAgreements(params);
@@ -153,7 +161,7 @@ const RequestsFilter = ({ getAgreements, refForm }) => {
               <div className="d-flex flex-column mt-4">
                 <div className="form-check">
                   <Field name="requestDateFrom">
-                    {({ field }) => (
+                    {({ field }: { field: FieldInputProps<any> }) => (
                       <DatePicker
                         {...field}
                         selected={field.value}
@@ -170,7 +178,7 @@ const RequestsFilter = ({ getAgreements, refForm }) => {
                 </div>
                 <div className="form-check">
                   <Field name="requestDateTo">
-                    {({ field }) => (
+                    {({ field }: { field: FieldInputProps<any> }) => (
                       <DatePicker
                         {...field}
                         selected={field.value}

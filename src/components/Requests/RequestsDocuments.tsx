@@ -4,8 +4,21 @@ import DocumentIcon from "../../assets/icons/document.svg";
 import CheckCircleIcon from "../../assets/icons/check-circle.svg";
 import CenteredLoading from "../CenteredLoading";
 import Api from "../../api/backoffice";
+import {
+  Agreement,
+  Document,
+  DocumentType
+} from "../../api/generated_backoffice";
 
-const CheckedDocument = ({ doc, i, deleteDocumentApi }) => (
+const CheckedDocument = ({
+  doc,
+  i,
+  deleteDocumentApi
+}: {
+  doc: Document;
+  i: number;
+  deleteDocumentApi: (type: DocumentType) => void;
+}) => (
   <div key={i} className="border-bottom py-5">
     <div className="d-flex flex-row justify-content-between align-items-center">
       <div>
@@ -42,7 +55,17 @@ const CheckedDocument = ({ doc, i, deleteDocumentApi }) => (
   </div>
 );
 
-const UncheckedDocument = ({ doc, i, original, uploadDocumentApi }) => {
+const UncheckedDocument = ({
+  doc,
+  i,
+  original,
+  uploadDocumentApi
+}: {
+  doc: Document;
+  i: number;
+  original: Agreement;
+  uploadDocumentApi: (type: DocumentType, file: File) => {};
+}) => {
   const uploadInputRef = useRef(null);
   return (
     <div key={i} className="border-bottom py-5">
@@ -89,7 +112,13 @@ const UncheckedDocument = ({ doc, i, original, uploadDocumentApi }) => {
   );
 };
 
-const RequestsDetails = ({ original, setCheckAllDocs }) => {
+const RequestsDetails = ({
+  original,
+  setCheckAllDocs
+}: {
+  original: Agreement;
+  setCheckAllDocs: (state: boolean) => void;
+}) => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -102,7 +131,7 @@ const RequestsDetails = ({ original, setCheckAllDocs }) => {
       .finally(() => setLoading(false));
   };
 
-  const uploadDocumentApi = async (documentType: string, file) => {
+  const uploadDocumentApi = async (documentType: DocumentType, file: File) => {
     setLoading(true);
     await Api.Document.uploadDocument(original.id, documentType, file)
       .then(() => {
@@ -111,7 +140,7 @@ const RequestsDetails = ({ original, setCheckAllDocs }) => {
       .finally(() => setLoading(false));
   };
 
-  const deleteDocumentApi = async (documentType: string) => {
+  const deleteDocumentApi = async (documentType: DocumentType) => {
     setLoading(true);
     await Api.Document.deleteDocument(original.id, documentType)
       .then(() => {
@@ -134,9 +163,9 @@ const RequestsDetails = ({ original, setCheckAllDocs }) => {
       {loading ? (
         <CenteredLoading />
       ) : (
-        original.documents.map((doc, i) => {
+        original.documents?.map((doc, i) => {
           const checkUploadedDocs = documents.find(
-            d => d.documentType === doc.documentType
+            (d: Document) => d.documentType === doc.documentType
           );
           if (!checkUploadedDocs) {
             return (

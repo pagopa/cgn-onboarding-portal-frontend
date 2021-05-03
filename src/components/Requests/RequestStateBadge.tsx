@@ -1,7 +1,8 @@
 import React from "react";
 import { Badge } from "design-react-kit";
+import { AgreementState } from "../../api/generated_backoffice";
 
-const RequestStateBadge = (state: string) => {
+const RequestStateBadge = (state: AgreementState) => {
   switch (state) {
     case "PendingAgreement":
       return (

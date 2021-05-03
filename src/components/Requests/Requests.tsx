@@ -5,16 +5,17 @@ import React, {
   useCallback,
   useRef
 } from "react";
-import { useTable, useExpanded } from "react-table";
+import { useTable, useExpanded, Row, UseExpandedRowProps } from "react-table";
 import { Icon, Button } from "design-react-kit";
 import Api from "../../api/backoffice";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
 import CenteredLoading from "../CenteredLoading";
+import { Agreement } from "../../api/generated_backoffice";
 
 const Requests = () => {
-  const [agreements, setAgreements] = useState<any>([]);
+  const [agreements, setAgreements] = useState<Agreement[]>([]);
   const [loading, setLoading] = useState(false);
   const refForm = useRef();
 
@@ -58,7 +59,7 @@ const Requests = () => {
       {
         Header: "Stato",
         accessor: "state",
-        Cell: ({ row }) => RequestStateBadge(row.values.state)
+        Cell: ({ row }: { row: Row }) => RequestStateBadge(row.values.state)
       },
       {
         Header: "Revisore",
@@ -67,7 +68,7 @@ const Requests = () => {
       {
         Header: () => null,
         id: "expander",
-        Cell: ({ row }) => (
+        Cell: ({ row }: { row: UseExpandedRowProps<Row> }) => (
           <span {...row.getToggleRowExpandedProps()}>
             {row.isExpanded ? (
               <Icon icon="it-expand" color="primary" />
