@@ -3,12 +3,12 @@ import { Button, Icon } from "design-react-kit";
 import DocumentIcon from "../../assets/icons/document.svg";
 import Api from "../../api/backoffice";
 import RequestItem from "./RequestsDetailsItem";
+import RequestsDocuments from "./RequestsDocuments";
 import { useTooltip, Severity } from "../../context/tooltip";
 
 const RequestsDetails = ({ original, updateList }) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
-  const [documents, setDocuments] = useState([]);
   const { triggerTooltip } = useTooltip();
 
   const assignAgreementsApi = async () => {
@@ -37,28 +37,6 @@ const RequestsDetails = ({ original, updateList }) => {
     });
     updateList();
   };
-
-  const getDocumentsApi = async () => {
-    const response = await Api.Document.getDocuments(original.id);
-    setDocuments(response.data);
-  };
-
-  const uploadDocumentApi = async (documentType: string) => {
-    await Api.Document.uploadDocument(original.id, documentType);
-  };
-
-  const deleteDocumentApi = async (documentType: string) => {
-    await Api.Document.deleteDocument(original.id, documentType);
-  };
-
-  useEffect(() => {
-    getDocumentsApi();
-    triggerTooltip({
-      severity: Severity.SUCCESS,
-      text: "La richiesta di convenzione è stata validata con successo.",
-      title: "Validazione Effettuata"
-    });
-  }, []);
 
   return (
     <section className="px-6 py-4 bg-white">
@@ -99,64 +77,7 @@ const RequestsDetails = ({ original, updateList }) => {
           value={original.profile.referent.telephoneNumber}
         />
       </div>
-      <h1 className="h5 font-weight-bold text-dark-blue mb-5">Documenti</h1>
-      {original.documents.map((doc, i) => (
-        <div key={i} className="border-bottom py-5">
-          <div className="d-flex flex-row justify-content-between align-items-center">
-            <div>
-              <div className="mb-3 text-gray">
-                {doc.documentType === "Agreement"
-                  ? "Convenzione"
-                  : `Allegato ${i + 1}`}
-              </div>
-              <div className="d-flex flex-row align-items-center">
-                <DocumentIcon className="mr-4" />
-                <a href={doc.documentUrl} target="_blank">
-                  {doc.documentUrl.split("/").pop()}
-                </a>
-              </div>
-            </div>
-            {// TODO file non caricato
-            true ? (
-              <Button
-                color="primary"
-                icon
-                size="sm"
-                tag="button"
-                disabled={original.state === "PendingAgreement"}
-                onClick={() => uploadDocumentApi(doc.documentType)}
-              >
-                <Icon
-                  color="white"
-                  icon="it-upload"
-                  padding={false}
-                  size="xs"
-                  className="mr-2"
-                />
-                Carica controfirmato
-              </Button>
-            ) : (
-              <Button
-                color="primary"
-                outline
-                icon
-                size="sm"
-                tag="button"
-                onClick={() => deleteDocumentApi(doc.documentType)}
-              >
-                <Icon
-                  color="white"
-                  icon="it-delete"
-                  padding={false}
-                  size="xs"
-                  className="mr-2"
-                />
-                Elimina
-              </Button>
-            )}
-          </div>
-        </div>
-      ))}
+      <RequestsDocuments original={original} updateList={updateList} />
       {rejectMode ? (
         <div className="mt-10">
           <h6 className="text-gray">Aggiungi una nota</h6>

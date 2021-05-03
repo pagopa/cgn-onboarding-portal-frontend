@@ -30,54 +30,54 @@ const Requests = () => {
   };
 
   const getAgreements = (params?: any) => {
-    // void getAgreementsApi(params).then(response => {
-    //   setAgreements(response);
-    // });
-    setAgreements([
-      {
-        id: "68681220-eddd-4ba3-8600-181bbcb773fa",
-        state: "AssignedAgreement",
-        profile: {
-          id: "14",
-          agreementId: "68681220-eddd-4ba3-8600-181bbcb773fa",
-          fullName: "PagoPA S.p.A",
-          referent: {
-            firstName: "Mario ",
-            lastName: "Rossi",
-            emailAddress: "CiwCiuiB@UPbHFoxL.tc",
-            telephoneNumber: "123456"
-          }
-        },
-        discounts: [
-          {
-            id: "16",
-            agreementId: "68681220-eddd-4ba3-8600-181bbcb773fa",
-            state: "draft",
-            name: "dsadsad"
-          },
-          {
-            id: "17",
-            agreementId: "68681220-eddd-4ba3-8600-181bbcb773fa",
-            state: "draft",
-            name: "dsadsad"
-          }
-        ],
-        documents: [
-          {
-            documentType: "ManifestationOfInterest",
-            documentUrl:
-              "userdocuments/68681220-eddd-4ba3-8600-181bbcb773fa/manifestation_of_interest.pdf",
-            creationDate: "2021-04-28"
-          },
-          {
-            documentType: "Agreement",
-            documentUrl:
-              "userdocuments/68681220-eddd-4ba3-8600-181bbcb773fa/agreement.pdf",
-            creationDate: "2021-04-27"
-          }
-        ]
-      }
-    ]);
+    void getAgreementsApi(params).then(response => {
+      setAgreements(response);
+    });
+    // setAgreements([
+    //   {
+    //     id: "68681220-eddd-4ba3-8600-181bbcb773fa",
+    //     state: "AssignedAgreement",
+    //     profile: {
+    //       id: "14",
+    //       agreementId: "68681220-eddd-4ba3-8600-181bbcb773fa",
+    //       fullName: "PagoPA S.p.A",
+    //       referent: {
+    //         firstName: "Mario ",
+    //         lastName: "Rossi",
+    //         emailAddress: "CiwCiuiB@UPbHFoxL.tc",
+    //         telephoneNumber: "123456"
+    //       }
+    //     },
+    //     discounts: [
+    //       {
+    //         id: "16",
+    //         agreementId: "68681220-eddd-4ba3-8600-181bbcb773fa",
+    //         state: "draft",
+    //         name: "dsadsad"
+    //       },
+    //       {
+    //         id: "17",
+    //         agreementId: "68681220-eddd-4ba3-8600-181bbcb773fa",
+    //         state: "draft",
+    //         name: "dsadsad"
+    //       }
+    //     ],
+    //     documents: [
+    //       {
+    //         documentType: "ManifestationOfInterest",
+    //         documentUrl:
+    //           "userdocuments/68681220-eddd-4ba3-8600-181bbcb773fa/manifestation_of_interest.pdf",
+    //         creationDate: "2021-04-28"
+    //       },
+    //       {
+    //         documentType: "Agreement",
+    //         documentUrl:
+    //           "userdocuments/68681220-eddd-4ba3-8600-181bbcb773fa/agreement.pdf",
+    //         creationDate: "2021-04-27"
+    //       }
+    //     ]
+    //   }
+    // ]);
   };
 
   useEffect(() => {
@@ -102,7 +102,7 @@ const Requests = () => {
       },
       {
         Header: "Revisore",
-        accessor: "revisore"
+        accessor: "assignee.fullName"
       },
       {
         Header: () => null,
