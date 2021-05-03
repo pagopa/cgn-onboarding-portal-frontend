@@ -127,7 +127,7 @@ const RequestsDetails = ({ original, updateList }) => {
               doc={doc}
               i={i}
               original={original}
-              getDocumentsApi={getDocumentsApi}
+              updateDocList={getDocumentsApi}
             />
           );
         } else {
@@ -136,7 +136,7 @@ const RequestsDetails = ({ original, updateList }) => {
               doc={doc}
               i={i}
               original={original}
-              getDocumentsApi={getDocumentsApi}
+              updateDocList={getDocumentsApi}
             />
           );
         }
