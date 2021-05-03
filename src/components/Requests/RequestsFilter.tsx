@@ -57,7 +57,7 @@ const RequestsFilter = ({ getAgreements, refForm }) => {
       case "AssignedAgreementOthers":
         return "In valutazione (da altri)";
       default:
-        return "State";
+        return "Stato";
     }
   };
 
