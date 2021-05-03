@@ -6,37 +6,47 @@ import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import { useTooltip, Severity } from "../../context/tooltip";
 
-const RequestsDetails = ({ original, updateList }) => {
+const RequestsDetails = ({ original, updateList, setLoading }) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [checkAllDocs, setCheckAllDocs] = useState(false);
   const { triggerTooltip } = useTooltip();
 
   const assignAgreementsApi = async () => {
-    await Api.Agreement.assignAgreement(original.id);
-    updateList();
+    setLoading(true);
+    await Api.Agreement.assignAgreement(original.id)
+      .then(() => updateList())
+      .catch(() => setLoading(false));
   };
 
   const approveAgreementApi = async () => {
-    await Api.Agreement.approveAgreement(original.id);
-    triggerTooltip({
-      severity: Severity.SUCCESS,
-      text: "La richiesta di convenzione è stata validata con successo.",
-      title: "Validazione Effettuata"
-    });
-    updateList();
+    setLoading(true);
+    await Api.Agreement.approveAgreement(original.id)
+      .then(() => {
+        updateList();
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text: "La richiesta di convenzione è stata validata con successo.",
+          title: "Validazione Effettuata"
+        });
+      })
+      .catch(() => setLoading(false));
   };
 
   const rejectAgreementApi = async () => {
+    setLoading(true);
     await Api.Agreement.rejectAgreement(original.id, {
       reasonMessage: rejectMessage
-    });
-    triggerTooltip({
-      severity: Severity.SUCCESS,
-      text: "La richiesta di convenzione è stata rifiutata con successo.",
-      title: "Rifiuto inviato"
-    });
-    updateList();
+    })
+      .then(() => {
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text: "La richiesta di convenzione è stata rifiutata con successo.",
+          title: "Rifiuto inviato"
+        });
+        updateList();
+      })
+      .catch(() => setLoading(false));
   };
 
   return (

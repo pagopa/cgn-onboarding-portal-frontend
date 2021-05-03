@@ -11,9 +11,11 @@ import Api from "../../api/backoffice";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
+import CenteredLoading from "../CenteredLoading";
 
 const Requests = () => {
   const [agreements, setAgreements] = useState<any>([]);
+  const [loading, setLoading] = useState(false);
   const refForm = useRef();
 
   const getAgreementsApi = async (params?: any) => {
@@ -30,9 +32,12 @@ const Requests = () => {
   };
 
   const getAgreements = (params?: any) => {
-    void getAgreementsApi(params).then(response => {
-      setAgreements(response);
-    });
+    if (!loading) setLoading(true);
+    void getAgreementsApi(params)
+      .then(response => {
+        setAgreements(response);
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -81,6 +86,7 @@ const Requests = () => {
       <RequestsDetails
         updateList={() => refForm.current.submitForm()}
         original={original}
+        setLoading={setLoading}
       />
     ),
     [agreements]
@@ -105,77 +111,83 @@ const Requests = () => {
   return (
     <section className="mt-2 px-8 py-10 bg-white">
       <RequestFilter getAgreements={getAgreements} refForm={refForm} />
-      <table
-        {...getTableProps()}
-        style={{ width: "100%" }}
-        className="mt-2 bg-white"
-      >
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr
-              {...headerGroup.getHeaderGroupProps()}
-              style={{
-                backgroundColor: "#F8F9F9",
-                borderBottom: "1px solid #5A6772"
-              }}
-            >
-              {headerGroup.headers.map(column => (
-                <th
-                  {...column.getHeaderProps()}
-                  className="px-6 py-2 text-sm font-weight-bold text-gray text-uppercase"
+      {loading ? (
+        <CenteredLoading />
+      ) : (
+        <>
+          <table
+            {...getTableProps()}
+            style={{ width: "100%" }}
+            className="mt-2 bg-white"
+          >
+            <thead>
+              {headerGroups.map(headerGroup => (
+                <tr
+                  {...headerGroup.getHeaderGroupProps()}
+                  style={{
+                    backgroundColor: "#F8F9F9",
+                    borderBottom: "1px solid #5A6772"
+                  }}
                 >
-                  {column.render("Header")}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row);
-            return (
-              <React.Fragment key={row.getRowProps().key}>
-                <tr>
-                  {row.cells.map(cell => (
-                    <td
-                      className="px-6 py-2 border-bottom text-sm"
-                      {...cell.getCellProps()}
+                  {headerGroup.headers.map(column => (
+                    <th
+                      {...column.getHeaderProps()}
+                      className="px-6 py-2 text-sm font-weight-bold text-gray text-uppercase"
                     >
-                      {cell.render("Cell")}
-                    </td>
+                      {column.render("Header")}
+                    </th>
                   ))}
                 </tr>
-                {row.isExpanded ? (
-                  <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
-                    <td colSpan={visibleColumns.length}>
-                      {renderRowSubComponent({ row })}
-                    </td>
-                  </tr>
-                ) : null}
-              </React.Fragment>
-            );
-          })}
-        </tbody>
-      </table>
-      {!agreements.length &&
-        (refForm.current?.dirty ? (
-          <div className="m-8 d-flex flex-column align-items-center">
-            <p>Nessun risultato corrisponde alla tua ricerca</p>
-            <Button
-              color="primary"
-              outline
-              tag="button"
-              className="mt-3"
-              onClick={() => refForm.current.resetForm()}
-            >
-              Reimposta Tutto
-            </Button>
-          </div>
-        ) : (
-          <div className="m-8 d-flex flex-column align-items-center">
-            <p>Nessuna richiesta da elaborare</p>
-          </div>
-        ))}
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {rows.map(row => {
+                prepareRow(row);
+                return (
+                  <React.Fragment key={row.getRowProps().key}>
+                    <tr>
+                      {row.cells.map(cell => (
+                        <td
+                          className="px-6 py-2 border-bottom text-sm"
+                          {...cell.getCellProps()}
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      ))}
+                    </tr>
+                    {row.isExpanded ? (
+                      <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
+                        <td colSpan={visibleColumns.length}>
+                          {renderRowSubComponent({ row })}
+                        </td>
+                      </tr>
+                    ) : null}
+                  </React.Fragment>
+                );
+              })}
+            </tbody>
+          </table>
+          {!agreements.length &&
+            (refForm.current?.dirty ? (
+              <div className="m-8 d-flex flex-column align-items-center">
+                <p>Nessun risultato corrisponde alla tua ricerca</p>
+                <Button
+                  color="primary"
+                  outline
+                  tag="button"
+                  className="mt-3"
+                  onClick={() => refForm.current.resetForm()}
+                >
+                  Reimposta Tutto
+                </Button>
+              </div>
+            ) : (
+              <div className="m-8 d-flex flex-column align-items-center">
+                <p>Nessuna richiesta da elaborare</p>
+              </div>
+            ))}
+        </>
+      )}
     </section>
   );
 };

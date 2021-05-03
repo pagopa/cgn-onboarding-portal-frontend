@@ -95,21 +95,29 @@ const RequestsDetails = ({ original, setCheckAllDocs }) => {
 
   const getDocumentsApi = async () => {
     if (!loading) setLoading(true);
-    const response = await Api.Document.getDocuments(original.id);
-    setDocuments(response.data);
-    setLoading(false);
+    await Api.Document.getDocuments(original.id)
+      .then(response => {
+        setDocuments(response.data);
+      })
+      .finally(() => setLoading(false));
   };
 
   const uploadDocumentApi = async (documentType: string, file) => {
     setLoading(true);
-    await Api.Document.uploadDocument(original.id, documentType, file);
-    getDocumentsApi();
+    await Api.Document.uploadDocument(original.id, documentType, file)
+      .then(() => {
+        getDocumentsApi();
+      })
+      .finally(() => setLoading(false));
   };
 
   const deleteDocumentApi = async (documentType: string) => {
     setLoading(true);
-    await Api.Document.deleteDocument(original.id, documentType);
-    getDocumentsApi();
+    await Api.Document.deleteDocument(original.id, documentType)
+      .then(() => {
+        getDocumentsApi();
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
