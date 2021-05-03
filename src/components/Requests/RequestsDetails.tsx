@@ -9,6 +9,7 @@ import { useTooltip, Severity } from "../../context/tooltip";
 const RequestsDetails = ({ original, updateList }) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
+  const [checkAllDocs, setCheckAllDocs] = useState(false);
   const { triggerTooltip } = useTooltip();
 
   const assignAgreementsApi = async () => {
@@ -77,7 +78,10 @@ const RequestsDetails = ({ original, updateList }) => {
           value={original.profile.referent.telephoneNumber}
         />
       </div>
-      <RequestsDocuments original={original} updateList={updateList} />
+      <RequestsDocuments
+        original={original}
+        setCheckAllDocs={setCheckAllDocs}
+      />
       {rejectMode ? (
         <div className="mt-10">
           <h6 className="text-gray">Aggiungi una nota</h6>
@@ -135,7 +139,7 @@ const RequestsDetails = ({ original, updateList }) => {
             tag="button"
             className="ml-4"
             onClick={approveAgreementApi}
-            disabled={original.state === "PendingAgreement"}
+            disabled={original.state === "PendingAgreement" || !checkAllDocs}
           >
             Approva
           </Button>
