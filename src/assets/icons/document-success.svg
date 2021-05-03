@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>60DE283D-4A4A-42C4-8655-33D4B45B8D18@3x</title>
+    <g id="🟢-3-review" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Documenti/carica2" transform="translate(-250.000000, -478.000000)">
+            <g id="it-badge-check" transform="translate(250.000000, 478.000000)">
+                <g id="cornice">
+                    <rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>
+                </g>
+                <g id="Layer_10" transform="translate(2.000000, 2.000000)">
+                    <circle id="Oval" fill="#FFFFFF" cx="10" cy="10" r="10"></circle>
+                    <circle id="Oval" fill="#00CF86" fill-rule="nonzero" cx="10" cy="10" r="8"></circle>
+                    <path d="M13.76,6.9 L7.88,12.9 L7.88,12.9 C8.15993388,13.1833721 8.54167514,13.342861 8.94,13.342861 C9.33832486,13.342861 9.72006612,13.1833721 10,12.9 L14.82,8 C15.1124534,7.70718245 15.1124534,7.23281755 14.82,6.94 L14.82,6.94 C14.6861843,6.79166444 14.4980782,6.70373524 14.2984452,6.69620192 C14.0988122,6.6886686 13.9046144,6.76217123 13.76,6.9 L13.76,6.9 Z" id="Path" fill="#FFFFFF"></path>
+                    <path d="M5.78892965,10.5164578 L9.61892965,10.5164578 C10.0331432,10.5164578 10.3689297,10.8522443 10.3689297,11.2664578 L10.3689297,11.2664578 C10.3689297,11.6806714 10.0331432,12.0164578 9.61892965,12.0164578 L4.28892965,12.0164578 L4.28892965,12.0164578 C4.28892965,11.1880307 4.96050253,10.5164578 5.78892965,10.5164578 Z" id="Path" fill="#FFFFFF" transform="translate(7.328930, 11.266458) rotate(-135.000000) translate(-7.328930, -11.266458) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

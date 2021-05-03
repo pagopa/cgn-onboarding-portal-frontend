@@ -47,7 +47,7 @@ $spacers: (
 
 /* Base */
 
-html, body, #app, #app>div {
+html, body, #app {
     height: 100%;
 }
 
@@ -55,10 +55,42 @@ html, body, #app {
     background-color: $background;
 }
 
+/* Input */
+
+input {
+    color: $secondary;
+}
+
+/* Chrome/Opera/Safari */
+::-webkit-input-placeholder { 
+    font-style: italic;
+}
+
+/* Firefox 19+ */
+::-moz-placeholder { 
+    font-style: italic;
+}
+
+/* IE 10+ */
+:-ms-input-placeholder { 
+    font-style: italic;
+}
+
+/* Firefox 18- */
+:-moz-placeholder { 
+    font-style: italic;
+}
+
+textarea {
+    resize: none !important;
+}
+
+/* 
+
 #app {
     display: grid;
     grid-template-rows: auto 1fr auto;
-}
+} */
 
 /* Text */
 

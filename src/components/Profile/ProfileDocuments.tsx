@@ -1,0 +1,98 @@
+import React, { useEffect, useState } from "react";
+import { LinkList, LinkListItem, Icon } from "design-react-kit";
+import { useSelector } from "react-redux";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import Api from "../../api";
+
+const ProfileDocuments = () => {
+  const [agreementDocument, setAgreementDocument] = useState<any>();
+  const [manifestationDocument, setManifestationDocument] = useState<any>();
+  const agreement = useSelector((state: any) => state.agreement.value);
+
+  const getDocuments = async (agreementId: string) =>
+    await tryCatch(() => Api.Document.getDocuments(agreementId), toError)
+      .map(response => response.data.items)
+      .fold(
+        () => void 0,
+        documents => {
+          setAgreementDocument(
+            documents.filter(document => document.documentType === "agreement")
+          );
+          setManifestationDocument(
+            documents.filter(
+              document => document.documentType === "manifestation_of_interest"
+            )
+          );
+        }
+      )
+      .run();
+
+  useEffect(() => {
+    void getDocuments(agreement.id);
+  }, []);
+
+  return (
+    <>
+      {agreementDocument && manifestationDocument && (
+        <section className="mt-4 px-8 py-10 bg-white">
+          <h2 className="h5 font-weight-bold text-dark-blue">Documenti</h2>
+          <LinkList tag="div">
+            <LinkListItem
+              active
+              className="d-flex flex-row align-items-center"
+              tag="div"
+            >
+              <Icon icon="it-file" color="primary" className="mr-4" />
+              <div>
+                <a
+                  className="text-sm font-weight-semibold text-blue"
+                  href={agreementDocument.documentUrl}
+                  download
+                >
+                  Convenzione
+                </a>
+                <p className="text-sm font-weight-light text-dark-blue">
+                  Approvato il 24/04/2021, 15:17
+                </p>
+              </div>
+            </LinkListItem>
+            <LinkListItem divider tag="a" />
+            <LinkListItem
+              tag="div"
+              className="d-flex flex-row align-items-center"
+            >
+              <Icon icon="it-file" color="primary" className="mr-4" />
+              <div className="flex flex-row justify-items-start">
+                <a
+                  className="text-sm font-weight-semibold text-blue"
+                  href={manifestationDocument.documentUrl}
+                  download
+                >
+                  Allegato 1 - Manifestazione di interesse
+                </a>
+                <p className="text-sm font-weight-light text-dark-blue">
+                  Approvato il 24/04/2021, 15:17
+                </p>
+              </div>
+            </LinkListItem>
+            <LinkListItem divider tag="a" />
+            <LinkListItem
+              tag="div"
+              className="d-flex flex-row align-items-center"
+            >
+              <Icon icon="it-file" color="primary" className="mr-4" />
+              <div>
+                <span className="text-sm font-weight-semibold text-blue">
+                  Documentazione tecnica
+                </span>
+              </div>
+            </LinkListItem>
+          </LinkList>
+        </section>
+      )}
+    </>
+  );
+};
+
+export default ProfileDocuments;
