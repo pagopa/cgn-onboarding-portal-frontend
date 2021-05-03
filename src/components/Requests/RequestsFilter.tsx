@@ -74,7 +74,7 @@ const RequestsFilter = ({ getAgreements, refForm }) => {
         const params = { ...values };
         params.profileFullName = values.profileFullName || undefined;
         if (params.states?.includes("AssignedAgreement")) {
-          params.assignee = params.states.split("AssignedAgreement");
+          params.assignee = params.states.split("AssignedAgreement").pop();
           params.states = "AssignedAgreement";
         }
         getAgreements(params);
