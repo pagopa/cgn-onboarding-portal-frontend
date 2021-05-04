@@ -21,8 +21,6 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.1",
-    "@types/react-redux": "^7.1.16",
-    "@types/react-table": "^7.0.29",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "bootstrap-italia": "^1.4.3",
@@ -70,6 +68,7 @@
     "@types/react-dom": "^16.9.9",
     "@types/react-router-dom": "^5.1.7",
     "@types/react-table": "^7.0.29",
+    "@types/react-redux": "^7.1.16",
     "cssnano": "^4.1.10",
     "danger": "^10.3.0",
     "danger-plugin-digitalcitizenship": "^1.0.0",
