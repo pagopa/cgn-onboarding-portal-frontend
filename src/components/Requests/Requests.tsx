@@ -108,7 +108,7 @@ const Requests = () => {
     rows,
     prepareRow,
     visibleColumns
-  } = useTable(
+  } = useTable<any>(
     {
       columns,
       data,

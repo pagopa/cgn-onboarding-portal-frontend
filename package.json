@@ -8,7 +8,7 @@
     "prebuild:clean": "shx rm -rf build",
     "prebuild:tsc": "tsc --noEmit",
     "build": "parcel build src/index.html --out-dir build --public-url /",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:coverage": "jest --coverage --coverageReporters=cobertura",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
