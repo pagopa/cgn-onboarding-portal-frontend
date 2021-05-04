@@ -1,5 +1,4 @@
 import React from "react";
-import Badge from "design-react-kit";
 
 type Props = {
   children: string;

@@ -33,7 +33,6 @@ const ProfileImage = () => {
             name="profileImage"
             id="profileImage"
             className="upload pictures-wall"
-            onChange={uploadImage}
           />
           <label htmlFor="profileImage">
             <PlusIcon className="icon icon-sm" />

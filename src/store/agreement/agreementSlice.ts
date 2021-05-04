@@ -1,11 +1,11 @@
 /* eslint-disable functional/immutable-data */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Agreement } from '../../api/generated';
-import Api from '../../api/index';
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { fromNullable } from "fp-ts/lib/Option";
 import { identity } from "fp-ts/lib/function";
+import Api from '../../api/index';
+import { Agreement, ApprovedAgreement } from '../../api/generated';
 import { setCookie } from '../../utils/cookie';
 
 export const createAgreement = createAsyncThunk('agreement/createStatus', async () => 
@@ -23,8 +23,14 @@ await tryCatch(() => Api.Agreement.createAgreement(), toError)
 	).run()
 );
 
+
+interface ExtendedAgreement extends Agreement {
+    startDate?: string;
+    endDate?: string;
+}
+
 interface AgreementState {
-	value: Agreement;
+	value: ExtendedAgreement;
 	loading: boolean;
 }
 
@@ -37,7 +43,9 @@ export const agreementSlice = createSlice({
 			state.loading = true;
 		});
 		builder.addCase(createAgreement.fulfilled, (state, action) => {
-			state.value = action.payload;
+			if (action.payload) {
+				state.value = action.payload;
+			}
 			state.loading = false;
 		});
 		builder.addCase(createAgreement.rejected, (state, action) => {
@@ -45,7 +53,5 @@ export const agreementSlice = createSlice({
 		});
 	}
 });
-
-export const { set } = agreementSlice.actions;
 
 export default agreementSlice.reducer;

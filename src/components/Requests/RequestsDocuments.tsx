@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Icon } from "design-react-kit";
-import DocumentIcon from "../../assets/icons/document.svg";
-import CheckCircleIcon from "../../assets/icons/check-circle.svg";
-import CenteredLoading from "../CenteredLoading";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { identity } from "fp-ts/lib/function";
+import DocumentIcon from "../../assets/icons/document.svg";
+import CheckCircleIcon from "../../assets/icons/check-circle.svg";
+import CenteredLoading from "../CenteredLoading";
 import Api from "../../api/backoffice";
 import {
   Agreement,
@@ -21,42 +21,46 @@ const CheckedDocument = ({
   doc: Document;
   i: number;
   deleteDocument: (type: DocumentType) => void;
-}) => (
-  <div key={i} className="border-bottom py-5">
-    <div className="d-flex flex-row justify-content-between align-items-center">
-      <div>
-        <div className="mb-3 text-gray">
-          {doc.documentType === "Agreement"
-            ? "Convenzione"
-            : `Allegato ${i + 1}`}
+}) => {
+  const url = doc.documentUrl;
+  const splittedUrl = url.split("/");
+  return (
+    <div key={i} className="border-bottom py-5">
+      <div className="d-flex flex-row justify-content-between align-items-center">
+        <div>
+          <div className="mb-3 text-gray">
+            {doc.documentType === "Agreement"
+              ? "Convenzione"
+              : `Allegato ${i + 1}`}
+          </div>
+          <div className="d-flex flex-row align-items-center">
+            <CheckCircleIcon className="mr-4 color-success" />
+            <a href={doc.documentUrl} target="_blank" rel="noreferrer">
+              {splittedUrl[splittedUrl.length - 1]}
+            </a>
+          </div>
         </div>
-        <div className="d-flex flex-row align-items-center">
-          <CheckCircleIcon className="mr-4 color-success" />
-          <a href={doc.documentUrl} target="_blank">
-            {doc.documentUrl.split("/").pop()}
-          </a>
-        </div>
-      </div>
-      <Button
-        color="primary"
-        outline
-        icon
-        size="sm"
-        tag="button"
-        onClick={() => deleteDocument(doc.documentType)}
-      >
-        <Icon
+        <Button
           color="primary"
-          icon="it-delete"
-          padding={false}
-          size="xs"
-          className="mr-2"
-        />
-        Elimina
-      </Button>
+          outline
+          icon
+          size="sm"
+          tag="button"
+          onClick={() => deleteDocument(doc.documentType)}
+        >
+          <Icon
+            color="primary"
+            icon="it-delete"
+            padding={false}
+            size="xs"
+            className="mr-2"
+          />
+          Elimina
+        </Button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const UncheckedDocument = ({
   doc,
@@ -70,6 +74,8 @@ const UncheckedDocument = ({
   uploadDocument: (type: DocumentType, file: File) => void;
 }) => {
   const uploadInputRef = useRef<any>(null);
+  const url = doc.documentUrl;
+  const splittedUrl = url.split("/");
   return (
     <div key={i} className="border-bottom py-5">
       <div className="d-flex flex-row justify-content-between align-items-center">
@@ -81,8 +87,8 @@ const UncheckedDocument = ({
           </div>
           <div className="d-flex flex-row align-items-center">
             <DocumentIcon className="mr-4" />
-            <a href={doc.documentUrl} target="_blank">
-              {doc.documentUrl.split("/").pop()}
+            <a href={doc.documentUrl} target="_blank" rel="noreferrer">
+              {splittedUrl[splittedUrl.length - 1]}
             </a>
           </div>
         </div>
@@ -126,7 +132,7 @@ const RequestsDetails = ({
   original: Agreement;
   setCheckAllDocs: (state: boolean) => void;
 }) => {
-  const [documents, setDocuments] = useState<Document[]>();
+  const [documents, setDocuments] = useState<Array<Document>>();
   const [loading, setLoading] = useState(false);
 
   const getDocumentsApi = async () =>
@@ -136,7 +142,9 @@ const RequestsDetails = ({
       .run();
 
   const getDocuments = () => {
-    if (!loading) setLoading(true);
+    if (!loading) {
+      setLoading(true);
+    }
     void getDocumentsApi()
       .then(response => setDocuments(response))
       .finally(() => setLoading(false));

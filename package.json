@@ -2,7 +2,6 @@
   "name": "cgn-onboarding-portal-frontend",
   "version": "0.1.0",
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "dev": "parcel --port 3000 src/index.html --public-url / --out-dir build/debug",
     "prebuild": "npm-run-all prebuild:*",

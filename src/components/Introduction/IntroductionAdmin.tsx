@@ -1,5 +1,6 @@
 import React from "react";
-import { Nav, NavItem, NavLink } from "design-react-kit";
+import { Nav } from "design-react-kit";
+import NavItem from "../NavItem";
 
 type Props = {
   name: string;
@@ -17,21 +18,11 @@ const IntroductionAdmin = ({ name, activeTab, handleClick }: Props) => (
       <p className="dark-blue">{name}</p>
     </div>
     <Nav className="auto mt-11" tabs tag="ul" vertical={false}>
-      <NavItem tag="li">
-        <NavLink
-          active={activeTab === 0}
-          tag="a"
-          onClick={() => handleClick(0)}
-        >
-          Richieste
-        </NavLink>
-        <NavLink
-          active={activeTab === 1}
-          tag="a"
-          onClick={() => handleClick(1)}
-        >
-          Operatori Convenzionati
-        </NavLink>
+      <NavItem active={activeTab === 0} onClick={() => handleClick(0)}>
+        Richieste
+      </NavItem>
+      <NavItem active={activeTab === 1} onClick={() => handleClick(1)}>
+        Operatori Convenzionati
       </NavItem>
     </Nav>
   </section>

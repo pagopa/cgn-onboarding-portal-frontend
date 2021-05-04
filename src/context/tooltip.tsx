@@ -30,6 +30,7 @@ const initialState = {
 };
 
 const TooltipContext = createContext<TooltipContextProps>({
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   triggerTooltip: () => {}
 });
 

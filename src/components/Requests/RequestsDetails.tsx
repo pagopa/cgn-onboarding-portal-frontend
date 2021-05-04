@@ -6,9 +6,9 @@ import { identity } from "fp-ts/lib/function";
 import { Agreement } from "../../api/generated_backoffice";
 import Api from "../../api/backoffice";
 
+import { useTooltip, Severity } from "../../context/tooltip";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
-import { useTooltip, Severity } from "../../context/tooltip";
 
 const RequestsDetails = ({
   original,

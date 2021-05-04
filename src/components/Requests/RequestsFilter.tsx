@@ -22,7 +22,8 @@ const RequestsFilter = ({
 }) => {
   const [isOpenDateModal, setOpenDateModal] = useState(false);
   const [isOpenStateModal, setOpenStateModal] = useState(false);
-  let timeout: any;
+  // eslint-disable-next-line functional/no-let
+  let timeout: any = null;
 
   const toggleDateModal = () => {
     setOpenDateModal(!isOpenDateModal);
@@ -91,10 +92,15 @@ const RequestsFilter = ({
       innerRef={refForm}
       initialValues={initialValues}
       onSubmit={values => {
-        const params = { ...values };
-        params.profileFullName = values.profileFullName || undefined;
+        const params = {
+          ...values,
+          profileFullName: values.profileFullName || undefined
+        };
         if (params.states?.includes("AssignedAgreement")) {
-          params.assignee = params.states?.split("AssignedAgreement").pop();
+          const splitFilter = params.states?.split("AssignedAgreement");
+          // eslint-disable-next-line functional/immutable-data
+          params.assignee = splitFilter[splitFilter.length - 1];
+          // eslint-disable-next-line functional/immutable-data
           params.states = "AssignedAgreement";
         }
         getAgreements(params);
@@ -110,7 +116,7 @@ const RequestsFilter = ({
                   className="primary-color ml-2 text-sm font-weight-regular cursor-pointer"
                   onClick={() => {
                     resetForm();
-                    submitForm();
+                    void submitForm();
                   }}
                 >
                   Esci
@@ -157,9 +163,11 @@ const RequestsFilter = ({
                 placeholder="Cerca Richiesta"
                 onChange={(e: { target: { value: any } }) => {
                   setFieldValue("profileFullName", e.target.value);
-                  if (timeout) clearTimeout(timeout);
+                  if (timeout) {
+                    clearTimeout(timeout);
+                  }
                   timeout = setTimeout(() => {
-                    submitForm();
+                    void submitForm();
                   }, 1000);
                 }}
                 style={{ maxWidth: "275px" }}
@@ -210,7 +218,7 @@ const RequestsFilter = ({
               <Button
                 color="primary"
                 onClick={() => {
-                  submitForm();
+                  void submitForm();
                   toggleDateModal();
                 }}
               >
@@ -280,7 +288,7 @@ const RequestsFilter = ({
               <Button
                 color="primary"
                 onClick={() => {
-                  submitForm();
+                  void submitForm();
                   toggleStateModal();
                 }}
               >

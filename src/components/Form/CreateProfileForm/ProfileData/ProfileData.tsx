@@ -101,7 +101,7 @@ type Props = {
   handleNext: any;
 };
 
-const ProfileData = ({ handleBack, handleNext }: any) => {
+const ProfileData = ({ handleBack, handleSuccess, handleNext }: Props) => {
   const agreementState = useSelector(
     (state: RootState) => state.agreement.value
   );

@@ -11,11 +11,11 @@ import { toError } from "fp-ts/lib/Either";
 import { identity } from "fp-ts/lib/function";
 import { Icon, Button } from "design-react-kit";
 import Api from "../../api/backoffice";
+import CenteredLoading from "../CenteredLoading";
+import { Agreements } from "../../api/generated_backoffice";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
-import CenteredLoading from "../CenteredLoading";
-import { Agreements } from "../../api/generated_backoffice";
 
 const Requests = () => {
   const [agreements, setAgreements] = useState<Agreements>();
@@ -41,7 +41,9 @@ const Requests = () => {
       .run();
 
   const getAgreements = (params?: any) => {
-    if (!loading) setLoading(true);
+    if (!loading) {
+      setLoading(true);
+    }
     void getAgreementsApi(params)
       .then(response => setAgreements(response))
       .finally(() => setLoading(false));
@@ -108,9 +110,7 @@ const Requests = () => {
     visibleColumns
   } = useTable(
     {
-      // @ts-ignore
       columns,
-      // @ts-ignore
       data,
       autoResetExpanded: false
     },
@@ -130,17 +130,19 @@ const Requests = () => {
             className="mt-2 bg-white"
           >
             <thead>
-              {headerGroups.map(headerGroup => (
+              {headerGroups.map((headerGroup, i) => (
                 <tr
                   {...headerGroup.getHeaderGroupProps()}
+                  key={i}
                   style={{
                     backgroundColor: "#F8F9F9",
                     borderBottom: "1px solid #5A6772"
                   }}
                 >
-                  {headerGroup.headers.map(column => (
+                  {headerGroup.headers.map((column, i) => (
                     <th
                       {...column.getHeaderProps()}
+                      key={i}
                       className="px-6 py-2 text-sm font-weight-bold text-gray text-uppercase"
                     >
                       {column.render("Header")}
@@ -155,10 +157,11 @@ const Requests = () => {
                 return (
                   <React.Fragment key={row.getRowProps().key}>
                     <tr>
-                      {row.cells.map(cell => (
+                      {row.cells.map((cell, i) => (
                         <td
                           className="px-6 py-2 border-bottom text-sm"
                           {...cell.getCellProps()}
+                          key={i}
                         >
                           {cell.render("Cell")}
                         </td>
