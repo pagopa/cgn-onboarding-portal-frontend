@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "design-react-kit";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { identity } from "fp-ts/lib/function";
 import { Agreement } from "../../api/generated_backoffice";
 import Api from "../../api/backoffice";
+
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import { useTooltip, Severity } from "../../context/tooltip";
@@ -20,16 +24,28 @@ const RequestsDetails = ({
   const [checkAllDocs, setCheckAllDocs] = useState(false);
   const { triggerTooltip } = useTooltip();
 
-  const assignAgreementsApi = async () => {
+  const assignAgreementsApi = async () =>
+    await tryCatch(() => Api.Agreement.assignAgreement(original.id), toError)
+      .map(response => response.data)
+      .fold(() => void 0, identity)
+      .run();
+
+  const assignAgreements = () => {
     setLoading(true);
-    await Api.Agreement.assignAgreement(original.id)
+    void assignAgreementsApi()
       .then(() => updateList())
       .catch(() => setLoading(false));
   };
 
-  const approveAgreementApi = async () => {
+  const approveAgreementApi = async () =>
+    await tryCatch(() => Api.Agreement.approveAgreement(original.id), toError)
+      .map(response => response.data)
+      .fold(() => void 0, identity)
+      .run();
+
+  const approveAgreement = () => {
     setLoading(true);
-    await Api.Agreement.approveAgreement(original.id)
+    void approveAgreementApi()
       .then(() => {
         updateList();
         triggerTooltip({
@@ -41,11 +57,21 @@ const RequestsDetails = ({
       .catch(() => setLoading(false));
   };
 
-  const rejectAgreementApi = async () => {
+  const rejectAgreementApi = async () =>
+    await tryCatch(
+      () =>
+        Api.Agreement.rejectAgreement(original.id, {
+          reasonMessage: rejectMessage
+        }),
+      toError
+    )
+      .map(response => response.data)
+      .fold(() => void 0, identity)
+      .run();
+
+  const rejectAgreement = () => {
     setLoading(true);
-    await Api.Agreement.rejectAgreement(original.id, {
-      reasonMessage: rejectMessage
-    })
+    void rejectAgreementApi()
       .then(() => {
         triggerTooltip({
           severity: Severity.SUCCESS,
@@ -134,7 +160,7 @@ const RequestsDetails = ({
             color="primary"
             tag="button"
             className="ml-4"
-            onClick={rejectAgreementApi}
+            onClick={rejectAgreement}
             disabled={!rejectMessage.length}
           >
             Invia rifiuto
@@ -156,7 +182,7 @@ const RequestsDetails = ({
             color="primary"
             tag="button"
             className="ml-4"
-            onClick={approveAgreementApi}
+            onClick={approveAgreement}
             disabled={original.state === "PendingAgreement" || !checkAllDocs}
           >
             Approva
@@ -166,7 +192,7 @@ const RequestsDetails = ({
               color="primary"
               tag="button"
               className="ml-4"
-              onClick={assignAgreementsApi}
+              onClick={assignAgreements}
             >
               Prendi in carica
             </Button>

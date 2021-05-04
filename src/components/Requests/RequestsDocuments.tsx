@@ -3,6 +3,9 @@ import { Button, Icon } from "design-react-kit";
 import DocumentIcon from "../../assets/icons/document.svg";
 import CheckCircleIcon from "../../assets/icons/check-circle.svg";
 import CenteredLoading from "../CenteredLoading";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { identity } from "fp-ts/lib/function";
 import Api from "../../api/backoffice";
 import {
   Agreement,
@@ -13,11 +16,11 @@ import {
 const CheckedDocument = ({
   doc,
   i,
-  deleteDocumentApi
+  deleteDocument
 }: {
   doc: Document;
   i: number;
-  deleteDocumentApi: (type: DocumentType) => void;
+  deleteDocument: (type: DocumentType) => void;
 }) => (
   <div key={i} className="border-bottom py-5">
     <div className="d-flex flex-row justify-content-between align-items-center">
@@ -40,7 +43,7 @@ const CheckedDocument = ({
         icon
         size="sm"
         tag="button"
-        onClick={() => deleteDocumentApi(doc.documentType)}
+        onClick={() => deleteDocument(doc.documentType)}
       >
         <Icon
           color="primary"
@@ -59,14 +62,14 @@ const UncheckedDocument = ({
   doc,
   i,
   original,
-  uploadDocumentApi
+  uploadDocument
 }: {
   doc: Document;
   i: number;
   original: Agreement;
-  uploadDocumentApi: (type: DocumentType, file: File) => {};
+  uploadDocument: (type: DocumentType, file: File) => void;
 }) => {
-  const uploadInputRef = useRef(null);
+  const uploadInputRef = useRef<any>(null);
   return (
     <div key={i} className="border-bottom py-5">
       <div className="d-flex flex-row justify-content-between align-items-center">
@@ -89,7 +92,7 @@ const UncheckedDocument = ({
           size="sm"
           tag="button"
           disabled={original.state === "PendingAgreement"}
-          onClick={() => uploadInputRef.current.click()}
+          onClick={() => uploadInputRef.current?.click()}
         >
           <Icon
             color="white"
@@ -105,7 +108,11 @@ const UncheckedDocument = ({
           style={{ display: "none" }}
           ref={uploadInputRef}
           accept="application/pdf"
-          onChange={e => uploadDocumentApi(doc.documentType, e.target.files[0])}
+          onChange={e => {
+            if (e.target.files?.length) {
+              uploadDocument(doc.documentType, e.target.files[0]);
+            }
+          }}
         />
       </div>
     </div>
@@ -119,42 +126,60 @@ const RequestsDetails = ({
   original: Agreement;
   setCheckAllDocs: (state: boolean) => void;
 }) => {
-  const [documents, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState<Document[]>();
   const [loading, setLoading] = useState(false);
 
-  const getDocumentsApi = async () => {
+  const getDocumentsApi = async () =>
+    await tryCatch(() => Api.Document.getDocuments(original.id), toError)
+      .map(response => response.data)
+      .fold(() => void 0, identity)
+      .run();
+
+  const getDocuments = () => {
     if (!loading) setLoading(true);
-    await Api.Document.getDocuments(original.id)
-      .then(response => {
-        setDocuments(response.data);
-      })
+    void getDocumentsApi()
+      .then(response => setDocuments(response))
       .finally(() => setLoading(false));
   };
 
-  const uploadDocumentApi = async (documentType: DocumentType, file: File) => {
+  const uploadDocumentApi = async (documentType: DocumentType, file: File) =>
+    await tryCatch(
+      () => Api.Document.uploadDocument(original.id, documentType, file),
+      toError
+    )
+      .map(response => response.data)
+      .fold(() => void 0, identity)
+      .run();
+
+  const uploadDocument = (documentType: DocumentType, file: File) => {
     setLoading(true);
-    await Api.Document.uploadDocument(original.id, documentType, file)
-      .then(() => {
-        getDocumentsApi();
-      })
+    void uploadDocumentApi(documentType, file)
+      .then(() => getDocuments())
       .finally(() => setLoading(false));
   };
 
-  const deleteDocumentApi = async (documentType: DocumentType) => {
+  const deleteDocumentApi = async (documentType: DocumentType) =>
+    await tryCatch(
+      () => Api.Document.deleteDocument(original.id, documentType),
+      toError
+    )
+      .map(response => response.data)
+      .fold(() => void 0, identity)
+      .run();
+
+  const deleteDocument = async (documentType: DocumentType) => {
     setLoading(true);
-    await Api.Document.deleteDocument(original.id, documentType)
-      .then(() => {
-        getDocumentsApi();
-      })
+    void deleteDocumentApi(documentType)
+      .then(() => getDocuments())
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    getDocumentsApi();
+    getDocuments();
   }, []);
 
   useEffect(() => {
-    setCheckAllDocs(documents.length === 2);
+    setCheckAllDocs(documents?.length === 2);
   }, [documents]);
 
   return (
@@ -164,8 +189,8 @@ const RequestsDetails = ({
         <CenteredLoading />
       ) : (
         original.documents?.map((doc, i) => {
-          const checkUploadedDocs = documents.find(
-            (d: Document) => d.documentType === doc.documentType
+          const checkUploadedDocs = documents?.find(
+            d => d.documentType === doc.documentType
           );
           if (!checkUploadedDocs) {
             return (
@@ -173,7 +198,7 @@ const RequestsDetails = ({
                 doc={doc}
                 i={i}
                 original={original}
-                uploadDocumentApi={uploadDocumentApi}
+                uploadDocument={uploadDocument}
               />
             );
           } else {
@@ -181,7 +206,7 @@ const RequestsDetails = ({
               <CheckedDocument
                 doc={doc}
                 i={i}
-                deleteDocumentApi={deleteDocumentApi}
+                deleteDocument={deleteDocument}
               />
             );
           }

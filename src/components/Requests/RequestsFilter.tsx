@@ -5,12 +5,20 @@ import { Form, Formik, Field, FieldInputProps } from "formik";
 import DatePicker from "react-datepicker";
 import { format } from "date-fns";
 
+interface FilterFormValues {
+  profileFullName: string | undefined;
+  requestDateFrom: Date | undefined;
+  requestDateTo: Date | undefined;
+  states: string | undefined;
+  assignee: string | undefined;
+}
+
 const RequestsFilter = ({
   getAgreements,
   refForm
 }: {
   getAgreements: (params: any) => void;
-  refForm: React.Ref<typeof Formik>;
+  refForm: any;
 }) => {
   const [isOpenDateModal, setOpenDateModal] = useState(false);
   const [isOpenStateModal, setOpenStateModal] = useState(false);
@@ -24,25 +32,26 @@ const RequestsFilter = ({
     setOpenStateModal(!isOpenStateModal);
   };
 
-  const DatePickerInput = forwardRef(
-    (fieldProps: FieldInputProps<any>, ref) => (
-      <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
-        <div className="form-group">
-          <input
-            {...fieldProps}
-            ref={ref}
-            className="form-control it-date-datepicker"
-            id={fieldProps.name}
-            type="text"
-            placeholder="gg/mm/aaaa"
-          />
-          <label htmlFor={fieldProps.name}>{fieldProps.label}</label>
-        </div>
+  const DatePickerInput = forwardRef((fieldProps: any, ref: any) => (
+    <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
+      <div className="form-group">
+        <input
+          {...fieldProps}
+          ref={ref}
+          className="form-control it-date-datepicker"
+          id={fieldProps.name}
+          type="text"
+          placeholder="gg/mm/aaaa"
+        />
+        <label htmlFor={fieldProps.name}>{fieldProps.label}</label>
       </div>
-    )
-  );
+    </div>
+  ));
 
-  const getDateLabel = (requestDateFrom: Date, requestDateTo: Date): string => {
+  const getDateLabel = (
+    requestDateFrom: Date | undefined,
+    requestDateTo: Date | undefined
+  ): string => {
     if (requestDateFrom && requestDateTo) {
       return `Dal ${format(requestDateFrom, "dd/MM/yyyy")} al ${format(
         requestDateTo,
@@ -56,7 +65,7 @@ const RequestsFilter = ({
     return "Data";
   };
 
-  const getStatesLabel = (states: string): string => {
+  const getStatesLabel = (states: string | undefined): string => {
     switch (states) {
       case "PendingAgreement":
         return "Da valutare";
@@ -69,15 +78,18 @@ const RequestsFilter = ({
     }
   };
 
+  const initialValues: FilterFormValues = {
+    profileFullName: "",
+    requestDateFrom: undefined,
+    requestDateTo: undefined,
+    states: undefined,
+    assignee: undefined
+  };
+
   return (
     <Formik
       innerRef={refForm}
-      initialValues={{
-        profileFullName: "",
-        requestDateFrom: undefined,
-        requestDateTo: undefined,
-        states: undefined
-      }}
+      initialValues={initialValues}
       onSubmit={values => {
         const params = { ...values };
         params.profileFullName = values.profileFullName || undefined;
@@ -143,7 +155,7 @@ const RequestsFilter = ({
                 name="profileFullName"
                 type="text"
                 placeholder="Cerca Richiesta"
-                onChange={e => {
+                onChange={(e: { target: { value: any } }) => {
                   setFieldValue("profileFullName", e.target.value);
                   if (timeout) clearTimeout(timeout);
                   timeout = setTimeout(() => {

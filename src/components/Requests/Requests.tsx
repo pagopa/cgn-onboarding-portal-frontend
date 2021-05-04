@@ -6,38 +6,44 @@ import React, {
   useRef
 } from "react";
 import { useTable, useExpanded, Row, UseExpandedRowProps } from "react-table";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { identity } from "fp-ts/lib/function";
 import { Icon, Button } from "design-react-kit";
 import Api from "../../api/backoffice";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
 import CenteredLoading from "../CenteredLoading";
-import { Agreement } from "../../api/generated_backoffice";
+import { Agreements } from "../../api/generated_backoffice";
 
 const Requests = () => {
-  const [agreements, setAgreements] = useState<Agreement[]>([]);
+  const [agreements, setAgreements] = useState<Agreements>();
   const [loading, setLoading] = useState(false);
-  const refForm = useRef();
+  const refForm = useRef<any>(null);
 
-  const getAgreementsApi = async (params?: any) => {
-    const response = await Api.Agreement.getAgreements(
-      params.states,
-      params.assignee,
-      params.profileFullName,
-      params.requestDateFrom,
-      params.requestDateTo,
-      params.pageSize,
-      params.page
-    );
-    return response.data.items;
-  };
+  const getAgreementsApi = async (params?: any) =>
+    await tryCatch(
+      () =>
+        Api.Agreement.getAgreements(
+          params.states,
+          params.assignee,
+          params.profileFullName,
+          params.requestDateFrom,
+          params.requestDateTo,
+          params.pageSize,
+          params.page
+        ),
+      toError
+    )
+      .map(response => response.data)
+      .fold(() => void 0, identity)
+      .run();
 
   const getAgreements = (params?: any) => {
     if (!loading) setLoading(true);
     void getAgreementsApi(params)
-      .then(response => {
-        setAgreements(response);
-      })
+      .then(response => setAgreements(response))
       .finally(() => setLoading(false));
   };
 
@@ -45,7 +51,7 @@ const Requests = () => {
     getAgreements({});
   }, []);
 
-  const data = useMemo(() => agreements, [agreements]);
+  const data = useMemo(() => agreements?.items || [], [agreements]);
   const columns = useMemo(
     () => [
       {
@@ -85,7 +91,7 @@ const Requests = () => {
   const renderRowSubComponent = useCallback(
     ({ row: { original } }) => (
       <RequestsDetails
-        updateList={() => refForm.current.submitForm()}
+        updateList={() => refForm.current?.submitForm()}
         original={original}
         setLoading={setLoading}
       />
@@ -102,7 +108,9 @@ const Requests = () => {
     visibleColumns
   } = useTable(
     {
+      // @ts-ignore
       columns,
+      // @ts-ignore
       data,
       autoResetExpanded: false
     },
@@ -168,7 +176,7 @@ const Requests = () => {
               })}
             </tbody>
           </table>
-          {!agreements.length &&
+          {!agreements?.items.length &&
             (refForm.current?.dirty ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
@@ -177,7 +185,7 @@ const Requests = () => {
                   outline
                   tag="button"
                   className="mt-3"
-                  onClick={() => refForm.current.resetForm()}
+                  onClick={() => refForm.current?.resetForm()}
                 >
                   Reimposta Tutto
                 </Button>
