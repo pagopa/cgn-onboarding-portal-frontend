@@ -35,7 +35,7 @@ const SalesChannels = ({
       title="Definizione del canale di vendita"
       description="Seleziona una delle opzioni disponibili"
       required
-      isVisible
+      isVisible={false}
     >
       <div className="d-flex flex-column">
         <div className="form-check">
@@ -45,7 +45,6 @@ const SalesChannels = ({
             name="salesChannel.channelType"
             value="OfflineChannel"
           />
-
           <label
             className="text-sm font-weight-normal text-black"
             htmlFor="OfflineChannel"
@@ -99,7 +98,7 @@ const SalesChannels = ({
                     index + 1 >= 2 ? `Indirizzo ${index + 1}` : `Indirizzo`
                   }
                   description="Inserisci l'indirizzo del punto vendita, se si hanno più punti vendita inserisci gli indirizzi aggiuntivi"
-                  required
+                  required={index + 1 === 1}
                   isVisible
                 >
                   <div key={index}>

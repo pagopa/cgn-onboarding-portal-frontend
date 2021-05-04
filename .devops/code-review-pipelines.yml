@@ -77,6 +77,8 @@ stages:
           - script: |
               yarn test:coverage
             displayName: 'Unit tests exec'
-          - bash: |
-              bash <(curl -s https://codecov.io/bash)
-            displayName: 'Code coverage'
+
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'

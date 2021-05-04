@@ -3,19 +3,20 @@ import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import FormContainer from "../../FormContainer";
+import Api from "../../../../api";
+import { RootState } from "../../../../store/store";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
 import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
-import Api from "../../../../api";
 
 const initialValues = {
   fullName: "PagoPA S.p.A.",
   hasDifferentFullName: false,
   name: "",
   pecAddress: "",
-  taxCodeOrVat: "15376371009",
+  taxCodeOrVat: "1537637100912345",
   legalOffice: "",
   telephoneNumber: "",
   legalRepresentativeFullName: "",
@@ -37,7 +38,6 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object().shape({
-  fullName: Yup.string(),
   hasDifferentName: Yup.boolean(),
   name: Yup.string().when(["hasDifferentName"], {
     is: true,
@@ -51,7 +51,10 @@ const validationSchema = Yup.object().shape({
     .max(15)
     .required(),
   legalRepresentativeFullName: Yup.string().required(),
-  legalRepresentativeTaxCode: Yup.string().required(),
+  legalRepresentativeTaxCode: Yup.string()
+    .min(16)
+    .max(16)
+    .required(),
   referent: Yup.object().shape({
     firstName: Yup.string().required(),
     lastName: Yup.string().required(),
@@ -99,11 +102,14 @@ type Props = {
 };
 
 const ProfileData = ({ handleBack, handleNext }: any) => {
-  const agreementState = useSelector((state: any) => state.agreement.value);
+  const agreementState = useSelector(
+    (state: RootState) => state.agreement.value
+  );
 
   const createDiscount = (discount: any) => {
-    console.log(discount);
-    agreementState && Api.Profile.createProfile(agreementState.id, discount);
+    if (agreementState) {
+      void Api.Profile.createProfile(agreementState.id, discount);
+    }
   };
 
   return (
@@ -116,7 +122,7 @@ const ProfileData = ({ handleBack, handleNext }: any) => {
         if (discount.salesChannel.channelType === "OnlineChannel") {
           const newSalesChannel = discount.salesChannel;
           const { addresses, ...salesChannel } = newSalesChannel;
-          createDiscount({ ...discount, salesChannel: salesChannel });
+          createDiscount({ ...discount, salesChannel });
         } else {
           const newSalesChannel = discount.salesChannel;
           const {
@@ -124,7 +130,7 @@ const ProfileData = ({ handleBack, handleNext }: any) => {
             discountCodeType,
             ...salesChannel
           } = newSalesChannel;
-          createDiscount({ ...discount, salesChannel: salesChannel });
+          createDiscount({ ...discount, salesChannel });
         }
 
         handleSuccess();

@@ -2,29 +2,38 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import { Button } from "design-react-kit";
+import { Link, useHistory } from "react-router-dom";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
 import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
 import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import Api from "../../../api";
-import { Button } from "design-react-kit";
-import { Link, useHistory } from "react-router-dom";
 import { DASHBOARD } from "../../../navigation/routes";
+import { RootState } from "../../../store/store";
 
 const EditProfileForm = () => {
   const history = useHistory();
-  const agreementState = useSelector((state: any) => state.agreement.value);
+  const agreement = useSelector((state: RootState) => state.agreement.value);
   const [currentProfile, setCurrentProfile] = useState<any>();
 
-  useEffect(() => {
-    const getProfile = async (agreementId: string) => {
-      const response = await Api.Profile.getProfile(agreementId);
-      void setCurrentProfile(response.data);
-    };
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        profile => setCurrentProfile(profile)
+      )
+      .run();
 
-    void getProfile(agreementState.id);
+  useEffect(() => {
+    void getProfile(agreement.id);
   }, []);
 
   const editProfile = (profile: any) => {
-    agreementState && Api.Profile.updateProfile(agreementState.id, profile);
+    if (agreement.id) {
+      void Api.Profile.updateProfile(agreement.id, profile);
+    }
   };
 
   const validationSchema = Yup.object().shape({

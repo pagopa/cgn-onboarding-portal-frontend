@@ -1,9 +1,16 @@
+import { Tracing } from "node:trace_events";
 import React from "react";
 
-const ProfileItem = ({ label, value }: any) => (
+type Props = {
+  className?: string;
+  label: string;
+  value: any;
+};
+
+const ProfileItem = ({ className = "", label, value }: Props) => (
   <tr>
-    <td className="text-gray border-bottom-0">{label}</td>
-    <td className="border-bottom-0">{value}</td>
+    <td className={`${className} px-0 text-gray border-bottom-0`}>{label}</td>
+    <td className={`${className} border-bottom-0`}>{value}</td>
   </tr>
 );
 

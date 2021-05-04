@@ -1,29 +1,55 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { useTable, useExpanded } from "react-table";
-import Api from "../../api/index";
-import { Discounts } from "../../api/generated";
+import { useTable, useExpanded, useSortBy } from "react-table";
 import { Button, Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { Badge } from "design-react-kit";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { identity } from "fp-ts/lib/function";
+import Api from "../../api/index";
+import { Discounts } from "../../api/generated";
 import {
   CREATE_DISCOUNT,
   DASHBOARD,
-  EDIT_PROFILE
+  EDIT_DISCOUNT
 } from "../../navigation/routes";
-import { useHistory } from "react-router-dom";
 import ProfileItem from "../Profile/ProfileItem";
 import { makeProductCategoriesString } from "../../utils/strings";
-import { Badge } from "design-react-kit";
+import { RootState } from "../../store/store";
 
 const Discounts = () => {
   const history = useHistory();
   const [discounts, setDiscounts] = useState<any>([]);
-  const { value } = useSelector((state: any) => state.agreement);
+  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const [modal, setModal] = useState(false);
+  const [selectedDiscount, setSelectedDiscount] = useState<any>();
 
-  const getDiscounts = async (agreementId: string) => {
-    const response = await Api.Discount.getDiscounts(agreementId);
-    return response.data.items;
-  };
+  const toggle = () => setModal(!modal);
+
+  const getDiscounts = async () =>
+    await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
+      .map(response => response.data.items)
+      .fold(() => void 0, identity)
+      .run();
+
+  const deleteDiscount = async () =>
+    await tryCatch(
+      () => Api.Discount.deleteDiscount(agreement.id, selectedDiscount),
+      toError
+    )
+      .fold(
+        () => void 0,
+        () =>
+          setDiscounts(
+            discounts.filter(
+              (discount: any) => discount.id !== selectedDiscount
+            )
+          )
+      )
+      .run();
 
   const getDiscountComponent = (state: string) => {
     switch (state) {
@@ -71,15 +97,15 @@ const Discounts = () => {
   const getVisibleComponent = (isVisible: boolean) => {
     if (isVisible) {
       return (
-        <span>
-          <Icon icon="it-password-visible" />
+        <span className="d-flex flex-row align-items-center">
+          <Icon icon="it-password-visible" size="sm" className="mr-1" />
           <span className="text-base font-weight-normal text-gray">SI</span>
         </span>
       );
     } else {
       return (
-        <span>
-          <Icon icon="it-password-invisible" />
+        <span className="d-flex flex-row align-items-center">
+          <Icon icon="it-password-invisible" size="sm" className="mr-1" />
           <span className="text-base font-weight-normal text-gray">NO</span>
         </span>
       );
@@ -87,7 +113,7 @@ const Discounts = () => {
   };
 
   useEffect(() => {
-    void getDiscounts(value.id).then(response => {
+    void getDiscounts().then(response => {
       setDiscounts(response);
       history.push(DASHBOARD);
     });
@@ -107,16 +133,17 @@ const Discounts = () => {
       {
         Header: "Stato",
         accessor: "state",
-        Cell: ({ row }) => getDiscountComponent(row.values.state)
+        Cell: ({ row }: any) => getDiscountComponent(row.values.state)
       },
       {
         Header: "Visibile",
-        Cell: ({ row }) => getVisibleComponent(row.values.state === "published")
+        Cell: ({ row }: any) =>
+          getVisibleComponent(row.values.state === "published")
       },
       {
         Header: () => null,
         id: "expander",
-        Cell: ({ row }) => (
+        Cell: ({ row }: any) => (
           <span {...row.getToggleRowExpandedProps()}>
             {row.isExpanded ? (
               <Icon icon="it-expand" color="primary" />
@@ -131,70 +158,76 @@ const Discounts = () => {
   );
 
   const renderRowSubComponent = useCallback(
-    ({ row }) => {
-      return (
-        <section className="px-6 py-4 bg-white">
-          <h1 className="h4 font-weight-bold text-dark-blue">Dettagli</h1>
-          <table className="table">
-            <tbody>
+    ({ row }) => (
+      <section className="px-6 py-4 bg-white">
+        <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
+        <table className="table">
+          <tbody>
+            <ProfileItem label="Nome agevolazione" value={row.original.name} />
+            {row.original.description && (
               <ProfileItem
-                label="Nome agevolazione"
-                value={row.original.name}
+                label="Descrizione agevolazione"
+                value={row.original.description}
               />
-              {row.original.description && (
-                <ProfileItem
-                  label="Descrizione agevolazione"
-                  value={row.original.description}
-                />
+            )}
+            <ProfileItem
+              label="Stato agevolazione"
+              value={row.original.state}
+            />
+            <ProfileItem
+              label="Data di inizio dell'agevolazione"
+              value={row.original.startDate}
+            />
+            <ProfileItem
+              label="Data di fine agevolazione"
+              value={row.original.endDate}
+            />
+            <ProfileItem
+              label="Entità dello sconto"
+              value={`${row.original.discount}%`}
+            />
+            <ProfileItem
+              label="Categorie merceologiche"
+              value={makeProductCategoriesString(
+                row.original.productCategories
               )}
+            />
+            {row.original.conditions && (
               <ProfileItem
-                label="Stato agevolazione"
-                value={row.original.state}
+                label="Condizioni dell’agevolazione"
+                value={row.original.conditions}
               />
-              <ProfileItem
-                label="Data di inizio dell'agevolazione"
-                value={row.original.startDate}
-              />
-              <ProfileItem
-                label="Data di fine agevolazione"
-                value={row.original.endDate}
-              />
-              <ProfileItem
-                label="Entità dello sconto"
-                value={`${row.original.discount}%`}
-              />
-              <ProfileItem
-                label="Categorie merceologiche"
-                value={makeProductCategoriesString(
-                  row.original.productCategories
-                )}
-              />
-              {row.original.conditions && (
-                <ProfileItem
-                  label="Condizioni dell’agevolazione"
-                  value={row.original.conditions}
-                />
-              )}
-            </tbody>
-          </table>
-          <div className="mt-10">
-            <Link
-              to={{
-                pathname: EDIT_PROFILE,
-                state: { signupCompleted: true }
-              }}
-            >
-              Modifica
-            </Link>
+            )}
+          </tbody>
+        </table>
+        <div className="mt-10">
+          <Link
+            to={{
+              pathname: EDIT_DISCOUNT,
+              state: { discountId: 2 }
+            }}
+            className="no-underline border mr-16"
+            style={{ border: "1px solid gray" }}
+          >
+            <Icon icon="it-pencil" padding={false} size="sm" />
+            <span className="text-gray">Modifica</span>
+          </Link>
 
-            <Button color="primary" icon tag="button" className="ml-4">
-              <Icon icon="it-delete" color="white" padding={false} size="" />{" "}
-              Elimina
-            </Button>
-          </div>
-        </section>
-      );
-    },
+          <Button
+            color="primary"
+            icon
+            tag="button"
+            onClick={() => {
+              setSelectedDiscount(row.original.id);
+              toggle();
+            }}
+          >
+            <Icon icon="it-delete" color="white" padding={false} size="sm" />{" "}
+            Elimina
+          </Button>
+        </div>
+      </section>
+    ),
     [discounts]
   );
 
@@ -204,12 +237,39 @@ const Discounts = () => {
     headerGroups,
     rows,
     prepareRow,
-    visibleColumns,
-    state: { expanded }
-  } = useTable({ columns, data }, useExpanded);
+    visibleColumns
+  } = useTable({ columns, data }, useSortBy, useExpanded);
 
   return (
     <div>
+      <div>
+        <Modal isOpen={modal} toggle={toggle}>
+          <ModalHeader toggle={toggle}>Elimina agevolazione</ModalHeader>
+          <ModalBody>
+            Sei sicuro di voler eliminare questa agevolazione?
+          </ModalBody>
+          <ModalFooter className="d-flex flex-column">
+            <Button
+              color="primary"
+              onClick={() => {
+                void deleteDiscount();
+                toggle();
+              }}
+              style={{ width: "100%" }}
+            >
+              Elimina
+            </Button>{" "}
+            <Button
+              color="primary"
+              outline
+              onClick={toggle}
+              style={{ width: "100%" }}
+            >
+              Annulla
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
       <table
         {...getTableProps()}
         style={{ width: "100%" }}
@@ -228,10 +288,31 @@ const Discounts = () => {
               {headerGroup.headers.map(column => (
                 // eslint-disable-next-line react/jsx-key
                 <th
-                  {...column.getHeaderProps()}
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
                   className="px-6 py-2 text-sm font-weight-bold text-gray text-uppercase"
                 >
-                  {column.render("Header")}
+                  <span className="d-flex flex-row align-items-center">
+                    {column.render("Header")}
+                    {
+                      <span>
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <Icon
+                              icon="it-arrow-up-triangle"
+                              style={{ color: "#5C6F82" }}
+                            />
+                          ) : (
+                            <Icon
+                              icon="it-arrow-down-triangle"
+                              style={{ color: "#5C6F82" }}
+                            />
+                          )
+                        ) : (
+                          ""
+                        )}
+                      </span>
+                    }
+                  </span>
                 </th>
               ))}
             </tr>
@@ -243,31 +324,19 @@ const Discounts = () => {
             return (
               <React.Fragment key={row.getRowProps().key}>
                 <tr>
-                  {row.cells.map(cell => {
-                    return (
-                      <td
-                        className="px-6 py-2 border-bottom text-sm"
-                        {...cell.getCellProps()}
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
+                  {row.cells.map(cell => (
+                    // eslint-disable-next-line react/jsx-key
+                    <td
+                      className="px-6 py-2 border-bottom text-sm"
+                      {...cell.getCellProps()}
+                    >
+                      {cell.render("Cell")}
+                    </td>
+                  ))}
                 </tr>
-                {/*
-                    If the row is in an expanded state, render a row with a
-                    column that fills the entire length of the table.
-                  */}
                 {row.isExpanded ? (
                   <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
                     <td colSpan={visibleColumns.length}>
-                      {/*
-                          Inside it, call our renderRowSubComponent function. In reality,
-                          you could pass whatever you want as props to
-                          a component like this, including the entire
-                          table instance. But for this example, we'll just
-                          pass the row
-                        */}
                       {renderRowSubComponent({ row })}
                     </td>
                   </tr>

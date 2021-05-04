@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { createAgreement } from "../store/agreement/agreementSlice";
 import { Button } from "design-react-kit";
+import { createAgreement } from "../store/agreement/agreementSlice";
 
 const Login = () => {
   const dispatch = useDispatch();

@@ -1,9 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "design-react-kit";
-import Logo from "../Logo/Logo";
 import { logout } from "../../utils/cookie";
 import { HELP } from "../../navigation/routes";
-import { Link } from "react-router-dom";
+import Logo from "../Logo/Logo";
 
 const Header = () => (
   <header className="position-relative p-2 bg-white shadow">

@@ -1,47 +1,53 @@
 import React, { useState, useEffect } from "react";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
 import { useSelector } from "react-redux";
-import { Button } from "design-react-kit";
 import Api from "../../api/index";
+import { RootState } from "../../store/store";
 import ProfileDataItem from "./ProfileDataItem";
-import { Link } from "react-router-dom";
-import { EDIT_PROFILE } from "../../navigation/routes";
 
 const ProfileData = () => {
   const [profile, setProfile] = useState<any>(null);
-  const [documents, setDocuments] = useState<any>(null);
-  const { value } = useSelector((state: any) => state.agreement);
+  const agreement = useSelector((state: RootState) => state.agreement.value);
+
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        newProfile => setProfile(newProfile)
+      )
+      .run();
 
   useEffect(() => {
-    const getProfile = async (profileId: string) => {
-      const response = await Api.Profile.getProfile(profileId);
-      setProfile(response.data);
-    };
-
-    void getProfile(value.id);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    agreement && getProfile(agreement.id);
   }, []);
 
   return (
     <>
-      {profile !== null && (
+      {profile && (
         <section className="mt-2 px-8 py-10 bg-white">
           <section>
-            <h2 className="h4 font-weight-bold text-dark-blue">
-              Dati relativi all&apos;operatore
+            <h2 className="h5 font-weight-bold text-dark-blue">
+              Descrizione operatore
             </h2>
             <table className="table">
               <tbody>
                 <ProfileDataItem
-                  label="Nome Operatore visualizzato"
+                  label="Nome operatore visualizzato"
                   value={profile.name}
                 />
                 <ProfileDataItem
                   label="Descrizione dell'operatore"
                   value={profile.description}
                 />
-                <ProfileDataItem
-                  label="Sito web"
-                  value={profile.salesChannel.websiteUrl}
-                />
+                {profile.salesChannel.websiteUrl && (
+                  <ProfileDataItem
+                    label="Sito web"
+                    value={profile.salesChannel.websiteUrl}
+                  />
+                )}
                 <ProfileDataItem
                   label="Indirizzo"
                   value={profile.legalOffice}

@@ -1,7 +1,7 @@
 import React from "react";
-import Layout from "./Layout";
 import Container from "../Container/Container";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import Layout from "./Layout";
 
 type Props = {
   breadcrumbLabel: string;

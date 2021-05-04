@@ -2,8 +2,7 @@ import React from "react";
 import CreateLayout from "../components/Layout/CreateLayout";
 import CreateDiscountForm from "../components/Form/CreateDiscountForm/CreateDiscountForm";
 
-const CreateDiscount = () => {
-  return (
+const CreateDiscount = () => (
     <CreateLayout
       breadcrumbLabel="Aggiungi agevolazione"
       title="Dati agevolazione"
@@ -11,6 +10,5 @@ const CreateDiscount = () => {
       <CreateDiscountForm />
     </CreateLayout>
   );
-};
 
 export default CreateDiscount;

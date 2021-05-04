@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router";
+import { DASHBOARD } from "../navigation/routes";
 import Layout from "../components/Layout/Layout";
 import Stepper from "../components/Stepper/Stepper";
 import Step from "../components/Stepper/Step";
@@ -6,8 +8,6 @@ import Documentation from "../components/Form/CreateProfileForm/Documentation";
 import ProfileData from "../components/Form/CreateProfileForm/ProfileData/ProfileData";
 import DiscountData from "../components/Form/CreateProfileForm/DiscountData/DiscountData";
 import Documents from "../components/Form/CreateProfileForm/Documents";
-import { useHistory } from "react-router";
-import { DASHBOARD } from "../navigation/routes";
 
 const EditProfile = () => {
   const history = useHistory();
@@ -56,8 +56,6 @@ const EditProfile = () => {
             handleBack={() => setStep(2)}
           />
         );
-      default:
-        <div>error</div>;
     }
   };
 

@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { Button } from "design-react-kit";
+import { useParams } from "react-router-dom";
 import Api from "../../../api";
 import { CreateDiscount } from "../../../api/generated";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -40,10 +41,11 @@ const validationSchema = Yup.object().shape({
   staticCode: Yup.string()
 });
 
-const CreateDiscountForm = () => {
+const EditDiscountForm = () => {
   const agreementState = useSelector(
     (state: RootState) => state.agreement.value
   );
+  const { discountId } = useParams();
 
   return (
     <Formik
@@ -95,4 +97,4 @@ const CreateDiscountForm = () => {
   );
 };
 
-export default CreateDiscountForm;
+export default EditDiscountForm;

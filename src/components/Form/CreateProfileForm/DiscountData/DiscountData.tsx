@@ -1,15 +1,16 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import Api from "../../../../api";
-import { CreateDiscount } from "../../../../api/generated";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import { Button } from "design-react-kit";
+import Api from "../../../../api";
+import { CreateDiscount } from "../../../../api/generated";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
 import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
 import StaticCode from "../../CreateProfileForm/DiscountData/StaticCode";
-import { Button } from "design-react-kit";
 import FormContainer from "../../FormContainer";
+import { RootState } from "../../../../store/store";
 
 const initialValues = {
   name: "",
@@ -49,7 +50,9 @@ type Props = {
 };
 
 const DiscountData = ({ handleSuccess, handleBack, handleNext }: any) => {
-  const agreementState = useSelector((state: any) => state.agreement.value);
+  const agreementState = useSelector(
+    (state: RootState) => state.agreement.value
+  );
 
   return (
     <Formik
@@ -61,8 +64,9 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: any) => {
           discount: Number(values.discount)
         };
 
-        agreementState &&
-          Api.Discount.createDiscount(agreementState.id, discount);
+        if (agreementState) {
+          void Api.Discount.createDiscount(agreementState.id, discount);
+        }
 
         handleSuccess();
         handleNext();

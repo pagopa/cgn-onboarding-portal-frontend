@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "design-react-kit";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import FormContainer from "../FormContainer";
 import DocumentIcon from "../../../assets/icons/document.svg";
 import { DASHBOARD } from "../../../navigation/routes";
 
 const Documentation = ({ handleNext, handleSuccess }: any) => {
   const [isDocumentationRead, setIsDocumentationRead] = useState(false);
-  const [isModal, setIsModal] = useState(false);
+  const [modal, setModal] = useState(false);
 
-  function toggleModal() {
-    setIsModal(!isModal);
-  }
+  const toggle = () => setModal(!modal);
 
   function handleClick(e: any) {
     e.preventDefault();
@@ -39,7 +38,7 @@ const Documentation = ({ handleNext, handleSuccess }: any) => {
         </div>
         <p className="mt-8 text-sm font-weight-normal text-gray">
           Cliccando su Continua, dichiari di aver letto e compreso l’
-          <a className="font-weight-semibold" href="#">
+          <a className="font-weight-semibold" href="#" onClick={toggle}>
             informativa sulla privacy
           </a>{" "}
           relativa all’iniziativa.
@@ -61,6 +60,29 @@ const Documentation = ({ handleNext, handleSuccess }: any) => {
             Continua
           </Button>
         </div>
+      </div>
+      <div>
+        <Modal isOpen={modal} toggle={toggle}>
+          <ModalHeader toggle={toggle} className="mx-auto">
+            Elimina agevolazione
+          </ModalHeader>
+          <ModalBody>
+            Sei sicuro di voler eliminare questa agevolazione?
+          </ModalBody>
+          <ModalFooter className="d-flex flex-column">
+            <Button color="primary" onClick={toggle} style={{ width: "100%" }}>
+              Elimina
+            </Button>{" "}
+            <Button
+              color="primary"
+              outline
+              onClick={toggle}
+              style={{ width: "100%" }}
+            >
+              Annulla
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     </FormContainer>
   );

@@ -1,11 +1,11 @@
 import React from "react";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import { Button, CheckboxField } from "design-react-kit";
+import { Button } from "design-react-kit";
+import { Link } from "react-router-dom";
 import FormSection from "../FormSection";
 import InputFieldMultiple from "../InputFieldMultiple";
 import { DASHBOARD, ROOT } from "../../../navigation/routes";
-import { Link } from "react-router-dom";
 import InputField from "../InputField";
 
 const initialValues = {
@@ -59,8 +59,6 @@ const HelpForm = () => (
     validationSchema={validationSchema}
     onSubmit={(values, { setSubmitting }) => {
       setTimeout(() => {
-        // eslint-disable-next-line no-console
-        console.log(values);
         setSubmitting(false);
       }, 400);
     }}
@@ -72,6 +70,7 @@ const HelpForm = () => (
           required
         >
           <InputField
+            htmlFor="category"
             title="Categoria"
             description="Seleziona una delle opzioni possibili"
           >
@@ -179,10 +178,10 @@ const HelpForm = () => (
           >
             <div>
               <Field name="color" as="select">
-                <option value="red">Aggiungere un'agevolazione</option>
-                <option value="green">Modificare un'agevolazione</option>
-                <option value="blue">Eliminare un'agevolazione</option>
-                <option value="blue">Stati dell'agevolazione</option>
+                <option value="red">Aggiungere un&apos;agevolazione</option>
+                <option value="green">Modificare un&apos;agevolazione</option>
+                <option value="blue">Eliminare un&apos;agevolazione</option>
+                <option value="blue">Stati dell&apos;agevolazione</option>
               </Field>
             </div>
           </InputField>
@@ -272,7 +271,6 @@ const HelpForm = () => (
               className="px-14 mr-4"
               color="primary"
               tag="submit"
-              onClick={() => console.log("Continua")}
               disabled={!isValid}
             >
               Invia

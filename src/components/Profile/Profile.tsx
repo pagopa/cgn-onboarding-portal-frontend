@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Button } from "design-react-kit";
+import { Link } from "react-router-dom";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
 import Api from "../../api/index";
+import { EDIT_PROFILE } from "../../navigation/routes";
+import { RootState } from "../../store/store";
 import ProfileItem from "./ProfileItem";
 import ProfileDocuments from "./ProfileDocuments";
-import { Link } from "react-router-dom";
-import { EDIT_PROFILE } from "../../navigation/routes";
 
 const Profile = () => {
   const [profile, setProfile] = useState<any>(null);
-  const [documents, setDocuments] = useState<any>(null);
-  const { value } = useSelector((state: any) => state.agreement);
+  const agreement = useSelector((state: RootState) => state.agreement.value);
+
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        profile => setProfile(profile)
+      )
+      .run();
 
   useEffect(() => {
-    const getProfile = async (profileId: string) => {
-      const response = await Api.Profile.getProfile(profileId);
-      setProfile(response.data);
-    };
-
-    const getDocuments = async (agreementId: string) => {
-      const response = await Api.Document.getDocuments(agreementId);
-      setDocuments(response.data.items);
-    };
-    void getProfile(value.id);
+    void getProfile(agreement.id);
   }, []);
 
   return (
@@ -30,10 +31,10 @@ const Profile = () => {
       {profile !== null && (
         <section className="mt-2 px-8 py-10 bg-white">
           <section>
-            <h2 className="h4 font-weight-bold text-dark-blue">
+            <h2 className="h5 font-weight-bold text-dark-blue">
               Dati relativi all&apos;operatore
             </h2>
-            <table className="table border-bottom">
+            <table className="table border-bottom mb-4">
               <tbody>
                 <ProfileItem
                   label="Ragione sociale operatore"
@@ -54,6 +55,7 @@ const Profile = () => {
                   value={profile.legalRepresentativeFullName}
                 />
                 <ProfileItem
+                  className="pb-8"
                   label="Codice fiscale del Legale rappresentante"
                   value={profile.legalRepresentativeTaxCode}
                 />
@@ -61,7 +63,7 @@ const Profile = () => {
             </table>
           </section>
           <section>
-            <h2 className="h4 font-weight-bold text-dark-blue">
+            <h2 className="h5 pt-8 font-weight-bold text-dark-blue">
               Dati del referente incaricato
             </h2>
             <table className="table">
@@ -81,11 +83,11 @@ const Profile = () => {
                 />
                 <ProfileItem
                   label="Numero di telefono"
-                  value={profile.referent.telephoneNumbe}
+                  value={profile.referent.telephoneNumber}
                 />
               </tbody>
             </table>
-            <Link className="btn btn-outline-primary" to={EDIT_PROFILE}>
+            <Link className="mt-4 btn btn-outline-primary" to={EDIT_PROFILE}>
               Modifica dati
             </Link>
           </section>

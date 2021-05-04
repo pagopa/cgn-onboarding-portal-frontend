@@ -8,12 +8,11 @@ import Introduction from "../components/Introduction/Introduction";
 import Discounts from "../components/Discounts/Discounts";
 import Profile from "../components/Profile/Profile";
 import ProfileData from "../components/ProfileData/ProfileData";
+import { RootState } from "../store/store";
 
 const Dashboard = () => {
   const [tab, setTab] = useState(0);
-  const agreementState = useSelector(
-    (state: any) => state.agreement.value.state
-  );
+  const agreement = useSelector((state: RootState) => state.agreement.value);
 
   function hasStateSection(state: any) {
     return (
@@ -35,7 +34,7 @@ const Dashboard = () => {
       case 2:
         return <Profile />;
       default:
-        return <div>error</div>;
+        <div>error</div>;
     }
   }
 
@@ -53,9 +52,9 @@ const Dashboard = () => {
         {hasStateSection(AgreementStateType.ApprovedAgreement) && (
           <div className="col-3">
             <AgreementState
-              state={agreementState.state}
-              startDate={agreementState.startDate}
-              endDate={agreementState.endDate}
+              state={agreement.state}
+              startDate={agreement.startDate}
+              endDate={agreement.endDate}
             />
           </div>
         )}

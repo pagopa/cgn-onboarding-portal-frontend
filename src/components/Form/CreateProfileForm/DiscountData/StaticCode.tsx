@@ -1,9 +1,7 @@
 import React from "react";
 import { Field } from "formik";
-import { Button } from "design-react-kit";
 import FormSection from "../../FormSection";
 import InputField from "../../InputField";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import FieldError from "../../FieldError";
 
 type Props = {
@@ -12,7 +10,7 @@ type Props = {
   children: any;
 };
 
-const StaticCode = ({ errors, touched, children }: any) => (
+const StaticCode = ({ errors, touched, children }: Props) => (
   <FormSection
     title="Codice statico"
     description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
@@ -25,14 +23,5 @@ const StaticCode = ({ errors, touched, children }: any) => (
     {children}
   </FormSection>
 );
-
-/*
-<div className="mt-10">
-      <PlusCircleIcon className="mr-2" />
-      <span className="text-base font-weight-semibold text-blue">
-        Aggiungi un&apos;altra agevolazione
-      </span>
-    </div>
-*/
 
 export default StaticCode;

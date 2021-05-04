@@ -1,8 +1,6 @@
 import React from "react";
 import { Field } from "formik";
-import { Button } from "design-react-kit";
 import FormSection from "../../FormSection";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import FieldError from "../../FieldError";
 
 type Props = {
@@ -27,32 +25,5 @@ const DiscountConditions = ({ errors, touched }: Props) => (
     <FieldError errors={errors.conditions} touched={errors.touched} />
   </FormSection>
 );
-
-/* 
-
-{handleBack && handleNext && (
-      <>
-        <div className="mt-10">
-          <PlusCircleIcon className="mr-2" />
-          <span className="text-base font-weight-semibold text-blue">
-            Aggiungi un&apos;altra agevolazione
-          </span>
-        </div>
-        <div className="mt-10">
-          <button
-            type="button"
-            className="btn btn-outline-primary mt-9 px-14 mr-4"
-            onClick={handleBack}
-          >
-            Indietro
-          </button>
-          <Button tag="button" handleNext={handleNext}>
-            Continua
-          </Button>
-        </div>
-      </>
-    )}
-  
-    */
 
 export default DiscountConditions;
