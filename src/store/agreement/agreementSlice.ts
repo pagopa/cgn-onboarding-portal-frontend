@@ -37,7 +37,6 @@ export const agreementSlice = createSlice({
 			state.loading = true;
 		});
 		builder.addCase(createAgreement.fulfilled, (state, action) => {
-			console.log(action)
 			state.value = action.payload;
 			state.loading = false;
 		});
