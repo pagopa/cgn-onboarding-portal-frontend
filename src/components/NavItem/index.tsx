@@ -11,7 +11,11 @@ const NavItem = ({
   onClick: () => void;
 }) => (
   <li className="nav-item">
-    <a className={cx("nav-item", active ? "active" : false)} onClick={onClick}>
+    <a
+      className={cx("nav-link", active ? "active" : false)}
+      style={{ cursor: "pointer" }}
+      onClick={onClick}
+    >
       {children}
     </a>
   </li>
