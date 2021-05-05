@@ -1,6 +1,6 @@
 {
   "name": "cgn-onboarding-portal-frontend",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "scripts": {
     "dev": "parcel --port 3000 src/index.html --public-url / --out-dir build/debug",
