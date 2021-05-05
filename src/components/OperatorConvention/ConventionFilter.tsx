@@ -1,0 +1,166 @@
+import React, { useState, forwardRef } from "react";
+import { Icon, Button } from "design-react-kit";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Form, Formik, Field, FieldInputProps } from "formik";
+import DatePicker from "react-datepicker";
+
+interface FilterFormValues {
+  name: string | undefined;
+  conventionDate: Date | undefined;
+  lastUpdateDate: Date | undefined;
+}
+
+const ConventionFilter = ({
+  refForm
+}: {
+  refForm: any;
+}) => {
+  const [isOpenDateModal, setOpenDateModal] = useState(false);
+  // eslint-disable-next-line functional/no-let
+  let timeout: any = null;
+
+  const toggleDateModal = () => {
+    setOpenDateModal(!isOpenDateModal);
+  };
+
+  const DatePickerInput = forwardRef((fieldProps: any, ref: any) => (
+    <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
+      <div className="form-group">
+        <input
+          {...fieldProps}
+          ref={ref}
+          className="form-control it-date-datepicker"
+          id={fieldProps.name}
+          type="text"
+          placeholder="gg/mm/aaaa"
+        />
+        <label htmlFor={fieldProps.name}>{fieldProps.label}</label>
+      </div>
+    </div>
+  ));
+
+  const initialValues: FilterFormValues = {
+    name: "",
+    conventionDate: undefined,
+    lastUpdateDate: undefined
+  };
+
+  return (
+    <Formik
+      innerRef={refForm}
+      initialValues={initialValues}
+      onSubmit={values => {
+        const params = {
+          ...values,
+          name: values.name || undefined
+        };
+        // TODO GET LIST
+      }}
+    >
+      {({ values, submitForm, setFieldValue, resetForm, dirty }) => (
+        <Form>
+          <div className="d-flex justify-content-between">
+            {dirty ? (
+              <h2 className="h4 font-weight-bold text-dark-blue">
+                Risultati della ricerca
+                <span
+                  className="primary-color ml-2 text-sm font-weight-regular cursor-pointer"
+                  onClick={() => {
+                    resetForm();
+                    void submitForm();
+                  }}
+                >
+                  Esci
+                </span>
+              </h2>
+            ) : (
+              <h2 className="h4 font-weight-bold text-dark-blue">
+                Operatori convenzionati
+              </h2>
+            )}
+
+            <div className="d-flex justify-content-end flex-grow-1">
+              <div className="chip chip-lg m-1" onClick={toggleDateModal}>
+                <span className="chip-label">Date</span>
+                <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    setFieldValue("conventionDate", undefined);
+                    setFieldValue("lastUpdateDate", undefined);
+                  }}
+                >
+                  <Icon color="" icon="it-close" size="" />
+                </button>
+              </div>
+              <Field
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Cerca Operatore"
+                onChange={(e: { target: { value: any } }) => {
+                  setFieldValue("name", e.target.value);
+                  if (timeout) {
+                    clearTimeout(timeout);
+                  }
+                  timeout = setTimeout(() => {
+                    void submitForm();
+                  }, 1000);
+                }}
+                style={{ maxWidth: "275px" }}
+              />
+            </div>
+          </div>
+          {/* DATE MODAL */}
+          <Modal isOpen={isOpenDateModal} toggle={toggleDateModal}>
+            <ModalHeader toggle={toggleDateModal}>Filtra per data</ModalHeader>
+            <ModalBody>
+              <div className="d-flex flex-column mt-4">
+                <div className="form-check">
+                  <Field name="conventionDate">
+                    {({ field }: { field: FieldInputProps<any> }) => (
+                      <DatePicker
+                        {...field}
+                        selected={field.value}
+                        onChange={val => setFieldValue(field.name, val)}
+                        customInput={
+                          <DatePickerInput label="Data Convenzionamento" />
+                        }
+                      />
+                    )}
+                  </Field>
+                </div>
+                <div className="form-check">
+                  <Field name="lastUpdateDate">
+                    {({ field }: { field: FieldInputProps<any> }) => (
+                      <DatePicker
+                        {...field}
+                        selected={field.value}
+                        onChange={val => setFieldValue(field.name, val)}
+                        customInput={
+                          <DatePickerInput label="Data ultima modifica" />
+                        }
+                      />
+                    )}
+                  </Field>
+                </div>
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color="primary"
+                onClick={() => {
+                  void submitForm();
+                  toggleDateModal();
+                }}
+              >
+                Ok
+              </Button>
+            </ModalFooter>
+          </Modal>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+export default ConventionFilter;

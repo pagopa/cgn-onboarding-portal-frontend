@@ -134,6 +134,12 @@ textarea {
     cursor: pointer;
 }
 
+.dot {
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+  }
+
 $link-hover-decoration: none;
 
 @import "../../node_modules/bootstrap-italia/src/scss/bootstrap-italia.scss";
