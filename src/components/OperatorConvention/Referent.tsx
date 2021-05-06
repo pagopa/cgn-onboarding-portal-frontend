@@ -1,8 +1,8 @@
 import React from "react";
+import { ApprovedAgreementReferent } from "../../api/generated_backoffice";
 import Item from "./Item";
 
-const Referent = ({ referent }: { referent: any }) => {
-  return (
+const Referent = ({ referent }: { referent: ApprovedAgreementReferent }) => (
     <div>
       <h5 className="mb-7 font-weight-bold">Dati del referente incaricato</h5>
       <Item label="Nome" value={referent.firstName} />
@@ -12,6 +12,5 @@ const Referent = ({ referent }: { referent: any }) => {
       <Item label="Numero di telefono" value={referent.telephoneNumber} />
     </div>
   );
-};
 
 export default Referent;

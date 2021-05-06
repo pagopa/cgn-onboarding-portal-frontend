@@ -6,21 +6,79 @@ import cx from "classnames";
 import { Icon } from "design-react-kit";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
+import {
+  ApprovedAgreementDetail,
+  ApprovedAgreement
+} from "../../api/generated_backoffice";
 import Documents from "./Documents";
 import Profile from "./Profile";
 import Referent from "./Referent";
 import OperatorData from "./OperatorData";
 import Discount from "./Discount";
-import {
-  ApprovedAgreementDetail,
-  ApprovedAgreement
-} from "../../api/generated_backoffice";
+
+const menuLink = (
+  view: string,
+  setView: (key: string) => void,
+  viewKey: string,
+  label: string,
+  child?: any
+) => (
+  <li
+    className={cx("nav-item", {
+      active: view.includes(viewKey)
+    })}
+  >
+    <a
+      className={cx("nav-link", {
+        active: view.includes(viewKey),
+        "cursor-pointer": !child
+      })}
+      onClick={() => !child && setView(viewKey)}
+    >
+      <span>{label}</span>
+    </a>
+    {child}
+  </li>
+);
+
+const getView = (
+  details: ApprovedAgreementDetail | undefined,
+  view: string,
+  getConventionDetails: () => void,
+  agreement: ApprovedAgreement
+) => {
+  if (details) {
+    if (view.includes("agevolazione")) {
+      const discount =
+        details?.discounts?.[Number(view.charAt(view.length - 1)) - 1];
+      if (discount) {
+        return (
+          <Discount
+            reloadDetails={getConventionDetails}
+            agreementId={agreement?.agreementId || ""}
+            discount={discount}
+          />
+        );
+      }
+    }
+    switch (view) {
+      case "dati_operatore":
+        return <OperatorData profile={details.profile} />;
+      case "profilo":
+        return <Profile profile={details.profile} />;
+      case "referente":
+        return <Referent referent={details.profile.referent} />;
+      case "documenti":
+        return <Documents documents={details.documents} />;
+    }
+  }
+};
 
 const ConventionDetails = ({
   agreement,
   onClose
 }: {
-  agreement: ApprovedAgreement | undefined;
+  agreement: ApprovedAgreement;
   onClose: () => void;
 }) => {
   const [loading, setLoading] = useState(true);
@@ -94,53 +152,6 @@ const ConventionDetails = ({
     setLoading(false);
   }, []);
 
-  const getView = () => {
-    if (details) {
-      if (view.includes("agevolazione")) {
-        const discount =
-          details?.discounts?.[Number(view.charAt(view.length - 1)) - 1];
-        if (discount) {
-          return (
-            <Discount
-              reloadDetails={getConventionDetails}
-              agreementId={agreement?.agreementId || ""}
-              discount={discount}
-            />
-          );
-        }
-      }
-      switch (view) {
-        case "dati_operatore":
-          return <OperatorData profile={details.profile} />;
-        case "profilo":
-          return <Profile profile={details.profile} />;
-        case "referente":
-          return <Referent referent={details.profile.referent} />;
-        case "documenti":
-          return <Documents documents={details.documents} />;
-      }
-    }
-  };
-
-  const menuLink = (viewKey: string, label: string, child?: any) => (
-    <li
-      className={cx("nav-item", {
-        active: view.includes(viewKey)
-      })}
-    >
-      <a
-        className={cx("nav-link", {
-          active: view.includes(viewKey),
-          "cursor-pointer": !child
-        })}
-        onClick={() => !child && setView(viewKey)}
-      >
-        <span>{label}</span>
-      </a>
-      {child}
-    </li>
-  );
-
   return loading ? (
     <CenteredLoading />
   ) : (
@@ -166,12 +177,19 @@ const ConventionDetails = ({
               <div className="menu-wrapper">
                 <div className="link-list-wrapper">
                   <ul className="link-list">
-                    {menuLink("dati_operatore", "Dati Operatore")}
                     {menuLink(
+                      view,
+                      setView,
+                      "dati_operatore",
+                      "Dati Operatore"
+                    )}
+                    {menuLink(
+                      view,
+                      setView,
                       "agevolazione",
                       "Agevolazioni",
                       <ul className="link-list">
-                        {details.discounts.map((d, i) => (
+                        {details?.discounts.map((d, i) => (
                           <li className="nav-link" key={i}>
                             <a
                               className={cx(
@@ -186,7 +204,7 @@ const ConventionDetails = ({
                             >
                               <span className="d-flex align-items-center">
                                 Agevolazione #{i + 1}
-                                {d.isSospended && (
+                                {d.state === "suspended" && (
                                   <span className="dot ml-2 bg-warning" />
                                 )}
                               </span>
@@ -195,9 +213,9 @@ const ConventionDetails = ({
                         ))}
                       </ul>
                     )}
-                    {menuLink("profilo", "Profilo")}
-                    {menuLink("referente", "Referente")}
-                    {menuLink("documenti", "Documenti")}
+                    {menuLink(view, setView, "profilo", "Profilo")}
+                    {menuLink(view, setView, "referente", "Referente")}
+                    {menuLink(view, setView, "documenti", "Documenti")}
                   </ul>
                 </div>
               </div>
@@ -205,7 +223,9 @@ const ConventionDetails = ({
           </div>
         </div>
         <div className="col-8 p-0">
-          <div className="ml-1 px-8 py-10 bg-white">{getView()}</div>
+          <div className="ml-1 px-8 py-10 bg-white">
+            {getView(details, view, getConventionDetails, agreement)}
+          </div>
         </div>
       </div>
     </section>

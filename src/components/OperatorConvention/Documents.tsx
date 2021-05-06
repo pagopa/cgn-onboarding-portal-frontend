@@ -1,7 +1,8 @@
 import React from "react";
+import { Document } from "../../api/generated_backoffice";
 import DocumentIcon from "../../assets/icons/document.svg";
 
-const Document = ({ doc, i }: { doc: any; i: number }) => {
+const Document = ({ doc, i }: { doc: Document; i: number }) => {
   const splittedUrl = doc.documentUrl.split("/");
   return (
     <div className="mb-5">
@@ -25,15 +26,13 @@ const Document = ({ doc, i }: { doc: any; i: number }) => {
   );
 };
 
-const Documents = ({ documents }: { documents: any }) => {
-  return (
-    <div>
-      <h5 className="mb-7 font-weight-bold">Documenti</h5>
-      {documents.map((doc, i) => (
-        <Document doc={doc} i={i} />
-      ))}
-    </div>
-  );
-};
+const Documents = ({ documents }: { documents: Array<Document> }) => (
+  <div>
+    <h5 className="mb-7 font-weight-bold">Documenti</h5>
+    {documents.map((doc, i) => (
+      <Document key={i} doc={doc} i={i} />
+    ))}
+  </div>
+);
 
 export default Documents;

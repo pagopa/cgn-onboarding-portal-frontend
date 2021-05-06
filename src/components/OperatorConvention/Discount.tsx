@@ -5,8 +5,8 @@ import { toError } from "fp-ts/lib/Either";
 import { identity } from "fp-ts/lib/function";
 import { useTooltip, Severity } from "../../context/tooltip";
 import Api from "../../api/backoffice";
-import Item from "./Item";
 import { ApprovedAgreementDiscount } from "../../api/generated_backoffice";
+import Item from "./Item";
 
 const Discount = ({
   discount,

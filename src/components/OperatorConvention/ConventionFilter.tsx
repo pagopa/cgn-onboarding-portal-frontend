@@ -3,6 +3,7 @@ import { Icon, Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Form, Formik, Field, FieldInputProps } from "formik";
 import DatePicker from "react-datepicker";
+import { format } from "date-fns";
 
 interface FilterFormValues {
   fullName: string | undefined;
@@ -34,6 +35,23 @@ const ConventionFilter = ({ refForm }: { refForm: any }) => {
       </div>
     </div>
   ));
+
+  const getDateLabel = (
+    dateFrom: Date | undefined,
+    dateTo: Date | undefined
+  ): string => {
+    if (dateFrom && dateTo) {
+      return `Dal ${format(dateFrom, "dd/MM/yyyy")} al ${format(
+        dateTo,
+        "dd/MM/yyyy"
+      )}`;
+    } else if (dateFrom) {
+      return `Dal ${format(dateFrom, "dd/MM/yyyy")}`;
+    } else if (dateTo) {
+      return `Al ${format(dateTo, "dd/MM/yyyy")}`;
+    }
+    return "Data";
+  };
 
   const initialValues: FilterFormValues = {
     fullName: "",
@@ -77,7 +95,12 @@ const ConventionFilter = ({ refForm }: { refForm: any }) => {
 
             <div className="d-flex justify-content-end flex-grow-1">
               <div className="chip chip-lg m-1" onClick={toggleDateModal}>
-                <span className="chip-label">Date</span>
+                <span className="chip-label">
+                  {getDateLabel(
+                    values.lastUpdateDateFrom,
+                    values.lastUpdateDateTo
+                  )}
+                </span>
                 <button
                   onClick={e => {
                     e.stopPropagation();
@@ -108,7 +131,9 @@ const ConventionFilter = ({ refForm }: { refForm: any }) => {
           </div>
           {/* DATE MODAL */}
           <Modal isOpen={isOpenDateModal} toggle={toggleDateModal}>
-            <ModalHeader toggle={toggleDateModal}>Filtra per data</ModalHeader>
+            <ModalHeader toggle={toggleDateModal}>
+              Filtra per data di ultimo aggiornamento
+            </ModalHeader>
             <ModalBody>
               <div className="d-flex flex-column mt-4">
                 <div className="form-check">
@@ -122,7 +147,7 @@ const ConventionFilter = ({ refForm }: { refForm: any }) => {
                         startDate={values.lastUpdateDateFrom}
                         endDate={values.lastUpdateDateTo}
                         customInput={
-                          <DatePickerInput label="Data Convenzionamento" />
+                          <DatePickerInput label="A partire dal giorno" />
                         }
                       />
                     )}
@@ -132,16 +157,15 @@ const ConventionFilter = ({ refForm }: { refForm: any }) => {
                   <Field name="lastUpdateDateTo">
                     {({ field }: { field: FieldInputProps<any> }) => (
                       <DatePicker
-                      {...field}
-                      selected={field.value}
-                      onChange={val => setFieldValue(field.name, val)}
-                      selectsEnd
-                      startDate={values.lastUpdateDateFrom}
-                      endDate={values.lastUpdateDateTo}
-                      minDate={values.lastUpdateDateFrom}
-                      customInput={<DatePickerInput label="Data ultima modifica" />>}
-                    />
-                      
+                        {...field}
+                        selected={field.value}
+                        onChange={val => setFieldValue(field.name, val)}
+                        selectsEnd
+                        startDate={values.lastUpdateDateFrom}
+                        endDate={values.lastUpdateDateTo}
+                        minDate={values.lastUpdateDateFrom}
+                        customInput={<DatePickerInput label="Fino al giorno" />}
+                      />
                     )}
                   </Field>
                 </div>

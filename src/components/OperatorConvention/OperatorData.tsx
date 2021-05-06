@@ -2,8 +2,7 @@ import React from "react";
 import { ApprovedAgreementProfile } from "../../api/generated_backoffice";
 import Item from "./Item";
 
-const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
-  return (
+const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => (
     <div>
       <h5 className="mb-7 font-weight-bold">Descrizione operatore</h5>
       <Item label="Nome Operatore visualizzato" value={profile.fullName} />
@@ -20,6 +19,5 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
       <Item label="Data ultima modifica" value={profile.lastUpateDate} />
     </div>
   );
-};
 
 export default OperatorData;
