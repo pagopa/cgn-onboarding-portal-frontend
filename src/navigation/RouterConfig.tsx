@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Help from "../pages/Help";
@@ -8,6 +7,8 @@ import CreateProfile from "../pages/CreateProfile";
 import EditProfile from "../pages/EditProfile";
 import CreateDiscount from "../pages/CreateDiscount";
 import EditDiscount from "../pages/EditDiscount";
+import AdminPanel from "../pages/AdminPanel";
+
 import { AgreementState } from "../api/generated";
 import {
   ROOT,
@@ -16,7 +17,8 @@ import {
   EDIT_PROFILE,
   HELP,
   CREATE_DISCOUNT,
-  EDIT_DISCOUNT
+  EDIT_DISCOUNT,
+  ADMIN_PANEL
 } from "./routes";
 
 type Props = {
@@ -48,6 +50,7 @@ export const RouterConfig = ({ state }: Props) => {
       <Route exact path={EDIT_PROFILE} component={EditProfile} />
       <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
       <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
+      <Route exact path={ADMIN_PANEL} component={AdminPanel} />
     </Switch>
   );
 };

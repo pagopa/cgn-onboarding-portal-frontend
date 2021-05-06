@@ -4,9 +4,7 @@ import Hourglass from "../../assets/icons/hourglass.svg";
 import { AgreementState as AgreementStateType } from "../../api/generated";
 
 type Props = {
-  state:
-    | AgreementStateType.PendingAgreement
-    | AgreementStateType.ApprovedAgreement;
+  state: AgreementStateType;
   startDate: any;
   endDate: any;
 };

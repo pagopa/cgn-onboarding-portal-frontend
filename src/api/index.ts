@@ -13,8 +13,8 @@ export const axiosInstance = axios.create({
 });
 
 export default {
-	Agreement: new AgreementApi(undefined, undefined, axiosInstance),
-	Profile: new ProfileApi(undefined, undefined, axiosInstance),
-	Discount: new DiscountApi(undefined, undefined, axiosInstance),
-	Document: new DocumentApi(undefined, undefined, axiosInstance),
+	Agreement: new AgreementApi(undefined, process.env.BASE_API_PATH, axiosInstance),
+	Profile: new ProfileApi(undefined, process.env.BASE_API_PATH, axiosInstance),
+	Discount: new DiscountApi(undefined, process.env.BASE_API_PATH, axiosInstance),
+	Document: new DocumentApi(undefined, process.env.BASE_API_PATH, axiosInstance),
 };
