@@ -5,9 +5,7 @@ import { AgreementState as AgreementStateType } from "../../api/generated";
 import Check from "../../assets/icons/check.svg";
 
 type Props = {
-  state:
-    | AgreementStateType.PendingAgreement
-    | AgreementStateType.ApprovedAgreement;
+  state: AgreementStateType;
   startDate: any;
   endDate: any;
 };

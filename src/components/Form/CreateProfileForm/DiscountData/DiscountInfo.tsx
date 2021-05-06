@@ -8,8 +8,8 @@ import "react-datepicker/dist/react-datepicker.css";
 type Props = {
   errors: any;
   touched: any;
-  formValues: any;
-  setFieldValue: any;
+  formValues?: any;
+  setFieldValue?: any;
 };
 
 const DiscountInfo = ({

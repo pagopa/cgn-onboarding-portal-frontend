@@ -45,7 +45,7 @@ const EditDiscountForm = () => {
   const agreementState = useSelector(
     (state: RootState) => state.agreement.value
   );
-  const { discountId } = useParams();
+  const { discountId } = useParams<any>();
 
   return (
     <Formik

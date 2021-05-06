@@ -8,8 +8,8 @@ import CheckboxField from "../../CheckboxField";
 type Props = {
   errors: any;
   touched: any;
-  setFieldValue: any;
-  formValues: any;
+  setFieldValue?: any;
+  formValues?: any;
 };
 
 const ProductCategories = ({

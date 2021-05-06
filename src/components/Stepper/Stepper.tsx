@@ -26,7 +26,7 @@ const Stepper = ({
                 ? "active"
                 : completedSteps.includes(index)
                 ? "confirmed"
-                : "null"
+                : ""
             }
             handleChangeStep={
               () => handleChangeStep(index)

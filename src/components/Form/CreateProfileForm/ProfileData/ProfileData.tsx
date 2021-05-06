@@ -96,11 +96,12 @@ const validationSchema = Yup.object().shape({
 });
 
 type Props = {
+  handleSuccess: any;
   handleBack: any;
   handleNext: any;
 };
 
-const ProfileData = ({ handleBack, handleNext }: Props) => {
+const ProfileData = ({ handleSuccess, handleBack, handleNext }: Props) => {
   const agreementState = useSelector(
     (state: RootState) => state.agreement.value
   );
