@@ -109,7 +109,7 @@ stages:
 
           - script: |
               yarn build:${{ parameters.environment }}
-            displayName: 'Skip release bundle'
+            displayName: 'Build'
 
           - publish: $(System.DefaultWorkingDirectory)/dist
             artifact: Bundle
