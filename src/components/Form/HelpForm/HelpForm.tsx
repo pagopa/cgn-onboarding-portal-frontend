@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import FormSection from "../FormSection";
 import InputFieldMultiple from "../InputFieldMultiple";
 import { DASHBOARD, ROOT } from "../../../navigation/routes";
-import InputField from "../InputField";
+import InputField from "../FormField";
 
 const initialValues = {
   category: [""],
@@ -64,7 +64,7 @@ const HelpForm = () => (
     }}
   >
     {({ errors, touched, isValid }) => (
-      <Form>
+      <Form autoComplete="off">
         <FormSection
           description="Come possiamo aiutarti? Compila il modulo e invialo online, sarai ricontattato al più presto"
           required

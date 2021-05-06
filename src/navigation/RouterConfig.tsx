@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
-import Login from "../pages/Login";
+import { useSelector, useDispatch } from "react-redux";
+import { createAgreement } from "../store/agreement/agreementSlice";
+import { RootState } from "../store/store";
 import Dashboard from "../pages/Dashboard";
 import Help from "../pages/Help";
 import CreateProfile from "../pages/CreateProfile";
@@ -8,8 +10,9 @@ import EditProfile from "../pages/EditProfile";
 import CreateDiscount from "../pages/CreateDiscount";
 import EditDiscount from "../pages/EditDiscount";
 import AdminPanel from "../pages/AdminPanel";
-
+import EditOperatorData from "../pages/EditOperatorData";
 import { AgreementState } from "../api/generated";
+import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
 import {
   ROOT,
   DASHBOARD,
@@ -18,39 +21,50 @@ import {
   HELP,
   CREATE_DISCOUNT,
   EDIT_DISCOUNT,
-  ADMIN_PANEL
+  EDIT_OPERATOR_DATA,
+    ADMIN_PANEL
 } from "./routes";
 
-type Props = {
-  state: any;
-};
-
-export const RouterConfig = ({ state }: Props) => {
+export const RouterConfig = ({ user }: { user: any }) => {
+  const { value: agreement, loading } = useSelector(
+    (state: RootState) => state.agreement
+  );
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    switch (state) {
-      case AgreementState.DraftAgreement:
-        history.push(CREATE_PROFILE);
-        break;
-      case AgreementState.PendingAgreement:
-      case AgreementState.ApprovedAgreement:
-      case AgreementState.RejectedAgreement:
-        history.push(DASHBOARD);
-        break;
-    }
-  }, [state]);
+    dispatch(createAgreement());
+  }, []);
 
-  return (
+  useEffect(() => {
+    // TODO GESTIONE ADMIN
+    if (user.type !== "ADMIN") {
+      switch (agreement.state) {
+        case AgreementState.DraftAgreement:
+            history.push(CREATE_PROFILE);
+            break;
+        case AgreementState.PendingAgreement:
+        case AgreementState.ApprovedAgreement:
+        case AgreementState.RejectedAgreement:
+          history.push(DASHBOARD);
+          break;
+      }
+    }
+  }, [agreement.state]);
+
+  return loading ? (
+    <CenteredLoading />
+  ) : (
     <Switch>
-      <Route exact path={ROOT} component={Login} />
+      {/* TODO ROUTE ADMIN */}
       <Route exact path={DASHBOARD} component={Dashboard} />
       <Route exact path={HELP} component={Help} />
       <Route exact path={CREATE_PROFILE} component={CreateProfile} />
       <Route exact path={EDIT_PROFILE} component={EditProfile} />
       <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
       <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
-      <Route exact path={ADMIN_PANEL} component={AdminPanel} />
+      <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
+        <Route exact path={ADMIN_PANEL} component={AdminPanel} />
     </Switch>
   );
 };

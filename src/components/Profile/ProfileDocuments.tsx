@@ -48,7 +48,8 @@ const ProfileDocuments = () => {
                 <a
                   className="text-sm font-weight-semibold text-blue"
                   href={agreementDocument.documentUrl}
-                  download
+                  style={{ padding: 0 }}
+                  rel="noreferrer"
                 >
                   Convenzione
                 </a>
@@ -67,7 +68,7 @@ const ProfileDocuments = () => {
                 <a
                   className="text-sm font-weight-semibold text-blue"
                   href={manifestationDocument.documentUrl}
-                  download
+                  style={{ padding: 0 }}
                 >
                   Allegato 1 - Manifestazione di interesse
                 </a>
@@ -83,9 +84,15 @@ const ProfileDocuments = () => {
             >
               <Icon icon="it-file" color="primary" className="mr-4" />
               <div>
-                <span className="text-sm font-weight-semibold text-blue">
+                <a
+                  href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                  target="_blank"
+                  className="text-sm font-weight-semibold text-blue"
+                  rel="noreferrer"
+                  style={{ padding: 0 }}
+                >
                   Documentazione tecnica
-                </span>
+                </a>
               </div>
             </LinkListItem>
           </LinkList>
