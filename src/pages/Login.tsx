@@ -56,9 +56,9 @@ const Login = () => {
                     className="mt-10"
                     style={{ width: "100%" }}
                     onClick={() =>
-                      // eslint-disable-next-line functional/immutable-data
-                      (window.location.href =
-                        `${process.env.BASE_SPID_LOGIN_PATH}/login?entityID=xx_testenv2&authLevel=SpidL2`)
+                      window.location.replace(
+                        `${process.env.BASE_SPID_LOGIN_PATH}/login?entityID=xx_testenv2&authLevel=SpidL2`
+                      )
                     }
                   >
                     Entra con SPID
