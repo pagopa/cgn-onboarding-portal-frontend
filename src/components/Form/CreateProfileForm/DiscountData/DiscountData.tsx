@@ -67,9 +67,8 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={values => {
-        console.log(values);
-      }}
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSubmit={values => {}}
     >
       {({ isValid, errors, touched, values, setFieldValue }) => (
         <Form autoComplete="off">

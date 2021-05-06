@@ -45,9 +45,9 @@ const Login = () => {
                     <Spid />
                     <p>
                       SPID è il sistema unico di accesso ai servizi online della
-                      Pubblica Amministrazione. Se hai già un'identità digitale
-                      SPID, accedi con le tue credenziali. Se non hai ancora
-                      SPID, richiedilo ad uno dei gestori.
+                      Pubblica Amministrazione. Se hai già un&apos;identità
+                      digitale SPID, accedi con le tue credenziali. Se non hai
+                      ancora SPID, richiedilo ad uno dei gestori.
                     </p>
                   </div>
                   <Button
@@ -56,6 +56,7 @@ const Login = () => {
                     className="mt-10"
                     style={{ width: "100%" }}
                     onClick={() =>
+                      // eslint-disable-next-line functional/immutable-data
                       (window.location.href =
                         "http://api.cgn-dev.caravan-azure.bitrock.it/spid/v1/login/?entityID=xx_testenv2&authLevel=SpidL2")
                     }

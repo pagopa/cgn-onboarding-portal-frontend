@@ -78,10 +78,10 @@ const PrivacyModal = ({ isOpen, toggle }: any) => (
         <br />
         I dati personali da noi trattati sono:
         <br />
-        A) per gli utenti del Sito non registrati a pagoPA: l'indirizzo email da
-        te fornito quando accedi al Sito, oppure nome, cognome, indirizzo email,
-        codice fiscale e numero di telefono nel caso in cui accedi al Sito
-        tramite SPID.
+        A) per gli utenti del Sito non registrati a pagoPA: l&apos;indirizzo
+        email da te fornito quando accedi al Sito, oppure nome, cognome,
+        indirizzo email, codice fiscale e numero di telefono nel caso in cui
+        accedi al Sito tramite SPID.
         <br />
         B) per gli utenti che decidono di registrarsi a pagoPA:
         <br />
@@ -94,7 +94,7 @@ const PrivacyModal = ({ isOpen, toggle }: any) => (
         metodo di pagamento stesso;
         <br />
         (ii) il codice segreto a te assegnato dal sistema al momento della
-        registrazione, che ti servirà per recuperare la password se l'hai
+        registrazione, che ti servirà per recuperare la password se l&apos;hai
         dimenticata;
         <br />
         (iii) i metodi di pagamento da te di volta in volta utilizzati per
