@@ -2,21 +2,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { fromNullable } from "fp-ts/lib/Option";
 import { identity } from "fp-ts/lib/function";
 import Api from '../../api/index';
-import { Agreement, ApprovedAgreement } from '../../api/generated';
-import { setCookie } from '../../utils/cookie';
+import { Agreement } from '../../api/generated';
 
 export const createAgreement = createAsyncThunk('agreement/createStatus', async () => 
 await tryCatch(() => Api.Agreement.createAgreement(), toError)
-	.map(response => 
-		fromNullable(response.data)
-		.foldL(() => response.data, _ => {
-			setCookie(_.id);
-			return _;
-		})
-	)
+	.map(response => response.data)
 	.fold(
 		() => void 0,
 		identity
