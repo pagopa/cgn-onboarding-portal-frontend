@@ -58,7 +58,7 @@ const Login = () => {
                     onClick={() =>
                       // eslint-disable-next-line functional/immutable-data
                       (window.location.href =
-                        "http://api.cgn-dev.caravan-azure.bitrock.it/spid/v1/login/?entityID=xx_testenv2&authLevel=SpidL2")
+                        `${process.env.BASE_SPID_LOGIN_PATH}/login?entityID=xx_testenv2&authLevel=SpidL2`)
                     }
                   >
                     Entra con SPID
