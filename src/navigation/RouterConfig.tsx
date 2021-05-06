@@ -28,18 +28,18 @@ type Props = {
 export const RouterConfig = ({ state }: Props) => {
   const history = useHistory();
 
-  useEffect(() => {
-    switch (state) {
-      case AgreementState.DraftAgreement:
-        history.push(CREATE_PROFILE);
-        break;
-      case AgreementState.PendingAgreement:
-      case AgreementState.ApprovedAgreement:
-      case AgreementState.RejectedAgreement:
-        history.push(DASHBOARD);
-        break;
-    }
-  }, [state]);
+  // useEffect(() => {
+  //   switch (state) {
+  //     case AgreementState.DraftAgreement:
+  //       history.push(CREATE_PROFILE);
+  //       break;
+  //     case AgreementState.PendingAgreement:
+  //     case AgreementState.ApprovedAgreement:
+  //     case AgreementState.RejectedAgreement:
+  //       history.push(DASHBOARD);
+  //       break;
+  //   }
+  // }, [state]);
 
   return (
     <Switch>

@@ -5,16 +5,12 @@ import { Form, Formik, Field, FieldInputProps } from "formik";
 import DatePicker from "react-datepicker";
 
 interface FilterFormValues {
-  name: string | undefined;
-  conventionDate: Date | undefined;
-  lastUpdateDate: Date | undefined;
+  fullName: string | undefined;
+  lastUpdateDateFrom: Date | undefined;
+  lastUpdateDateTo: Date | undefined;
 }
 
-const ConventionFilter = ({
-  refForm
-}: {
-  refForm: any;
-}) => {
+const ConventionFilter = ({ refForm }: { refForm: any }) => {
   const [isOpenDateModal, setOpenDateModal] = useState(false);
   // eslint-disable-next-line functional/no-let
   let timeout: any = null;
@@ -40,9 +36,9 @@ const ConventionFilter = ({
   ));
 
   const initialValues: FilterFormValues = {
-    name: "",
-    conventionDate: undefined,
-    lastUpdateDate: undefined
+    fullName: "",
+    lastUpdateDateFrom: undefined,
+    lastUpdateDateTo: undefined
   };
 
   return (
@@ -52,7 +48,7 @@ const ConventionFilter = ({
       onSubmit={values => {
         const params = {
           ...values,
-          name: values.name || undefined
+          name: values.fullName || undefined
         };
         // TODO GET LIST
       }}
@@ -85,20 +81,20 @@ const ConventionFilter = ({
                 <button
                   onClick={e => {
                     e.stopPropagation();
-                    setFieldValue("conventionDate", undefined);
-                    setFieldValue("lastUpdateDate", undefined);
+                    setFieldValue("lastUpdateDateFrom", undefined);
+                    setFieldValue("lastUpdateDateTo", undefined);
                   }}
                 >
                   <Icon color="" icon="it-close" size="" />
                 </button>
               </div>
               <Field
-                id="name"
-                name="name"
+                id="fullName"
+                name="fullName"
                 type="text"
                 placeholder="Cerca Operatore"
                 onChange={(e: { target: { value: any } }) => {
-                  setFieldValue("name", e.target.value);
+                  setFieldValue("fullName", e.target.value);
                   if (timeout) {
                     clearTimeout(timeout);
                   }
@@ -116,12 +112,15 @@ const ConventionFilter = ({
             <ModalBody>
               <div className="d-flex flex-column mt-4">
                 <div className="form-check">
-                  <Field name="conventionDate">
+                  <Field name="lastUpdateDateFrom">
                     {({ field }: { field: FieldInputProps<any> }) => (
                       <DatePicker
                         {...field}
                         selected={field.value}
                         onChange={val => setFieldValue(field.name, val)}
+                        selectsStart
+                        startDate={values.lastUpdateDateFrom}
+                        endDate={values.lastUpdateDateTo}
                         customInput={
                           <DatePickerInput label="Data Convenzionamento" />
                         }
@@ -130,16 +129,19 @@ const ConventionFilter = ({
                   </Field>
                 </div>
                 <div className="form-check">
-                  <Field name="lastUpdateDate">
+                  <Field name="lastUpdateDateTo">
                     {({ field }: { field: FieldInputProps<any> }) => (
                       <DatePicker
-                        {...field}
-                        selected={field.value}
-                        onChange={val => setFieldValue(field.name, val)}
-                        customInput={
-                          <DatePickerInput label="Data ultima modifica" />
-                        }
-                      />
+                      {...field}
+                      selected={field.value}
+                      onChange={val => setFieldValue(field.name, val)}
+                      selectsEnd
+                      startDate={values.lastUpdateDateFrom}
+                      endDate={values.lastUpdateDateTo}
+                      minDate={values.lastUpdateDateFrom}
+                      customInput={<DatePickerInput label="Data ultima modifica" />>}
+                    />
+                      
                     )}
                   </Field>
                 </div>

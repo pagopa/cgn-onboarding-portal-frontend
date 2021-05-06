@@ -8,21 +8,27 @@ import { Button } from "design-react-kit";
 import CenteredLoading from "../CenteredLoading";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
+import {
+  ApprovedAgreements,
+  ApprovedAgreement
+} from "../../api/generated_backoffice";
 
 const OperatorConvention = () => {
-  const [conventions, setConventions] = useState<any>();
+  const [conventions, setConventions] = useState<ApprovedAgreements>();
   const [loading, setLoading] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [selectedDetails, setSelectedDetails] = useState(false);
+  const [selectedConvention, setSelectedConvention] = useState<
+    ApprovedAgreement | undefined
+  >();
   const refForm = useRef<any>(null);
 
   const getConventionsApi = async (params?: any) =>
     await tryCatch(
       () =>
-        Api.Conventions.getConventions(
-          params.name,
-          params.conventionDate,
-          params.lastUpdateFile,
+        Api.Agreement.getApprovedAgreements(
+          params.profileFullName,
+          params.lastUpdateDateFrom,
+          params.lastUpdateDateTo,
           params.pageSize,
           params.page
         ),
@@ -46,7 +52,7 @@ const OperatorConvention = () => {
     setConventions({
       items: [
         {
-          name: "A"
+          fullName: "A"
         }
       ]
     });
@@ -57,15 +63,15 @@ const OperatorConvention = () => {
     () => [
       {
         Header: "Operatore",
-        accessor: "name"
+        accessor: "fullName"
       },
       {
         Header: "Data Convenzionamento",
-        accessor: "conventionDate"
+        accessor: "agreementStartDate"
       },
       {
         Header: "Data Ultima Modifica",
-        accessor: "lastUpdateFile"
+        accessor: "agreementLastUpdateDate"
       }
     ],
     []
@@ -85,11 +91,12 @@ const OperatorConvention = () => {
   if (showDetails) {
     return (
       <ConventionDetails
-        details={selectedDetails}
-        onClose={() => setShowDetails(false)}
-      >
-        DETAILS
-      </ConventionDetails>
+        agreement={selectedConvention}
+        onClose={() => {
+          setShowDetails(false);
+          setSelectedConvention(undefined);
+        }}
+      />
     );
   }
 
@@ -135,7 +142,7 @@ const OperatorConvention = () => {
                     <tr
                       onClick={() => {
                         setShowDetails(true);
-                        setSelectedDetails(row.original);
+                        setSelectedConvention(row.original.agreementId);
                       }}
                     >
                       {row.cells.map((cell, i) => (

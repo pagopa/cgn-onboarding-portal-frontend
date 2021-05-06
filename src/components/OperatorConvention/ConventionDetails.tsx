@@ -1,93 +1,124 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { identity } from "fp-ts/lib/function";
 import cx from "classnames";
 import { Icon } from "design-react-kit";
+import Api from "../../api/backoffice";
+import CenteredLoading from "../CenteredLoading";
+import Documents from "./Documents";
+import Profile from "./Profile";
+import Referent from "./Referent";
+import OperatorData from "./OperatorData";
+import Discount from "./Discount";
+import {
+  ApprovedAgreementDetail,
+  ApprovedAgreement
+} from "../../api/generated_backoffice";
 
 const ConventionDetails = ({
-  detailsA,
+  agreement,
   onClose
 }: {
-  detailsA: any;
+  agreement: ApprovedAgreement | undefined;
   onClose: () => void;
 }) => {
-  const details = {
-    fullName: "PagoPA S.p.A.",
-    conventionDate: "18/10/2020",
-    lastUpdateDate: "10/11/2020",
-    hasDifferentFullName: false,
-    address: "Piazza Colonna 370, Roma, CAP 00187",
-    website: "www.pagopa.gov.it",
-    taxCodeOrVat: "1537637100912345",
-    telephoneNumber: "234234",
-    name: "PagoPA S.p.A.",
-    pecAddress: "PagoPA@pec.it",
-    legalOffice: "Roma, Piazza Colonna 370, CAP 00187",
-    legalRepresentativeFullName: "Mario Rossi",
-    legalRepresentativeTaxCode: "RSSFLV95C12H118C",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis dictum mi. Morbi auctor nibh ante, eget interdum urna malesuada in. Suspendisse at condimentum leo.",
-    referent: {
-      firstName: "A",
-      lastName: "B",
-      role: "BOH",
-      emailAddress: "mail",
-      telephoneNumber: "2222"
-    },
-    discounts: [
-      {
-        name: "Sconto del 10% sul biglietto dello spettacolo “Rugantino”",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis dictum mi. Morbi auctor nibh ante, eget interdum urna malesuada in. Suspendisse at condimentum leo.",
-        startDate: "26/04/2021",
-        endDate: "26/04/2021",
-        lastUpdateDate: "25/04/2021",
-        discount: "10%",
-        category: "Teatro, cinema e spettacolo",
-        rules:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis dictum mi. Morbi auctor nibh ante, eget interdum urna malesuada in. Suspendisse at condimentum leo."
-      },
-      {
-        name: "Sconto del 10% sul biglietto dello spettacolo “Rugantino”",
-        isSospended: true,
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis dictum mi. Morbi auctor nibh ante, eget interdum urna malesuada in. Suspendisse at condimentum leo.",
-        startDate: "26/04/2021",
-        endDate: "26/04/2021",
-        lastUpdateDate: "25/04/2021",
-        discount: "10%",
-        category: "Teatro, cinema e spettacolo",
-        rules:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis dictum mi. Morbi auctor nibh ante, eget interdum urna malesuada in. Suspendisse at condimentum leo."
-      }
-    ],
-    documents: [
-      {
-        documentType: "Agreement",
-        documentUrl: "string",
-        creationDate: "2021-05-05"
-      },
-      {
-        documentType: "ManifestationOfInterest",
-        documentUrl: "string",
-        creationDate: "2021-05-05"
-      }
-    ]
-  };
-
+  const [loading, setLoading] = useState(true);
+  const [details, setDetails] = useState<ApprovedAgreementDetail>();
   const [view, setView] = useState("dati_operatore");
 
-  const getView = () => {
-    if (view.includes("agevolazione")) {
-      return <div>{view}</div>;
+  const getConventionDetailsApi = async () =>
+    await tryCatch(
+      () => Api.Agreement.getApprovedAgreement(agreement?.agreementId || ""),
+      toError
+    )
+      .map(response => response.data)
+      .fold(() => void 0, identity)
+      .run();
+
+  const getConventionDetails = () => {
+    if (!loading) {
+      setLoading(true);
     }
-    switch (view) {
-      case "dati_operatore":
-        return <div>dati_operatore</div>;
-      case "profilo":
-        return <div>profilo</div>;
-      case "referente":
-        return <div>referente</div>;
-      case "documenti":
-        return <div>documenti</div>;
+    void getConventionDetailsApi()
+      .then(response => setDetails(response))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    setDetails({
+      agreementId: "string",
+      profile: {
+        name: "string",
+        description: "string",
+        salesChannel: {
+          channelType: "OnlineChannel"
+        },
+        imageUrl: "string",
+        lastUpateDate: "2021-05-06",
+        fullName: "string",
+        taxCodeOrVat: "stringstrin",
+        pecAddress: "user@example.com",
+        telephoneNumber: "string",
+        legalRepresentativeFullName: "string",
+        legalRepresentativeTaxCode: "string",
+        referent: {
+          firstName: "string",
+          lastName: "string",
+          emailAddress: "user@example.com",
+          telephoneNumber: "string",
+          role: "string"
+        }
+      },
+      discounts: [
+        {
+          id: "string",
+          name: "string",
+          description: "string",
+          startDate: "2021-05-06",
+          endDate: "2021-05-06",
+          discount: 0,
+          productCategories: ["Entertainments"],
+          condition: "string",
+          lastUpateDate: "2021-05-06"
+        }
+      ],
+      documents: [
+        {
+          documentType: "Agreement",
+          documentUrl: "string",
+          creationDate: "2021-05-06"
+        }
+      ]
+    });
+    setLoading(false);
+  }, []);
+
+  const getView = () => {
+    if (details) {
+      if (view.includes("agevolazione")) {
+        const discount =
+          details?.discounts?.[Number(view.charAt(view.length - 1)) - 1];
+        if (discount) {
+          return (
+            <Discount
+              reloadDetails={getConventionDetails}
+              agreementId={agreement?.agreementId || ""}
+              discount={discount}
+            />
+          );
+        }
+      }
+      switch (view) {
+        case "dati_operatore":
+          return <OperatorData profile={details.profile} />;
+        case "profilo":
+          return <Profile profile={details.profile} />;
+        case "referente":
+          return <Referent referent={details.profile.referent} />;
+        case "documenti":
+          return <Documents documents={details.documents} />;
+      }
     }
   };
 
@@ -110,17 +141,19 @@ const ConventionDetails = ({
     </li>
   );
 
-  return (
+  return loading ? (
+    <CenteredLoading />
+  ) : (
     <section>
       <div className="d-flex align-items-center justify-content-between mt-2 px-8 py-10 bg-white">
-        <h4>{details.fullName}</h4>
+        <h4>{agreement.fullName}</h4>
         <div>
           <div className="mb-3 text-gray">Data convenzionamento</div>
-          <div>{details.conventionDate}</div>
+          <div>{agreement.agreementStartDate}</div>
         </div>
         <div>
           <div className="mb-3 text-gray">Data ultima modifica</div>
-          <div>{details.lastUpdateDate}</div>
+          <div>{agreement.agreementLastUpdateDate}</div>
         </div>
         <div onClick={onClose} className="cursor-pointer">
           <Icon color="primary" icon="it-close" size="" />

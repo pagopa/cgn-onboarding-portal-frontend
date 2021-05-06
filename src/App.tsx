@@ -19,13 +19,11 @@ function App() {
     return <Login />;
   }
 
-  if (!value.id && !loading) {
-    dispatch(createAgreement());
-  }
+  // if (!value.id && !loading) {
+  //   dispatch(createAgreement());
+  // }
 
-  return loading ? (
-    <CenteredLoading />
-  ) : (
+  return (
     <BrowserRouter>
       <RouterConfig state={value.state} />
     </BrowserRouter>
