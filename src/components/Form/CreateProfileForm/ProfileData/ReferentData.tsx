@@ -1,7 +1,7 @@
 import React from "react";
 import { Field } from "formik";
 import FormSection from "../../FormSection";
-import InputField from "../../InputField";
+import InputField from "../../FormField";
 import FieldError from "../../FieldError";
 
 type Props = {
@@ -14,6 +14,7 @@ const ReferentData = ({ errors, touched, children }: Props) => (
   <FormSection
     title="Dati e contatti del referente incaricato"
     description="Indicare il nome della persona responsabile del programma CGN per conto dell'Operatore"
+    isVisible={false}
   >
     <InputField htmlFor="firstName" title="Nome" required>
       <Field id="referent.firstName" name="referent.firstName" type="text" />

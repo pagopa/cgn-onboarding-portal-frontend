@@ -27,34 +27,36 @@ const RequestsDetails = ({
   const assignAgreementsApi = async () =>
     await tryCatch(() => Api.Agreement.assignAgreement(original.id), toError)
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => setLoading(false),
+        () => updateList()
+      )
       .run();
 
   const assignAgreements = () => {
     setLoading(true);
-    void assignAgreementsApi()
-      .then(() => updateList())
-      .catch(() => setLoading(false));
+    void assignAgreementsApi();
   };
 
   const approveAgreementApi = async () =>
     await tryCatch(() => Api.Agreement.approveAgreement(original.id), toError)
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => setLoading(false),
+        () => {
+          updateList();
+          triggerTooltip({
+            severity: Severity.SUCCESS,
+            text: "La richiesta di convenzione è stata validata con successo.",
+            title: "Validazione Effettuata"
+          });
+        }
+      )
       .run();
 
   const approveAgreement = () => {
     setLoading(true);
-    void approveAgreementApi()
-      .then(() => {
-        updateList();
-        triggerTooltip({
-          severity: Severity.SUCCESS,
-          text: "La richiesta di convenzione è stata validata con successo.",
-          title: "Validazione Effettuata"
-        });
-      })
-      .catch(() => setLoading(false));
+    void approveAgreementApi();
   };
 
   const rejectAgreementApi = async () =>
@@ -66,21 +68,22 @@ const RequestsDetails = ({
       toError
     )
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => setLoading(false),
+        () => {
+          triggerTooltip({
+            severity: Severity.SUCCESS,
+            text: "La richiesta di convenzione è stata rifiutata con successo.",
+            title: "Rifiuto inviato"
+          });
+          updateList();
+        }
+      )
       .run();
 
   const rejectAgreement = () => {
     setLoading(true);
-    void rejectAgreementApi()
-      .then(() => {
-        triggerTooltip({
-          severity: Severity.SUCCESS,
-          text: "La richiesta di convenzione è stata rifiutata con successo.",
-          title: "Rifiuto inviato"
-        });
-        updateList();
-      })
-      .catch(() => setLoading(false));
+    void rejectAgreementApi();
   };
 
   return (

@@ -1,7 +1,7 @@
 import React from "react";
 import { Field } from "formik";
 import FormSection from "../../FormSection";
-import InputField from "../../InputField";
+import InputField from "../../FormField";
 import ToggleField from "../../ToggleField";
 import FieldError from "../../FieldError";
 

@@ -1,5 +1,9 @@
 # Azure DevOps pipeline to release a new version and deploy to production.
 
+# Only manual activations are intended
+trigger: none
+pr: none
+
 parameters:
   - name: 'RELEASE_SEMVER'
     displayName: 'When packing a release, define the version bump to apply'
@@ -8,7 +12,7 @@ parameters:
       - major
       - minor
       - patch
-    default: minor
+    default: patch
   - name: environment
     displayName: Target Environment
     type: string
@@ -17,33 +21,25 @@ parameters:
       - uat
       - prod
 
+# variables set on azdevops to avoid circular dependency warning
+# $(DEFAULT_BRANCH)
+# $(CACHE_VERSION_ID)
+# $(MY_INDEX)
+# $(BLOB_CONTAINER_NAME)
 variables:
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
   ${{ if eq(parameters['environment'], 'uat') }}:
-    azureSubscription: '$(UAT_AZURE_SUBSCRIPTION)'
-    storage: '$(UAT_STORAGE_ACCOUNT_NAME)'
-    containerName: '$(BLOB_CONTAINER_NAME)'
-    endpoint: '$(UAT_ENDPOINT_AZURE)'
-    profileName: '$(UAT_PROFILE_NAME_CDN_AZURE)'
-    resourceGroup: '$(UAT_RESOURCE_GROUP_AZURE)'
+    AZURE_SUBSCRIPTION: $(UAT_AZURE_SUBSCRIPTION)
+    STORAGE_ACCOUNT_NAME: $(UAT_STORAGE_ACCOUNT_NAME)
+    PROFILE_CDN_NAME: $(UAT_PROFILE_CDN_NAME)
+    ENDPOINT_NAME: $(UAT_ENDPOINT_NAME)
+    RESOURCE_GROUP_NAME: $(UAT_RESOURCE_GROUP_NAME)
   ${{ if eq(parameters['environment'], 'prod') }}:
-    azureSubscription: '$(PROD_AZURE_SUBSCRIPTION)'
-    storage: '$(PROD_STORAGE_ACCOUNT_NAME)'
-    containerName: '$(BLOB_CONTAINER_NAME)'
-    endpoint: '$(PROD_ENDPOINT_AZURE)'
-    profileName: '$(PROD_PROFILE_NAME_CDN_AZURE)'
-    resourceGroup: '$(PROD_RESOURCE_GROUP_AZURE)'
-
-# Only manual activations are intended
-trigger: none
-pr: none
-
-# This pipeline has been implemented to be run on hosted agent pools based both
-# on 'windows' and 'ubuntu' virtual machine images and using the scripts defined
-# in the package.json file. Since we are deploying on Azure functions on Windows
-# runtime, the pipeline is currently configured to use a Windows hosted image for
-# the build and deploy.
-pool:
-  vmImage: 'windows-2019'
+    AZURE_SUBSCRIPTION: $(PROD_AZURE_SUBSCRIPTION)
+    STORAGE_ACCOUNT_NAME: $(PROD_STORAGE_ACCOUNT_NAME)
+    PROFILE_CDN_NAME: $(PROD_PROFILE_CDN_NAME)
+    ENDPOINT_NAME: $(PROD_ENDPOINT_NAME)
+    RESOURCE_GROUP_NAME: $(PROD_RESOURCE_GROUP_NAME)
 
 resources:
   repositories:
@@ -54,50 +50,55 @@ resources:
       endpoint: 'io-azure-devops-github-ro'
 
 stages:
-  # Create a release
+
+  # Create a relase
   # Activated when ONE OF these are met:
-  # - is on branch master
+  # - is on branch $(DEFAULT_BRANCH)
   # - is a tag in the form v{version}-RELEASE
   - stage: Release
     condition:
-      and(
-      succeeded(),
       or(
-      eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-      and(
-      startsWith(variables['Build.SourceBranch'], 'refs/tags'),
-      endsWith(variables['Build.SourceBranch'], '-RELEASE')
-      )
-      )
+        eq(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH)),
+        and(
+          startsWith(variables['Build.SourceBranch'], 'refs/tags'),
+          endsWith(variables['Build.SourceBranch'], '-RELEASE')
+        )
       )
     pool:
       vmImage: 'ubuntu-latest'
     jobs:
       - job: make_release
+        condition: eq(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
         steps:
-          - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
-              - template: templates/node-github-release/template.yaml@pagopaCommons
-                parameters:
-                  semver: '${{ parameters.RELEASE_SEMVER }}'
-                  gitEmail: $(GIT_EMAIL)
-                  gitUsername: $(GIT_USERNAME)
-                  gitHubConnection: $(GITHUB_CONNECTION)
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+            parameters:
+              persistCredentials: true
+          - template: templates/node-github-release/template.yaml@pagopaCommons
+            parameters:
+              release_branch: '$(DEFAULT_BRANCH)'
+              semver: '${{ parameters.RELEASE_SEMVER }}'
+              gitEmail: '$(GIT_EMAIL)'
+              gitUsername: '$(GIT_USERNAME)'
+              gitHubConnection: '$(GITHUB_CONNECTION)'
 
-          - ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/master') }}:
-              - script: |
-                  echo "We assume this reference to be a valid release: $(Build.SourceBranch). Therefore, there is no need to bundle a new release."
-                displayName: 'Skip release bundle'
+      - job: skip_release
+        condition: ne(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
+        steps:
+          - script: |
+              echo "We assume this reference to be a valid release: $(Build.SourceBranch). Therefore, there is no need to bundle a new release."
+            displayName: 'Skip release bundle'
+
   # Prepare Artifact with application bundle
   - stage: Prepare_artifact
     dependsOn:
       - Release
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-latest'  
     jobs:
       - job: 'make_build'
         steps:
           # Build application
-          - template: azure-templates/setup-project.yml
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
             parameters:
               # On the assumption that this stage is executed only when Relase stage is,
               #  with this parameter we set the reference the deploy script must pull changes from.
@@ -106,15 +107,19 @@ stages:
               #  ex: Build.SourceBranch=refs/tags/v1.2.3-RELEASE --> v1.2.3-RELEASE
               gitReference: ${{ replace(replace(variables['Build.SourceBranch'], 'refs/tags/', ''), 'refs/heads/', '') }}
 
-          - template: azure-templates/make-build.yml
+          - script: |
+              yarn build:${{ parameters.environment }}
+            displayName: 'Build'
 
           - publish: $(System.DefaultWorkingDirectory)/dist
             artifact: Bundle
-
-  # Deploy bundle to the staging container
-  - stage: Deploy_staging
+ 
+  # Deploy 
+  - stage: 'Deploy_to_${{ parameters.environment }}'
     dependsOn:
       - Prepare_artifact
+    pool:
+      vmImage: 'windows-2019'
     jobs:
       - job: 'deploy_to_container'
         steps:
@@ -123,57 +128,18 @@ stages:
           - download: current
             artifact: Bundle
 
-          - task: AzureFileCopy@4
+          - task: AzureCLI@1
+            displayName: 'Sync Storage'
             inputs:
-              sourcePath: '$(Pipeline.Workspace)/Bundle/*'
-              azureSubscription: '$(azureSubscription)'
-              destination: 'AzureBlob'
-              storage: '$(storage)'
-              containerName: '$(containerName)'
-            displayName: Deploy to container blob
-
-  # Check that the staging instance is healthy
-  - stage: Healthcheck
-    dependsOn:
-      - Deploy_staging
-    jobs:
-      - job: 'do_healthcheck'
-        steps:
-          - template: templates/rest-healthcheck/template.yaml@pagopaCommons
-            parameters:
-              azureSubscription: '$(azureSubscription)'
-              endpoint: 'https://$(endpoint).azureedge.net/$(MY_INDEX)'
-              endpointType: 'public'
-              appName: ''
-              containerInstanceResourceGroup: ''
-              containerInstanceVNet: ''
-              containerInstanceSubnet: ''
-
-  # Deploy bundle to the production container
-  - stage: Deploy_production
-    dependsOn:
-      - Prepare_artifact
-    jobs:
-      - job: 'deploy_to_container'
-        steps:
-          - checkout: none
-
-          - download: current
-            artifact: Bundle
-
-          - task: AzureFileCopy@4
-            inputs:
-              sourcePath: '$(Pipeline.Workspace)/Bundle/*'
-              azureSubscription: '$(azureSubscription)'
-              destination: 'AzureBlob'
-              storage: '$(storage)'
-              containerName: '$(containerName)'
-            displayName: Deploy to container blob
+              azureSubscription: '$(AZURE_SUBSCRIPTION)'
+              scriptLocation: inlineScript
+              inlineScript: |
+                call az storage blob sync --container $(BLOB_CONTAINER_NAME) --account-name $(STORAGE_ACCOUNT_NAME) -s "$(Pipeline.Workspace)\Bundle"
 
           - task: AzureCLI@1
             displayName: 'Purge CDN'
             inputs:
-              azureSubscription: '$(azureSubscription)'
+              azureSubscription: '$(AZURE_SUBSCRIPTION)'
               scriptLocation: inlineScript
               inlineScript: |
-                call az cdn endpoint purge -g $(resourceGroup) -n $(endpoint) --profile-name $(profileName) --content-paths "/*"
+                call az cdn endpoint purge -g $(RESOURCE_GROUP_NAME) -n $(ENDPOINT_NAME) --profile-name $(PROFILE_CDN_NAME) --content-paths "/*"

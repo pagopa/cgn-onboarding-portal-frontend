@@ -101,6 +101,7 @@ const SalesChannels = ({
                   required={index + 1 === 1}
                   isVisible
                 >
+                  <p>{index}</p>
                   <div key={index}>
                     <div className="mt-10 row">
                       <div className="col-7">
@@ -110,12 +111,15 @@ const SalesChannels = ({
                             name={`salesChannel.addresses[${index}].street`}
                             type="text"
                           />
-                          {errors.salesChannel && touched.salesChannel && (
-                            <FieldError
-                              errors={errors.salesChannel.addresses.street}
-                              touched={errors.salesChannel.addresses.street}
-                            />
-                          )}
+                          {errors.salesChannel &&
+                            touched.salesChannel.addresses && (
+                              <FieldError
+                                errors={errors.salesChannel.addresses[0].street}
+                                touched={
+                                  errors.salesChannel.addresses[0].street
+                                }
+                              />
+                            )}
                         </InputFieldMultiple>
                       </div>
                       <div className="col-2 offset-1">

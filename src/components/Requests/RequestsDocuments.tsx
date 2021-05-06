@@ -138,16 +138,20 @@ const RequestsDetails = ({
   const getDocumentsApi = async () =>
     await tryCatch(() => Api.Document.getDocuments(original.id), toError)
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => setLoading(false),
+        response => {
+          setLoading(false);
+          setDocuments(response);
+        }
+      )
       .run();
 
   const getDocuments = () => {
     if (!loading) {
       setLoading(true);
     }
-    void getDocumentsApi()
-      .then(response => setDocuments(response))
-      .finally(() => setLoading(false));
+    void getDocumentsApi();
   };
 
   const uploadDocumentApi = async (documentType: DocumentType, file: File) =>
@@ -156,14 +160,18 @@ const RequestsDetails = ({
       toError
     )
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => setLoading(false),
+        response => {
+          setLoading(false);
+          getDocuments();
+        }
+      )
       .run();
 
   const uploadDocument = (documentType: DocumentType, file: File) => {
     setLoading(true);
-    void uploadDocumentApi(documentType, file)
-      .then(() => getDocuments())
-      .finally(() => setLoading(false));
+    void uploadDocumentApi(documentType, file);
   };
 
   const deleteDocumentApi = async (documentType: DocumentType) =>
@@ -172,14 +180,18 @@ const RequestsDetails = ({
       toError
     )
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => setLoading(false),
+        response => {
+          setLoading(false);
+          getDocuments();
+        }
+      )
       .run();
 
   const deleteDocument = async (documentType: DocumentType) => {
     setLoading(true);
-    void deleteDocumentApi(documentType)
-      .then(() => getDocuments())
-      .finally(() => setLoading(false));
+    void deleteDocumentApi(documentType);
   };
 
   useEffect(() => {

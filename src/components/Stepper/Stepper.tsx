@@ -14,7 +14,7 @@ const Stepper = ({
   handleChangeStep,
   children
 }: Props) => (
-  <div className="steppers bg-white">
+  <div className="steppers bg-white shadow-sm">
     <div className="container">
       <ul className="steppers-header">
         {children.map((child: any, index: number) => (

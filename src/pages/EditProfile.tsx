@@ -1,11 +1,11 @@
 import React from "react";
 import CreateLayout from "../components/Layout/CreateLayout";
-import EditDiscountForm from "../components/Form/EditDiscountForm/EditDiscountForm";
+import EditProfileForm from "../components/Form/EditProfileForm/EditProfileForm";
 
-const EditDiscount = () => (
-    <CreateLayout breadcrumbLabel="Modifica dati" title="Profilo">
-      <EditDiscountForm />
-    </CreateLayout>
-  );
+const EditProfile = () => (
+  <CreateLayout breadcrumbLabel="Modifica dati" title="Profilo">
+    <EditProfileForm />
+  </CreateLayout>
+);
 
-export default EditDiscount;
+export default EditProfile;

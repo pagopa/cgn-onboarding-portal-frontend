@@ -1,20 +1,27 @@
 import React from "react";
 import Field from "formik";
+import { FormGroup } from "design-react-kit";
+import { Label } from "reactstrap";
 
 type Props = {
   htmlFor: string;
   text: string;
-  children: React.ReactElement<typeof Field>;
+  children: any;
   required?: boolean;
 };
 
 const CheckboxField = ({ htmlFor, text, children }: Props) => (
-  <div className="mt-9">
+  <FormGroup check tag="div">
     {children}
-    <label className="ml-4" htmlFor={htmlFor}>
+    <Label
+      check
+      for={htmlFor}
+      tag="label"
+      widths={["xs", "sm", "md", "lg", "xl"]}
+    >
       {text}
-    </label>
-  </div>
+    </Label>
+  </FormGroup>
 );
 
 export default CheckboxField;

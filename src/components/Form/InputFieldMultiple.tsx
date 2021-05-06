@@ -6,7 +6,7 @@ type Props = {
   htmlFor: string;
   title?: string;
   description?: string;
-  children: any;
+  children?: any;
   required?: boolean;
   isVisible?: boolean;
 };

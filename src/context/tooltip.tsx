@@ -1,3 +1,5 @@
+import { fromNullable } from "fp-ts/lib/Option";
+import { fromOption } from "fp-ts/lib/Either";
 import React, {
   useContext,
   createContext,
@@ -78,12 +80,9 @@ function TooltipProvider({ children }: ProviderProps): ReactElement {
 }
 
 function useTooltip(): TooltipContextProps {
-  const context = useContext(TooltipContext);
-
-  if (context === undefined) {
+  return fromNullable(useContext(TooltipContext)).getOrElseL(() => {
     throw new Error("useTooltip must be used within a TooltipProvider");
-  }
-  return context;
+  });
 }
 
 export { TooltipProvider, useTooltip };

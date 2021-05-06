@@ -61,7 +61,7 @@ const EditDiscountForm = () => {
       }}
     >
       {({ errors, touched }) => (
-        <Form>
+        <Form autoComplete="off">
           <DiscountInfo errors={errors} touched={touched} />
           <ProductCategories errors={errors} touched={touched} />
           <DiscountConditions errors={errors} touched={touched} />

@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
 import FormSection from "../../FormSection";
 import PlusIcon from "../../../../assets/icons/plus.svg";
 import { RootState } from "../../../../store/store";
+import Api from "../../../../api/index";
 
 const FooterDescription = (
   <p className="text-base font-weight-normal text-gray">
@@ -17,6 +20,22 @@ const FooterDescription = (
 const ProfileImage = () => {
   const [image, setImage] = useState<any>();
   const agreement = useSelector((state: RootState) => state.agreement.value);
+  const imageInput = useRef<any>();
+
+  const handleImage = () => {
+    imageInput.current.click();
+  };
+
+  const uploadImage = async (image: any) =>
+    await tryCatch(
+      () => Api.Agreement.uploadImage(agreement.id, image[0]),
+      toError
+    )
+      .fold(
+        () => void 0,
+        () => void 0
+      )
+      .run();
 
   return (
     <FormSection
@@ -33,9 +52,11 @@ const ProfileImage = () => {
             name="profileImage"
             id="profileImage"
             className="upload pictures-wall"
+            ref={imageInput}
+            onChange={() => uploadImage(imageInput.current.files)}
           />
           <label htmlFor="profileImage">
-            <PlusIcon className="icon icon-sm" />
+            <PlusIcon className="icon icon-sm" onClick={handleImage} />
             <span>Add photo</span>
           </label>
         </li>

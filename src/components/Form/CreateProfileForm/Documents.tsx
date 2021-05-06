@@ -46,9 +46,9 @@ const Documents = ({ handleComplete, handleBack }: Props) => {
         () => {
           // eslint-disable-next-line @typescript-eslint/no-unused-expressions
           type === "agreement"
-            ? setIsManifestationUploaded(true)
+            ? setIsAgreementUploaded(true)
             : type === "manifestation_of_interest" &&
-              setIsAgreementUploaded(true);
+              setIsManifestationUploaded(true);
         }
       )
       .run();
@@ -79,32 +79,49 @@ const Documents = ({ handleComplete, handleBack }: Props) => {
               )}
               <a href="#">Convenzione</a>
             </div>
-            {!isAgreementUploaded && (
+            <div className="d-flex flex-row">
               <Button
                 color="primary"
                 icon
                 size="sm"
                 tag="button"
-                onClick={handleAgreementClick}
+                className="mr-2"
               >
                 <Icon
                   color="white"
-                  icon="it-upload"
+                  icon="it-download"
                   padding={false}
                   size="xs"
-                  className="mr-2"
                 />
-                Carica
-                <input
-                  type="file"
-                  hidden
-                  ref={agreementFile}
-                  onChange={() =>
-                    addFiles(agreementFile.current.files, "agreement")
-                  }
-                />
+                Scarica
               </Button>
-            )}
+              {!isAgreementUploaded && (
+                <Button
+                  color="primary"
+                  icon
+                  size="sm"
+                  tag="button"
+                  onClick={handleAgreementClick}
+                >
+                  <Icon
+                    color="white"
+                    icon="it-upload"
+                    padding={false}
+                    size="xs"
+                    className="mr-2"
+                  />
+                  Carica
+                  <input
+                    type="file"
+                    hidden
+                    ref={agreementFile}
+                    onChange={() =>
+                      addFiles(agreementFile.current.files, "agreement")
+                    }
+                  />
+                </Button>
+              )}
+            </div>
             {isAgreementUploaded && (
               <DeleteDocument onClick={() => setIsAgreementUploaded(false)} />
             )}
@@ -120,35 +137,52 @@ const Documents = ({ handleComplete, handleBack }: Props) => {
               )}
               <a href="#">Allegato 1 - Manifestazione di interesse</a>
             </div>
-            {!isManifestationUploaded && (
+            <div className="d-flex flex-row">
               <Button
                 color="primary"
                 icon
                 size="sm"
                 tag="button"
-                onClick={handleManifestationClick}
+                className="mr-2"
               >
                 <Icon
                   color="white"
-                  icon="it-upload"
+                  icon="it-download"
                   padding={false}
                   size="xs"
-                  className="mr-2"
                 />
-                Carica
-                <input
-                  type="file"
-                  hidden
-                  ref={manifestationFile}
-                  onChange={() =>
-                    addFiles(
-                      manifestationFile.current.files,
-                      "manifestation_of_interest"
-                    )
-                  }
-                />
+                Scarica
               </Button>
-            )}
+              {!isManifestationUploaded && (
+                <Button
+                  color="primary"
+                  icon
+                  size="sm"
+                  tag="button"
+                  onClick={handleManifestationClick}
+                >
+                  <Icon
+                    color="white"
+                    icon="it-upload"
+                    padding={false}
+                    size="xs"
+                    className="mr-2"
+                  />
+                  Carica
+                  <input
+                    type="file"
+                    hidden
+                    ref={manifestationFile}
+                    onChange={() =>
+                      addFiles(
+                        manifestationFile.current.files,
+                        "manifestation_of_interest"
+                      )
+                    }
+                  />
+                </Button>
+              )}
+            </div>
             {isManifestationUploaded && (
               <DeleteDocument
                 onClick={() => setIsManifestationUploaded(false)}

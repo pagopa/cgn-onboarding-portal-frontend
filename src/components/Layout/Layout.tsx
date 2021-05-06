@@ -3,12 +3,13 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 
 type Props = {
+  hasHeaderBorder?: boolean;
   children: any;
 };
 
-const Layout = ({ children }: Props) => (
+const Layout = ({ hasHeaderBorder = false, children }: Props) => (
   <>
-    <Header />
+    <Header hasBorder={hasHeaderBorder} />
     {children}
     <Footer />
   </>

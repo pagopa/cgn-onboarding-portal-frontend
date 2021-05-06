@@ -15,7 +15,7 @@ const AdminPanel = () => {
   function selectedTab() {
     switch (tab) {
       case 0:
-        return <OperatorConvention />;
+        return <Requests />;
       case 1:
         return <OperatorConvention />;
       default:
