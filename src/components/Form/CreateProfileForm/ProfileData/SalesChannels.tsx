@@ -1,5 +1,5 @@
 import React from "react";
-import { Field, FieldArray } from "formik";
+import { ErrorMessage, Field, FieldArray } from "formik";
 import { Button } from "design-react-kit";
 import FormSection from "../../FormSection";
 import InputFieldMultiple from "../../InputFieldMultiple";
@@ -101,7 +101,6 @@ const SalesChannels = ({
                   required={index + 1 === 1}
                   isVisible
                 >
-                  <p>{index}</p>
                   <div key={index}>
                     <div className="mt-10 row">
                       <div className="col-7">
@@ -111,15 +110,9 @@ const SalesChannels = ({
                             name={`salesChannel.addresses[${index}].street`}
                             type="text"
                           />
-                          {errors.salesChannel &&
-                            touched.salesChannel.addresses && (
-                              <FieldError
-                                errors={errors.salesChannel.addresses[0].street}
-                                touched={
-                                  errors.salesChannel.addresses[0].street
-                                }
-                              />
-                            )}
+                          <ErrorMessage
+                            name={`salesChannel.addresses[${index}].street`}
+                          />
                         </InputFieldMultiple>
                       </div>
                       <div className="col-2 offset-1">
@@ -130,12 +123,9 @@ const SalesChannels = ({
                             type="text"
                             placeholder="Inserisci il CAP"
                           />
-                          {errors.salesChannel && touched.salesChannel && (
-                            <FieldError
-                              errors={errors.salesChannel.addresses.zipCode}
-                              touched={errors.salesChannel.addresses.zipCode}
-                            />
-                          )}
+                          <ErrorMessage
+                            name={`salesChannel.addresses[${index}].zipCode`}
+                          />
                         </InputFieldMultiple>
                       </div>
                     </div>
@@ -148,12 +138,9 @@ const SalesChannels = ({
                             type="text"
                             placeholder="Inserisci la città"
                           />
-                          {errors.salesChannel && touched.salesChannel && (
-                            <FieldError
-                              errors={errors.salesChannel.addresses.city}
-                              touched={errors.salesChannel.addresses.city}
-                            />
-                          )}
+                          <ErrorMessage
+                            name={`salesChannel.addresses[${index}].city`}
+                          />
                         </InputFieldMultiple>
                       </div>
                       <div className="col-3 offset-1">
@@ -167,30 +154,27 @@ const SalesChannels = ({
                             type="text"
                             placeholder="Inserisci la provincia"
                           />
-                          {errors.salesChannel && touched.salesChannel && (
-                            <FieldError
-                              errors={errors.salesChannel.addresses.district}
-                              touched={errors.salesChannel.addresses.district}
-                            />
-                          )}
+                          <ErrorMessage
+                            name={`salesChannel.addresses[${index}].district`}
+                          />
                         </InputFieldMultiple>
                       </div>
                     </div>
 
                     {formValues.salesChannel.addresses.length - 1 === index && (
                       <>
-                        <div className="mt-8">
-                          <PlusCircleIcon
-                            className="mr-2"
-                            onClick={() =>
-                              arrayHelpers.push({
-                                street: "",
-                                zipCode: "",
-                                city: "",
-                                district: ""
-                              })
-                            }
-                          />
+                        <div
+                          className="mt-8 cursor-pointer"
+                          onClick={() =>
+                            arrayHelpers.push({
+                              street: "",
+                              zipCode: "",
+                              city: "",
+                              district: ""
+                            })
+                          }
+                        >
+                          <PlusCircleIcon className="mr-2" />
                           <span className="text-base font-weight-semibold text-blue">
                             Aggiungi un indirizzo
                           </span>
@@ -237,12 +221,7 @@ const SalesChannels = ({
         isVisible
       >
         <Field id="websiteUrl" name="salesChannel.websiteUrl" type="text" />
-        {errors.salesChannel && touched.salesChannel && (
-          <FieldError
-            errors={errors.salesChannel.websiteUrl}
-            touched={errors.salesChannel.websiteUrl}
-          />
-        )}
+        <ErrorMessage name="salesChannel.websiteUrl" />
         <div className="mt-10">
           <Button
             className="px-14 mr-4"

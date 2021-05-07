@@ -11,6 +11,7 @@ import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
+// TODO riempire gli initial values con i dati dello user
 const initialValues = {
   fullName: "PagoPA S.p.A.",
   hasDifferentFullName: false,
