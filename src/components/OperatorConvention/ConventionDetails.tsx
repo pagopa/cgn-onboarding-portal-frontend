@@ -91,16 +91,17 @@ const ConventionDetails = ({
       toError
     )
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => setLoading(false),
+        response => setDetails(response)
+      )
       .run();
 
   const getConventionDetails = () => {
     if (!loading) {
       setLoading(true);
     }
-    void getConventionDetailsApi()
-      .then(response => setDetails(response))
-      .finally(() => setLoading(false));
+    void getConventionDetailsApi();
   };
 
   useEffect(() => {

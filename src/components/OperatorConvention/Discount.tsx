@@ -30,19 +30,22 @@ const Discount = ({
       toError
     )
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => void 0,
+        () => {
+          triggerTooltip({
+            severity: Severity.SUCCESS,
+            text:
+              "La sospensione dell'agevolazione è stata effettuata con successo.",
+            title: "sospensione effettuata"
+          });
+          reloadDetails();
+        }
+      )
       .run();
 
   const getConventionDetails = () => {
-    void getConventionDetailsApi().then(() => {
-      triggerTooltip({
-        severity: Severity.SUCCESS,
-        text:
-          "La sospensione dell'agevolazione è stata effettuata con successo.",
-        title: "sospensione effettuata"
-      });
-      reloadDetails();
-    });
+    void getConventionDetailsApi();
   };
 
   const isSuspended = discount.state === "suspended";

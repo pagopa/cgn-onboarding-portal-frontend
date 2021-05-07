@@ -35,16 +35,17 @@ const OperatorConvention = () => {
       toError
     )
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => setLoading(false),
+        response => setConventions(response)
+      )
       .run();
 
   const getConventions = (params?: any) => {
     if (!loading) {
       setLoading(true);
     }
-    void getConventionsApi(params)
-      .then(response => setConventions(response))
-      .finally(() => setLoading(false));
+    void getConventionsApi(params);
   };
 
   useEffect(() => {
