@@ -2,9 +2,9 @@ import * as Msal from "msal";
 
 const msalConfig = {
   auth: {
-    clientId: "bcab7c72-7b61-4ac6-bd6e-122c1fb6c4d3",
-    authority: "https://login.microsoftonline.com/testcgnportalbitrock.onmicrosoft.com",
-    redirectUri: "http://localhost:3000",
+    clientId: process.env.MSAL_CLIENT_ID as string,
+    authority: process.env.MSAL_AUTHORITY as string,
+    redirectUri: process.env.MSAL_REDIRECT_URI as string,
   },
   cache: {
     cacheLocation: "sessionStorage" as Msal.CacheLocation,
