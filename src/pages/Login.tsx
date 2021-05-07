@@ -1,26 +1,27 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
 import { Button } from "design-react-kit";
-import * as Yup from "yup";
-import { Form, Field, Formik } from "formik";
-import { setAdmin } from "../store/user/userSlice";
+import { setCookie } from "../utils/cookie";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import Spid from "../assets/icons/spid.svg";
-import FormField from "../components/Form/FormField";
-
-const initialValues = {
-  email: "",
-  password: ""
-};
-
-const validationSchema = Yup.object().shape({
-  email: Yup.string().required(),
-  password: Yup.string().required()
-});
+import { AdminAccess, loginRequest } from "../authConfig";
 
 const Login = () => {
-  const dispatch = useDispatch();
+  useEffect(() => {
+    AdminAccess.handleRedirectCallback(authRedirectCallBack);
+  }, []);
+
+  const AdminLogin = () => {
+    AdminAccess.loginRedirect(loginRequest);
+  };
+
+  function authRedirectCallBack(error: any, response: any) {
+    if (!error) {
+      setCookie(response.idToken.rawIdToken);
+      window.location.replace("/");
+    }
+  }
+
   return (
     <Layout>
       <Container>
@@ -69,42 +70,15 @@ const Login = () => {
                   <span className="text-sm font-weight-normal text-dark-blue text-uppercase">
                     Accedi con le tue credenziali
                   </span>
-                  <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={values => {
-                      dispatch(setAdmin({ ...values, type: "ADMIN" }));
-                    }}
+                  <Button
+                    type="button"
+                    color="primary"
+                    className="mt-10"
+                    style={{ width: "100%" }}
+                    onClick={AdminLogin}
                   >
-                    {({ isValid }) => (
-                      <Form>
-                        <FormField htmlFor="email" title="Indirizzo e-mail">
-                          <Field
-                            id="email"
-                            name="email"
-                            type="text"
-                            placeholder="Inserisci l'indirizzo e-mail"
-                          />
-                        </FormField>
-                        <FormField htmlFor="password" title="Password">
-                          <Field
-                            id="password"
-                            name="password"
-                            type="password"
-                          />
-                        </FormField>
-                        <Button
-                          className="mt-10"
-                          type="submit"
-                          color="secondary"
-                          outline
-                          disabled={!isValid}
-                        >
-                          Continua
-                        </Button>
-                      </Form>
-                    )}
-                  </Formik>
+                    Entra come Amministratore
+                  </Button>
                 </div>
               </div>
             </section>

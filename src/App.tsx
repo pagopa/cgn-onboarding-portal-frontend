@@ -11,7 +11,7 @@ import { RootState } from "./store/store";
 
 function App() {
   const dispatch = useDispatch();
-  const { data: user, loading } = useSelector((state: RootState) => state.user);
+  const { type, loading } = useSelector((state: RootState) => state.user);
   const token = getCookie();
   const { search = "" } = window.location;
 
@@ -30,7 +30,7 @@ function App() {
     return <Login />;
   }
 
-  return loading ? <CenteredLoading /> : <RouterConfig user={user} />;
+  return loading ? <CenteredLoading /> : <RouterConfig userType={type} />;
 }
 
 export default App;
