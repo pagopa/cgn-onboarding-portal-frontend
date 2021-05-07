@@ -3,11 +3,13 @@ info:
   title: CGN Onboarding Portal Backoffice
   description: Carta Giovani Nazionale Onboarding Portal Backoffice
   version: '0.0.1'
-host: api.cgn-dev.caravan-azure.bitrock.it
+host: api.cgn.pagopa.it
 basePath: /backoffice/v1
 schemes:
   - https
-
+security:
+  - Bearer: [ ]
+    UserRole: [ ]
 tags:
   - name: agreement
     description: Agreement
@@ -401,7 +403,6 @@ definitions:
     required:
       - agreementId
       - profile
-      - discounts
       - documents
     properties:
       agreementId:
@@ -464,6 +465,7 @@ definitions:
       - fullName
       - taxCodeOrVat
       - pecAddress
+      - legalOffice
       - telephoneNumber
       - legalRepresentativeFullName
       - legalRepresentativeTaxCode
@@ -490,6 +492,8 @@ definitions:
       pecAddress:
         type: string
         format: email
+      legalOffice:
+        type: string
       telephoneNumber:
         type: string
         maxLength: 15
@@ -579,6 +583,7 @@ definitions:
       - productCategories
       - condition
       - lastUpateDate
+      - state
     properties:
       id:
         type: string
@@ -605,13 +610,16 @@ definitions:
       lastUpateDate:
         type: string
         format: date
+      state:
+        $ref: '#/definitions/DiscountState'
 
   DiscountState:
     type: string
     enum:
       - draft
       - published
-      - rejected
+      - suspended
+      - expired
 
   ProductCategory:
     type: string
@@ -749,3 +757,15 @@ responses:
   Conflict:
     description: Conflict
     #content: {} #TODO
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    in: header
+    name: Authorization
+    description: JWT Authorization header using the Bearer scheme
+  UserRole:
+    type: apiKey
+    in: header
+    name: X-CGN-USER-ROLE
+    description: Custom header containing requesting user role

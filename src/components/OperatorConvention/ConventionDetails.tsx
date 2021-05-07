@@ -145,7 +145,7 @@ const ConventionDetails = ({
                       "agevolazione",
                       "Agevolazioni",
                       <ul className="link-list">
-                        {details?.discounts.map((d, i) => (
+                        {details?.discounts?.map((d, i) => (
                           <li className="nav-link" key={i}>
                             <a
                               className={cx(
