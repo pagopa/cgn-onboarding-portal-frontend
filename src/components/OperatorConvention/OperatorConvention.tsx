@@ -49,14 +49,7 @@ const OperatorConvention = () => {
   };
 
   useEffect(() => {
-    // getConventions({});
-    setConventions({
-      items: [
-        {
-          fullName: "A"
-        }
-      ]
-    });
+    getConventions({});
   }, []);
 
   const data = useMemo(() => conventions?.items || [], [conventions]);

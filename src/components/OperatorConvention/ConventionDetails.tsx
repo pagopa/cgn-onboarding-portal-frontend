@@ -105,52 +105,7 @@ const ConventionDetails = ({
   };
 
   useEffect(() => {
-    setDetails({
-      agreementId: "string",
-      profile: {
-        name: "string",
-        description: "string",
-        salesChannel: {
-          channelType: "OnlineChannel"
-        },
-        imageUrl: "string",
-        lastUpateDate: "2021-05-06",
-        fullName: "string",
-        taxCodeOrVat: "stringstrin",
-        pecAddress: "user@example.com",
-        telephoneNumber: "string",
-        legalRepresentativeFullName: "string",
-        legalRepresentativeTaxCode: "string",
-        referent: {
-          firstName: "string",
-          lastName: "string",
-          emailAddress: "user@example.com",
-          telephoneNumber: "string",
-          role: "string"
-        }
-      },
-      discounts: [
-        {
-          id: "string",
-          name: "string",
-          description: "string",
-          startDate: "2021-05-06",
-          endDate: "2021-05-06",
-          discount: 0,
-          productCategories: ["Entertainments"],
-          condition: "string",
-          lastUpateDate: "2021-05-06"
-        }
-      ],
-      documents: [
-        {
-          documentType: "Agreement",
-          documentUrl: "string",
-          creationDate: "2021-05-06"
-        }
-      ]
-    });
-    setLoading(false);
+    getConventionDetails();
   }, []);
 
   return loading ? (
