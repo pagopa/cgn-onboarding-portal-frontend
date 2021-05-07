@@ -13,6 +13,8 @@ import { RootState } from "../store/store";
 const Dashboard = () => {
   const [tab, setTab] = useState(0);
   const agreement = useSelector((state: RootState) => state.agreement.value);
+  const { data } = useSelector((state: RootState) => state.user);
+  const user = data as any;
 
   function hasStateSection(state: any) {
     return (
@@ -43,7 +45,7 @@ const Dashboard = () => {
       <Container className="mt-10 mb-20">
         <div className="col-7 offset-1">
           <Introduction
-            name="Mario Rossi"
+            name={`${user.name} ${user.family_name}`}
             handleClick={handleClick}
             activeTab={tab}
           />

@@ -13,7 +13,7 @@ const Introduction = ({ name, activeTab, handleClick }: Props) => (
     <div className="pl-8 pt-10">
       <h1 className="h5">Carta Giovani Nazionale</h1>
       <h2 className="h2 text-dark-blue font-weight-bold">Portale Operatori</h2>
-      <p className="dark-blue">{name}</p>
+      <p className="dark-blue text-capitalize">{name}</p>
     </div>
     <Nav className="auto mt-11" tabs tag="ul" vertical={false}>
       <NavItem active={activeTab === 0} onClick={() => handleClick(0)}>

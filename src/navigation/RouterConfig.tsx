@@ -24,11 +24,7 @@ import {
   ADMIN_PANEL
 } from "./routes";
 
-export const RouterConfig = ({
-  userType
-}: {
-  userType: string;
-}) => {
+export const RouterConfig = ({ userType }: { userType: string }) => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
   );
