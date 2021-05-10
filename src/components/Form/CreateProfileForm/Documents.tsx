@@ -10,6 +10,7 @@ import DocumentSuccess from "../../../assets/icons/document-success.svg";
 import { RootState } from "../../../store/store";
 
 type Props = {
+  isCompleted: boolean;
   handleSuccess: any;
   handleBack: any;
 };

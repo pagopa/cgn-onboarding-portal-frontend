@@ -57,6 +57,7 @@ const validationSchema = Yup.object().shape({
 });
 
 type Props = {
+  isCompleted: boolean;
   handleBack: any;
   handleNext: any;
   handleSuccess: any;

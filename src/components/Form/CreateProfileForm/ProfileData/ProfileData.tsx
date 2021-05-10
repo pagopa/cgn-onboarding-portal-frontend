@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
 import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
@@ -97,21 +99,38 @@ const validationSchema = Yup.object().shape({
 });
 
 type Props = {
+  isCompleted: boolean;
   handleBack: any;
   handleNext: any;
   handleSuccess: any;
 };
 
-const ProfileData = ({ handleBack, handleNext, handleSuccess }: Props) => {
-  const agreementState = useSelector(
-    (state: RootState) => state.agreement.value
-  );
+const ProfileData = ({
+  isCompleted,
+  handleBack,
+  handleNext,
+  handleSuccess
+}: Props) => {
+  const agreement = useSelector((state: RootState) => state.agreement.value);
 
   const createProfile = (discount: any) => {
-    if (agreementState) {
-      void Api.Profile.createProfile(agreementState.id, discount);
+    if (agreement) {
+      void Api.Profile.createProfile(agreement.id, discount);
     }
   };
+
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        profile => (initialValues = profile)
+      )
+      .run();
+
+  useEffect(() => {
+    void getProfile(agreement.id);
+  }, []);
 
   return (
     <Formik
