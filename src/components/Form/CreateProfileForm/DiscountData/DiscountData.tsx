@@ -70,7 +70,7 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSubmit={values => {}}
     >
-      {({ isValid, errors, touched, values, setFieldValue }) => (
+      {({ isValid, values, setFieldValue }) => (
         <Form autoComplete="off">
           <FieldArray
             name="discounts"
@@ -89,10 +89,9 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
                       }
                     >
                       <DiscountInfo
-                        errors={errors}
-                        touched={touched}
                         formValues={values}
                         setFieldValue={setFieldValue}
+                        index={index}
                       />
                       <FormField
                         htmlFor="productCategories"
@@ -102,12 +101,7 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
                         isVisible
                         required
                       >
-                        <ProductCategories
-                          errors={errors}
-                          touched={touched}
-                          formValues={values}
-                          setFieldValue={setFieldValue}
-                        />
+                        <ProductCategories index={index} />
                       </FormField>
                       <FormField
                         htmlFor="discountConditions"
@@ -116,7 +110,7 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
                         description="Descrivere eventuali limitazioni relative all’agevolazione (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
                         isVisible
                       >
-                        <DiscountConditions errors={errors} touched={touched} />
+                        <DiscountConditions index={index} />
                       </FormField>
                       <FormField
                         htmlFor="staticCode"
@@ -125,7 +119,7 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
                         description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
                         isVisible
                       >
-                        <StaticCode errors={errors} touched={touched} />
+                        <StaticCode index={index} />
                       </FormField>
                       {values.discounts.length - 1 === index && (
                         <>
