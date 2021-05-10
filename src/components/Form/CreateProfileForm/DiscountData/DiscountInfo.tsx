@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { format } from "date-fns";
 import { ErrorMessage, Field } from "formik";
 import DatePicker from "react-datepicker";
 import InputField from "../../FormField";
@@ -101,12 +102,12 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
               ? formValues.discounts[index as number].endDate
               : formValues.endDate
           }
-          onChange={date =>
+          onChange={date => {
             setFieldValue(
               hasIndex ? `discounts[${index}].endDate` : "endDate",
               date
-            )
-          }
+            );
+          }}
         />
         <ErrorMessage
           name={hasIndex ? `discounts[${index}].endDate` : "endDate"}

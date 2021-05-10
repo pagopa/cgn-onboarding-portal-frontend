@@ -2,7 +2,6 @@ import React from "react";
 import { ErrorMessage, Field } from "formik";
 import { FormGroup } from "design-react-kit";
 import { Label } from "reactstrap";
-import { PropsOf } from "io-ts";
 
 type Props = {
   index?: number;
@@ -20,7 +19,7 @@ const ProductCategories = ({ index }: Props) => {
               ? `discounts[${index}].productCategories`
               : `productCategories`
           }
-          value="TRAVELS"
+          value="Travels"
           type="checkbox"
         />
         <Label
@@ -40,7 +39,7 @@ const ProductCategories = ({ index }: Props) => {
               ? `discounts[${index}].productCategories`
               : `productCategories`
           }
-          value="HEALTH"
+          value="Health"
           type="checkbox"
         />
         <Label
@@ -60,7 +59,7 @@ const ProductCategories = ({ index }: Props) => {
               ? `discounts[${index}].productCategories`
               : `productCategories`
           }
-          value="ENTERTAINMENTS"
+          value="Entertainments"
           type="checkbox"
         />
         <Label
@@ -80,7 +79,7 @@ const ProductCategories = ({ index }: Props) => {
               ? `discounts[${index}].productCategories`
               : `productCategories`
           }
-          value="TRANSPORTATION"
+          value="Transportation"
           type="checkbox"
         />
         <Label
@@ -100,7 +99,7 @@ const ProductCategories = ({ index }: Props) => {
               ? `discounts[${index}].productCategories`
               : `productCategories`
           }
-          value="CONNECTIVITY"
+          value="Connectivity"
           type="checkbox"
         />
         <Label
@@ -120,7 +119,7 @@ const ProductCategories = ({ index }: Props) => {
               ? `discounts[${index}].productCategories`
               : `productCategories`
           }
-          value="BOOKS"
+          value="Books"
           type="checkbox"
         />
         <Label
@@ -140,7 +139,7 @@ const ProductCategories = ({ index }: Props) => {
               ? `discounts[${index}].productCategories`
               : `productCategories`
           }
-          value="ARTS"
+          value="Arts"
           type="checkbox"
         />
         <Label
@@ -160,7 +159,7 @@ const ProductCategories = ({ index }: Props) => {
               ? `discounts[${index}].productCategories`
               : `productCategories`
           }
-          value="SPORTS"
+          value="Sports"
           type="checkbox"
         />
         <Label

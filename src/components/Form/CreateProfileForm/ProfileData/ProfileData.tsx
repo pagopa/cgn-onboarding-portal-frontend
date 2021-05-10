@@ -96,17 +96,16 @@ const validationSchema = Yup.object().shape({
 });
 
 type Props = {
-  handleSuccess: any;
   handleBack: any;
   handleNext: any;
 };
 
-const ProfileData = ({ handleSuccess, handleBack, handleNext }: Props) => {
+const ProfileData = ({ handleBack, handleNext }: Props) => {
   const agreementState = useSelector(
     (state: RootState) => state.agreement.value
   );
 
-  const createDiscount = (discount: any) => {
+  const createProfile = (discount: any) => {
     if (agreementState) {
       void Api.Profile.createProfile(agreementState.id, discount);
     }
@@ -122,7 +121,7 @@ const ProfileData = ({ handleSuccess, handleBack, handleNext }: Props) => {
         if (discount.salesChannel.channelType === "OnlineChannel") {
           const newSalesChannel = discount.salesChannel;
           const { addresses, ...salesChannel } = newSalesChannel;
-          createDiscount({ ...discount, salesChannel });
+          createProfile({ ...discount, salesChannel });
         } else {
           const newSalesChannel = discount.salesChannel;
           const {
@@ -130,7 +129,7 @@ const ProfileData = ({ handleSuccess, handleBack, handleNext }: Props) => {
             discountCodeType,
             ...salesChannel
           } = newSalesChannel;
-          createDiscount({ ...discount, salesChannel });
+          createProfile({ ...discount, salesChannel });
         }
 
         handleNext();

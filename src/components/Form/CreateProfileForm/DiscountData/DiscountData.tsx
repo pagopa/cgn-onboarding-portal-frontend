@@ -3,8 +3,10 @@ import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { Button } from "design-react-kit";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { format } from "date-fns";
 import Api from "../../../../api";
-import { CreateDiscount } from "../../../../api/generated";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
 import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
@@ -39,6 +41,8 @@ const validationSchema = Yup.object().shape({
       description: Yup.string()
         .max(250)
         .required(),
+      startDate: Yup.string().required(),
+      endDate: Yup.string().required(),
       discount: Yup.number()
         .min(1)
         .max(100)
@@ -53,22 +57,41 @@ const validationSchema = Yup.object().shape({
 });
 
 type Props = {
-  handleSuccess: any;
   handleBack: any;
   handleNext: any;
 };
 
-const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
-  const agreementState = useSelector(
-    (state: RootState) => state.agreement.value
-  );
+const DiscountData = ({ handleBack, handleNext }: Props) => {
+  const agreement = useSelector((state: RootState) => state.agreement.value);
+
+  const createDiscount = async (agreementId: string, discount: any) =>
+    await tryCatch(
+      () => Api.Discount.createDiscount(agreementId, discount),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        () => handleNext()
+      )
+      .run();
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      onSubmit={values => {}}
+      onSubmit={values => {
+        const newValues = {
+          discounts: values.discounts.map(discount => ({
+            ...discount,
+            startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
+            endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
+          }))
+        };
+        newValues.discounts.forEach(discount => {
+          void createDiscount(agreement.id, discount);
+        });
+      }}
     >
       {({ isValid, values, setFieldValue }) => (
         <Form autoComplete="off">
