@@ -1,4 +1,5 @@
 import Cookies from "universal-cookie";
+import { AdminAccess } from "../authConfig";
 
 const cookieKey = "pagopa_token";
 
@@ -23,8 +24,11 @@ export const getCookie = () => {
   return cookies.get(cookieKey);
 };
 
-export function logout() {
+export function logout(userType: string) {
   deleteCookie();
+  if (userType === "ADMIN") {
+    AdminAccess.logout();
+  }
   window.location.replace("/");
 }
 

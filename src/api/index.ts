@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { getCookie } from '../utils/cookie';
+import axios, { AxiosError } from 'axios';
+import { getCookie, logout } from '../utils/cookie';
 import { AgreementApi, ProfileApi, DiscountApi, DocumentApi } from './generated';
 
 const token = getCookie();
@@ -11,6 +11,16 @@ export const axiosInstance = axios.create({
 		'Content-Type': 'application/json'
 	}
 });
+
+axiosInstance.interceptors.response.use(
+	response => response,
+	(error: AxiosError) => {
+	if (error?.response?.status === 401) {
+		logout('USER');
+	}
+	return error;
+  });
+
 
 export default {
 	Agreement: new AgreementApi(undefined, process.env.BASE_API_PATH, axiosInstance),

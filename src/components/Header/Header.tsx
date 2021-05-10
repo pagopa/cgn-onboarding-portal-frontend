@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { getCookie, logout } from "../../utils/cookie";
 import { CREATE_PROFILE, HELP } from "../../navigation/routes";
+import { RootState } from "../../store/store";
 import Logo from "../Logo/Logo";
 import LogoutModal from "./LogoutModal";
 
@@ -11,6 +13,7 @@ type Props = {
 };
 
 const Header = ({ hasBorder = false }: Props) => {
+  const { type } = useSelector((state: RootState) => state.user);
   const token = getCookie();
   const location = useLocation();
   const [modal, setModal] = useState(false);
@@ -57,7 +60,7 @@ const Header = ({ hasBorder = false }: Props) => {
                   size="xs"
                   icon={false}
                   tag="button"
-                  onClick={logout}
+                  onClick={() => logout(type)}
                 >
                   Esci
                 </Button>
@@ -75,7 +78,13 @@ const Header = ({ hasBorder = false }: Props) => {
             </Button>
           )}
         </div>
-        <LogoutModal isOpen={modal} toggle={toggle} />
+        <LogoutModal
+          isOpen={modal}
+          toggle={toggle}
+          logout={() => {
+            logout(type);
+          }}
+        />
       </div>
     </header>
   );
