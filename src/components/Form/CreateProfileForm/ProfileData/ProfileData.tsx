@@ -136,7 +136,7 @@ const ProfileData = ({ handleBack, handleNext }: Props) => {
         handleNext();
       }}
     >
-      {({ errors, touched, values, isValid }) => (
+      {({ errors, touched, values, isValid, dirty }) => (
         <Form autoComplete="off">
           <FormContainer className="mb-20">
             <ProfileInfo
@@ -155,8 +155,7 @@ const ProfileData = ({ handleBack, handleNext }: Props) => {
               handleBack={handleBack}
               formValues={values}
               isValid={isValid}
-              errors={errors}
-              touched={touched}
+              dirty={dirty}
             />
           </FormContainer>
         </Form>
