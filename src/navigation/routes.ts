@@ -1,4 +1,5 @@
 export const ROOT = '/';
+export const SELECT_COMPANY = '/select-company';
 export const DASHBOARD = '/dashboard';
 export const HELP = '/help';
 export const CREATE_PROFILE = '/create-profile';

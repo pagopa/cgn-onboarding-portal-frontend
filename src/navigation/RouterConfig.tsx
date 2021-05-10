@@ -11,8 +11,10 @@ import CreateDiscount from "../pages/CreateDiscount";
 import EditDiscount from "../pages/EditDiscount";
 import AdminPanel from "../pages/AdminPanel";
 import EditOperatorData from "../pages/EditOperatorData";
+import SelectCompany from "../pages/SelectCompany";
 import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
+import { getCompanyCookie } from "../utils/cookie";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -21,24 +23,36 @@ import {
   CREATE_DISCOUNT,
   EDIT_DISCOUNT,
   EDIT_OPERATOR_DATA,
-  ADMIN_PANEL
+  ADMIN_PANEL,
+  SELECT_COMPANY
 } from "./routes";
 
-export const RouterConfig = ({ userType }: { userType: string }) => {
+export const RouterConfig = ({
+  user,
+  userType
+}: {
+  user: any;
+  userType: string;
+}) => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
   );
   const history = useHistory();
   const dispatch = useDispatch();
+  const companyCookie = getCompanyCookie();
+  const isAdmin = userType === "ADMIN";
 
   useEffect(() => {
-    if (userType !== "ADMIN") {
+    if (!companyCookie && user.iss) {
+      history.push(SELECT_COMPANY);
+    } else if (!isAdmin) {
+      companyCookie(companyCookie);
       dispatch(createAgreement());
     }
   }, []);
 
   useEffect(() => {
-    if (userType !== "ADMIN") {
+    if (!isAdmin) {
       switch (agreement.state) {
         case AgreementState.DraftAgreement:
           history.push(CREATE_PROFILE);
@@ -58,8 +72,9 @@ export const RouterConfig = ({ userType }: { userType: string }) => {
     <CenteredLoading />
   ) : (
     <Switch>
-      {userType === "USER" && (
+      {!isAdmin && (
         <>
+          <Route exact path={SELECT_COMPANY} component={SelectCompany} />
           <Route exact path={DASHBOARD} component={Dashboard} />
           <Route exact path={HELP} component={Help} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />
@@ -69,9 +84,7 @@ export const RouterConfig = ({ userType }: { userType: string }) => {
           <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
         </>
       )}
-      {userType === "ADMIN" && (
-        <Route exact path={ADMIN_PANEL} component={AdminPanel} />
-      )}
+      {isAdmin && <Route exact path={ADMIN_PANEL} component={AdminPanel} />}
     </Switch>
   );
 };

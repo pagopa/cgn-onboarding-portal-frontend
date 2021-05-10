@@ -12,6 +12,12 @@ export const userSlice = createSlice({
 			state.data = decoded;
 			state.type = decoded.iss === 'SPID' ? 'USER' : 'ADMIN';
 		},
+		setCompany: (state, action) => {
+			state.data = {
+				...state.data,
+				companies: state.data.companies.map((c) => ({...c, active: c.organization_fiscal_code === action.payload}))
+			};
+		},
 	}
 });
 
