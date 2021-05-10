@@ -1,24 +1,28 @@
 import React from "react";
-import { Field } from "formik";
+import { ErrorMessage, Field } from "formik";
 import FieldError from "../../FieldError";
 
 type Props = {
-  errors: any;
-  touched: any;
+  index?: number;
 };
 
-const DiscountConditions = ({ errors, touched }: Props) => (
-  <>
-    <Field
-      as="textarea"
-      id="condition"
-      name="condition"
-      placeholder="Inserisci una descrizione"
-      maxLength="200"
-      rows="4"
-    />
-    <FieldError errors={errors.conditions} touched={errors.touched} />
-  </>
-);
+const DiscountConditions = ({ index }: Props) => {
+  const hasIndex = index !== undefined;
+  return (
+    <>
+      <Field
+        as="textarea"
+        id="condition"
+        name={hasIndex ? `discounts[${index}].condition` : `condition`}
+        placeholder="Inserisci una descrizione"
+        maxLength="200"
+        rows="4"
+      />
+      <ErrorMessage
+        name={hasIndex ? `discounts[${index}].condition` : `condition`}
+      />
+    </>
+  );
+};
 
 export default DiscountConditions;

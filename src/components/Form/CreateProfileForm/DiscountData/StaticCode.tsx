@@ -1,22 +1,29 @@
 import React from "react";
-import { Field } from "formik";
+import { ErrorMessage, Field } from "formik";
 import InputField from "../../FormField";
-import FieldError from "../../FieldError";
 
 type Props = {
-  errors: any;
-  touched: any;
   children?: any;
+  index?: number;
 };
 
-const StaticCode = ({ errors, touched, children }: Props) => (
-  <>
-    <InputField htmlFor="staticCode">
-      <Field id="staticCode" name="staticCode" type="text" />
-    </InputField>
-    <FieldError errors={errors.staticCode} touched={errors.touched} />
-    {children}
-  </>
-);
+const StaticCode = ({ children, index }: Props) => {
+  const hasIndex = index !== undefined;
+  return (
+    <>
+      <InputField htmlFor="staticCode">
+        <Field
+          id="staticCode"
+          name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
+          type="text"
+        />
+      </InputField>
+      <ErrorMessage
+        name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
+      />
+      {children}
+    </>
+  );
+};
 
 export default StaticCode;
