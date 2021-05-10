@@ -59,9 +59,10 @@ const validationSchema = Yup.object().shape({
 type Props = {
   handleBack: any;
   handleNext: any;
+  handleSuccess: any;
 };
 
-const DiscountData = ({ handleBack, handleNext }: Props) => {
+const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
   const createDiscount = async (agreementId: string, discount: any) =>
@@ -72,7 +73,10 @@ const DiscountData = ({ handleBack, handleNext }: Props) => {
       .map(response => response.data)
       .fold(
         () => void 0,
-        () => handleNext()
+        () => {
+          handleSuccess();
+          handleNext();
+        }
       )
       .run();
 
