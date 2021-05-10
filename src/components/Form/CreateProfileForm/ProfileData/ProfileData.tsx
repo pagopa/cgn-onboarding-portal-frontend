@@ -99,9 +99,10 @@ const validationSchema = Yup.object().shape({
 type Props = {
   handleBack: any;
   handleNext: any;
+  handleSuccess: any;
 };
 
-const ProfileData = ({ handleBack, handleNext }: Props) => {
+const ProfileData = ({ handleBack, handleNext, handleSuccess }: Props) => {
   const agreementState = useSelector(
     (state: RootState) => state.agreement.value
   );
@@ -133,6 +134,7 @@ const ProfileData = ({ handleBack, handleNext }: Props) => {
           createProfile({ ...discount, salesChannel });
         }
 
+        handleSuccess();
         handleNext();
       }}
     >
