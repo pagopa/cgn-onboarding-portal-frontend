@@ -156,8 +156,8 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
     <Formik
       initialValues={{
         ...initialValues,
-        fullName: user.company.organization_name,
-        taxCodeOrVat: user.company.organization_fiscal_code
+        fullName: user.company?.organization_name || "",
+        taxCodeOrVat: user.company?.organization_fiscal_code || ""
       }}
       validationSchema={validationSchema}
       onSubmit={values => {
