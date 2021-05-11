@@ -65,25 +65,32 @@ const ProfileImage = () => {
             </>
           )}
           {image && (
-            <img
-              src={image}
-              style={{ width: "128px", height: "128px", objectFit: "cover" }}
-            />
-          )}
-          {image && (
-            <div className="d-flex flex-row justify-content-end">
-              <input
-                type="file"
-                name="profileImage"
-                id="profileImage"
-                ref={imageInput}
-                onChange={() => uploadImage(imageInput.current.files)}
-                style={{ display: "none" }}
-              />
-              <label htmlFor="profileImage">
-                <span>Cambia immagine</span>
-              </label>
-            </div>
+            <>
+              <div className="d-flex flex-row align-items-end">
+                <img
+                  src={image}
+                  style={{
+                    width: "128px",
+                    height: "128px",
+                    objectFit: "cover"
+                  }}
+                />
+                <input
+                  type="file"
+                  name="profileImage"
+                  id="profileImage"
+                  ref={imageInput}
+                  onChange={() => uploadImage(imageInput.current.files)}
+                  style={{ display: "none" }}
+                />
+                <label
+                  htmlFor="profileImage"
+                  className="ml-4 mb-0 text-primary underline"
+                >
+                  Cambia immagine
+                </label>
+              </div>
+            </>
           )}
         </li>
       </ul>
