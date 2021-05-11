@@ -3,8 +3,10 @@ import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { Button } from "design-react-kit";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { format } from "date-fns";
 import Api from "../../../../api";
-import { CreateDiscount } from "../../../../api/generated";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
 import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
@@ -39,6 +41,8 @@ const validationSchema = Yup.object().shape({
       description: Yup.string()
         .max(250)
         .required(),
+      startDate: Yup.string().required(),
+      endDate: Yup.string().required(),
       discount: Yup.number()
         .min(1)
         .max(100)
@@ -53,24 +57,47 @@ const validationSchema = Yup.object().shape({
 });
 
 type Props = {
-  handleSuccess: any;
   handleBack: any;
   handleNext: any;
+  handleSuccess: any;
 };
 
-const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
-  const agreementState = useSelector(
-    (state: RootState) => state.agreement.value
-  );
+const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
+  const agreement = useSelector((state: RootState) => state.agreement.value);
+
+  const createDiscount = async (agreementId: string, discount: any) =>
+    await tryCatch(
+      () => Api.Discount.createDiscount(agreementId, discount),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        () => {
+          handleSuccess();
+          handleNext();
+        }
+      )
+      .run();
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      onSubmit={values => {}}
+      onSubmit={values => {
+        const newValues = {
+          discounts: values.discounts.map(discount => ({
+            ...discount,
+            startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
+            endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
+          }))
+        };
+        newValues.discounts.forEach(discount => {
+          void createDiscount(agreement.id, discount);
+        });
+      }}
     >
-      {({ isValid, errors, touched, values, setFieldValue }) => (
+      {({ isValid, dirty, values, setFieldValue }) => (
         <Form autoComplete="off">
           <FieldArray
             name="discounts"
@@ -89,10 +116,9 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
                       }
                     >
                       <DiscountInfo
-                        errors={errors}
-                        touched={touched}
                         formValues={values}
                         setFieldValue={setFieldValue}
+                        index={index}
                       />
                       <FormField
                         htmlFor="productCategories"
@@ -102,12 +128,7 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
                         isVisible
                         required
                       >
-                        <ProductCategories
-                          errors={errors}
-                          touched={touched}
-                          formValues={values}
-                          setFieldValue={setFieldValue}
-                        />
+                        <ProductCategories index={index} />
                       </FormField>
                       <FormField
                         htmlFor="discountConditions"
@@ -116,7 +137,7 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
                         description="Descrivere eventuali limitazioni relative all’agevolazione (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
                         isVisible
                       >
-                        <DiscountConditions errors={errors} touched={touched} />
+                        <DiscountConditions index={index} />
                       </FormField>
                       <FormField
                         htmlFor="staticCode"
@@ -125,7 +146,7 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
                         description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
                         isVisible
                       >
-                        <StaticCode errors={errors} touched={touched} />
+                        <StaticCode index={index} />
                       </FormField>
                       {values.discounts.length - 1 === index && (
                         <>
@@ -164,7 +185,7 @@ const DiscountData = ({ handleSuccess, handleBack, handleNext }: Props) => {
                               className="px-14 mr-4"
                               color="primary"
                               tag="button"
-                              disabled={!isValid}
+                              disabled={!(isValid && dirty)}
                             >
                               Continua
                             </Button>

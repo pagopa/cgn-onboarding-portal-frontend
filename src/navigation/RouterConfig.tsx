@@ -14,7 +14,6 @@ import EditOperatorData from "../pages/EditOperatorData";
 import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
 import {
-  ROOT,
   DASHBOARD,
   CREATE_PROFILE,
   EDIT_PROFILE,
@@ -25,7 +24,7 @@ import {
   ADMIN_PANEL
 } from "./routes";
 
-export const RouterConfig = ({ user }: { user: any }) => {
+export const RouterConfig = ({ userType }: { userType: string }) => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
   );
@@ -33,12 +32,13 @@ export const RouterConfig = ({ user }: { user: any }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(createAgreement());
+    if (userType !== "ADMIN") {
+      dispatch(createAgreement());
+    }
   }, []);
 
   useEffect(() => {
-    // TODO GESTIONE ADMIN
-    if (user.type !== "ADMIN") {
+    if (userType !== "ADMIN") {
       switch (agreement.state) {
         case AgreementState.DraftAgreement:
           history.push(CREATE_PROFILE);
@@ -49,6 +49,8 @@ export const RouterConfig = ({ user }: { user: any }) => {
           history.push(DASHBOARD);
           break;
       }
+    } else {
+      history.push(ADMIN_PANEL);
     }
   }, [agreement.state]);
 
@@ -56,15 +58,20 @@ export const RouterConfig = ({ user }: { user: any }) => {
     <CenteredLoading />
   ) : (
     <Switch>
-      {/* TODO ROUTE ADMIN */}
-      <Route exact path={DASHBOARD} component={Dashboard} />
-      <Route exact path={HELP} component={Help} />
-      <Route exact path={CREATE_PROFILE} component={CreateProfile} />
-      <Route exact path={EDIT_PROFILE} component={EditProfile} />
-      <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
-      <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
-      <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
-      <Route exact path={ADMIN_PANEL} component={AdminPanel} />
+      {userType === "USER" && (
+        <>
+          <Route exact path={DASHBOARD} component={Dashboard} />
+          <Route exact path={HELP} component={Help} />
+          <Route exact path={CREATE_PROFILE} component={CreateProfile} />
+          <Route exact path={EDIT_PROFILE} component={EditProfile} />
+          <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
+          <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
+          <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
+        </>
+      )}
+      {userType === "ADMIN" && (
+        <Route exact path={ADMIN_PANEL} component={AdminPanel} />
+      )}
     </Switch>
   );
 };

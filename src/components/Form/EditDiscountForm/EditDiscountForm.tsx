@@ -62,10 +62,10 @@ const EditDiscountForm = () => {
     >
       {({ errors, touched }) => (
         <Form autoComplete="off">
-          <DiscountInfo errors={errors} touched={touched} />
-          <ProductCategories errors={errors} touched={touched} />
-          <DiscountConditions errors={errors} touched={touched} />
-          <StaticCode errors={errors} touched={touched}>
+          <DiscountInfo />
+          <ProductCategories />
+          <DiscountConditions />
+          <StaticCode>
             <div className="mt-10 d-flex flex-row justify-content-between">
               <Button className="px-14 mr-4" color="secondary" tag="button">
                 Annulla

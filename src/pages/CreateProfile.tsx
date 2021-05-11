@@ -20,10 +20,6 @@ const EditProfile = () => {
     }
   };
 
-  const handleComplete = () => {
-    history.push(DASHBOARD);
-  };
-
   const selectedTab = () => {
     switch (step) {
       case 0:
@@ -52,7 +48,7 @@ const EditProfile = () => {
       case 3:
         return (
           <Documents
-            handleComplete={handleComplete}
+            handleSuccess={() => handleSuccess(3)}
             handleBack={() => setStep(2)}
           />
         );

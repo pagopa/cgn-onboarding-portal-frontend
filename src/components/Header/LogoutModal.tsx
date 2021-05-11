@@ -1,14 +1,14 @@
 import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { logout } from "../../utils/cookie";
 
 type Props = {
   isOpen: any;
   toggle: any;
+  logout: () => void;
 };
 
-const LogoutModal = ({ isOpen, toggle }: Props) => (
+const LogoutModal = ({ isOpen, toggle, logout }: Props) => (
   <Modal isOpen={isOpen} toggle={toggle} size="md">
     <ModalHeader toggle={toggle}>Sei sicuro di voler uscire?</ModalHeader>
     <ModalBody>

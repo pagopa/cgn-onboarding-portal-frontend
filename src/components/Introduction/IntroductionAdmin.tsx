@@ -15,7 +15,7 @@ const IntroductionAdmin = ({ name, activeTab, handleClick }: Props) => (
       <h2 className="h2 text-dark-blue font-weight-bold">
         Portale Amministratori
       </h2>
-      <p className="dark-blue">{name}</p>
+      <p className="dark-blue text-capitalize">{name}</p>
     </div>
     <Nav className="auto mt-11" tabs tag="ul" vertical={false}>
       <NavItem active={activeTab === 0} onClick={() => handleClick(0)}>
