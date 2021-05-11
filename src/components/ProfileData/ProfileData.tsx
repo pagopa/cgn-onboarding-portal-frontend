@@ -60,7 +60,7 @@ const ProfileData = () => {
                   label="Indirizzo"
                   value={profile.legalOffice}
                 />
-                {profile.image && (
+                {image && (
                   <tr>
                     <td className="px-0 border-bottom-0">Immagine operatore</td>
                     <td className="text-gray border-bottom-0">
