@@ -4,7 +4,6 @@ import { Button } from "design-react-kit";
 import FormSection from "../../FormSection";
 import InputFieldMultiple from "../../InputFieldMultiple";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
-import FieldError from "../../FieldError";
 import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 
 const hasOfflineOrBothChannels = (channelType: string) =>
