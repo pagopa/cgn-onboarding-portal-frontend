@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button, Icon } from "design-react-kit";
 import { useSelector } from "react-redux";
+import { saveAs } from "file-saver";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import FormContainer from "../FormContainer";
@@ -37,6 +38,22 @@ const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
     agreementFile.current.click();
   };
 
+  const getTemplates = async (type: string) =>
+    await tryCatch(
+      () => Api.DocumentTemplate.downloadDocumentTemplate(agreement.id, type),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        response => {
+          console.log(response);
+          const blob = new Blob([response], { type: "application/pdf" });
+          saveAs(blob, type);
+        }
+      )
+      .run();
+
   const addFiles = async (files: any, type: string) =>
     await tryCatch(
       () => Api.Document.uploadDocument(agreement.id, type, files[0]),
@@ -45,11 +62,25 @@ const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
       .fold(
         () => void 0,
         () => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          type === "agreement"
-            ? setIsAgreementUploaded(true)
-            : type === "manifestation_of_interest" &&
+          switch (type) {
+            case "agreement":
+              setIsAgreementUploaded(true);
+              break;
+            case "manifestation_of_interest":
               setIsManifestationUploaded(true);
+              break;
+          }
+        }
+      )
+      .run();
+
+  const getFiles = async () =>
+    await tryCatch(() => Api.Document.getDocuments(agreement.id), toError)
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        response => {
+          console.log(response);
         }
       )
       .run();
@@ -57,6 +88,10 @@ const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
   const requireApproval = () => {
     void Api.Agreement.requestApproval(agreement.id).then(() => handleNext());
   };
+
+  useEffect(() => {
+    void getFiles();
+  }, []);
 
   return (
     <FormContainer className="mb-20">
@@ -85,6 +120,7 @@ const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
                 size="sm"
                 tag="button"
                 className="mr-2"
+                onClick={() => getTemplates("agreement")}
               >
                 <Icon
                   color="white"
@@ -143,6 +179,7 @@ const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
                 size="sm"
                 tag="button"
                 className="mr-2"
+                onClick={() => getTemplates("manifestation_of_interest")}
               >
                 <Icon
                   color="white"

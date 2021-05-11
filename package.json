@@ -32,6 +32,7 @@
     "classnames": "^2.2.6",
     "date-fns": "^2.16.1",
     "design-react-kit": "^3.3.3",
+    "file-saver": "^2.0.5",
     "formik": "^2.2.6",
     "fp-ts": "1.17.4",
     "fs": "^0.0.1-security",
