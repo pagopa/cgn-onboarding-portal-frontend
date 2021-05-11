@@ -25,6 +25,7 @@
     "typescript:dts": "node scripts/dts.js"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.14.1",
     "@reduxjs/toolkit": "^1.5.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",

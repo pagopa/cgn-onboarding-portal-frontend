@@ -2,6 +2,20 @@
 # yarn lockfile v1
 
 
+"@azure/msal-browser@^2.14.1":
+  version "2.14.1"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-2.14.1.tgz#6c4f283069e7bedb8cea664f728a2069338fc043"
+  integrity sha512-J2YgonII+/ureLk7jZddup15y5QlR1bj9dLSIcIluwn9l1TdqZXfbwvMeLgd2xmMPIuEKVyRwUkw2QMxZ7lehQ==
+  dependencies:
+    "@azure/msal-common" "^4.2.1"
+
+"@azure/msal-common@^4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-4.2.1.tgz#0377c980aeebaaf3c768fef9165159759c9a9176"
+  integrity sha512-f6na0yqY+rUJ54m79TmFbG8BH1nFvlW+ETtYUGdZpJUO+/RgDVnRzkoj5PVQd6y7czKYlrBRetAcZEE+yGh+/g==
+  dependencies:
+    debug "^4.1.1"
+
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
