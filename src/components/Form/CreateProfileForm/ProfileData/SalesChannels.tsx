@@ -82,10 +82,10 @@ const SalesChannels = ({
         </div>
       </div>
     </FormSection>
-    {hasOnlineOrBothChannels(formValues.salesChannel.channelType) && (
+    {hasOnlineOrBothChannels(formValues.salesChannel?.channelType) && (
       <SalesChannelDiscountCodeType />
     )}
-    {hasOfflineOrBothChannels(formValues.salesChannel.channelType) && (
+    {hasOfflineOrBothChannels(formValues.salesChannel?.channelType) && (
       <FieldArray
         name="salesChannel.addresses"
         render={arrayHelpers => (

@@ -4,6 +4,7 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
@@ -73,19 +74,14 @@ const validationSchema = Yup.object().shape({
 
 type Props = {
   isCompleted: boolean;
-  handleBack: any;
-  handleNext: any;
-  handleSuccess: any;
+  handleBack: () => void;
+  handleNext: () => void;
 };
 
-const ProfileData = ({
-  isCompleted,
-  handleBack,
-  handleNext,
-  handleSuccess
-}: Props) => {
+const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [initialValues, setInitialValues] = useState<any>({});
+  const [loading, setLoading] = useState(true);
 
   const createProfile = (discount: any) => {
     if (agreement) {
@@ -97,14 +93,26 @@ const ProfileData = ({
     await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
       .map(response => response.data)
       .fold(
-        () => void 0,
-        profile => setInitialValues(profile)
+        () => setLoading(false),
+        profile => {
+          setInitialValues(profile);
+          setLoading(false);
+        }
       )
       .run();
 
   useEffect(() => {
-    void getProfile(agreement.id);
+    if (isCompleted) {
+      setLoading(true);
+      void getProfile(agreement.id);
+    } else {
+      setLoading(false);
+    }
   }, []);
+
+  if (loading) {
+    return <CenteredLoading />;
+  }
 
   return (
     <Formik
@@ -127,8 +135,6 @@ const ProfileData = ({
           } = newSalesChannel;
           createProfile({ ...discount, salesChannel });
         }
-
-        handleSuccess();
         handleNext();
       }}
     >

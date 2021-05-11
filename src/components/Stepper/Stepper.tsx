@@ -1,45 +1,50 @@
 import React from "react";
 import Step from "./Step";
 
+interface Step {
+  label: string;
+  key: string;
+}
+
 type Props = {
   activeStep: number;
-  completedSteps: Array<number>;
+  completedSteps: Array<string>;
   handleChangeStep: any;
-  children: any;
+  steps: Array<Step>;
 };
 
 const Stepper = ({
   activeStep,
   completedSteps,
   handleChangeStep,
-  children
+  steps
 }: Props) => (
   <div className="steppers bg-white shadow-sm">
     <div className="container">
       <ul className="steppers-header">
-        {children.map((child: any, index: number) => (
+        {steps.map((step: Step, index: number) => (
           <Step
-            key={child.props.children}
+            key={step.key}
             index={index + 1}
             stepType={
               activeStep === index
                 ? "active"
-                : completedSteps.includes(index)
+                : completedSteps.includes(step.key)
                 ? "confirmed"
                 : ""
             }
             handleChangeStep={
-              completedSteps.includes(index)
+              completedSteps.includes(step.key)
                 ? () => handleChangeStep(index)
                 : null
             }
           >
-            {child.props.children}
+            {step.label}
           </Step>
         ))}
         <li className="steppers-index" aria-hidden="true">
-          {children.map((child: any, index: number) => (
-            <span key={child.props.children}>{index}</span>
+          {steps.map((step: Step, index: number) => (
+            <span key={step.key}>{index}</span>
           ))}
         </li>
       </ul>

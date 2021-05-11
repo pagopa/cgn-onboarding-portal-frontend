@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -7,6 +7,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
 import Api from "../../../../api";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
 import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
@@ -16,8 +17,9 @@ import { RootState } from "../../../../store/store";
 import FormSection from "../../FormSection";
 import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import { CreateDiscount } from "../../../../api/generated";
 
-const initialValues = {
+const emptyInitialValues = {
   discounts: [
     {
       name: "",
@@ -58,15 +60,19 @@ const validationSchema = Yup.object().shape({
 
 type Props = {
   isCompleted: boolean;
-  handleBack: any;
-  handleNext: any;
-  handleSuccess: any;
+  handleBack: () => void;
+  handleNext: () => void;
 };
 
-const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
+const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
+  const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
+  const [loading, setLoading] = useState(true);
 
-  const createDiscount = async (agreementId: string, discount: any) =>
+  const createDiscount = async (
+    agreementId: string,
+    discount: CreateDiscount
+  ) =>
     await tryCatch(
       () => Api.Discount.createDiscount(agreementId, discount),
       toError
@@ -75,11 +81,35 @@ const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
       .fold(
         () => void 0,
         () => {
-          handleSuccess();
           handleNext();
         }
       )
       .run();
+
+  const getDiscounts = async (agreementId: string) =>
+    await tryCatch(() => Api.Discount.getDiscounts(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => setLoading(false),
+        discounts => {
+          setInitialValues({ discounts: discounts.items });
+          setLoading(false);
+        }
+      )
+      .run();
+
+  useEffect(() => {
+    if (isCompleted) {
+      setLoading(true);
+      void getDiscounts(agreement.id);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) {
+    return <CenteredLoading />;
+  }
 
   return (
     <Formik
@@ -87,13 +117,13 @@ const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
       validationSchema={validationSchema}
       onSubmit={values => {
         const newValues = {
-          discounts: values.discounts.map(discount => ({
+          discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
             startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
             endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
           }))
         };
-        newValues.discounts.forEach(discount => {
+        newValues.discounts.forEach((discount: CreateDiscount) => {
           void createDiscount(agreement.id, discount);
         });
       }}
