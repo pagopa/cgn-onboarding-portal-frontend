@@ -17,7 +17,7 @@ function App() {
 
   useEffect(() => {
     if (search) {
-      const urlToken = search.replace("?token=", "");
+      const urlToken = search.replace("#token=", "");
       setCookie(urlToken);
       window.location.replace("/");
     }
