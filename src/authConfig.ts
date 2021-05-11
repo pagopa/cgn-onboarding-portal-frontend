@@ -1,4 +1,4 @@
-import * as Msal from "msal";
+import * as Msal from "@azure/msal-browser";
 
 const msalConfig = {
   auth: {
@@ -8,14 +8,14 @@ const msalConfig = {
     redirectUri: process.env.MSAL_REDIRECT_URI as string,
   },
   cache: {
-    cacheLocation: "sessionStorage" as Msal.CacheLocation,
+    cacheLocation: "sessionStorage",
     storeAuthStateInCookie: false,
   }
 };  
   
 export const loginRequest = {
-  scopes: ["openid", "profile", "User.Read"]
+  scopes: ["openid"]
 };
 
 
-export const AdminAccess = new Msal.UserAgentApplication(msalConfig);
+export const AdminAccess = new Msal.PublicClientApplication(msalConfig);

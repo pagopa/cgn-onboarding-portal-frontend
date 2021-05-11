@@ -27,7 +27,7 @@ export const getCookie = () => {
 export function logout(userType: string) {
   deleteCookie();
   if (userType === "ADMIN") {
-    AdminAccess.logout();
+    AdminAccess.logoutRedirect();
   }
   window.location.replace("/");
 }

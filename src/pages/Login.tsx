@@ -8,19 +8,22 @@ import { AdminAccess, loginRequest } from "../authConfig";
 
 const Login = () => {
   useEffect(() => {
-    AdminAccess.handleRedirectCallback(authRedirectCallBack);
+    AdminAccess.handleRedirectPromise()
+      .then(response => {
+        console.log(response);
+        // if (response) {
+        //   setCookie(response.idToken.rawIdToken);
+        //   window.location.replace("/");
+        // }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }, []);
 
   const AdminLogin = () => {
     AdminAccess.loginRedirect(loginRequest);
   };
-
-  function authRedirectCallBack(error: any, response: any) {
-    if (!error) {
-      setCookie(response.idToken.rawIdToken);
-      window.location.replace("/");
-    }
-  }
 
   return (
     <Layout>
