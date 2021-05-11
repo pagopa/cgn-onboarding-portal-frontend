@@ -5,12 +5,13 @@ import Stepper from "../components/Stepper/Stepper";
 import Documentation from "../components/Form/CreateProfileForm/Documentation/Documentation";
 import ProfileData from "../components/Form/CreateProfileForm/ProfileData/ProfileData";
 import DiscountData from "../components/Form/CreateProfileForm/DiscountData/DiscountData";
-import Documents from "../components/Form/CreateProfileForm/Documents";
+import Documents from "../components/Form/CreateProfileForm/Documents/Documents";
 import { RootState } from "../store/store";
 import { CompletedStep } from "../api/generated";
 
 const CreateProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
+  const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(agreement.completedSteps.length);
   const [completedSteps, setCompletedSteps] = useState<Array<string>>(
     agreement.completedSteps
@@ -25,9 +26,12 @@ const CreateProfile = () => {
 
   useEffect(() => {
     if (agreement.completedSteps.includes(CompletedStep.Profile)) {
-      setCompletedSteps([...completedSteps, "Documentation"]);
-      setStep(step + 1);
+      setCompletedSteps([...completedSteps, "Guide"]);
+      if (step < 3) {
+        setStep(step + 1);
+      }
     }
+    setLoading(false);
   }, []);
 
   const selectedTab = () => {
@@ -35,8 +39,8 @@ const CreateProfile = () => {
       case 0:
         return (
           <Documentation
-            isCompleted={completedSteps.includes("Documentation")}
-            handleNext={() => handleNext(1, "Documentation")}
+            isCompleted={completedSteps.includes("Guide")}
+            handleNext={() => handleNext(1, "Guide")}
           />
         );
       case 1:
@@ -66,7 +70,7 @@ const CreateProfile = () => {
     }
   };
 
-  return (
+  return !loading ? (
     <Layout hasHeaderBorder>
       <div className="bg-white">
         <div className="container p-10">
@@ -81,7 +85,7 @@ const CreateProfile = () => {
           handleChangeStep={setStep}
           steps={[
             {
-              key: "Documentation",
+              key: "Guide",
               label: "Documentazione"
             },
             {
@@ -101,7 +105,7 @@ const CreateProfile = () => {
       </div>
       {selectedTab()}
     </Layout>
-  );
+  ) : null;
 };
 
 export default CreateProfile;
