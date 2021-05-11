@@ -4,14 +4,22 @@ import jwt_decode from 'jwt-decode';
 
 export const userSlice = createSlice({
 	name: 'user',
-	initialState: { data: { level: '', company: { organization_name: '', organization_fiscal_code: ''} } , type: '', loading: true },
+	initialState: {
+		data: {
+			level: '',
+			fiscal_number: '',
+			company: { organization_name: '', organization_fiscal_code: '' }
+		},
+		type: '',
+		loading: true
+	},
 	reducers: {
 		setUser: (state, action) => {
 			const decoded = jwt_decode(action.payload) as any;
 			state.loading = false;
 			state.data = decoded;
 			state.type = decoded.iss === 'SPID' ? 'USER' : 'ADMIN';
-		},
+		}
 	}
 });
 
