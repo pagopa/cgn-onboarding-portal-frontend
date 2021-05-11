@@ -9,7 +9,7 @@ import DiscountData from "../components/Form/CreateProfileForm/DiscountData/Disc
 import Documents from "../components/Form/CreateProfileForm/Documents";
 import { RootState } from "../store/store";
 
-const EditProfile = () => {
+const CreateProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [step, setStep] = useState(agreement.completedSteps?.length);
   const [completedSteps, setCompletedSteps] = useState<Array<number>>(
@@ -86,4 +86,4 @@ const EditProfile = () => {
   );
 };
 
-export default EditProfile;
+export default CreateProfile;

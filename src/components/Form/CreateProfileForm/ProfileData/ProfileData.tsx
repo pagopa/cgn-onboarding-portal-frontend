@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -12,33 +12,6 @@ import ReferentData from "./ReferentData";
 import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
-
-// TODO riempire gli initial values con i dati dello user
-const initialValues = {
-  fullName: "PagoPA S.p.A.",
-  hasDifferentFullName: false,
-  name: "",
-  pecAddress: "",
-  taxCodeOrVat: "1537637100912345",
-  legalOffice: "",
-  telephoneNumber: "",
-  legalRepresentativeFullName: "",
-  legalRepresentativeTaxCode: "",
-  referent: {
-    firstName: "",
-    lastName: "",
-    role: "",
-    emailAddress: "",
-    telephoneNumber: ""
-  },
-  description: "",
-  salesChannel: {
-    channelType: "",
-    websiteUrl: "",
-    discountCodeType: "",
-    addresses: [{ street: "", zipCode: "", city: "", district: "" }]
-  }
-};
 
 const validationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
@@ -112,6 +85,7 @@ const ProfileData = ({
   handleSuccess
 }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
+  const [initialValues, setInitialValues] = useState<any>({});
 
   const createProfile = (discount: any) => {
     if (agreement) {
@@ -124,7 +98,7 @@ const ProfileData = ({
       .map(response => response.data)
       .fold(
         () => void 0,
-        profile => (initialValues = profile)
+        profile => setInitialValues(profile)
       )
       .run();
 
@@ -134,6 +108,7 @@ const ProfileData = ({
 
   return (
     <Formik
+      enableReinitialize
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={values => {
