@@ -17,7 +17,7 @@ import { RootState } from "../../../../store/store";
 import FormSection from "../../FormSection";
 import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
-import { CreateDiscount } from "../../../../api/generated";
+import { CreateDiscount, Discount } from "../../../../api/generated";
 
 const emptyInitialValues = {
   discounts: [
@@ -64,6 +64,7 @@ type Props = {
   handleNext: () => void;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
@@ -80,9 +81,19 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
       .map(response => response.data)
       .fold(
         () => void 0,
-        () => {
-          handleNext();
-        }
+        () => handleNext()
+      )
+      .run();
+
+  const updateDiscount = async (agreementId: string, discount: Discount) =>
+    await tryCatch(
+      () => Api.Discount.updateDiscount(agreementId, discount.id, discount),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        () => handleNext()
       )
       .run();
 
@@ -103,6 +114,12 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
         }
       )
       .run();
+
+  const deleteDiscount = async (agreementId: string, discountId: string) =>
+    await tryCatch(
+      () => Api.Discount.deleteDiscount(agreementId, discountId),
+      toError
+    ).run();
 
   useEffect(() => {
     if (isCompleted) {
@@ -130,11 +147,15 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
           }))
         };
         newValues.discounts.forEach((discount: CreateDiscount) => {
-          void createDiscount(agreement.id, discount);
+          if (isCompleted) {
+            void updateDiscount(agreement.id, discount as Discount);
+          } else {
+            void createDiscount(agreement.id, discount);
+          }
         });
       }}
     >
-      {({ isValid, dirty, values, setFieldValue }) => (
+      {({ isValid, values, setFieldValue }) => (
         <Form autoComplete="off">
           <FieldArray
             name="discounts"
@@ -148,9 +169,14 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
                     <FormSection
                       hasIntroduction
                       hasClose={index >= 1}
-                      handleClose={
-                        index >= 1 ? () => arrayHelpers.remove(index) : null
-                      }
+                      handleClose={() => {
+                        if (index >= 1) {
+                          if (isCompleted) {
+                            void deleteDiscount(agreement.id, discount.id);
+                          }
+                          arrayHelpers.remove(index);
+                        }
+                      }}
                     >
                       <DiscountInfo
                         formValues={values}
@@ -222,7 +248,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
                               className="px-14 mr-4"
                               color="primary"
                               tag="button"
-                              disabled={!(isValid && dirty)}
+                              disabled={!isValid}
                             >
                               Continua
                             </Button>

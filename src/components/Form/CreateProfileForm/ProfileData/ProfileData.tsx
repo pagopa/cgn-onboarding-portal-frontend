@@ -89,6 +89,14 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
     }
   };
 
+  const updateProfile = (discount: any) => {
+    if (agreement) {
+      void Api.Profile.updateProfile(agreement.id, discount);
+    }
+  };
+
+  const submitProfile = () => (isCompleted ? updateProfile : createProfile);
+
   const getProfile = async (agreementId: string) =>
     await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
       .map(response => response.data)
@@ -124,11 +132,10 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
       validationSchema={validationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...discount } = values;
-
-        if (discount.salesChannel.channelType === "OnlineChannel") {
+        if (discount.salesChannel?.channelType === "OnlineChannel") {
           const newSalesChannel = discount.salesChannel;
           const { addresses, ...salesChannel } = newSalesChannel;
-          createProfile({ ...discount, salesChannel });
+          submitProfile()({ ...discount, salesChannel });
         } else {
           const newSalesChannel = discount.salesChannel;
           const {
@@ -136,7 +143,7 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
             discountCodeType,
             ...salesChannel
           } = newSalesChannel;
-          createProfile({ ...discount, salesChannel });
+          submitProfile()({ ...discount, salesChannel });
         }
         handleNext();
       }}

@@ -179,7 +179,7 @@ const SalesChannels = ({
                           </span>
                         </div>
                         {!hasBothChannels(
-                          formValues.salesChannel.channelType
+                          formValues.salesChannel?.channelType
                         ) && (
                           <div className="mt-10">
                             <Button
@@ -212,7 +212,7 @@ const SalesChannels = ({
         )}
       ></FieldArray>
     )}
-    {hasOnlineOrBothChannels(formValues.salesChannel.channelType) && (
+    {hasOnlineOrBothChannels(formValues.salesChannel?.channelType) && (
       <FormSection
         title="Sito web"
         description="Inserire l'URL del proprio e-commerce"
