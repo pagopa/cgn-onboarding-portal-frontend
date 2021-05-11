@@ -15,6 +15,7 @@ import SelectCompany from "../pages/SelectCompany";
 import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
 import { getCompanyCookie } from "../utils/cookie";
+import { setCompany } from "../store/user/userSlice";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -43,10 +44,11 @@ export const RouterConfig = ({
   const isAdmin = userType === "ADMIN";
 
   useEffect(() => {
+    // if (!companyCookie && user.companies) {
     if (!companyCookie && user.iss) {
       history.push(SELECT_COMPANY);
     } else if (!isAdmin) {
-      companyCookie(companyCookie);
+      dispatch(setCompany(companyCookie));
       dispatch(createAgreement());
     }
   }, []);

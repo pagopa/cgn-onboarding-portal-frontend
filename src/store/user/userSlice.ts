@@ -15,12 +15,13 @@ export const userSlice = createSlice({
 		setCompany: (state, action) => {
 			state.data = {
 				...state.data,
-				companies: state.data.companies.map((c) => ({...c, active: c.organization_fiscal_code === action.payload}))
+				active: action.payload
+				// companies: state.data.companies.map((c) => ({...c, active: c.organization_fiscal_code === action.payload}))
 			};
 		},
 	}
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setCompany } = userSlice.actions;
 
 export default userSlice.reducer;
