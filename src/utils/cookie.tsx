@@ -24,14 +24,6 @@ export const getCookie = () => {
   return cookies.get(cookieKey);
 };
 
-export function logout(userType: string) {
-  deleteCookie();
-  if (userType === "ADMIN") {
-    AdminAccess.logoutRedirect();
-  }
-  window.location.replace("/");
-}
-
 export function deleteCookie() {
   const cookies = new Cookies();
 
@@ -41,4 +33,12 @@ export function deleteCookie() {
   };
 
   cookies.remove(cookieKey, cookieOptions);
+}
+
+export function logout(userType: string) {
+  deleteCookie();
+  if (userType === "ADMIN") {
+    void AdminAccess.logoutRedirect();
+  }
+  window.location.replace("/");
 }
