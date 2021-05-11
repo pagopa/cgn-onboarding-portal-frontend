@@ -11,13 +11,12 @@ import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
-// TODO riempire gli initial values con i dati dello user
 const initialValues = {
-  fullName: "PagoPA S.p.A.",
+  fullName: "",
   hasDifferentFullName: false,
   name: "",
   pecAddress: "",
-  taxCodeOrVat: "1537637100912345",
+  taxCodeOrVat: "",
   legalOffice: "",
   telephoneNumber: "",
   legalRepresentativeFullName: "",
@@ -106,6 +105,7 @@ const ProfileData = ({ handleBack, handleNext, handleSuccess }: Props) => {
   const agreementState = useSelector(
     (state: RootState) => state.agreement.value
   );
+  const { data: user } = useSelector((state: RootState) => state.user);
 
   const createProfile = (discount: any) => {
     if (agreementState) {
@@ -115,7 +115,11 @@ const ProfileData = ({ handleBack, handleNext, handleSuccess }: Props) => {
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{
+        ...initialValues,
+        fullName: user.company.organization_name,
+        taxCodeOrVat: user.company.organization_fiscal_code
+      }}
       validationSchema={validationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...discount } = values;

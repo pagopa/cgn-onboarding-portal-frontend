@@ -24,21 +24,28 @@ import {
   ADMIN_PANEL
 } from "./routes";
 
-export const RouterConfig = ({ userType }: { userType: string }) => {
+export const RouterConfig = ({
+  user,
+  userType
+}: {
+  user: any;
+  userType: string;
+}) => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
   );
   const history = useHistory();
   const dispatch = useDispatch();
+  const isAdmin = userType === "ADMIN";
 
   useEffect(() => {
-    if (userType !== "ADMIN") {
+    if (!isAdmin) {
       dispatch(createAgreement());
     }
   }, []);
 
   useEffect(() => {
-    if (userType !== "ADMIN") {
+    if (!isAdmin) {
       switch (agreement.state) {
         case AgreementState.DraftAgreement:
           history.push(CREATE_PROFILE);
@@ -58,7 +65,7 @@ export const RouterConfig = ({ userType }: { userType: string }) => {
     <CenteredLoading />
   ) : (
     <Switch>
-      {userType === "USER" && (
+      {!isAdmin && (
         <>
           <Route exact path={DASHBOARD} component={Dashboard} />
           <Route exact path={HELP} component={Help} />
@@ -69,9 +76,7 @@ export const RouterConfig = ({ userType }: { userType: string }) => {
           <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
         </>
       )}
-      {userType === "ADMIN" && (
-        <Route exact path={ADMIN_PANEL} component={AdminPanel} />
-      )}
+      {isAdmin && <Route exact path={ADMIN_PANEL} component={AdminPanel} />}
     </Switch>
   );
 };
