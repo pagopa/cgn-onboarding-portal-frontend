@@ -92,7 +92,13 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
       .fold(
         () => setLoading(false),
         discounts => {
-          setInitialValues({ discounts: discounts.items });
+          setInitialValues({
+            discounts: discounts.items.map(discount => ({
+              ...discount,
+              startDate: new Date(discount.startDate),
+              endDate: new Date(discount.endDate)
+            }))
+          });
           setLoading(false);
         }
       )

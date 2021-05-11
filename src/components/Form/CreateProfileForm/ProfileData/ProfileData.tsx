@@ -95,7 +95,10 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
       .fold(
         () => setLoading(false),
         profile => {
-          setInitialValues(profile);
+          setInitialValues({
+            ...profile,
+            hasDifferentFullName: !!profile.name
+          });
           setLoading(false);
         }
       )

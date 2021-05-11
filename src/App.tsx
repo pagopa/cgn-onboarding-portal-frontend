@@ -6,6 +6,7 @@ import CenteredLoading from "./components/CenteredLoading/CenteredLoading";
 import RouterConfig from "./navigation/RouterConfig";
 import Login from "./pages/Login";
 import "./styles/bootstrap-italia-custom.scss";
+import "react-datepicker/dist/react-datepicker.css";
 import "typeface-titillium-web";
 import { RootState } from "./store/store";
 
