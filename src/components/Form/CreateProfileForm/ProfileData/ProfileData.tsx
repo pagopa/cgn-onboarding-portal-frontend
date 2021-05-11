@@ -11,7 +11,6 @@ import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
-// TODO riempire gli initial values con i dati dello user
 const initialValues = {
   fullName: "",
   hasDifferentFullName: false,
@@ -114,18 +113,12 @@ const ProfileData = ({ handleBack, handleNext, handleSuccess }: Props) => {
     }
   };
 
-  // eslint-disable-next-line functional/no-let
-  let currentCompany = user.company;
-  if (user.companies) {
-    currentCompany = user.companies.find((c: any) => c.active);
-  }
-
   return (
     <Formik
       initialValues={{
         ...initialValues,
-        fullName: currentCompany.organization_name,
-        taxCodeOrVat: currentCompany.organization_fiscal_code
+        fullName: user.company.organization_name,
+        taxCodeOrVat: user.company.organization_fiscal_code
       }}
       validationSchema={validationSchema}
       onSubmit={values => {

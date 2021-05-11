@@ -1,20 +1,47 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { logout, setCookie } from "../utils/cookie";
 import { RootState } from "../store/store";
-import { setCompanyCookie } from "../utils/cookie";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 
-const SelectCompany = () => {
+const SelectCompany = ({ token }: { token: string }) => {
   const { data } = useSelector((state: RootState) => state.user);
   const [selectedCompany, setCompany] = useState("");
   const user = data as any;
 
-  const saveSelectedCompany = () => {
-    setCompanyCookie(selectedCompany);
-    window.location.replace("/");
-  };
+  const saveSelectedCompany = async () =>
+    await tryCatch(
+      () =>
+        axios.post(
+          `${process.env.BASE_SPID_LOGIN_PATH}/upgradeToken`,
+          {
+            token,
+            organization_fiscal_code: selectedCompany
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            }
+          }
+        ),
+      toError
+    )
+      .map(response => response.data.token)
+      .fold(
+        () => logout("USER"),
+        response => {
+          setCookie(response.data.token);
+          window.location.replace("/");
+        }
+      )
+      .run();
 
   return (
     <Layout>
@@ -29,41 +56,43 @@ const SelectCompany = () => {
                 Per completare l’accesso, seleziona la società per la quale
                 intendi operare
               </p>
-              {/* {user.companies.map((company: any, i: number) => ( */}
-              {user.iss.split("").map((company: any, i: number) => (
+              {user.companies.map((company: any, i: number) => (
                 <div
                   key={i}
                   className="form-check pb-4"
                   style={{ borderBottom: "1px solid lightgray" }}
                 >
                   <input
-                    name={`company${i}`}
+                    name={`organization_fiscal_code_${i}`}
                     type="radio"
-                    id={`company${i}`}
-                    onChange={() => setCompany(`company${i}`)}
-                    // value={company.organization_fiscal_code}
-                    value={`company${i}`}
-                    checked={selectedCompany === `company${i}`}
+                    id={`organization_fiscal_code_${i}`}
+                    onChange={e => setCompany(e.target.value)}
+                    value={company.organization_fiscal_code}
+                    checked={
+                      selectedCompany === company.organization_fiscal_code
+                    }
                   />
-                  <label htmlFor={`company${i}`}>
-                    <strong>{company}</strong>
-                    {/* {company.organization_name} */}
-                    <small id={`company${i}`} className="form-text">
-                      CF/PIVA {`company${i}`}
-                      {/* {company.organization_fiscal_code} */}
+                  <label htmlFor={`organization_fiscal_code_${i}`}>
+                    <strong>{company.organization_name}</strong>
+                    <small
+                      id={`organization_fiscal_code_${i}`}
+                      className="form-text"
+                    >
+                      CF/PIVA {company.organization_fiscal_code}
                     </small>
                   </label>
                 </div>
               ))}
               <div className="mt-10 d-flex flex-row">
-                {/* <Button
+                <Button
                   className="px-14 mr-4"
                   outline
                   color="primary"
                   tag="button"
+                  onClick={() => logout("USER")}
                 >
                   Annulla
-                </Button> */}
+                </Button>
                 <Button
                   disabled={!selectedCompany}
                   className="px-14 mr-4"

@@ -11,11 +11,8 @@ import CreateDiscount from "../pages/CreateDiscount";
 import EditDiscount from "../pages/EditDiscount";
 import AdminPanel from "../pages/AdminPanel";
 import EditOperatorData from "../pages/EditOperatorData";
-import SelectCompany from "../pages/SelectCompany";
 import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
-import { getCompanyCookie } from "../utils/cookie";
-import { setCompany } from "../store/user/userSlice";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -24,8 +21,7 @@ import {
   CREATE_DISCOUNT,
   EDIT_DISCOUNT,
   EDIT_OPERATOR_DATA,
-  ADMIN_PANEL,
-  SELECT_COMPANY
+  ADMIN_PANEL
 } from "./routes";
 
 export const RouterConfig = ({
@@ -40,15 +36,10 @@ export const RouterConfig = ({
   );
   const history = useHistory();
   const dispatch = useDispatch();
-  const companyCookie = getCompanyCookie();
   const isAdmin = userType === "ADMIN";
 
   useEffect(() => {
-    // if (!companyCookie && user.companies) {
-    if (!companyCookie && user.iss) {
-      history.push(SELECT_COMPANY);
-    } else if (!isAdmin) {
-      dispatch(setCompany(companyCookie));
+    if (!isAdmin) {
       dispatch(createAgreement());
     }
   }, []);
@@ -76,7 +67,6 @@ export const RouterConfig = ({
     <Switch>
       {!isAdmin && (
         <>
-          <Route exact path={SELECT_COMPANY} component={SelectCompany} />
           <Route exact path={DASHBOARD} component={Dashboard} />
           <Route exact path={HELP} component={Help} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />

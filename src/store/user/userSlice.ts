@@ -4,7 +4,7 @@ import jwt_decode from 'jwt-decode';
 
 export const userSlice = createSlice({
 	name: 'user',
-	initialState: { data: {}, type: '', loading: true },
+	initialState: { data: { level: '' }, type: '', loading: true },
 	reducers: {
 		setUser: (state, action) => {
 			const decoded = jwt_decode(action.payload) as any;
@@ -12,16 +12,9 @@ export const userSlice = createSlice({
 			state.data = decoded;
 			state.type = decoded.iss === 'SPID' ? 'USER' : 'ADMIN';
 		},
-		setCompany: (state, action) => {
-			state.data = {
-				...state.data,
-				active: action.payload
-				// companies: state.data.companies.map((c) => ({...c, active: c.organization_fiscal_code === action.payload}))
-			};
-		},
 	}
 });
 
-export const { setUser, setCompany } = userSlice.actions;
+export const { setUser } = userSlice.actions;
 
 export default userSlice.reducer;
