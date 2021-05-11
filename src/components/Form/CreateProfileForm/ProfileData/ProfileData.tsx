@@ -14,6 +14,32 @@ import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
+const defaultInitialValues = {
+  fullName: "",
+  hasDifferentFullName: false,
+  name: "",
+  pecAddress: "",
+  taxCodeOrVat: "",
+  legalOffice: "",
+  telephoneNumber: "",
+  legalRepresentativeFullName: "",
+  legalRepresentativeTaxCode: "",
+  referent: {
+    firstName: "",
+    lastName: "",
+    role: "",
+    emailAddress: "",
+    telephoneNumber: ""
+  },
+  description: "",
+  salesChannel: {
+    channelType: "",
+    websiteUrl: "",
+    discountCodeType: "",
+    addresses: [{ street: "", zipCode: "", city: "", district: "" }]
+  }
+};
+
 const validationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
   name: Yup.string().when(["hasDifferentName"], {
@@ -80,7 +106,8 @@ type Props = {
 
 const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [initialValues, setInitialValues] = useState<any>({});
+  const user = useSelector((state: RootState) => state.user.data);
+  const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const [loading, setLoading] = useState(true);
 
   const createProfile = (discount: any) => {
@@ -127,8 +154,11 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
 
   return (
     <Formik
-      enableReinitialize
-      initialValues={initialValues}
+      initialValues={{
+        ...initialValues,
+        fullName: user.company.organization_name,
+        taxCodeOrVat: user.company.organization_fiscal_code
+      }}
       validationSchema={validationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...discount } = values;
