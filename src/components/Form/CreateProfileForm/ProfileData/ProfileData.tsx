@@ -11,6 +11,7 @@ import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
+// TODO riempire gli initial values con i dati dello user
 const initialValues = {
   fullName: "PagoPA S.p.A.",
   hasDifferentFullName: false,
@@ -96,17 +97,17 @@ const validationSchema = Yup.object().shape({
 });
 
 type Props = {
-  handleSuccess: any;
   handleBack: any;
   handleNext: any;
+  handleSuccess: any;
 };
 
-const ProfileData = ({ handleSuccess, handleBack, handleNext }: Props) => {
+const ProfileData = ({ handleBack, handleNext, handleSuccess }: Props) => {
   const agreementState = useSelector(
     (state: RootState) => state.agreement.value
   );
 
-  const createDiscount = (discount: any) => {
+  const createProfile = (discount: any) => {
     if (agreementState) {
       void Api.Profile.createProfile(agreementState.id, discount);
     }
@@ -122,7 +123,7 @@ const ProfileData = ({ handleSuccess, handleBack, handleNext }: Props) => {
         if (discount.salesChannel.channelType === "OnlineChannel") {
           const newSalesChannel = discount.salesChannel;
           const { addresses, ...salesChannel } = newSalesChannel;
-          createDiscount({ ...discount, salesChannel });
+          createProfile({ ...discount, salesChannel });
         } else {
           const newSalesChannel = discount.salesChannel;
           const {
@@ -130,13 +131,14 @@ const ProfileData = ({ handleSuccess, handleBack, handleNext }: Props) => {
             discountCodeType,
             ...salesChannel
           } = newSalesChannel;
-          createDiscount({ ...discount, salesChannel });
+          createProfile({ ...discount, salesChannel });
         }
 
+        handleSuccess();
         handleNext();
       }}
     >
-      {({ errors, touched, values, isValid }) => (
+      {({ errors, touched, values, isValid, dirty }) => (
         <Form autoComplete="off">
           <FormContainer className="mb-20">
             <ProfileInfo
@@ -155,8 +157,7 @@ const ProfileData = ({ handleSuccess, handleBack, handleNext }: Props) => {
               handleBack={handleBack}
               formValues={values}
               isValid={isValid}
-              errors={errors}
-              touched={touched}
+              dirty={dirty}
             />
           </FormContainer>
         </Form>
