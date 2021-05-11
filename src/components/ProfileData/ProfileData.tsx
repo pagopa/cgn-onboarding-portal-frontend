@@ -10,6 +10,7 @@ import ProfileDataItem from "./ProfileDataItem";
 
 const ProfileData = () => {
   const [profile, setProfile] = useState<any>(null);
+  const [image, setImage] = useState<any>(null);
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
   const getProfile = async (agreementId: string) =>
@@ -24,6 +25,9 @@ const ProfileData = () => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     agreement && getProfile(agreement.id);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    agreement &&
+      setImage(`${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`);
   }, []);
 
   return (
@@ -36,10 +40,12 @@ const ProfileData = () => {
             </h2>
             <table className="table">
               <tbody>
-                <ProfileDataItem
-                  label="Nome operatore visualizzato"
-                  value={profile.name}
-                />
+                {profile.name && (
+                  <ProfileDataItem
+                    label="Nome operatore visualizzato"
+                    value={profile.name}
+                  />
+                )}
                 <ProfileDataItem
                   label="Descrizione dell'operatore"
                   value={profile.description}
@@ -54,7 +60,21 @@ const ProfileData = () => {
                   label="Indirizzo"
                   value={profile.legalOffice}
                 />
-                <ProfileDataItem label="Immagine operatore" />
+                {profile.image && (
+                  <tr>
+                    <td className="px-0 border-bottom-0">Immagine operatore</td>
+                    <td className="text-gray border-bottom-0">
+                      <img
+                        src={image}
+                        style={{
+                          width: "170px",
+                          height: "130px",
+                          objectFit: "cover"
+                        }}
+                      />
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
             <Link
