@@ -38,21 +38,21 @@ const validationSchema = Yup.object().shape({
   discounts: Yup.array().of(
     Yup.object().shape({
       name: Yup.string()
-        .max(100)
-        .required(),
+        .max(100, "Massimo 100 caratteri")
+        .required("Campo Obbligatorio"),
       description: Yup.string()
-        .max(250)
-        .required(),
-      startDate: Yup.string().required(),
-      endDate: Yup.string().required(),
+        .max(250, "Massimo 250 caratteri")
+        .required("Campo Obbligatorio"),
+      startDate: Yup.string().required("Campo Obbligatorio"),
+      endDate: Yup.string().required("Campo Obbligatorio"),
       discount: Yup.number()
-        .min(1)
-        .max(100)
-        .required(),
+        .min(1, "Almeno un carattere")
+        .max(100, "Massimo 100 caratteri")
+        .required("Campo Obbligatorio"),
       productCategories: Yup.array()
-        .min(1)
+        .min(1, "Almeno un carattere")
         .required(),
-      condition: Yup.string().max(200),
+      condition: Yup.string().max(200, "Massimo 200 caratteri"),
       staticCode: Yup.string()
     })
   )
