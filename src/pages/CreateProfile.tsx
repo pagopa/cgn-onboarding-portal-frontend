@@ -63,7 +63,6 @@ const CreateProfile = () => {
         return (
           <Documents
             isCompleted={completedSteps.includes("Document")}
-            handleNext={() => handleNext(4)}
             handleBack={() => setStep(2)}
           />
         );

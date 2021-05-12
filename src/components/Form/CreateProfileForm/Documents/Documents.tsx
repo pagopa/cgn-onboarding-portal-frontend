@@ -9,17 +9,18 @@ import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
 import { Documents } from "../../../../api/generated";
 import FileRow from "./FileRow";
+import RequestApproval from "./RequestApproval";
 
 type Props = {
   handleBack: () => void;
-  handleNext: () => void;
   isCompleted: boolean;
 };
 
-const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
+const Documents = ({ handleBack, isCompleted }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [loading, setLoading] = useState(true);
   const [documents, setDocuments] = useState<Documents>({ items: [] });
+  const [showRequireApproval, setShowRequireApproval] = useState(false);
 
   const getFiles = async () =>
     await tryCatch(() => Api.Document.getDocuments(agreement.id), toError)
@@ -34,7 +35,9 @@ const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
       .run();
 
   const requireApproval = () => {
-    void Api.Agreement.requestApproval(agreement.id).then(() => handleNext());
+    void Api.Agreement.requestApproval(agreement.id).then(() =>
+      setShowRequireApproval(true)
+    );
   };
 
   const getUploadedDoc = (type: string) =>
@@ -48,6 +51,10 @@ const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
 
   if (loading) {
     return <CenteredLoading />;
+  }
+
+  if (showRequireApproval) {
+    return <RequestApproval />;
   }
 
   return (
@@ -74,7 +81,7 @@ const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
           label="Manifestazione di interesse"
           agreementId={agreement.id}
         />
-        {allUploaded && (
+        {(isCompleted || allUploaded) && (
           <p className="mt-8 text-gray">
             Invia la tua candidatura per approvazione. <br />
             Invieremo un messaggio all’indirizzo e-mail del referente con
@@ -82,7 +89,7 @@ const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
           </p>
         )}
         <div className="mt-10">
-          {!allUploaded ? (
+          {!isCompleted || !allUploaded ? (
             <Button
               className="px-14 mr-4"
               color="primary"
