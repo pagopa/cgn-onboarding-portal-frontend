@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { identity } from "fp-ts/lib/function";
 import { useTooltip, Severity } from "../../context/tooltip";
 import Api from "../../api/backoffice";
 import { ApprovedAgreementDiscount } from "../../api/generated_backoffice";
