@@ -55,7 +55,7 @@ const CreateProfile = () => {
         return (
           <DiscountData
             isCompleted={completedSteps.includes("Discount")}
-            handleNext={() => handleNext(3)}
+            handleNext={() => handleNext(3, "Discount")}
             handleBack={() => setStep(1)}
           />
         );

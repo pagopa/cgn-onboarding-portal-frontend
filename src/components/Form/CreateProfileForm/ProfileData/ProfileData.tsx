@@ -157,7 +157,8 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
       initialValues={{
         ...initialValues,
         fullName: user.company?.organization_name || "",
-        taxCodeOrVat: user.company?.organization_fiscal_code || ""
+        taxCodeOrVat:
+          user.company?.organization_fiscal_code || user.fiscal_number || ""
       }}
       validationSchema={validationSchema}
       onSubmit={values => {
