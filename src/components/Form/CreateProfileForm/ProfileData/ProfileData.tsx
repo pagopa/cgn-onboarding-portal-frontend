@@ -14,6 +14,13 @@ import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
+const defaultSalesChannel = {
+  channelType: "",
+  websiteUrl: "",
+  discountCodeType: "",
+  addresses: [{ street: "", zipCode: "", city: "", district: "" }]
+};
+
 const defaultInitialValues = {
   fullName: "",
   hasDifferentFullName: false,
@@ -32,12 +39,7 @@ const defaultInitialValues = {
     telephoneNumber: ""
   },
   description: "",
-  salesChannel: {
-    channelType: "",
-    websiteUrl: "",
-    discountCodeType: "",
-    addresses: [{ street: "", zipCode: "", city: "", district: "" }]
-  }
+  salesChannel: defaultSalesChannel
 };
 
 const validationSchema = Yup.object().shape({
@@ -156,6 +158,10 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
     <Formik
       initialValues={{
         ...initialValues,
+        salesChannel: {
+          ...defaultSalesChannel,
+          ...initialValues.salesChannel
+        },
         fullName: user.company?.organization_name || "test",
         taxCodeOrVat:
           user.company?.organization_fiscal_code || user.fiscal_number || ""
@@ -179,26 +185,17 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
         handleNext();
       }}
     >
-      {({ errors, touched, values, isValid, dirty }) => (
+      {({ values, isValid }) => (
         <Form autoComplete="off">
           <FormContainer className="mb-20">
-            <ProfileInfo
-              errors={errors}
-              touched={touched}
-              formValues={values}
-            />
-            <ReferentData errors={errors} touched={touched} />
+            <ProfileInfo formValues={values} />
+            <ReferentData />
             <ProfileImage />
-            <ProfileDescription
-              errors={errors}
-              touched={touched}
-              formValues={values}
-            />
+            <ProfileDescription />
             <SalesChannels
               handleBack={handleBack}
               formValues={values}
               isValid={isValid}
-              dirty={dirty}
             />
           </FormContainer>
         </Form>

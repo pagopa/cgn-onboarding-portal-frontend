@@ -4,12 +4,10 @@ import FormSection from "../../FormSection";
 import InputField from "../../FormField";
 
 type Props = {
-  errors: any;
-  touched: any;
   children?: any;
 };
 
-const ReferentData = ({ errors, touched, children }: Props) => (
+const ReferentData = ({ children }: Props) => (
   <FormSection
     title="Dati e contatti del referente incaricato"
     description="Indicare il nome della persona responsabile del programma CGN per conto dell'Operatore"
