@@ -71,14 +71,13 @@ const FileRow = ({
           setLoadingDoc(false);
         },
         response => {
-          if (response.status) {
-            getFiles();
-          } else {
-            triggerTooltip({
-              severity: Severity.DANGER,
-              text: "Caricamento del file fallito"
-            });
-          }
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          response.status
+            ? getFiles()
+            : triggerTooltip({
+                severity: Severity.DANGER,
+                text: "Caricamento del file fallito"
+              });
           setLoadingDoc(false);
         }
       )
