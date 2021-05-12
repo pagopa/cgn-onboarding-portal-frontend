@@ -61,22 +61,25 @@ export const RouterConfig = ({
     }
   }, [agreement.state]);
 
+  if (isAdmin) {
+    return (
+      <Switch>
+        <Route exact path={ADMIN_PANEL} component={AdminPanel} />
+      </Switch>
+    );
+  }
+
   return loading ? (
     <CenteredLoading />
   ) : (
     <Switch>
-      {!isAdmin && (
-        <>
-          <Route exact path={DASHBOARD} component={Dashboard} />
-          <Route exact path={HELP} component={Help} />
-          <Route exact path={CREATE_PROFILE} component={CreateProfile} />
-          <Route exact path={EDIT_PROFILE} component={EditProfile} />
-          <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
-          <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
-          <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
-        </>
-      )}
-      {isAdmin && <Route exact path={ADMIN_PANEL} component={AdminPanel} />}
+      <Route exact path={DASHBOARD} component={Dashboard} />
+      <Route exact path={HELP} component={Help} />
+      <Route exact path={CREATE_PROFILE} component={CreateProfile} />
+      <Route exact path={EDIT_PROFILE} component={EditProfile} />
+      <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
+      <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
+      <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
     </Switch>
   );
 };
