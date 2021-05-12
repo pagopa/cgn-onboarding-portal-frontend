@@ -37,7 +37,13 @@ const FileRow = ({
   const getTemplates = async () => {
     setLoadingTemplate(true);
     await tryCatch(
-      () => Api.DocumentTemplate.downloadDocumentTemplate(agreementId, type),
+      () =>
+        Api.DocumentTemplate.downloadDocumentTemplate(agreementId, type, {
+          headers: {
+            "Content-Type": "application/pdf"
+          },
+          responseType: "arraybuffer"
+        }),
       toError
     )
       .map(response => response.data)
@@ -105,7 +111,7 @@ const FileRow = ({
             <div>{label}</div>
           )}
         </div>
-        {(!loadingTemplate || !loadingDoc) && (
+        {!loadingTemplate && !loadingDoc && (
           <>
             <div className="d-flex flex-row">
               {!uploadedDoc && (
