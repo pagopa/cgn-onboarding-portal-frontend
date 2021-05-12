@@ -1,4 +1,3 @@
-import { Tracing } from "node:trace_events";
 import React from "react";
 
 type Props = {

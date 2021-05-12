@@ -50,7 +50,7 @@ const Documentation = ({
         </div>
         <p className="mt-8 text-sm font-weight-normal text-gray">
           Cliccando su Continua, dichiari di aver letto e compreso l’
-          <a className="font-weight-semibold" onClick={toggle}>
+          <a className="font-weight-semibold cursor-pointer" onClick={toggle}>
             informativa sulla privacy
           </a>{" "}
           relativa all’iniziativa.

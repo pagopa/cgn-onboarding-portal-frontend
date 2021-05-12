@@ -20,7 +20,7 @@ function App() {
   const { hash = "" } = window.location;
 
   useEffect(() => {
-    if (hash) {
+    if (hash && !hash.includes("#state")) {
       const urlToken = hash.replace("#token=", "");
       setCookie(urlToken);
       window.location.replace("/");
@@ -30,7 +30,7 @@ function App() {
     }
   }, []);
 
-  if (!token && !hash) {
+  if (!token) {
     return <Login />;
   }
 
