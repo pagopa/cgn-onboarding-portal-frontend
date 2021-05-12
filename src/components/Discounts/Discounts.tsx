@@ -201,18 +201,16 @@ const Discounts = () => {
           </tbody>
         </table>
         <div className="mt-10">
-          <Link
-            to={{
-              pathname: EDIT_DISCOUNT,
-              state: { discountId: 2 }
-            }}
-            className="no-underline border mr-16"
-            style={{ border: "1px solid gray" }}
+          <Button
+            className="mr-4"
+            color="secondary"
+            outline
+            tag="button"
+            onClick={() => history.push(`edit-discount/${row.original.id}`)}
           >
             <Icon icon="it-pencil" padding={false} size="sm" />
-            <span className="text-gray">Modifica</span>
-          </Link>
-
+            <span>Modifica</span>
+          </Button>
           <Button
             color="primary"
             icon
