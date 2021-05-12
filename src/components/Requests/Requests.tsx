@@ -8,7 +8,6 @@ import React, {
 import { useTable, useExpanded, Row, UseExpandedRowProps } from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { identity } from "fp-ts/lib/function";
 import { Icon, Button } from "design-react-kit";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
@@ -37,16 +36,20 @@ const Requests = () => {
       toError
     )
       .map(response => response.data)
-      .fold(() => void 0, identity)
+      .fold(
+        () => setLoading(false),
+        response => {
+          setAgreements(response);
+          setLoading(false);
+        }
+      )
       .run();
 
   const getAgreements = (params?: any) => {
     if (!loading) {
       setLoading(true);
     }
-    void getAgreementsApi(params)
-      .then(response => setAgreements(response))
-      .finally(() => setLoading(false));
+    void getAgreementsApi(params);
   };
 
   useEffect(() => {
@@ -188,7 +191,10 @@ const Requests = () => {
                   outline
                   tag="button"
                   className="mt-3"
-                  onClick={() => refForm.current?.resetForm()}
+                  onClick={() => {
+                    refForm.current?.resetForm();
+                    getAgreements({});
+                  }}
                 >
                   Reimposta Tutto
                 </Button>

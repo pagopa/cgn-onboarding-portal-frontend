@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { identity } from "fp-ts/lib/function";
 import { Agreement } from "../../api/generated_backoffice";
 import Api from "../../api/backoffice";
 
@@ -26,10 +25,12 @@ const RequestsDetails = ({
 
   const assignAgreementsApi = async () =>
     await tryCatch(() => Api.Agreement.assignAgreement(original.id), toError)
-      .map(response => response.data)
       .fold(
         () => setLoading(false),
-        () => updateList()
+        () => {
+          updateList();
+          setLoading(false);
+        }
       )
       .run();
 
@@ -40,16 +41,24 @@ const RequestsDetails = ({
 
   const approveAgreementApi = async () =>
     await tryCatch(() => Api.Agreement.approveAgreement(original.id), toError)
-      .map(response => response.data)
       .fold(
         () => setLoading(false),
-        () => {
-          updateList();
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text: "La richiesta di convenzione è stata validata con successo.",
-            title: "Validazione Effettuata"
-          });
+        response => {
+          if (response.status === 204) {
+            updateList();
+            triggerTooltip({
+              severity: Severity.SUCCESS,
+              text:
+                "La richiesta di convenzione è stata validata con successo.",
+              title: "Validazione Effettuata"
+            });
+          } else {
+            triggerTooltip({
+              severity: Severity.DANGER,
+              text: "Errore durante la validazione"
+            });
+          }
+          setLoading(false);
         }
       )
       .run();
@@ -71,12 +80,13 @@ const RequestsDetails = ({
       .fold(
         () => setLoading(false),
         () => {
+          setLoading(false);
+          updateList();
           triggerTooltip({
             severity: Severity.SUCCESS,
             text: "La richiesta di convenzione è stata rifiutata con successo.",
             title: "Rifiuto inviato"
           });
-          updateList();
         }
       )
       .run();
@@ -197,7 +207,7 @@ const RequestsDetails = ({
               className="ml-4"
               onClick={assignAgreements}
             >
-              Prendi in carica
+              Prendi in carico
             </Button>
           )}
         </div>
