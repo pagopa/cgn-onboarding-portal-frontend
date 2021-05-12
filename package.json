@@ -1,6 +1,6 @@
 {
   "name": "cgn-onboarding-portal-frontend",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "license": "MIT",
   "scripts": {
     "start:prod": "NODE_ENV=production parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
@@ -25,7 +25,7 @@
     "typescript:dts": "node scripts/dts.js"
   },
   "dependencies": {
-    "@azure/msal-browser": "2.14.0",
+    "@azure/msal-browser": "^2.14.1",
     "@reduxjs/toolkit": "^1.5.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
@@ -33,6 +33,7 @@
     "classnames": "^2.2.6",
     "date-fns": "^2.16.1",
     "design-react-kit": "^3.3.3",
+    "file-saver": "^2.0.5",
     "formik": "^2.2.6",
     "fp-ts": "1.17.4",
     "fs": "^0.0.1-security",
@@ -68,6 +69,7 @@
     "@pagopa/ts-commons": "9.1.0",
     "@svgr/parcel-plugin-svgr": "^5.5.0",
     "@types/classnames": "^2.2.11",
+    "@types/file-saver": "^2.0.2",
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.9",
     "@types/react": "^16.9.56",
