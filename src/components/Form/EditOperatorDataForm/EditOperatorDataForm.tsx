@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { useHistory } from "react-router-dom";
@@ -14,6 +13,7 @@ import ProfileImage from "../CreateProfileForm/ProfileData/ProfileImage";
 import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { DASHBOARD } from "../../../navigation/routes";
+import { ProfileDataValidationSchema } from "../ValidationSchemas";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -42,74 +42,6 @@ const defaultInitialValues = {
   description: "",
   salesChannel: defaultSalesChannel
 };
-
-const validationSchema = Yup.object().shape({
-  hasDifferentName: Yup.boolean(),
-  name: Yup.string().when(["hasDifferentName"], {
-    is: true,
-    then: Yup.string().required("Campo obbligatorio")
-  }),
-  pecAddress: Yup.string()
-    .email("Deve essere una email")
-    .required("Campo obbligatorio"),
-  legalOffice: Yup.string().required("Campo obbligatorio"),
-  telephoneNumber: Yup.string()
-    .phone("IT", false, "Numero di telefono non valido")
-    .required("Campo obbligatorio"),
-  legalRepresentativeFullName: Yup.string()
-    .matches(/^[a-zA-Z\s]*$/)
-    .required(),
-  legalRepresentativeTaxCode: Yup.string()
-    .min(16, "Deve essere di 16 caratteri")
-    .max(16, "Deve essere di 16 caratteri")
-    .required("Campo obbligatorio"),
-  referent: Yup.object().shape({
-    firstName: Yup.string()
-      .matches(/^[a-zA-Z\s]*$/)
-      .required("Campo obbligatorio"),
-    lastName: Yup.string()
-      .matches(/^[a-zA-Z\s]*$/)
-      .required("Campo obbligatorio"),
-    role: Yup.string()
-      .matches(/^[a-zA-Z\s]*$/)
-      .required("Campo obbligatorio"),
-    emailAddress: Yup.string()
-      .email("Deve essere una email")
-      .required("Campo obbligatorio"),
-    telephoneNumber: Yup.string()
-      .phone("IT", false, "Numero di telefono non valido")
-      .required("Campo obbligatorio")
-  }),
-  description: Yup.string().required("Campo obbligatorio"),
-  salesChannel: Yup.object().shape({
-    channelType: Yup.mixed().oneOf([
-      "OnlineChannel",
-      "OfflineChannel",
-      "BothChannels"
-    ]),
-    websiteUrl: Yup.string().when("channelType", {
-      is: "OnlineChannel" || "BothChannels",
-      then: Yup.string().required("Campo obbligatorio")
-    }),
-    discountCodeType: Yup.string().when("channelType", {
-      is: "OnlineChannel" || "BothChannels",
-      then: Yup.string().required("Campo obbligatorio")
-    }),
-    addresses: Yup.array().when("channelType", {
-      is: "OfflineChannel" || "BothChannels",
-      then: Yup.array().of(
-        Yup.object().shape({
-          street: Yup.string().required("Campo obbligatorio"),
-          zipCode: Yup.string()
-            .matches(/^[0-9]*$/)
-            .required("Campo obbligatorio"),
-          city: Yup.string().required("Campo obbligatorio"),
-          district: Yup.string().required("Campo obbligatorio")
-        })
-      )
-    })
-  })
-});
 
 const EditOperatorDataForm = () => {
   const history = useHistory();
@@ -168,7 +100,7 @@ const EditOperatorDataForm = () => {
         taxCodeOrVat:
           user.company?.organization_fiscal_code || user.fiscal_number || ""
       }}
-      validationSchema={validationSchema}
+      validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...discount } = values;
         if (discount.salesChannel?.channelType === "OnlineChannel") {

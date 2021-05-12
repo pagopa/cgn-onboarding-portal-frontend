@@ -17,6 +17,7 @@ import FormSection from "../FormSection";
 import FormField from "../FormField";
 import { CreateDiscount, Discount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
+import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
@@ -28,30 +29,6 @@ const emptyInitialValues = {
   condition: "",
   staticCode: ""
 };
-
-const validationSchema = Yup.object().shape({
-  discounts: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string()
-        .max(100, "Massimo 100 caratteri")
-        .required("Campo Obbligatorio"),
-      description: Yup.string()
-        .max(250, "Massimo 250 caratteri")
-        .required("Campo Obbligatorio"),
-      startDate: Yup.string().required("Campo Obbligatorio"),
-      endDate: Yup.string().required("Campo Obbligatorio"),
-      discount: Yup.number()
-        .min(1, "Almeno un carattere")
-        .max(100, "Massimo 100 caratteri")
-        .required("Campo Obbligatorio"),
-      productCategories: Yup.array()
-        .min(1, "Almeno un carattere")
-        .required(),
-      condition: Yup.string().max(200, "Massimo 200 caratteri"),
-      staticCode: Yup.string()
-    })
-  )
-});
 
 const CreateDiscountForm = () => {
   const history = useHistory();
@@ -97,7 +74,7 @@ const CreateDiscountForm = () => {
   return (
     <Formik
       initialValues={emptyInitialValues}
-      validationSchema={validationSchema}
+      validationSchema={discountDataValidationSchema}
       onSubmit={values => {
         const newValues = {
           ...values,
@@ -131,30 +108,21 @@ const CreateDiscountForm = () => {
             >
               <DiscountConditions />
             </FormField>
-            <FormField
-              htmlFor="staticCode"
-              isTitleHeading
-              title="Codice statico"
-              description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-              isVisible
-              required
-            >
-              {profile &&
-                (profile.salesChannel.channelType === "OnlineChannel" ||
-                  profile.salesChannel.channelType === "BothChannels") &&
-                profile.salesChannel.discountCodeType === "Static" && (
-                  <FormField
-                    htmlFor="staticCode"
-                    isTitleHeading
-                    title="Codice statico"
-                    description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-                    isVisible
-                    required
-                  >
-                    <StaticCode />
-                  </FormField>
-                )}
-            </FormField>
+            {profile &&
+              (profile.salesChannel.channelType === "OnlineChannel" ||
+                profile.salesChannel.channelType === "BothChannels") &&
+              profile.salesChannel.discountCodeType === "Static" && (
+                <FormField
+                  htmlFor="staticCode"
+                  isTitleHeading
+                  title="Codice statico"
+                  description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                  isVisible
+                  required
+                >
+                  <StaticCode />
+                </FormField>
+              )}
             <div className="mt-10">
               <Button
                 className="px-14 mr-4"

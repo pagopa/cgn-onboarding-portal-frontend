@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import { Button } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
@@ -18,6 +17,7 @@ import FormSection from "../FormSection";
 import FormField from "../FormField";
 import { Discount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
+import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
@@ -29,30 +29,6 @@ const emptyInitialValues = {
   condition: "",
   staticCode: ""
 };
-
-const validationSchema = Yup.object().shape({
-  discounts: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string()
-        .max(100, "Massimo 100 caratteri")
-        .required("Campo Obbligatorio"),
-      description: Yup.string()
-        .max(250, "Massimo 250 caratteri")
-        .required("Campo Obbligatorio"),
-      startDate: Yup.string().required("Campo Obbligatorio"),
-      endDate: Yup.string().required("Campo Obbligatorio"),
-      discount: Yup.number()
-        .min(1, "Almeno un carattere")
-        .max(100, "Massimo 100 caratteri")
-        .required("Campo Obbligatorio"),
-      productCategories: Yup.array()
-        .min(1, "Almeno un carattere")
-        .required(),
-      condition: Yup.string().max(200, "Massimo 200 caratteri"),
-      staticCode: Yup.string()
-    })
-  )
-});
 
 const EditDiscountForm = () => {
   const { discountId } = useParams<any>();
@@ -130,7 +106,7 @@ const EditDiscountForm = () => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={discountDataValidationSchema}
       onSubmit={values => {
         const newValues = {
           ...values,
