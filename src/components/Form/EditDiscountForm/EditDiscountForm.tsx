@@ -60,6 +60,7 @@ const EditDiscountForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>();
 
   const updateDiscount = async (agreementId: string, discount: Discount) => {
     const {
@@ -101,9 +102,25 @@ const EditDiscountForm = () => {
       )
       .run();
 
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => setLoading(false),
+        profile => {
+          setProfile({
+            ...profile,
+            hasDifferentFullName: !!profile.name
+          });
+          setLoading(false);
+        }
+      )
+      .run();
+
   useEffect(() => {
     setLoading(true);
     void getDiscount(agreement.id);
+    void getProfile(agreement.id);
   }, []);
 
   if (loading) {
@@ -124,7 +141,7 @@ const EditDiscountForm = () => {
         void updateDiscount(agreement.id, newValues);
       }}
     >
-      {({ isValid, values, setFieldValue }) => (
+      {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           <FormSection hasIntroduction>
             <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
@@ -154,7 +171,21 @@ const EditDiscountForm = () => {
               description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
               isVisible
             >
-              <StaticCode />
+              {profile &&
+                (profile.salesChannel.channelType === "OnlineChannel" ||
+                  profile.salesChannel.channelType === "BothChannels") &&
+                profile.salesChannel.discountCodeType === "Static" && (
+                  <FormField
+                    htmlFor="staticCode"
+                    isTitleHeading
+                    title="Codice statico"
+                    description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                    isVisible
+                    required
+                  >
+                    <StaticCode />
+                  </FormField>
+                )}
             </FormField>
             <div className="mt-10">
               <Button

@@ -68,6 +68,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>();
 
   const createDiscount = async (
     agreementId: string,
@@ -129,6 +130,21 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
       toError
     ).run();
 
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => setLoading(false),
+        profile => {
+          setProfile({
+            ...profile,
+            hasDifferentFullName: !!profile.name
+          });
+          setLoading(false);
+        }
+      )
+      .run();
+
   useEffect(() => {
     if (isCompleted) {
       setLoading(true);
@@ -136,6 +152,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
     } else {
       setLoading(false);
     }
+    void getProfile(agreement.id);
   }, []);
 
   if (loading) {
@@ -210,16 +227,22 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
                       >
                         <DiscountConditions index={index} />
                       </FormField>
-                      <FormField
-                        htmlFor="staticCode"
-                        isTitleHeading
-                        title="Codice statico"
-                        description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-                        isVisible
-                        required
-                      >
-                        <StaticCode index={index} />
-                      </FormField>
+                      {profile &&
+                        (profile.salesChannel.channelType === "OnlineChannel" ||
+                          profile.salesChannel.channelType ===
+                            "BothChannels") &&
+                        profile.salesChannel.discountCodeType === "Static" && (
+                          <FormField
+                            htmlFor="staticCode"
+                            isTitleHeading
+                            title="Codice statico"
+                            description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                            isVisible
+                            required
+                          >
+                            <StaticCode index={index} />
+                          </FormField>
+                        )}
                       {values.discounts.length - 1 === index && (
                         <>
                           <div className="mt-8">

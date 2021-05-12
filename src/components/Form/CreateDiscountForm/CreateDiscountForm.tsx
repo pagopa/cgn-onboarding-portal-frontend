@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -56,6 +56,8 @@ const validationSchema = Yup.object().shape({
 const CreateDiscountForm = () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>();
 
   const createDiscount = async (
     agreementId: string,
@@ -71,6 +73,26 @@ const CreateDiscountForm = () => {
         () => history.push(DASHBOARD)
       )
       .run();
+
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => setLoading(false),
+        profile => {
+          setProfile({
+            ...profile,
+            hasDifferentFullName: !!profile.name
+          });
+          setLoading(false);
+        }
+      )
+      .run();
+
+  useEffect(() => {
+    setLoading(true);
+    void getProfile(agreement.id);
+  }, []);
 
   return (
     <Formik
@@ -113,10 +135,25 @@ const CreateDiscountForm = () => {
               htmlFor="staticCode"
               isTitleHeading
               title="Codice statico"
-              description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
+              description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
               isVisible
+              required
             >
-              <StaticCode />
+              {profile &&
+                (profile.salesChannel.channelType === "OnlineChannel" ||
+                  profile.salesChannel.channelType === "BothChannels") &&
+                profile.salesChannel.discountCodeType === "Static" && (
+                  <FormField
+                    htmlFor="staticCode"
+                    isTitleHeading
+                    title="Codice statico"
+                    description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                    isVisible
+                    required
+                  >
+                    <StaticCode />
+                  </FormField>
+                )}
             </FormField>
             <div className="mt-10">
               <Button
