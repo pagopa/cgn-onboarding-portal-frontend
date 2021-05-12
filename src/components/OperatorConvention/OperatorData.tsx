@@ -27,7 +27,12 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
         <div className="col-4 text-gray">Immagine operatore</div>
         <div className="col-8">
           {profile.imageUrl ? (
-            <img src={profile.imageUrl} alt="Immagine operatore" />
+            <img
+              width="300"
+              height="300"
+              src={`${process.env.BASE_IMAGE_PATH}/${profile.imageUrl}`}
+              alt="Immagine operatore"
+            />
           ) : (
             <span>Nessuna immagine</span>
           )}

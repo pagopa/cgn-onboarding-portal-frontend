@@ -112,7 +112,9 @@ const ConventionDetails = ({
   }, []);
 
   return loading ? (
-    <CenteredLoading />
+    <div className="mt-2 px-8 py-10 bg-white">
+      <CenteredLoading />
+    </div>
   ) : (
     <section>
       <div className="d-flex align-items-center justify-content-between mt-2 px-8 py-10 bg-white">

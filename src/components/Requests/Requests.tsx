@@ -191,7 +191,10 @@ const Requests = () => {
                   outline
                   tag="button"
                   className="mt-3"
-                  onClick={() => refForm.current?.resetForm()}
+                  onClick={() => {
+                    refForm.current?.resetForm();
+                    getAgreements({});
+                  }}
                 >
                   Reimposta Tutto
                 </Button>

@@ -98,7 +98,7 @@ const OperatorConvention = () => {
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <ConventionFilter refForm={refForm} getConventions={getConventions}/>
+      <ConventionFilter refForm={refForm} getConventions={getConventions} />
       {loading ? (
         <CenteredLoading />
       ) : (
@@ -165,7 +165,10 @@ const OperatorConvention = () => {
                   outline
                   tag="button"
                   className="mt-3"
-                  onClick={() => refForm.current?.resetForm()}
+                  onClick={() => {
+                    refForm.current?.resetForm();
+                    getConventions({});
+                  }}
                 >
                   Reimposta Tutto
                 </Button>

@@ -3,18 +3,19 @@ import { Document } from "../../api/generated_backoffice";
 import DocumentIcon from "../../assets/icons/document.svg";
 
 const Document = ({ doc, i }: { doc: Document; i: number }) => {
-  const splittedUrl = doc.documentUrl.split("/");
+  const label =
+    doc.documentType === "Agreement"
+      ? "Convenzione"
+      : "Manifestazione di interesse";
   return (
     <div className="mb-5">
-      <div className="mb-3 text-gray">
-        {doc.documentType === "Agreement" ? "Convenzione" : `Allegato ${i + 1}`}
-      </div>
+      <div className="mb-3 text-gray">{label}</div>
       <div className="d-flex flex-row align-items-center">
         <DocumentIcon className="mr-4" />
         <div>
           <div>
             <a href={doc.documentUrl} target="_blank" rel="noreferrer">
-              {splittedUrl[splittedUrl.length - 1]}
+              {label.replace(" ", "_")}.pdf
             </a>
           </div>
           <span className="text-muted" style={{ fontSize: "14px" }}>
