@@ -13,7 +13,7 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
       <Item label="Nome Operatore visualizzato" value={profile.fullName} />
       <Item label="Descrizione dell'operatore" value={profile.description} />
       <Item label="Sito web" value={salesChannel.websiteUrl || "-"} />
-      {salesChannel.addresses?.map((address, i) => {
+      {salesChannel.addresses?.map((address, i: number) => {
         const textAddress = `${address.city}, ${address.street} ${address.district}, ${address.zipCode}`;
         return (
           <Item
