@@ -69,6 +69,7 @@ const ProfileInfo = ({ formValues }: Props) => (
     </InputField>
     <InputField htmlFor="telephoneNumber" title="Numero di telefono" required>
       <Field
+        maxLength={15}
         id="telephoneNumber"
         name="telephoneNumber"
         type="text"
@@ -95,12 +96,14 @@ const ProfileInfo = ({ formValues }: Props) => (
       required
     >
       <Field
+        minLength={16}
+        maxLength={16}
         id="legalRepresentativeTaxCode"
         name="legalRepresentativeTaxCode"
         type="text"
         placeholder="Inserisci il Codice fiscale del Legale rappresentante dell’organizzazione"
       />
-       <ErrorMessage name="legalRepresentativeTaxCode" />
+      <ErrorMessage name="legalRepresentativeTaxCode" />
     </InputField>
   </FormSection>
 );

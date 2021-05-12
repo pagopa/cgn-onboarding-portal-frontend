@@ -39,7 +39,7 @@ const ReferentData = ({ children }: Props) => (
         name="referent.emailAddress"
         type="email"
       />
-      <ErrorMessage name="referent.email" />
+      <ErrorMessage name="referent.emailAddress" />
     </InputField>
     <InputField
       htmlFor="referent.telephoneNumber"
@@ -47,12 +47,13 @@ const ReferentData = ({ children }: Props) => (
       required
     >
       <Field
+        maxLength={15}
         id="referent.telephoneNumber"
         name="referent.telephoneNumber"
         type="tel"
         placeholder="Inserisci il numero di telefono"
       />
-      <ErrorMessage name="referent.referent" />
+      <ErrorMessage name="referent.telephoneNumber" />
     </InputField>
     {children}
   </FormSection>

@@ -37,33 +37,43 @@ const EditProfileForm = () => {
   };
 
   const validationSchema = Yup.object().shape({
-    fullName: Yup.string(),
     hasDifferentName: Yup.boolean(),
     name: Yup.string().when(["hasDifferentName"], {
       is: true,
-      then: Yup.string().required()
+      then: Yup.string().required("Campo obbligatorio")
     }),
     pecAddress: Yup.string()
-      .email()
-      .required(),
-    legalOffice: Yup.string().required(),
+      .email("Deve essere una email")
+      .required("Campo obbligatorio"),
+    legalOffice: Yup.string().required("Campo obbligatorio"),
     telephoneNumber: Yup.string()
-      .max(15)
+      .phone("IT", false, "Numero di telefono non valido")
+      .required("Campo obbligatorio"),
+    legalRepresentativeFullName: Yup.string()
+      .matches(/^[a-zA-Z\s]*$/)
       .required(),
-    legalRepresentativeFullName: Yup.string().required(),
-    legalRepresentativeTaxCode: Yup.string().required(),
+    legalRepresentativeTaxCode: Yup.string()
+      .min(16, "Deve essere di 16 caratteri")
+      .max(16, "Deve essere di 16 caratteri")
+      .required("Campo obbligatorio"),
     referent: Yup.object().shape({
-      firstName: Yup.string().required(),
-      lastName: Yup.string().required(),
-      role: Yup.string().required(),
+      firstName: Yup.string()
+        .matches(/^[a-zA-Z\s]*$/)
+        .required("Campo obbligatorio"),
+      lastName: Yup.string()
+        .matches(/^[a-zA-Z\s]*$/)
+        .required("Campo obbligatorio"),
+      role: Yup.string()
+        .matches(/^[a-zA-Z\s]*$/)
+        .required("Campo obbligatorio"),
       emailAddress: Yup.string()
-        .email()
-        .required(),
+        .email("Deve essere una email")
+        .required("Campo obbligatorio"),
       telephoneNumber: Yup.string()
-        .max(15)
-        .required()
+        .phone("IT", false, "Numero di telefono non valido")
+        .required("Campo obbligatorio")
     }),
-    description: Yup.string().required(),
+    description: Yup.string().required("Campo obbligatorio"),
     salesChannel: Yup.object().shape({
       channelType: Yup.mixed().oneOf([
         "OnlineChannel",
@@ -72,20 +82,22 @@ const EditProfileForm = () => {
       ]),
       websiteUrl: Yup.string().when("channelType", {
         is: "OnlineChannel" || "BothChannels",
-        then: Yup.string().required()
+        then: Yup.string().required("Campo obbligatorio")
       }),
       discountCodeType: Yup.string().when("channelType", {
         is: "OnlineChannel" || "BothChannels",
-        then: Yup.string().required()
+        then: Yup.string().required("Campo obbligatorio")
       }),
       addresses: Yup.array().when("channelType", {
         is: "OfflineChannel" || "BothChannels",
         then: Yup.array().of(
           Yup.object().shape({
-            street: Yup.string().required(),
-            zipCode: Yup.string().required(),
-            city: Yup.string().required(),
-            district: Yup.string().required()
+            street: Yup.string().required("Campo obbligatorio"),
+            zipCode: Yup.string()
+              .matches(/^[0-9]*$/)
+              .required("Campo obbligatorio"),
+            city: Yup.string().required("Campo obbligatorio"),
+            district: Yup.string().required("Campo obbligatorio")
           })
         )
       })

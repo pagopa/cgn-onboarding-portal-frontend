@@ -56,20 +56,28 @@ const validationSchema = Yup.object().shape({
   telephoneNumber: Yup.string()
     .phone("IT", false, "Numero di telefono non valido")
     .required("Campo obbligatorio"),
-  legalRepresentativeFullName: Yup.string().required(),
+  legalRepresentativeFullName: Yup.string()
+    .matches(/^[a-zA-Z\s]*$/)
+    .required(),
   legalRepresentativeTaxCode: Yup.string()
     .min(16, "Deve essere di 16 caratteri")
     .max(16, "Deve essere di 16 caratteri")
     .required("Campo obbligatorio"),
   referent: Yup.object().shape({
-    firstName: Yup.string().required("Campo obbligatorio"),
-    lastName: Yup.string().required("Campo obbligatorio"),
-    role: Yup.string().required("Campo obbligatorio"),
+    firstName: Yup.string()
+      .matches(/^[a-zA-Z\s]*$/)
+      .required("Campo obbligatorio"),
+    lastName: Yup.string()
+      .matches(/^[a-zA-Z\s]*$/)
+      .required("Campo obbligatorio"),
+    role: Yup.string()
+      .matches(/^[a-zA-Z\s]*$/)
+      .required("Campo obbligatorio"),
     emailAddress: Yup.string()
       .email("Deve essere una email")
       .required("Campo obbligatorio"),
     telephoneNumber: Yup.string()
-      .max(15, "Massimo 15 caratteri")
+      .phone("IT", false, "Numero di telefono non valido")
       .required("Campo obbligatorio")
   }),
   description: Yup.string().required("Campo obbligatorio"),
@@ -92,7 +100,9 @@ const validationSchema = Yup.object().shape({
       then: Yup.array().of(
         Yup.object().shape({
           street: Yup.string().required("Campo obbligatorio"),
-          zipCode: Yup.string().required("Campo obbligatorio"),
+          zipCode: Yup.string()
+            .matches(/^[0-9]*$/)
+            .required("Campo obbligatorio"),
           city: Yup.string().required("Campo obbligatorio"),
           district: Yup.string().required("Campo obbligatorio")
         })
