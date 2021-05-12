@@ -23,6 +23,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         required
       >
         <Field
+          maxLength={100}
           id="name"
           name={hasIndex ? `discounts[${index}].name` : "name"}
           type="text"

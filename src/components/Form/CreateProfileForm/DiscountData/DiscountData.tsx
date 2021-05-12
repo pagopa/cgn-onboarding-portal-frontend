@@ -64,7 +64,6 @@ type Props = {
   handleNext: () => void;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
