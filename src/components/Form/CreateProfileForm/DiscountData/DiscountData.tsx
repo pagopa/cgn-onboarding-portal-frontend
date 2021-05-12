@@ -85,9 +85,17 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
       )
       .run();
 
-  const updateDiscount = async (agreementId: string, discount: Discount) =>
+  const updateDiscount = async (agreementId: string, discount: Discount) => {
+    const {
+      id,
+      agreementId: agId,
+      state,
+      creationDate,
+      ...updatedDiscount
+    } = discount;
     await tryCatch(
-      () => Api.Discount.updateDiscount(agreementId, discount.id, discount),
+      () =>
+        Api.Discount.updateDiscount(agreementId, discount.id, updatedDiscount),
       toError
     )
       .map(response => response.data)
@@ -96,6 +104,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
         () => handleNext()
       )
       .run();
+  };
 
   const getDiscounts = async (agreementId: string) =>
     await tryCatch(() => Api.Discount.getDiscounts(agreementId), toError)
