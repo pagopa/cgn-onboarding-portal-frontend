@@ -122,6 +122,7 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
   const user = useSelector((state: RootState) => state.user.data);
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const [loading, setLoading] = useState(true);
+  const [hasImage, setHasImage] = useState(false);
 
   const createProfile = (discount: any) => {
     if (agreement) {
@@ -201,12 +202,12 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
           <FormContainer className="mb-20">
             <ProfileInfo formValues={values} />
             <ReferentData />
-            <ProfileImage />
+            <ProfileImage handleImage={() => setHasImage(true)} />
             <ProfileDescription />
             <SalesChannels
               handleBack={handleBack}
               formValues={values}
-              isValid={isValid}
+              isValid={isValid && hasImage}
             />
           </FormContainer>
         </Form>
