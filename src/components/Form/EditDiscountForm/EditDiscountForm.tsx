@@ -13,7 +13,6 @@ import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
 import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
 import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
-import FormContainer from "../FormContainer";
 import { RootState } from "../../../store/store";
 import FormSection from "../FormSection";
 import FormField from "../FormField";
