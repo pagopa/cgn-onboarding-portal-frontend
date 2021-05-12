@@ -1,17 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { Button } from "design-react-kit";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { format } from "date-fns";
+import { useHistory, useParams } from "react-router-dom";
 import Api from "../../../api";
-import { CreateDiscount } from "../../../api/generated";
+import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
 import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
 import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
+import FormContainer from "../FormContainer";
 import { RootState } from "../../../store/store";
+import FormSection from "../FormSection";
+import FormField from "../FormField";
+import { Discount } from "../../../api/generated";
+import { DASHBOARD } from "../../../navigation/routes";
 
-const initialValues = {
+const emptyInitialValues = {
   name: "",
   description: "",
   startDate: "",
@@ -23,72 +32,151 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .max(100)
-    .required(),
-  description: Yup.string().max(250),
-  startDate: Yup.date().required(),
-  endDate: Yup.date().required(),
-  discount: Yup.number()
-    .min(1)
-    .max(100)
-    .required(),
-  productCategories: Yup.array()
-    .min(1)
-    .required(),
-  condition: Yup.string().max(200),
-  staticCode: Yup.string()
+  discounts: Yup.array().of(
+    Yup.object().shape({
+      name: Yup.string()
+        .max(100, "Massimo 100 caratteri")
+        .required("Campo Obbligatorio"),
+      description: Yup.string()
+        .max(250, "Massimo 250 caratteri")
+        .required("Campo Obbligatorio"),
+      startDate: Yup.string().required("Campo Obbligatorio"),
+      endDate: Yup.string().required("Campo Obbligatorio"),
+      discount: Yup.number()
+        .min(1, "Almeno un carattere")
+        .max(100, "Massimo 100 caratteri")
+        .required("Campo Obbligatorio"),
+      productCategories: Yup.array()
+        .min(1, "Almeno un carattere")
+        .required(),
+      condition: Yup.string().max(200, "Massimo 200 caratteri"),
+      staticCode: Yup.string()
+    })
+  )
 });
 
 const EditDiscountForm = () => {
-  const agreementState = useSelector(
-    (state: RootState) => state.agreement.value
-  );
+  const { discountId } = useParams<any>();
+  const history = useHistory();
+  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
+  const [loading, setLoading] = useState(true);
+
+  const updateDiscount = async (agreementId: string, discount: Discount) => {
+    const {
+      id,
+      agreementId: agId,
+      state,
+      creationDate,
+      ...updatedDiscount
+    } = discount;
+    await tryCatch(
+      () =>
+        Api.Discount.updateDiscount(agreementId, discountId, updatedDiscount),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        () => history.push(DASHBOARD)
+      )
+      .run();
+  };
+
+  const getDiscount = async (agreementId: string) =>
+    await tryCatch(
+      () => Api.Discount.getDiscountById(agreementId, discountId),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => setLoading(false),
+        discount => {
+          setInitialValues({
+            ...discount,
+            startDate: new Date(discount.startDate),
+            endDate: new Date(discount.endDate)
+          });
+          setLoading(false);
+        }
+      )
+      .run();
+
+  useEffect(() => {
+    setLoading(true);
+    void getDiscount(agreement.id);
+  }, []);
+
+  if (loading) {
+    return <CenteredLoading />;
+  }
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={values => {
-        const discount: CreateDiscount = {
+        const newValues = {
           ...values,
+          startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
+          endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
           discount: Number(values.discount)
         };
-
-        if (agreementState) {
-          void Api.Discount.createDiscount(agreementState.id, discount);
-        }
+        void updateDiscount(agreement.id, newValues);
       }}
     >
-      {({ errors, touched }) => (
+      {({ isValid, values, setFieldValue }) => (
         <Form autoComplete="off">
-          <DiscountInfo />
-          <ProductCategories />
-          <DiscountConditions />
-          <StaticCode>
-            <div className="mt-10 d-flex flex-row justify-content-between">
-              <Button className="px-14 mr-4" color="secondary" tag="button">
-                Annulla
-              </Button>
+          <FormSection hasIntroduction>
+            <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
+            <FormField
+              htmlFor="productCategories"
+              isTitleHeading
+              title="Categorie merceologiche"
+              description="Seleziona la o le categorie merceologiche a cui appatengono i beni/servizi oggetto dell’agevolazione"
+              isVisible
+              required
+            >
+              <ProductCategories />
+            </FormField>
+            <FormField
+              htmlFor="discountConditions"
+              isTitleHeading
+              title="Condizioni dell’agevolazione"
+              description="Descrivere eventuali limitazioni relative all’agevolazione (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
+              isVisible
+            >
+              <DiscountConditions />
+            </FormField>
+            <FormField
+              htmlFor="staticCode"
+              isTitleHeading
+              title="Codice statico"
+              description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
+              isVisible
+            >
+              <StaticCode />
+            </FormField>
+            <div className="mt-10">
               <Button
                 className="px-14 mr-4"
                 outline
                 color="primary"
                 tag="button"
+                onClick={() => history.push(DASHBOARD)}
+              >
+                Indietro
+              </Button>
+              <Button
                 type="submit"
+                className="px-14 mr-4"
+                color="primary"
+                tag="button"
               >
                 Salva
               </Button>
-              <Button
-                className="px-14"
-                color="primary"
-                tag="button"
-                type="submit"
-              >
-                Pubblica
-              </Button>
             </div>
-          </StaticCode>
+          </FormSection>
         </Form>
       )}
     </Formik>
