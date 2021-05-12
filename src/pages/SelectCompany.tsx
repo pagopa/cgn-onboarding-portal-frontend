@@ -20,12 +20,11 @@ const SelectCompany = ({ token }: { token: string }) => {
         axios.post(
           `${process.env.BASE_SPID_LOGIN_PATH}/upgradeToken`,
           {
-            token,
             organization_fiscal_code: selectedCompany
           },
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              "X-CGN-TOKEN": token,
               Accept: "application/json",
               "Content-Type": "application/json"
             }
