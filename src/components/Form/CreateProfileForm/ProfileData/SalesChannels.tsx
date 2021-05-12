@@ -1,6 +1,6 @@
 import React from "react";
 import { ErrorMessage, Field, FieldArray } from "formik";
-import { Button } from "design-react-kit";
+import { Button, Icon } from "design-react-kit";
 import FormSection from "../../FormSection";
 import InputFieldMultiple from "../../InputFieldMultiple";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
@@ -15,20 +15,12 @@ const hasOnlineOrBothChannels = (channelType: string) =>
 const hasBothChannels = (channelType: string) => channelType === "BothChannels";
 
 type Props = {
-  errors: any;
-  touched: any;
   handleBack: any;
   formValues: any;
   isValid: any;
 };
 
-const SalesChannels = ({
-  errors,
-  touched,
-  handleBack,
-  formValues,
-  isValid
-}: any) => (
+const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
   <>
     <FormSection
       title="Definizione del canale di vendita"
@@ -89,7 +81,7 @@ const SalesChannels = ({
         name="salesChannel.addresses"
         render={arrayHelpers => (
           <>
-            {formValues.salesChannel.addresses.map(
+            {formValues.salesChannel?.addresses?.map(
               (address: any, index: number) => (
                 <FormSection
                   key={index}
@@ -101,6 +93,18 @@ const SalesChannels = ({
                   isVisible
                 >
                   <div key={index}>
+                    {!!index && (
+                      <Icon
+                        icon="it-close"
+                        style={{
+                          position: "absolute",
+                          right: "0",
+                          top: "40px",
+                          cursor: "pointer"
+                        }}
+                        onClick={() => arrayHelpers.remove(index)}
+                      />
+                    )}
                     <div className="mt-10 row">
                       <div className="col-7">
                         <InputFieldMultiple htmlFor="street" title="Indirizzo">
@@ -160,7 +164,8 @@ const SalesChannels = ({
                       </div>
                     </div>
 
-                    {formValues.salesChannel.addresses.length - 1 === index && (
+                    {formValues.salesChannel?.addresses?.length ===
+                      index + 1 && (
                       <>
                         <div
                           className="mt-8 cursor-pointer"

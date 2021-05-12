@@ -5,12 +5,10 @@ import InputField from "../../FormField";
 import ToggleField from "../../ToggleField";
 
 type Props = {
-  errors: any;
-  touched: any;
   formValues: any;
 };
 
-const ProfileInfo = ({ errors, touched, formValues }: any) => (
+const ProfileInfo = ({ formValues }: Props) => (
   <FormSection hasIntroduction isVisible={false}>
     <InputField
       htmlFor="fullName"
