@@ -27,12 +27,13 @@ const Login = () => {
           <div className="col-10 offset-1">
             <section className="px-20 py-28 bg-white">
               <h1 className="h2 font-weight-bold text-dark-blue">
-                Benvenuto su &lt;portale&gt; Carta Giovani Nazionale
+                Benvenuto sul portale operatori di Carta Giovani Nazionale
               </h1>
               <p className="text-gray">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse quis dictum mi. Morbi auctor nibh ante, eget
-                interdum urna malesuada in. Styles Code
+                Il portale è il punto unico di richiesta e gestione delle
+                convenzioni tra gli operatori che intendono aderire
+                all’iniziativa e il Dipartimento per le Politiche Giovanili e il
+                Servizio Civile Universale
               </p>
               <div className="mt-14 row variable-gutters">
                 <div className="col">
@@ -42,7 +43,7 @@ const Login = () => {
                   </span>
                   <div className="mt-10">
                     <Spid />
-                    <p>
+                    <p className="mt-4">
                       SPID è il sistema unico di accesso ai servizi online della
                       Pubblica Amministrazione. Se hai già un&apos;identità
                       digitale SPID, accedi con le tue credenziali. Se non hai
@@ -62,6 +63,11 @@ const Login = () => {
                   >
                     Entra con SPID
                   </Button>
+                  <div className="mt-4">
+                    <span>
+                      Non hai spid? <a href="#">Scopri di più</a>
+                    </span>
+                  </div>
                 </div>
                 <div className="col">
                   <h2 className="h3 text-dark-blue">Sei un amministratore?</h2>
