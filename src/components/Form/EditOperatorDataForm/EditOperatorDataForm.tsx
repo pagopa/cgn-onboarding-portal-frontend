@@ -54,7 +54,7 @@ const validationSchema = Yup.object().shape({
     .required("Campo obbligatorio"),
   legalOffice: Yup.string().required("Campo obbligatorio"),
   telephoneNumber: Yup.string()
-    .max(15, "Massimo 15 caratteri")
+    .phone("IT", false, "Numero di telefono non valido")
     .required("Campo obbligatorio"),
   legalRepresentativeFullName: Yup.string().required(),
   legalRepresentativeTaxCode: Yup.string()
