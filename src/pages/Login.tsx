@@ -1,12 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "design-react-kit";
 import { setCookie } from "../utils/cookie";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import Spid from "../assets/icons/spid.svg";
 import { AdminAccess, loginRequest } from "../authConfig";
+import SpidSelect from "./SpidSelect";
 
 const Login = () => {
+  const [showIDPS, setShowIDPS] = useState(false);
+
   useEffect(() => {
     void AdminAccess.handleRedirectPromise().then(response => {
       if (response) {
@@ -19,6 +22,10 @@ const Login = () => {
   const AdminLogin = () => {
     void AdminAccess.loginRedirect(loginRequest);
   };
+
+  if (showIDPS) {
+    return <SpidSelect onBack={() => setShowIDPS(false)} />;
+  }
 
   return (
     <Layout>
@@ -54,11 +61,7 @@ const Login = () => {
                     color="primary"
                     className="mt-10"
                     style={{ width: "100%" }}
-                    onClick={() =>
-                      window.location.replace(
-                        `${process.env.BASE_SPID_LOGIN_PATH}/login?entityID=xx_testenv2&authLevel=SpidL2`
-                      )
-                    }
+                    onClick={() => setShowIDPS(true)}
                   >
                     Entra con SPID
                   </Button>
