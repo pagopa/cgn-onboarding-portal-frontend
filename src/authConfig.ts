@@ -14,7 +14,7 @@ const msalConfig = {
 };  
   
 export const loginRequest = {
-  scopes: ["openid"]
+  scopes: ["openid", process.env.MSAL_CLIENT_ID]
 };
 
 
