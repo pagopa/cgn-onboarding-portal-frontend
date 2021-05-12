@@ -104,14 +104,10 @@ const EditOperatorDataForm = () => {
             history.push(DASHBOARD);
           }}
         >
-          {({ errors, touched, values }) => (
+          {({ values }) => (
             <Form autoComplete="off">
-              <ProfileInfo
-                errors={errors}
-                touched={touched}
-                formValues={values}
-              />
-              <ReferentData errors={errors} touched={touched}>
+              <ProfileInfo formValues={values} />
+              <ReferentData>
                 <div className="mt-10">
                   <Link
                     to={DASHBOARD}
