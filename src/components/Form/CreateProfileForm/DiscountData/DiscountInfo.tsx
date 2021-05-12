@@ -1,7 +1,8 @@
 import React from "react";
-import { ErrorMessage, Field } from "formik";
+import { Field } from "formik";
 import DatePicker from "react-datepicker";
 import InputField from "../../FormField";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
   formValues?: any;
@@ -28,7 +29,11 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           name={hasIndex ? `discounts[${index}].name` : "name"}
           type="text"
         />
-        <ErrorMessage name={hasIndex ? `discounts[${index}].name` : "name"} />
+        <CustomErrorMessage
+          component="span"
+          className="text-red"
+          name={hasIndex ? `discounts[${index}].name` : "name"}
+        />
       </InputField>
       <InputField
         htmlFor="description"
@@ -44,7 +49,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           maxLength="250"
           rows="4"
         />
-        <ErrorMessage
+        <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].description` : "description"}
         />
       </InputField>
@@ -78,7 +83,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
             )
           }
         />
-        <ErrorMessage
+        <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
         />
       </InputField>
@@ -111,7 +116,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
             );
           }}
         />
-        <ErrorMessage
+        <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
         />
       </InputField>
@@ -127,7 +132,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           name={hasIndex ? `discounts[${index}].discount` : "discount"}
           type="text"
         />
-        <ErrorMessage
+        <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].discount` : "discount"}
         />
       </InputField>

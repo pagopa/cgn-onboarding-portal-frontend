@@ -1,8 +1,9 @@
 import React from "react";
-import { Field, ErrorMessage } from "formik";
+import { Field } from "formik";
 import FormSection from "../../FormSection";
 import InputField from "../../FormField";
 import ToggleField from "../../ToggleField";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
   formValues: any;
@@ -17,7 +18,7 @@ const ProfileInfo = ({ formValues }: Props) => (
       required
     >
       <Field id="fullName" name="fullName" type="text" disabled />
-      <ErrorMessage name="fullName" />
+      <CustomErrorMessage name="fullName" />
     </InputField>
     <ToggleField
       htmlFor="hasDifferentFullName"
@@ -38,7 +39,7 @@ const ProfileInfo = ({ formValues }: Props) => (
         required
       >
         <Field id="name" name="name" type="text" />
-        <ErrorMessage name="name" />
+        <CustomErrorMessage name="name" />
       </InputField>
     )}
     <InputField
@@ -47,7 +48,7 @@ const ProfileInfo = ({ formValues }: Props) => (
       required
     >
       <Field id="taxCodeOrVat" name="taxCodeOrVat" type="text" disabled />
-      <ErrorMessage name="taxCodeOrVat" />
+      <CustomErrorMessage name="taxCodeOrVat" />
     </InputField>
     <InputField htmlFor="pecAddress" title="Indirizzo PEC" required>
       <Field
@@ -56,7 +57,7 @@ const ProfileInfo = ({ formValues }: Props) => (
         type="email"
         placeholder="Inserisci l'indirizzo pec dell'organizzazione"
       />
-      <ErrorMessage name="pecAddress" />
+      <CustomErrorMessage name="pecAddress" />
     </InputField>
     <InputField htmlFor="legalOffice" title="Sede legale" required>
       <Field
@@ -65,7 +66,7 @@ const ProfileInfo = ({ formValues }: Props) => (
         type="text"
         placeholder="Inserisci l’indirizzo pec dell’organizzazione"
       />
-      <ErrorMessage name="legalOffice" />
+      <CustomErrorMessage name="legalOffice" />
     </InputField>
     <InputField htmlFor="telephoneNumber" title="Numero di telefono" required>
       <Field
@@ -75,7 +76,7 @@ const ProfileInfo = ({ formValues }: Props) => (
         type="text"
         placeholder="Inserisci il numero di telefono dell’organizzazione"
       />
-      <ErrorMessage name="telephoneNumber" />
+      <CustomErrorMessage name="telephoneNumber" />
     </InputField>
     <InputField
       htmlFor="legalRepresentativeFullName"
@@ -88,7 +89,7 @@ const ProfileInfo = ({ formValues }: Props) => (
         type="text"
         placeholder="Inserisci il nome e cognome del Legale rappresentante dell’organizzazione"
       />
-      <ErrorMessage name="legalRepresentativeFullName" />
+      <CustomErrorMessage name="legalRepresentativeFullName" />
     </InputField>
     <InputField
       htmlFor="legalRepresentativeTaxCode"
@@ -103,7 +104,7 @@ const ProfileInfo = ({ formValues }: Props) => (
         type="text"
         placeholder="Inserisci il Codice fiscale del Legale rappresentante dell’organizzazione"
       />
-      <ErrorMessage name="legalRepresentativeTaxCode" />
+      <CustomErrorMessage name="legalRepresentativeTaxCode" />
     </InputField>
   </FormSection>
 );

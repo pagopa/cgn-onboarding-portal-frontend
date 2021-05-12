@@ -1,6 +1,7 @@
 import React from "react";
-import { ErrorMessage, Field } from "formik";
+import { Field } from "formik";
 import InputField from "../../FormField";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
   children?: any;
@@ -18,7 +19,7 @@ const StaticCode = ({ children, index }: Props) => {
           type="text"
         />
       </InputField>
-      <ErrorMessage
+      <CustomErrorMessage
         name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
       />
       {children}
