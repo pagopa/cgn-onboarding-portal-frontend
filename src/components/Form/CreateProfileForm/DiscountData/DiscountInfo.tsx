@@ -30,8 +30,6 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           type="text"
         />
         <CustomErrorMessage
-          component="span"
-          className="text-red"
           name={hasIndex ? `discounts[${index}].name` : "name"}
         />
       </InputField>

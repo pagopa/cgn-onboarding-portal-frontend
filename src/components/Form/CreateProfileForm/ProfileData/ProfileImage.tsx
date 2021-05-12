@@ -18,7 +18,7 @@ const FooterDescription = (
 );
 
 type Props = {
-  handleImage: () => void;
+  handleImage?: any;
 };
 
 const ProfileImage = ({ handleImage }: Props) => {
