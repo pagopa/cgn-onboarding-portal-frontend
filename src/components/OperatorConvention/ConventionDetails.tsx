@@ -93,7 +93,10 @@ const ConventionDetails = ({
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        response => setDetails(response)
+        response => {
+          setDetails(response);
+          setLoading(false);
+        }
       )
       .run();
 

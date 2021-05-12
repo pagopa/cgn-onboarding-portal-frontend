@@ -29,7 +29,10 @@ const RequestsDetails = ({
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        () => updateList()
+        () => {
+          updateList();
+          setLoading(false);
+        }
       )
       .run();
 
@@ -45,6 +48,7 @@ const RequestsDetails = ({
         () => setLoading(false),
         () => {
           updateList();
+          setLoading(false);
           triggerTooltip({
             severity: Severity.SUCCESS,
             text: "La richiesta di convenzione è stata validata con successo.",
@@ -71,12 +75,13 @@ const RequestsDetails = ({
       .fold(
         () => setLoading(false),
         () => {
+          setLoading(false);
+          updateList();
           triggerTooltip({
             severity: Severity.SUCCESS,
             text: "La richiesta di convenzione è stata rifiutata con successo.",
             title: "Rifiuto inviato"
           });
-          updateList();
         }
       )
       .run();

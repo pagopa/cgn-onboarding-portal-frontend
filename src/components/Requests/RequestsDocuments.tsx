@@ -162,9 +162,9 @@ const RequestsDetails = ({
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        response => {
-          setLoading(false);
+        () => {
           getDocuments();
+          setLoading(false);
         }
       )
       .run();
@@ -182,7 +182,7 @@ const RequestsDetails = ({
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        response => {
+        () => {
           setLoading(false);
           getDocuments();
         }

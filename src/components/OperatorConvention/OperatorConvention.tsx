@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useTable } from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { identity } from "fp-ts/lib/function";
 import { Button } from "design-react-kit";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
@@ -37,7 +36,10 @@ const OperatorConvention = () => {
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        response => setConventions(response)
+        response => {
+          setLoading(false);
+          setConventions(response);
+        }
       )
       .run();
 
