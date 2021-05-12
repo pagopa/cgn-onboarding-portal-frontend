@@ -214,8 +214,9 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
                         htmlFor="staticCode"
                         isTitleHeading
                         title="Codice statico"
-                        description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
+                        description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
                         isVisible
+                        required
                       >
                         <StaticCode index={index} />
                       </FormField>

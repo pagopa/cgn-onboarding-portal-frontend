@@ -93,7 +93,6 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           id="endDate"
           name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
           dateFormat="yyyy-MM-dd"
-          minDate={new Date(formValues.startDate)}
           showDisabledMonthNavigation
           selected={
             hasIndex
