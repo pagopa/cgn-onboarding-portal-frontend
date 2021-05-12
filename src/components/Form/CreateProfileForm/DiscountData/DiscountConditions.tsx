@@ -1,6 +1,5 @@
 import React from "react";
 import { ErrorMessage, Field } from "formik";
-import FieldError from "../../FieldError";
 
 type Props = {
   index?: number;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -7,6 +7,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
 import Api from "../../../../api";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
 import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
@@ -16,8 +17,9 @@ import { RootState } from "../../../../store/store";
 import FormSection from "../../FormSection";
 import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import { CreateDiscount, Discount } from "../../../../api/generated";
 
-const initialValues = {
+const emptyInitialValues = {
   discounts: [
     {
       name: "",
@@ -36,36 +38,42 @@ const validationSchema = Yup.object().shape({
   discounts: Yup.array().of(
     Yup.object().shape({
       name: Yup.string()
-        .max(100)
-        .required(),
+        .max(100, "Massimo 100 caratteri")
+        .required("Campo Obbligatorio"),
       description: Yup.string()
-        .max(250)
-        .required(),
-      startDate: Yup.string().required(),
-      endDate: Yup.string().required(),
+        .max(250, "Massimo 250 caratteri")
+        .required("Campo Obbligatorio"),
+      startDate: Yup.string().required("Campo Obbligatorio"),
+      endDate: Yup.string().required("Campo Obbligatorio"),
       discount: Yup.number()
-        .min(1)
-        .max(100)
-        .required(),
+        .min(1, "Almeno un carattere")
+        .max(100, "Massimo 100 caratteri")
+        .required("Campo Obbligatorio"),
       productCategories: Yup.array()
-        .min(1)
+        .min(1, "Almeno un carattere")
         .required(),
-      condition: Yup.string().max(200),
+      condition: Yup.string().max(200, "Massimo 200 caratteri"),
       staticCode: Yup.string()
     })
   )
 });
 
 type Props = {
-  handleBack: any;
-  handleNext: any;
-  handleSuccess: any;
+  isCompleted: boolean;
+  handleBack: () => void;
+  handleNext: () => void;
 };
 
-const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
+  const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
+  const [loading, setLoading] = useState(true);
 
-  const createDiscount = async (agreementId: string, discount: any) =>
+  const createDiscount = async (
+    agreementId: string,
+    discount: CreateDiscount
+  ) =>
     await tryCatch(
       () => Api.Discount.createDiscount(agreementId, discount),
       toError
@@ -73,12 +81,58 @@ const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
       .map(response => response.data)
       .fold(
         () => void 0,
-        () => {
-          handleSuccess();
-          handleNext();
+        () => handleNext()
+      )
+      .run();
+
+  const updateDiscount = async (agreementId: string, discount: Discount) =>
+    await tryCatch(
+      () => Api.Discount.updateDiscount(agreementId, discount.id, discount),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        () => handleNext()
+      )
+      .run();
+
+  const getDiscounts = async (agreementId: string) =>
+    await tryCatch(() => Api.Discount.getDiscounts(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => setLoading(false),
+        discounts => {
+          setInitialValues({
+            discounts: discounts.items.map(discount => ({
+              ...discount,
+              startDate: new Date(discount.startDate),
+              endDate: new Date(discount.endDate)
+            }))
+          });
+          setLoading(false);
         }
       )
       .run();
+
+  const deleteDiscount = async (agreementId: string, discountId: string) =>
+    await tryCatch(
+      () => Api.Discount.deleteDiscount(agreementId, discountId),
+      toError
+    ).run();
+
+  useEffect(() => {
+    if (isCompleted) {
+      setLoading(true);
+      void getDiscounts(agreement.id);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) {
+    return <CenteredLoading />;
+  }
 
   return (
     <Formik
@@ -86,18 +140,22 @@ const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
       validationSchema={validationSchema}
       onSubmit={values => {
         const newValues = {
-          discounts: values.discounts.map(discount => ({
+          discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
             startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
             endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
           }))
         };
-        newValues.discounts.forEach(discount => {
-          void createDiscount(agreement.id, discount);
+        newValues.discounts.forEach((discount: CreateDiscount) => {
+          if (isCompleted) {
+            void updateDiscount(agreement.id, discount as Discount);
+          } else {
+            void createDiscount(agreement.id, discount);
+          }
         });
       }}
     >
-      {({ isValid, dirty, values, setFieldValue }) => (
+      {({ isValid, values, setFieldValue }) => (
         <Form autoComplete="off">
           <FieldArray
             name="discounts"
@@ -111,9 +169,14 @@ const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
                     <FormSection
                       hasIntroduction
                       hasClose={index >= 1}
-                      handleClose={
-                        index >= 1 ? () => arrayHelpers.remove(index) : null
-                      }
+                      handleClose={() => {
+                        if (index >= 1) {
+                          if (isCompleted) {
+                            void deleteDiscount(agreement.id, discount.id);
+                          }
+                          arrayHelpers.remove(index);
+                        }
+                      }}
                     >
                       <DiscountInfo
                         formValues={values}
@@ -185,7 +248,7 @@ const DiscountData = ({ handleBack, handleNext, handleSuccess }: Props) => {
                               className="px-14 mr-4"
                               color="primary"
                               tag="button"
-                              disabled={!(isValid && dirty)}
+                              disabled={!isValid}
                             >
                               Continua
                             </Button>

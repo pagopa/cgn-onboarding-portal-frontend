@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
@@ -11,13 +14,12 @@ import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
-// TODO riempire gli initial values con i dati dello user
-const initialValues = {
-  fullName: "PagoPA S.p.A.",
+const defaultInitialValues = {
+  fullName: "",
   hasDifferentFullName: false,
   name: "",
   pecAddress: "",
-  taxCodeOrVat: "1537637100912345",
+  taxCodeOrVat: "",
   legalOffice: "",
   telephoneNumber: "",
   legalRepresentativeFullName: "",
@@ -42,32 +44,32 @@ const validationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
   name: Yup.string().when(["hasDifferentName"], {
     is: true,
-    then: Yup.string().required()
+    then: Yup.string().required("Campo obbligatorio")
   }),
   pecAddress: Yup.string()
-    .email()
-    .required(),
-  legalOffice: Yup.string().required(),
+    .email("Deve essere una email")
+    .required("Campo obbligatorio"),
+  legalOffice: Yup.string().required("Campo obbligatorio"),
   telephoneNumber: Yup.string()
-    .max(15)
-    .required(),
+    .max(15, "Massimo 15 caratteri")
+    .required("Campo obbligatorio"),
   legalRepresentativeFullName: Yup.string().required(),
   legalRepresentativeTaxCode: Yup.string()
-    .min(16)
-    .max(16)
-    .required(),
+    .min(16, "Deve essere di 16 caratteri")
+    .max(16, "Deve essere di 16 caratteri")
+    .required("Campo obbligatorio"),
   referent: Yup.object().shape({
-    firstName: Yup.string().required(),
-    lastName: Yup.string().required(),
-    role: Yup.string().required(),
+    firstName: Yup.string().required("Campo obbligatorio"),
+    lastName: Yup.string().required("Campo obbligatorio"),
+    role: Yup.string().required("Campo obbligatorio"),
     emailAddress: Yup.string()
-      .email()
-      .required(),
+      .email("Deve essere una email")
+      .required("Campo obbligatorio"),
     telephoneNumber: Yup.string()
-      .max(15)
-      .required()
+      .max(15, "Massimo 15 caratteri")
+      .required("Campo obbligatorio")
   }),
-  description: Yup.string().required(),
+  description: Yup.string().required("Campo obbligatorio"),
   salesChannel: Yup.object().shape({
     channelType: Yup.mixed().oneOf([
       "OnlineChannel",
@@ -76,20 +78,20 @@ const validationSchema = Yup.object().shape({
     ]),
     websiteUrl: Yup.string().when("channelType", {
       is: "OnlineChannel" || "BothChannels",
-      then: Yup.string().required()
+      then: Yup.string().required("Campo obbligatorio")
     }),
     discountCodeType: Yup.string().when("channelType", {
       is: "OnlineChannel" || "BothChannels",
-      then: Yup.string().required()
+      then: Yup.string().required("Campo obbligatorio")
     }),
     addresses: Yup.array().when("channelType", {
       is: "OfflineChannel" || "BothChannels",
       then: Yup.array().of(
         Yup.object().shape({
-          street: Yup.string().required(),
-          zipCode: Yup.string().required(),
-          city: Yup.string().required(),
-          district: Yup.string().required()
+          street: Yup.string().required("Campo obbligatorio"),
+          zipCode: Yup.string().required("Campo obbligatorio"),
+          city: Yup.string().required("Campo obbligatorio"),
+          district: Yup.string().required("Campo obbligatorio")
         })
       )
     })
@@ -97,33 +99,74 @@ const validationSchema = Yup.object().shape({
 });
 
 type Props = {
-  handleBack: any;
-  handleNext: any;
-  handleSuccess: any;
+  isCompleted: boolean;
+  handleBack: () => void;
+  handleNext: () => void;
 };
 
-const ProfileData = ({ handleBack, handleNext, handleSuccess }: Props) => {
-  const agreementState = useSelector(
-    (state: RootState) => state.agreement.value
-  );
+const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
+  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const user = useSelector((state: RootState) => state.user.data);
+  const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
+  const [loading, setLoading] = useState(true);
 
   const createProfile = (discount: any) => {
-    if (agreementState) {
-      void Api.Profile.createProfile(agreementState.id, discount);
+    if (agreement) {
+      void Api.Profile.createProfile(agreement.id, discount);
     }
   };
 
+  const updateProfile = (discount: any) => {
+    if (agreement) {
+      void Api.Profile.updateProfile(agreement.id, discount);
+    }
+  };
+
+  const submitProfile = () => (isCompleted ? updateProfile : createProfile);
+
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => setLoading(false),
+        profile => {
+          setInitialValues({
+            ...profile,
+            hasDifferentFullName: !!profile.name
+          });
+          setLoading(false);
+        }
+      )
+      .run();
+
+  useEffect(() => {
+    if (isCompleted) {
+      setLoading(true);
+      void getProfile(agreement.id);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) {
+    return <CenteredLoading />;
+  }
+
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{
+        ...initialValues,
+        fullName: user.company?.organization_name || "test",
+        taxCodeOrVat:
+          user.company?.organization_fiscal_code || user.fiscal_number || ""
+      }}
       validationSchema={validationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...discount } = values;
-
-        if (discount.salesChannel.channelType === "OnlineChannel") {
+        if (discount.salesChannel?.channelType === "OnlineChannel") {
           const newSalesChannel = discount.salesChannel;
           const { addresses, ...salesChannel } = newSalesChannel;
-          createProfile({ ...discount, salesChannel });
+          submitProfile()({ ...discount, salesChannel });
         } else {
           const newSalesChannel = discount.salesChannel;
           const {
@@ -131,10 +174,8 @@ const ProfileData = ({ handleBack, handleNext, handleSuccess }: Props) => {
             discountCodeType,
             ...salesChannel
           } = newSalesChannel;
-          createProfile({ ...discount, salesChannel });
+          submitProfile()({ ...discount, salesChannel });
         }
-
-        handleSuccess();
         handleNext();
       }}
     >

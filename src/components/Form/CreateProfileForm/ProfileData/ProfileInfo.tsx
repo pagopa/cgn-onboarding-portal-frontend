@@ -1,9 +1,8 @@
 import React from "react";
-import { Field } from "formik";
+import { Field, ErrorMessage } from "formik";
 import FormSection from "../../FormSection";
 import InputField from "../../FormField";
 import ToggleField from "../../ToggleField";
-import FieldError from "../../FieldError";
 
 type Props = {
   errors: any;
@@ -20,7 +19,7 @@ const ProfileInfo = ({ errors, touched, formValues }: any) => (
       required
     >
       <Field id="fullName" name="fullName" type="text" disabled />
-      <FieldError errors={errors.fullName} touched={touched.fullName} />
+      <ErrorMessage name="fullName" />
     </InputField>
     <ToggleField
       htmlFor="hasDifferentFullName"
@@ -41,7 +40,7 @@ const ProfileInfo = ({ errors, touched, formValues }: any) => (
         required
       >
         <Field id="name" name="name" type="text" />
-        <FieldError errors={errors.name} touched={touched.name} />
+        <ErrorMessage name="name" />
       </InputField>
     )}
     <InputField
@@ -50,7 +49,7 @@ const ProfileInfo = ({ errors, touched, formValues }: any) => (
       required
     >
       <Field id="taxCodeOrVat" name="taxCodeOrVat" type="text" disabled />
-      <FieldError errors={errors.taxCodeOrVat} touched={touched.taxCodeOrVat} />
+      <ErrorMessage name="taxCodeOrVat" />
     </InputField>
     <InputField htmlFor="pecAddress" title="Indirizzo PEC" required>
       <Field
@@ -59,7 +58,7 @@ const ProfileInfo = ({ errors, touched, formValues }: any) => (
         type="email"
         placeholder="Inserisci l'indirizzo pec dell'organizzazione"
       />
-      <FieldError errors={errors.pecAddress} touched={touched.pecAddress} />
+      <ErrorMessage name="pecAddress" />
     </InputField>
     <InputField htmlFor="legalOffice" title="Sede legale" required>
       <Field
@@ -68,7 +67,7 @@ const ProfileInfo = ({ errors, touched, formValues }: any) => (
         type="text"
         placeholder="Inserisci l’indirizzo pec dell’organizzazione"
       />
-      <FieldError errors={errors.legalOffice} touched={touched.legalOffice} />
+      <ErrorMessage name="legalOffice" />
     </InputField>
     <InputField htmlFor="telephoneNumber" title="Numero di telefono" required>
       <Field
@@ -77,10 +76,7 @@ const ProfileInfo = ({ errors, touched, formValues }: any) => (
         type="text"
         placeholder="Inserisci il numero di telefono dell’organizzazione"
       />
-      <FieldError
-        errors={errors.telephoneNumber}
-        touched={touched.telephoneNumber}
-      />
+      <ErrorMessage name="telephoneNumber" />
     </InputField>
     <InputField
       htmlFor="legalRepresentativeFullName"
@@ -93,10 +89,7 @@ const ProfileInfo = ({ errors, touched, formValues }: any) => (
         type="text"
         placeholder="Inserisci il nome e cognome del Legale rappresentante dell’organizzazione"
       />
-      <FieldError
-        errors={errors.legalRepresentativeFullName}
-        touched={touched.legalRepresentativeFullName}
-      />
+      <ErrorMessage name="legalRepresentativeFullName" />
     </InputField>
     <InputField
       htmlFor="legalRepresentativeTaxCode"
@@ -109,10 +102,7 @@ const ProfileInfo = ({ errors, touched, formValues }: any) => (
         type="text"
         placeholder="Inserisci il Codice fiscale del Legale rappresentante dell’organizzazione"
       />
-      <FieldError
-        errors={errors.legalRepresentativeTaxCode}
-        touched={touched.legalRepresentativeTaxCode}
-      />
+       <ErrorMessage name="legalRepresentativeTaxCode" />
     </InputField>
   </FormSection>
 );

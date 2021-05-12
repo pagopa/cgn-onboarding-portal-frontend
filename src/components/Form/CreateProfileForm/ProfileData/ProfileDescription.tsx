@@ -1,7 +1,6 @@
 import React from "react";
-import { Field } from "formik";
+import { Field, ErrorMessage } from "formik";
 import FormSection from "../../FormSection";
-import FieldError from "../../FieldError";
 
 type Props = {
   errors: any;
@@ -24,7 +23,7 @@ const ProfileDescription = ({ errors, touched, formValues }: Props) => (
       maxLength="300"
       rows="4"
     />
-    <FieldError errors={errors.description} touched={touched.description} />
+    <ErrorMessage name="description" />
   </FormSection>
 );
 

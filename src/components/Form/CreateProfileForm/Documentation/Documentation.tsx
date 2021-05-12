@@ -6,13 +6,19 @@ import DocumentIcon from "../../../../assets/icons/document.svg";
 import { DASHBOARD } from "../../../../navigation/routes";
 import PrivacyModal from "./PrivacyModal";
 
-const Documentation = ({ handleNext, handleSuccess }: any) => {
-  const [isDocumentationRead, setIsDocumentationRead] = useState(false);
+const Documentation = ({
+  handleNext,
+  isCompleted
+}: {
+  handleNext: () => void;
+  isCompleted: boolean;
+}) => {
+  const [isDocumentationRead, setIsDocumentationRead] = useState(isCompleted);
   const [modal, setModal] = useState(false);
 
   const toggle = () => setModal(!modal);
 
-  function handleClick(e: any) {
+  function handleClick() {
     setIsDocumentationRead(true);
     return true;
   }
@@ -57,10 +63,7 @@ const Documentation = ({ handleNext, handleSuccess }: any) => {
             className="px-14"
             color="primary"
             tag="button"
-            onClick={() => {
-              handleSuccess(0);
-              handleNext();
-            }}
+            onClick={handleNext}
             disabled={!isDocumentationRead}
           >
             Continua

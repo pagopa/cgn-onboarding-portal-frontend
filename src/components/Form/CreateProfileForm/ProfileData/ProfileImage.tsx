@@ -31,9 +31,10 @@ const ProfileImage = () => {
       () => Api.Agreement.uploadImage(agreement.id, image[0]),
       toError
     )
+      .map(response => response.data.imageUrl)
       .fold(
         () => void 0,
-        () => void 0
+        newImage => setImage(`${process.env.BASE_IMAGE_PATH}/${newImage}`)
       )
       .run();
 
@@ -47,18 +48,50 @@ const ProfileImage = () => {
     >
       <ul className="upload-pictures-wall">
         <li>
-          <input
-            type="file"
-            name="profileImage"
-            id="profileImage"
-            className="upload pictures-wall"
-            ref={imageInput}
-            onChange={() => uploadImage(imageInput.current.files)}
-          />
-          <label htmlFor="profileImage">
-            <PlusIcon className="icon icon-sm" onClick={handleImage} />
-            <span>Add photo</span>
-          </label>
+          {!image && (
+            <>
+              <input
+                type="file"
+                name="profileImage"
+                id="profileImage"
+                className="upload pictures-wall"
+                ref={imageInput}
+                onChange={() => uploadImage(imageInput.current.files)}
+              />
+              <label htmlFor="profileImage">
+                <PlusIcon className="icon icon-sm" />
+                <span>Add photo</span>
+              </label>
+            </>
+          )}
+          {image && (
+            <>
+              <div className="d-flex flex-row align-items-end">
+                <img
+                  src={image}
+                  style={{
+                    width: "128px",
+                    height: "128px",
+                    objectFit: "cover"
+                  }}
+                />
+                <input
+                  type="file"
+                  name="profileImage"
+                  id="profileImage"
+                  ref={imageInput}
+                  onChange={() => uploadImage(imageInput.current.files)}
+                  style={{ display: "none" }}
+                />
+                <label
+                  htmlFor="profileImage"
+                  className="ml-4 mb-0 text-primary underline"
+                >
+                  Cambia immagine
+                </label>
+              </div>
+            </>
+          )}
         </li>
       </ul>
     </FormSection>

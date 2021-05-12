@@ -28,7 +28,7 @@ interface AgreementState {
 
 export const agreementSlice = createSlice({
 	name: 'agreement',
-	initialState: { value: {}, loading: false } as AgreementState,
+	initialState: { value: {}, loading: true } as AgreementState,
 	reducers: {},
 	extraReducers: (builder) => {
 		builder.addCase(createAgreement.pending, (state, action) => {
