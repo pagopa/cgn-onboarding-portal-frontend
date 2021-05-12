@@ -6,7 +6,13 @@ import FormContainer from "../FormContainer";
 import DocumentIcon from "../../../assets/icons/document.svg";
 import { DASHBOARD } from "../../../navigation/routes";
 
-const Documentation = ({ handleNext, handleSuccess }: any) => {
+type Props = {
+  isCompleted: boolean;
+  handleNext: any;
+  handleSuccess: any;
+};
+
+const Documentation = ({ isCompleted, handleNext, handleSuccess }: Props) => {
   const [isDocumentationRead, setIsDocumentationRead] = useState(false);
   const [modal, setModal] = useState(false);
 

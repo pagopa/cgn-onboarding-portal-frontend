@@ -4,7 +4,6 @@ import { Button } from "design-react-kit";
 import FormSection from "../../FormSection";
 import InputFieldMultiple from "../../InputFieldMultiple";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
-import FieldError from "../../FieldError";
 import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 
 const hasOfflineOrBothChannels = (channelType: string) =>
@@ -82,10 +81,10 @@ const SalesChannels = ({
         </div>
       </div>
     </FormSection>
-    {hasOnlineOrBothChannels(formValues.salesChannel.channelType) && (
+    {hasOnlineOrBothChannels(formValues.salesChannel?.channelType) && (
       <SalesChannelDiscountCodeType />
     )}
-    {hasOfflineOrBothChannels(formValues.salesChannel.channelType) && (
+    {hasOfflineOrBothChannels(formValues.salesChannel?.channelType) && (
       <FieldArray
         name="salesChannel.addresses"
         render={arrayHelpers => (
@@ -180,7 +179,7 @@ const SalesChannels = ({
                           </span>
                         </div>
                         {!hasBothChannels(
-                          formValues.salesChannel.channelType
+                          formValues.salesChannel?.channelType
                         ) && (
                           <div className="mt-10">
                             <Button
@@ -213,7 +212,7 @@ const SalesChannels = ({
         )}
       ></FieldArray>
     )}
-    {hasOnlineOrBothChannels(formValues.salesChannel.channelType) && (
+    {hasOnlineOrBothChannels(formValues.salesChannel?.channelType) && (
       <FormSection
         title="Sito web"
         description="Inserire l'URL del proprio e-commerce"

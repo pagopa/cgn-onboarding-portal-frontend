@@ -14,7 +14,8 @@ const Step = ({ stepType = "", index, handleChangeStep, children }: Props) => (
     onClick={handleChangeStep}
     style={{
       borderLeftWidth: index === 1 ? 0 : "1px",
-      borderRightWidth: index === 4 ? 0 : "1px"
+      borderRightWidth: index === 4 ? 0 : "1px",
+      cursor: handleChangeStep ? "pointer" : "default"
     }}
   >
     <span className={stepType !== "confirmed" ? "steppers-number" : ""}>

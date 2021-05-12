@@ -1,8 +1,7 @@
 import React from "react";
-import { Field } from "formik";
+import { Field, ErrorMessage } from "formik";
 import FormSection from "../../FormSection";
 import InputField from "../../FormField";
-import FieldError from "../../FieldError";
 
 type Props = {
   errors: any;
@@ -18,21 +17,11 @@ const ReferentData = ({ errors, touched, children }: Props) => (
   >
     <InputField htmlFor="firstName" title="Nome" required>
       <Field id="referent.firstName" name="referent.firstName" type="text" />
-      {errors.referent && touched.referent && (
-        <FieldError
-          errors={errors.referent.firstName}
-          touched={touched.referent.firstName}
-        />
-      )}
+      <ErrorMessage name="referent.firstName" />
     </InputField>
     <InputField htmlFor="referent.lastName" title="Cognome" required>
       <Field id="referent.lastName" name="referent.lastName" type="text" />
-      {errors.referent && touched.referent && (
-        <FieldError
-          errors={errors.referent.lastName}
-          touched={touched.referent.lastName}
-        />
-      )}
+      <ErrorMessage name="referent.lastName" />
     </InputField>
     <InputField
       htmlFor="referent.role"
@@ -40,12 +29,7 @@ const ReferentData = ({ errors, touched, children }: Props) => (
       required
     >
       <Field id="referent.role" name="referent.role" type="text" />
-      {errors.referent && touched.referent && (
-        <FieldError
-          errors={errors.referent.role}
-          touched={touched.referent.role}
-        />
-      )}
+      <ErrorMessage name="referent.role" />
     </InputField>
     <InputField
       htmlFor="referent.emailAddress"
@@ -57,12 +41,7 @@ const ReferentData = ({ errors, touched, children }: Props) => (
         name="referent.emailAddress"
         type="email"
       />
-      {errors.referent && touched.referent && (
-        <FieldError
-          errors={errors.referent.emailAddress}
-          touched={touched.referent.emailAddress}
-        />
-      )}
+      <ErrorMessage name="referent.email" />
     </InputField>
     <InputField
       htmlFor="referent.telephoneNumber"
@@ -75,12 +54,7 @@ const ReferentData = ({ errors, touched, children }: Props) => (
         type="tel"
         placeholder="Inserisci il numero di telefono"
       />
-      {errors.referent && touched.referent && (
-        <FieldError
-          errors={errors.referent.telephoneNumber}
-          touched={touched.referent.telephoneNumber}
-        />
-      )}
+      <ErrorMessage name="referent.referent" />
     </InputField>
     {children}
   </FormSection>

@@ -10,8 +10,9 @@ import DocumentSuccess from "../../../assets/icons/document-success.svg";
 import { RootState } from "../../../store/store";
 
 type Props = {
-  handleSuccess: any;
-  handleBack: any;
+  handleBack: () => void;
+  handleNext: () => void;
+  isCompleted: boolean;
 };
 
 const DeleteDocument = ({ onClick }: any) => (
@@ -21,7 +22,7 @@ const DeleteDocument = ({ onClick }: any) => (
   </span>
 );
 
-const Documents = ({ handleSuccess, handleBack }: Props) => {
+const Documents = ({ handleNext, handleBack, isCompleted }: Props) => {
   const [isManifestationUploaded, setIsManifestationUploaded] = useState(false);
   const [isAgreementUploaded, setIsAgreementUploaded] = useState(false);
   const manifestationFile = useRef<any>();
@@ -54,9 +55,7 @@ const Documents = ({ handleSuccess, handleBack }: Props) => {
       .run();
 
   const requireApproval = () => {
-    void Api.Agreement.requestApproval(agreement.id).then(() =>
-      handleSuccess()
-    );
+    void Api.Agreement.requestApproval(agreement.id).then(() => handleNext());
   };
 
   return (

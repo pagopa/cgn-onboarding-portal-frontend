@@ -1,9 +1,7 @@
 import React from "react";
-import { format } from "date-fns";
 import { ErrorMessage, Field } from "formik";
 import DatePicker from "react-datepicker";
 import InputField from "../../FormField";
-import "react-datepicker/dist/react-datepicker.css";
 
 type Props = {
   formValues?: any;
