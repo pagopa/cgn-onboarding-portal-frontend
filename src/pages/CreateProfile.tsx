@@ -51,7 +51,7 @@ const CreateProfile = () => {
         return (
           <DiscountData
             isCompleted={completedSteps.includes("Discount")}
-            handleNext={() => handleNext(3)}
+            handleNext={() => handleNext(3, "Discount")}
             handleBack={() => setStep(1)}
           />
         );
@@ -59,7 +59,7 @@ const CreateProfile = () => {
         return (
           <Documents
             isCompleted={completedSteps.includes("Document")}
-            handleNext={() => handleNext(4)}
+            handleNext={() => handleNext(4, "Document")}
             handleBack={() => setStep(2)}
           />
         );
