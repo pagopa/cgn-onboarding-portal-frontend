@@ -11,7 +11,13 @@ interface FilterFormValues {
   lastUpdateDateTo: Date | undefined;
 }
 
-const ConventionFilter = ({ refForm }: { refForm: any }) => {
+const ConventionFilter = ({
+  refForm,
+  getConventions
+}: {
+  refForm: any;
+  getConventions: (params: any) => void;
+}) => {
   const [isOpenDateModal, setOpenDateModal] = useState(false);
   // eslint-disable-next-line functional/no-let
   let timeout: any = null;
@@ -66,9 +72,9 @@ const ConventionFilter = ({ refForm }: { refForm: any }) => {
       onSubmit={values => {
         const params = {
           ...values,
-          name: values.fullName || undefined
+          profileFullName: values.fullName || undefined
         };
-        // TODO GET LIST
+        getConventions(params);
       }}
     >
       {({ values, submitForm, setFieldValue, resetForm, dirty }) => (

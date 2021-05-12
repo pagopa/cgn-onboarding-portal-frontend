@@ -98,7 +98,7 @@ const OperatorConvention = () => {
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <ConventionFilter refForm={refForm} />
+      <ConventionFilter refForm={refForm} getConventions={getConventions}/>
       {loading ? (
         <CenteredLoading />
       ) : (
