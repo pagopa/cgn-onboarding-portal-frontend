@@ -12,7 +12,7 @@ import { CompletedStep } from "../api/generated";
 const CreateProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [loading, setLoading] = useState(true);
-  const [step, setStep] = useState(agreement.completedSteps.length);
+  const [step, setStep] = useState<number>(agreement.completedSteps.length);
   const [completedSteps, setCompletedSteps] = useState<Array<string>>(
     agreement.completedSteps
   );
