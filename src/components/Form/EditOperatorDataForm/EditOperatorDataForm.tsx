@@ -4,8 +4,8 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import { useHistory } from "react-router-dom";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
-import FormContainer from "../FormContainer";
 import Api from "../../../api";
 import { RootState } from "../../../store/store";
 import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
@@ -13,6 +13,7 @@ import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import ProfileImage from "../CreateProfileForm/ProfileData/ProfileImage";
 import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
+import { DASHBOARD } from "../../../navigation/routes";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -100,29 +101,26 @@ const validationSchema = Yup.object().shape({
   })
 });
 
-type Props = {
-  isCompleted: boolean;
-  handleBack: () => void;
-  handleNext: () => void;
-};
-
-const EditOperatorDataForm = ({
-  isCompleted,
-  handleBack,
-  handleNext
-}: Props) => {
+const EditOperatorDataForm = () => {
+  const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const user = useSelector((state: RootState) => state.user.data);
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const [loading, setLoading] = useState(true);
 
-  const updateProfile = (discount: any) => {
+  const updateProfile = async (discount: any) => {
     if (agreement) {
-      void Api.Profile.updateProfile(agreement.id, discount);
+      await tryCatch(
+        () => Api.Profile.updateProfile(agreement.id, discount),
+        toError
+      )
+        .fold(
+          () => void 0,
+          () => history.push(DASHBOARD)
+        )
+        .run();
     }
   };
-
-  const submitProfile = () => updateProfile;
 
   const getProfile = async (agreementId: string) =>
     await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
@@ -166,7 +164,7 @@ const EditOperatorDataForm = ({
         if (discount.salesChannel?.channelType === "OnlineChannel") {
           const newSalesChannel = discount.salesChannel;
           const { addresses, ...salesChannel } = newSalesChannel;
-          submitProfile()({ ...discount, salesChannel });
+          void updateProfile({ ...discount, salesChannel });
         } else {
           const newSalesChannel = discount.salesChannel;
           const {
@@ -174,9 +172,8 @@ const EditOperatorDataForm = ({
             discountCodeType,
             ...salesChannel
           } = newSalesChannel;
-          submitProfile()({ ...discount, salesChannel });
+          void updateProfile({ ...discount, salesChannel });
         }
-        handleNext();
       }}
     >
       {({ values, isValid }) => (
@@ -186,7 +183,7 @@ const EditOperatorDataForm = ({
           <ProfileImage />
           <ProfileDescription />
           <SalesChannels
-            handleBack={handleBack}
+            handleBack={() => history.push(DASHBOARD)}
             formValues={values}
             isValid={isValid}
           />
