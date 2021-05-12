@@ -36,7 +36,7 @@ const SelectCompany = ({ token }: { token: string }) => {
       .fold(
         () => logout("USER"),
         response => {
-          setCookie(response.data.token);
+          setCookie(response);
           window.location.replace("/");
         }
       )
