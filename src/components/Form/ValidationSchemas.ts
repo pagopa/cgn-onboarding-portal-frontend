@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import 'yup-phone';
 
 const INCORRECT_EMAIL_ADDRESS = 'L’indirizzo inserito non è corretto';
 const REQUIRED_FIELD = 'Campo obbligatorio';
@@ -18,7 +17,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 	}),
 	pecAddress: Yup.string().email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD),
 	legalOffice: Yup.string().required(REQUIRED_FIELD),
-	telephoneNumber: Yup.string().phone('IT', false, INCORRECT_TELEPHONE_NUMBER).required(REQUIRED_FIELD),
+	telephoneNumber: Yup.string().matches(/^[0-9]*$/, ONLY_NUMBER).min(4, 'Deve essere di 4 caratteri').required(REQUIRED_FIELD),
 	legalRepresentativeFullName: Yup.string().matches(/^[a-zA-Z\s]*$/, ONLY_STRING).required(REQUIRED_FIELD),
 	legalRepresentativeTaxCode: Yup.string()
 		.min(16, 'Deve essere di 16 caratteri')
@@ -29,7 +28,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 		lastName: Yup.string().matches(/^[a-zA-Z\s]*$/, ONLY_STRING).required(REQUIRED_FIELD),
 		role: Yup.string().matches(/^[a-zA-Z\s]*$/, ONLY_STRING).required(REQUIRED_FIELD),
 		emailAddress: Yup.string().email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD),
-		telephoneNumber: Yup.string().phone('IT', false, INCORRECT_TELEPHONE_NUMBER).required(REQUIRED_FIELD)
+		telephoneNumber: Yup.string().matches(/^[0-9]*$/, ONLY_NUMBER).min(4, 'Deve essere di 4 caratteri').required(REQUIRED_FIELD),
 	}),
 	description: Yup.string().required(REQUIRED_FIELD),
 	salesChannel: Yup.object().shape({

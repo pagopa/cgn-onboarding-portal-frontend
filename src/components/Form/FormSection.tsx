@@ -39,7 +39,7 @@ const FormSection = ({
                   <br /> Le informazioni contrassegnate con il simbolo{" "}
                   <VisibleIcon /> saranno visibili in app.
                 </p>
-                <Icon icon="it-close" onClick={handleClose} />
+                <Icon icon="it-close" className="cursor-pointer" onClick={handleClose} />
               </div>
             )}
             {!hasClose && (

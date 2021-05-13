@@ -64,7 +64,7 @@ const ProfileInfo = ({ formValues }: Props) => (
         id="legalOffice"
         name="legalOffice"
         type="text"
-        placeholder="Inserisci l’indirizzo pec dell’organizzazione"
+        placeholder="Inserisc la sede legale dell’organizzazione"
       />
       <CustomErrorMessage name="legalOffice" />
     </InputField>

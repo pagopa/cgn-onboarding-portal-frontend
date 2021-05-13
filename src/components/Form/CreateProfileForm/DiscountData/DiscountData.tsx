@@ -233,22 +233,22 @@ const DiscountData = ({
                       )}
                       {values.discounts.length - 1 === index && (
                         <>
-                          <div className="mt-8">
-                            <PlusCircleIcon
-                              className="mr-2"
-                              onClick={() =>
-                                arrayHelpers.push({
-                                  name: "",
-                                  description: "",
-                                  startDate: "",
-                                  endDate: "",
-                                  discount: "",
-                                  productCategories: [],
-                                  condition: "",
-                                  staticCode: ""
-                                })
-                              }
-                            />
+                          <div
+                            className="mt-8 cursor-pointer"
+                            onClick={() =>
+                              arrayHelpers.push({
+                                name: "",
+                                description: "",
+                                startDate: "",
+                                endDate: "",
+                                discount: "",
+                                productCategories: [],
+                                condition: "",
+                                staticCode: ""
+                              })
+                            }
+                          >
+                            <PlusCircleIcon className="mr-2" />
                             <span className="text-base font-weight-semibold text-blue">
                               Aggiungi un&apos;altra agevolazione
                             </span>
