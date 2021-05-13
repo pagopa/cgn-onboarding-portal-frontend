@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import 'yup-phone';
 
 const INCORRECT_EMAIL_ADDRESS = 'L’indirizzo inserito non è corretto';
 const REQUIRED_FIELD = 'Campo obbligato';
