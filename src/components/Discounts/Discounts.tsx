@@ -8,7 +8,6 @@ import { Badge } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { identity } from "fp-ts/lib/function";
 import Api from "../../api/index";
 import { Discounts } from "../../api/generated";
 import {
@@ -19,20 +18,26 @@ import {
 import ProfileItem from "../Profile/ProfileItem";
 import { makeProductCategoriesString } from "../../utils/strings";
 import { RootState } from "../../store/store";
+import PublishModal from "./PublishModal";
 
 const Discounts = () => {
   const history = useHistory();
   const [discounts, setDiscounts] = useState<any>([]);
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [modal, setModal] = useState(false);
   const [selectedDiscount, setSelectedDiscount] = useState<any>();
-
-  const toggle = () => setModal(!modal);
+  const [publishModal, setPublishModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const toggleDeleteModal = () => setDeleteModal(!deleteModal);
+  const togglePublishModal = () => setPublishModal(!publishModal);
+  const [selectedPublish, setSelectedPublish] = useState<any>();
 
   const getDiscounts = async () =>
     await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
       .map(response => response.data.items)
-      .fold(() => void 0, identity)
+      .fold(
+        () => void 0,
+        discounts => setDiscounts(discounts)
+      )
       .run();
 
   const deleteDiscount = async () =>
@@ -48,6 +53,17 @@ const Discounts = () => {
               (discount: any) => discount.id !== selectedDiscount
             )
           )
+      )
+      .run();
+
+  const publishDiscount = async (discountId: string) =>
+    await tryCatch(
+      () => Api.Discount.publishDiscount(agreement.id, discountId),
+      toError
+    )
+      .fold(
+        () => void 0,
+        () => getDiscounts()
       )
       .run();
 
@@ -76,7 +92,23 @@ const Discounts = () => {
           </Badge>
         );
 
-      case "rejected":
+      case "suspended":
+        return (
+          <Badge
+            className="font-weight-normal"
+            pill
+            tag="span"
+            style={{
+              backgroundColor: "#EA7614",
+              border: "1px solid #EA7614",
+              color: "white"
+            }}
+          >
+            Sospesa
+          </Badge>
+        );
+
+      case "expired":
         return (
           <Badge
             className="font-weight-normal"
@@ -88,7 +120,7 @@ const Discounts = () => {
               color: "#C02927"
             }}
           >
-            Sospesa
+            Scaduta
           </Badge>
         );
     }
@@ -113,10 +145,7 @@ const Discounts = () => {
   };
 
   useEffect(() => {
-    void getDiscounts().then(response => {
-      setDiscounts(response);
-      history.push(DASHBOARD);
-    });
+    void getDiscounts();
   }, []);
 
   const data = useMemo(() => discounts, [discounts]);
@@ -159,72 +188,100 @@ const Discounts = () => {
 
   const renderRowSubComponent = useCallback(
     ({ row }) => (
-      <section className="px-6 py-4 bg-white">
-        <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
-        <table className="table">
-          <tbody>
-            <ProfileItem label="Nome agevolazione" value={row.original.name} />
-            {row.original.description && (
+      <>
+        <section className="px-6 py-4 bg-white">
+          <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
+          <table className="table">
+            <tbody>
               <ProfileItem
-                label="Descrizione agevolazione"
-                value={row.original.description}
+                label="Nome agevolazione"
+                value={row.original.name}
               />
-            )}
-            <ProfileItem
-              label="Stato agevolazione"
-              value={row.original.state}
-            />
-            <ProfileItem
-              label="Data di inizio dell'agevolazione"
-              value={row.original.startDate}
-            />
-            <ProfileItem
-              label="Data di fine agevolazione"
-              value={row.original.endDate}
-            />
-            <ProfileItem
-              label="Entità dello sconto"
-              value={`${row.original.discount}%`}
-            />
-            <ProfileItem
-              label="Categorie merceologiche"
-              value={makeProductCategoriesString(
-                row.original.productCategories
+              {row.original.description && (
+                <ProfileItem
+                  label="Descrizione agevolazione"
+                  value={row.original.description}
+                />
               )}
-            />
-            {row.original.conditions && (
               <ProfileItem
-                label="Condizioni dell’agevolazione"
-                value={row.original.conditions}
+                label="Stato agevolazione"
+                value={row.original.state}
               />
-            )}
-          </tbody>
-        </table>
-        <div className="mt-10">
-          <Button
-            className="mr-4"
-            color="secondary"
-            outline
-            tag="button"
-            onClick={() => history.push(`edit-discount/${row.original.id}`)}
-          >
-            <Icon icon="it-pencil" padding={false} size="sm" />
-            <span>Modifica</span>
-          </Button>
-          <Button
-            color="primary"
-            icon
-            tag="button"
-            onClick={() => {
-              setSelectedDiscount(row.original.id);
-              toggle();
-            }}
-          >
-            <Icon icon="it-delete" color="white" padding={false} size="sm" />{" "}
-            Elimina
-          </Button>
-        </div>
-      </section>
+              <ProfileItem
+                label="Data di inizio dell'agevolazione"
+                value={row.original.startDate}
+              />
+              <ProfileItem
+                label="Data di fine agevolazione"
+                value={row.original.endDate}
+              />
+              <ProfileItem
+                label="Entità dello sconto"
+                value={`${row.original.discount}%`}
+              />
+              <ProfileItem
+                label="Categorie merceologiche"
+                value={makeProductCategoriesString(
+                  row.original.productCategories
+                )}
+              />
+              {row.original.conditions && (
+                <ProfileItem
+                  label="Condizioni dell’agevolazione"
+                  value={row.original.conditions}
+                />
+              )}
+            </tbody>
+          </table>
+          <div className="mt-10 d-flex flex-row justify-content-between">
+            <Button
+              className="mr-4"
+              color="secondary"
+              outline
+              tag="button"
+              onClick={() => history.push(`edit-discount/${row.original.id}`)}
+            >
+              <Icon icon="it-pencil" padding={false} size="sm" />
+              <span>Modifica</span>
+            </Button>
+            <Button
+              color="primary"
+              outline
+              icon
+              tag="button"
+              onClick={() => {
+                setSelectedDiscount(row.original.id);
+                toggleDeleteModal();
+              }}
+            >
+              <Icon
+                icon="it-delete"
+                color="primary"
+                padding={false}
+                size="sm"
+              />{" "}
+              Elimina
+            </Button>
+            <Button
+              className="mr-4"
+              color="primary"
+              tag="button"
+              onClick={() => {
+                setSelectedPublish(row.original.id);
+                togglePublishModal();
+              }}
+            >
+              <Icon
+                icon="it-external-link"
+                color="white"
+                padding={false}
+                size="sm"
+              />
+              <span>Pubblica</span>
+            </Button>
+          </div>
+        </section>
+      </>
     ),
     [discounts]
   );
@@ -241,8 +298,15 @@ const Discounts = () => {
   return (
     <div>
       <div>
-        <Modal isOpen={modal} toggle={toggle}>
-          <ModalHeader toggle={toggle}>Elimina agevolazione</ModalHeader>
+        <PublishModal
+          isOpen={publishModal}
+          toggle={togglePublishModal}
+          publish={() => publishDiscount(selectedPublish)}
+        />
+        <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
+          <ModalHeader toggle={toggleDeleteModal}>
+            Elimina agevolazione
+          </ModalHeader>
           <ModalBody>
             Sei sicuro di voler eliminare questa agevolazione?
           </ModalBody>
@@ -251,7 +315,7 @@ const Discounts = () => {
               color="primary"
               onClick={() => {
                 void deleteDiscount();
-                toggle();
+                toggleDeleteModal();
               }}
               style={{ width: "100%" }}
             >
@@ -260,7 +324,7 @@ const Discounts = () => {
             <Button
               color="primary"
               outline
-              onClick={toggle}
+              onClick={toggleDeleteModal}
               style={{ width: "100%" }}
             >
               Annulla

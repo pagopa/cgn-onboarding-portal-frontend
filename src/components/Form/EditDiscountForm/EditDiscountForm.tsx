@@ -18,6 +18,7 @@ import FormField from "../FormField";
 import { Discount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
+import PublishModal from "../../Discounts/PublishModal";
 
 const emptyInitialValues = {
   name: "",
@@ -37,6 +38,9 @@ const EditDiscountForm = () => {
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
+  const [publishModal, setPublishModal] = useState(false);
+  const togglePublishModal = () => setPublishModal(!publishModal);
+  const [selectedPublish, setSelectedPublish] = useState<any>();
 
   const updateDiscount = async (agreementId: string, discount: Discount) => {
     const {
@@ -93,6 +97,17 @@ const EditDiscountForm = () => {
       )
       .run();
 
+  const publishDiscount = async (discountId: string) =>
+    await tryCatch(
+      () => Api.Discount.publishDiscount(agreement.id, discountId),
+      toError
+    )
+      .fold(
+        () => void 0,
+        () => void 0
+      )
+      .run();
+
   useEffect(() => {
     setLoading(true);
     void getDiscount(agreement.id);
@@ -104,88 +119,130 @@ const EditDiscountForm = () => {
   }
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={discountDataValidationSchema}
-      onSubmit={values => {
-        const newValues = {
-          ...values,
-          startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-          endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
-          discount: Number(values.discount)
-        };
-        void updateDiscount(agreement.id, newValues);
-      }}
-    >
-      {({ values, setFieldValue }) => (
-        <Form autoComplete="off">
-          <FormSection hasIntroduction>
-            <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
-            <FormField
-              htmlFor="productCategories"
-              isTitleHeading
-              title="Categorie merceologiche"
-              description="Seleziona la o le categorie merceologiche a cui appatengono i beni/servizi oggetto dell’agevolazione"
-              isVisible
-              required
-            >
-              <ProductCategories />
-            </FormField>
-            <FormField
-              htmlFor="discountConditions"
-              isTitleHeading
-              title="Condizioni dell’agevolazione"
-              description="Descrivere eventuali limitazioni relative all’agevolazione (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
-              isVisible
-            >
-              <DiscountConditions />
-            </FormField>
-            <FormField
-              htmlFor="staticCode"
-              isTitleHeading
-              title="Codice statico"
-              description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
-              isVisible
-            >
-              {profile &&
-                (profile.salesChannel.channelType === "OnlineChannel" ||
-                  profile.salesChannel.channelType === "BothChannels") &&
-                profile.salesChannel.discountCodeType === "Static" && (
-                  <FormField
-                    htmlFor="staticCode"
-                    isTitleHeading
-                    title="Codice statico"
-                    description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-                    isVisible
-                    required
+    <>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={discountDataValidationSchema}
+        onSubmit={values => {
+          const newValues = {
+            ...values,
+            startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
+            endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
+            discount: Number(values.discount)
+          };
+          void updateDiscount(agreement.id, newValues);
+        }}
+      >
+        {({ values, setFieldValue }) => (
+          <Form autoComplete="off">
+            <FormSection hasIntroduction>
+              <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
+              <FormField
+                htmlFor="productCategories"
+                isTitleHeading
+                title="Categorie merceologiche"
+                description="Seleziona la o le categorie merceologiche a cui appatengono i beni/servizi oggetto dell’agevolazione"
+                isVisible
+                required
+              >
+                <ProductCategories />
+              </FormField>
+              <FormField
+                htmlFor="discountConditions"
+                isTitleHeading
+                title="Condizioni dell’agevolazione"
+                description="Descrivere eventuali limitazioni relative all’agevolazione (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
+                isVisible
+              >
+                <DiscountConditions />
+              </FormField>
+              <FormField
+                htmlFor="staticCode"
+                isTitleHeading
+                title="Codice statico"
+                description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
+                isVisible
+              >
+                {profile &&
+                  (profile.salesChannel.channelType === "OnlineChannel" ||
+                    profile.salesChannel.channelType === "BothChannels") &&
+                  profile.salesChannel.discountCodeType === "Static" && (
+                    <FormField
+                      htmlFor="staticCode"
+                      isTitleHeading
+                      title="Codice statico"
+                      description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                      isVisible
+                      required
+                    >
+                      <StaticCode />
+                    </FormField>
+                  )}
+              </FormField>
+              {initialValues.state !== "draft" && (
+                <div className="mt-10">
+                  <Button
+                    className="px-14 mr-4"
+                    outline
+                    color="primary"
+                    tag="button"
+                    onClick={() => history.push(DASHBOARD)}
                   >
-                    <StaticCode />
-                  </FormField>
-                )}
-            </FormField>
-            <div className="mt-10">
-              <Button
-                className="px-14 mr-4"
-                outline
-                color="primary"
-                tag="button"
-                onClick={() => history.push(DASHBOARD)}
-              >
-                Indietro
-              </Button>
-              <Button
-                type="submit"
-                className="px-14 mr-4"
-                color="primary"
-                tag="button"
-              >
-                Salva
-              </Button>
-            </div>
-          </FormSection>
-        </Form>
-      )}
-    </Formik>
+                    Indietro
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="px-14 mr-4"
+                    color="primary"
+                    tag="button"
+                  >
+                    Salva
+                  </Button>
+                </div>
+              )}
+              {initialValues.state === "draft" && (
+                <div className="mt-10 d-flex flex-row justify-content-between">
+                  <Button
+                    className="px-14 mr-4"
+                    color="secondary"
+                    tag="button"
+                    onClick={() => history.push(DASHBOARD)}
+                  >
+                    Annulla
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="px-14 mr-4"
+                    color="primary"
+                    outline
+                    tag="button"
+                  >
+                    Salva
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="px-14 mr-4"
+                    color="primary"
+                    tag="button"
+                    onClick={() => {
+                      setPublishModal(true);
+                      setSelectedPublish(values.id);
+                    }}
+                  >
+                    Pubblica
+                  </Button>
+                </div>
+              )}
+            </FormSection>
+          </Form>
+        )}
+      </Formik>
+      <PublishModal
+        isOpen={publishModal}
+        toggle={togglePublishModal}
+        publish={() => publishDiscount(selectedPublish)}
+      />
+    </>
   );
 };
 
