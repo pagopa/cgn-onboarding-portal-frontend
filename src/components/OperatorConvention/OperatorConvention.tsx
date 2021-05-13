@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useTable, usePagination } from "react-table";
+import cx from "classnames";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Button, Icon } from "design-react-kit";
@@ -12,6 +13,7 @@ import {
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorConvention = () => {
   const pageSize = 20;
   const [conventions, setConventions] = useState<ApprovedAgreements>();
@@ -140,15 +142,22 @@ const OperatorConvention = () => {
                   icon="it-arrow-left"
                   size="sm"
                   color="primary"
-                  className="cursor-pointer"
+                  className="cursor-pointer mx-1"
                   onClick={() => previousPage()}
                 />
               )}
               {pageArray.map(page => (
                 <div
-                  className="cursor-pointer primary-color font-weight-bold"
+                  className={cx(
+                    "font-weight-bold mx-1",
+                    page !== pageIndex ? "cursor-pointer primary-color" : false
+                  )}
                   key={page}
-                  onClick={() => gotoPage(page + 1)}
+                  onClick={() => {
+                    if (page !== pageIndex) {
+                      gotoPage(page);
+                    }
+                  }}
                 >
                   {page + 1}
                 </div>
@@ -158,7 +167,7 @@ const OperatorConvention = () => {
                   icon="it-arrow-right"
                   size="sm"
                   color="primary"
-                  className="cursor-pointer"
+                  className="cursor-pointer mx-1"
                   onClick={() => nextPage()}
                 />
               )}
