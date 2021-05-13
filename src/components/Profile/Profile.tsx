@@ -8,6 +8,7 @@ import { EDIT_PROFILE } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import ProfileItem from "./ProfileItem";
 import ProfileDocuments from "./ProfileDocuments";
+import ProfileApiToken from "./ProfileApiToken";
 
 const Profile = () => {
   const [profile, setProfile] = useState<any>(null);
@@ -21,6 +22,10 @@ const Profile = () => {
         profile => setProfile(profile)
       )
       .run();
+
+  const hasProfileApiToken = () =>
+    agreement.state === "ApprovedAgreement" &&
+    profile.salesChannel.discountCodeType === "API";
 
   useEffect(() => {
     void getProfile(agreement.id);
@@ -95,6 +100,7 @@ const Profile = () => {
           </section>
         </section>
       )}
+      {profile && hasProfileApiToken() && <ProfileApiToken />}
       <ProfileDocuments />
     </>
   );

@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { getCookie, logout } from '../utils/cookie';
-import { AgreementApi, ProfileApi, DiscountApi, DocumentApi, DocumentTemplateApi } from './generated';
+import {AgreementApi, ProfileApi, DiscountApi, DocumentApi, DocumentTemplateApi, ApiTokenApi } from './generated';
 
 const token = getCookie();
 
@@ -28,4 +28,5 @@ export default {
 	Discount: new DiscountApi(undefined, process.env.BASE_API_PATH, axiosInstance),
 	Document: new DocumentApi(undefined, process.env.BASE_API_PATH, axiosInstance),
 	DocumentTemplate: new DocumentTemplateApi(undefined, process.env.BASE_API_PATH, axiosInstance),
+	ApiToken: new ApiTokenApi(undefined, process.env.BASE_API_PATH, axiosInstance),
 };
