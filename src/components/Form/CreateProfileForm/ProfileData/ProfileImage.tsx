@@ -66,7 +66,7 @@ const ProfileImage = ({ handleImage }: Props) => {
             triggerTooltip({
               severity: Severity.DANGER,
               text:
-                "Errore durante il caricamento dell'immagine, riprovare in seguito o cambiare immagie"
+                "Errore durante il caricamento dell'immagine, riprovare in seguito o cambiare immagine"
             });
           }
           setLoading(false);
