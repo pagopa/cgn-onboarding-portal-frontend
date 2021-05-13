@@ -30,8 +30,6 @@ const StateModal = ({
     }
   };
 
-  console.log(states, statesField);
-
   return (
     <>
       <div
