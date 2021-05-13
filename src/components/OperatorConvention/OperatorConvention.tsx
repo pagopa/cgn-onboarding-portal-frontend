@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useTable } from "react-table";
+import { useTable, usePagination } from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { Button } from "design-react-kit";
+import { Button, Icon } from "design-react-kit";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
@@ -13,6 +13,7 @@ import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
 
 const OperatorConvention = () => {
+  const pageSize = 20;
   const [conventions, setConventions] = useState<ApprovedAgreements>();
   const [loading, setLoading] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -28,7 +29,7 @@ const OperatorConvention = () => {
           params.profileFullName,
           params.lastUpdateDateFrom,
           params.lastUpdateDateTo,
-          params.pageSize,
+          pageSize,
           params.page
         ),
       toError
@@ -44,15 +45,9 @@ const OperatorConvention = () => {
       .run();
 
   const getConventions = (params?: any) => {
-    if (!loading) {
-      setLoading(true);
-    }
+    setLoading(true);
     void getConventionsApi(params);
   };
-
-  useEffect(() => {
-    getConventions({});
-  }, []);
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
   const columns = useMemo(
@@ -77,12 +72,32 @@ const OperatorConvention = () => {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
-    prepareRow
-  } = useTable<any>({
-    columns,
-    data
-  });
+    page,
+    prepareRow,
+    canPreviousPage,
+    canNextPage,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    state: { pageIndex }
+  } = useTable<any>(
+    {
+      columns,
+      data,
+      initialState: { pageIndex: 0, pageSize },
+      manualPagination: true,
+      pageCount: conventions?.total
+        ? Math.ceil(conventions?.total / pageSize)
+        : 0
+    },
+    usePagination
+  );
+
+  useEffect(() => {
+    refForm.current?.setFieldValue("page", pageIndex);
+    refForm.current?.submitForm();
+  }, [pageIndex]);
 
   if (showDetails && selectedConvention) {
     return (
@@ -96,6 +111,16 @@ const OperatorConvention = () => {
     );
   }
 
+  const startRowIndex: number = pageIndex * pageSize + 1;
+  // eslint-disable-next-line functional/no-let
+  let endRowIndex: number = startRowIndex - 1 + pageSize;
+
+  if (endRowIndex > (conventions?.total || 0)) {
+    endRowIndex = conventions?.total || 0;
+  }
+
+  const pageArray = Array.from(Array(pageCount).keys());
+
   return (
     <section className="mt-2 px-8 py-10 bg-white">
       <ConventionFilter refForm={refForm} getConventions={getConventions} />
@@ -103,6 +128,42 @@ const OperatorConvention = () => {
         <CenteredLoading />
       ) : (
         <>
+          <div className="mb-2 mt-4 d-flex justify-content-between">
+            {!!conventions?.total && (
+              <strong>
+                {startRowIndex}-{endRowIndex} di {conventions?.total}
+              </strong>
+            )}
+            <div className="d-flex align-items-center">
+              {canPreviousPage && (
+                <Icon
+                  icon="it-arrow-left"
+                  size="sm"
+                  color="primary"
+                  className="cursor-pointer"
+                  onClick={() => previousPage()}
+                />
+              )}
+              {pageArray.map(page => (
+                <div
+                  className="cursor-pointer primary-color font-weight-bold"
+                  key={page}
+                  onClick={() => gotoPage(page + 1)}
+                >
+                  {page + 1}
+                </div>
+              ))}
+              {canNextPage && (
+                <Icon
+                  icon="it-arrow-right"
+                  size="sm"
+                  color="primary"
+                  className="cursor-pointer"
+                  onClick={() => nextPage()}
+                />
+              )}
+            </div>
+          </div>
           <table
             {...getTableProps()}
             style={{ width: "100%" }}
@@ -131,7 +192,7 @@ const OperatorConvention = () => {
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {rows.map(row => {
+              {page.map(row => {
                 prepareRow(row);
                 return (
                   <React.Fragment key={row.getRowProps().key}>

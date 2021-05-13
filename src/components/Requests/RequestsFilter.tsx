@@ -11,6 +11,7 @@ interface FilterFormValues {
   requestDateTo: Date | undefined;
   states: string | undefined;
   assignee: string | undefined;
+  page: number;
 }
 
 const RequestsFilter = ({
@@ -84,7 +85,8 @@ const RequestsFilter = ({
     requestDateFrom: undefined,
     requestDateTo: undefined,
     states: undefined,
-    assignee: undefined
+    assignee: undefined,
+    page: 0
   };
 
   return (
@@ -136,6 +138,7 @@ const RequestsFilter = ({
                 <button
                   onClick={e => {
                     e.stopPropagation();
+                    setFieldValue("page", 0);
                     setFieldValue("requestDateFrom", undefined);
                     setFieldValue("requestDateTo", undefined);
                   }}
@@ -150,6 +153,7 @@ const RequestsFilter = ({
                 <button
                   onClick={e => {
                     e.stopPropagation();
+                    setFieldValue("page", 0);
                     setFieldValue("states", undefined);
                   }}
                 >
@@ -167,6 +171,7 @@ const RequestsFilter = ({
                     clearTimeout(timeout);
                   }
                   timeout = setTimeout(() => {
+                    setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);
                 }}
@@ -218,6 +223,7 @@ const RequestsFilter = ({
               <Button
                 color="primary"
                 onClick={() => {
+                  setFieldValue("page", 0);
                   void submitForm();
                   toggleDateModal();
                 }}
@@ -288,6 +294,7 @@ const RequestsFilter = ({
               <Button
                 color="primary"
                 onClick={() => {
+                  setFieldValue("page", 0);
                   void submitForm();
                   toggleStateModal();
                 }}
