@@ -70,6 +70,7 @@ const DateModal = ({
           <button
             onClick={e => {
               e.stopPropagation();
+              setFieldValue("page", 0);
               setFieldValue("requestDateFrom", undefined);
               setFieldValue("requestDateTo", undefined);
             }}

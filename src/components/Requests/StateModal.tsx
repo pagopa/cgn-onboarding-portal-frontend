@@ -41,6 +41,7 @@ const StateModal = ({
           <button
             onClick={e => {
               e.stopPropagation();
+              setFieldValue("page", 0);
               setFieldValue("states", undefined);
             }}
           >

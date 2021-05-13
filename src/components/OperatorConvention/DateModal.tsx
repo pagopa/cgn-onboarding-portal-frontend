@@ -72,6 +72,7 @@ const DateModal = ({
           <button
             onClick={e => {
               e.stopPropagation();
+              setFieldValue("page", 0);
               setFieldValue("lastUpdateDateFrom", undefined);
               setFieldValue("lastUpdateDateTo", undefined);
             }}

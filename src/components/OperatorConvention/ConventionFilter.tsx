@@ -1,12 +1,12 @@
-import React, { useState, forwardRef } from "react";
+import React from "react";
 import { Form, Formik, Field } from "formik";
-import { format } from "date-fns";
 import DateModal from "./DateModal";
 
 interface FilterFormValues {
   fullName: string | undefined;
   lastUpdateDateFrom: Date | undefined;
   lastUpdateDateTo: Date | undefined;
+  page: number;
 }
 
 const ConventionFilter = ({
@@ -22,7 +22,8 @@ const ConventionFilter = ({
   const initialValues: FilterFormValues = {
     fullName: "",
     lastUpdateDateFrom: undefined,
-    lastUpdateDateTo: undefined
+    lastUpdateDateTo: undefined,
+    page: 0
   };
 
   return (
@@ -77,6 +78,7 @@ const ConventionFilter = ({
                     clearTimeout(timeout);
                   }
                   timeout = setTimeout(() => {
+                    setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);
                 }}

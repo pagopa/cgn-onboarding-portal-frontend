@@ -9,6 +9,7 @@ interface FilterFormValues {
   requestDateTo: Date | undefined;
   states: string | undefined;
   assignee: string | undefined;
+  page: number;
 }
 
 const RequestsFilter = ({
@@ -26,7 +27,8 @@ const RequestsFilter = ({
     requestDateFrom: undefined,
     requestDateTo: undefined,
     states: undefined,
-    assignee: undefined
+    assignee: undefined,
+    page: 0
   };
 
   return (
@@ -95,6 +97,7 @@ const RequestsFilter = ({
                     clearTimeout(timeout);
                   }
                   timeout = setTimeout(() => {
+                    setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);
                 }}
