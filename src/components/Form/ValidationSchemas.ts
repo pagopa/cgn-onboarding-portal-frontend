@@ -17,7 +17,10 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 	}),
 	pecAddress: Yup.string().email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD),
 	legalOffice: Yup.string().required(REQUIRED_FIELD),
-	telephoneNumber: Yup.string().matches(/^[0-9]*$/, ONLY_NUMBER).min(4, 'Deve essere di 4 caratteri').required(REQUIRED_FIELD),
+	telephoneNumber: Yup.string()
+		.matches(/^[0-9]*$/, ONLY_NUMBER)
+		.min(4, 'Deve essere di 4 caratteri')
+		.required(REQUIRED_FIELD),
 	legalRepresentativeFullName: Yup.string().matches(/^[a-zA-Z\s]*$/, ONLY_STRING).required(REQUIRED_FIELD),
 	legalRepresentativeTaxCode: Yup.string()
 		.min(16, 'Deve essere di 16 caratteri')
@@ -28,7 +31,10 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 		lastName: Yup.string().matches(/^[a-zA-Z\s]*$/, ONLY_STRING).required(REQUIRED_FIELD),
 		role: Yup.string().matches(/^[a-zA-Z\s]*$/, ONLY_STRING).required(REQUIRED_FIELD),
 		emailAddress: Yup.string().email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD),
-		telephoneNumber: Yup.string().matches(/^[0-9]*$/, ONLY_NUMBER).min(4, 'Deve essere di 4 caratteri').required(REQUIRED_FIELD),
+		telephoneNumber: Yup.string()
+			.matches(/^[0-9]*$/, ONLY_NUMBER)
+			.min(4, 'Deve essere di 4 caratteri')
+			.required(REQUIRED_FIELD)
 	}),
 	description: Yup.string().required(REQUIRED_FIELD),
 	salesChannel: Yup.object().shape({
@@ -56,25 +62,33 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 });
 
 export const discountDataValidationSchema = Yup.object().shape({
-			name: Yup.string().max(100).required(REQUIRED_FIELD),
-			description: Yup.string().max(250).required(REQUIRED_FIELD),
-			startDate: Yup.string().required(REQUIRED_FIELD),
-			endDate: Yup.string().required(REQUIRED_FIELD),
-			discount: Yup.number().integer(DISCOUNT_RANGE).min(1, DISCOUNT_RANGE).max(100, DISCOUNT_RANGE).required(REQUIRED_FIELD),
-			productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(),
-			condition: Yup.string(),
-			staticCode: Yup.string()
+	name: Yup.string().max(100).required(REQUIRED_FIELD),
+	description: Yup.string().max(250),
+	startDate: Yup.string().required(REQUIRED_FIELD),
+	endDate: Yup.string().required(REQUIRED_FIELD),
+	discount: Yup.number()
+		.integer(DISCOUNT_RANGE)
+		.min(1, DISCOUNT_RANGE)
+		.max(100, DISCOUNT_RANGE)
+		.required(REQUIRED_FIELD),
+	productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(),
+	condition: Yup.string(),
+	staticCode: Yup.string()
 });
 
 export const discountsListDataValidationSchema = Yup.object().shape({
 	discounts: Yup.array().of(
 		Yup.object().shape({
 			name: Yup.string().max(100).required(REQUIRED_FIELD),
-			description: Yup.string().max(250).required(REQUIRED_FIELD),
+			description: Yup.string().max(250),
 			startDate: Yup.string().required(REQUIRED_FIELD),
 			endDate: Yup.string().required(REQUIRED_FIELD),
 			productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(REQUIRED_FIELD),
-			discount: Yup.number().integer(DISCOUNT_RANGE).min(1, DISCOUNT_RANGE).max(100, DISCOUNT_RANGE).required(REQUIRED_FIELD),
+			discount: Yup.number()
+				.integer(DISCOUNT_RANGE)
+				.min(1, DISCOUNT_RANGE)
+				.max(100, DISCOUNT_RANGE)
+				.required(REQUIRED_FIELD),
 			condition: Yup.string(),
 			staticCode: Yup.string()
 		})
