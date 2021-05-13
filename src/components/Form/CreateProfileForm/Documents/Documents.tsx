@@ -89,17 +89,16 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
           </p>
         )}
         <div className="mt-10">
-          {!isCompleted || !allUploaded ? (
-            <Button
-              className="px-14 mr-4"
-              color="primary"
-              outline
-              tag="button"
-              onClick={handleBack}
-            >
-              Indietro
-            </Button>
-          ) : (
+          <Button
+            className="px-14 mr-4"
+            color="primary"
+            outline
+            tag="button"
+            onClick={handleBack}
+          >
+            Indietro
+          </Button>
+          {(isCompleted || allUploaded) && (
             <Button
               className="px-14"
               color="primary"
