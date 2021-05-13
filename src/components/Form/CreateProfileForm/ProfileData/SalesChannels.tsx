@@ -153,6 +153,7 @@ const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
                           title="Provincia"
                         >
                           <Field
+                            maxLength={2}
                             id="district"
                             name={`salesChannel.addresses[${index}].district`}
                             type="text"
