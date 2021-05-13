@@ -14,6 +14,7 @@ import {
 } from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import cx from "classnames";
 import { Icon, Button } from "design-react-kit";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
@@ -167,15 +168,22 @@ const Requests = () => {
                   icon="it-arrow-left"
                   size="sm"
                   color="primary"
-                  className="cursor-pointer"
+                  className="cursor-pointer mx-1"
                   onClick={() => previousPage()}
                 />
               )}
               {pageArray.map(page => (
                 <div
-                  className="cursor-pointer primary-color font-weight-bold"
+                  className={cx(
+                    "font-weight-bold mx-1",
+                    page !== pageIndex ? "cursor-pointer primary-color" : false
+                  )}
                   key={page}
-                  onClick={() => gotoPage(page + 1)}
+                  onClick={() => {
+                    if (page !== pageIndex) {
+                      gotoPage(page);
+                    }
+                  }}
                 >
                   {page + 1}
                 </div>
@@ -185,7 +193,7 @@ const Requests = () => {
                   icon="it-arrow-right"
                   size="sm"
                   color="primary"
-                  className="cursor-pointer"
+                  className="cursor-pointer mx-1"
                   onClick={() => nextPage()}
                 />
               )}

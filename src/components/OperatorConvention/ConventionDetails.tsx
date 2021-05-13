@@ -49,7 +49,7 @@ const getView = (
   if (details) {
     if (view.includes("agevolazione")) {
       const discount =
-        details?.discounts?.[Number(view.charAt(view.length - 1)) - 1];
+        details?.discounts?.[Number(view.replace(/^\D+/g, "")) - 1];
       if (discount) {
         return (
           <Discount

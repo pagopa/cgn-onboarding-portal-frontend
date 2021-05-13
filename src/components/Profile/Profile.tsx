@@ -87,9 +87,11 @@ const Profile = () => {
                 />
               </tbody>
             </table>
-            <Link className="mt-4 btn btn-outline-primary" to={EDIT_PROFILE}>
-              Modifica dati
-            </Link>
+            {agreement.state === "ApprovedAgreement" && (
+              <Link className="mt-4 btn btn-outline-primary" to={EDIT_PROFILE}>
+                Modifica dati
+              </Link>
+            )}
           </section>
         </section>
       )}

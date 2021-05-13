@@ -233,53 +233,55 @@ const Discounts = () => {
               )}
             </tbody>
           </table>
-          <div className="mt-10 d-flex flex-row justify-content-between">
-            <Button
-              className="mr-4"
-              color="secondary"
-              outline
-              tag="button"
-              onClick={() => history.push(`edit-discount/${row.original.id}`)}
-            >
-              <Icon icon="it-pencil" padding={false} size="sm" />
-              <span>Modifica</span>
-            </Button>
-            <Button
-              color="primary"
-              outline
-              icon
-              tag="button"
-              onClick={() => {
-                setSelectedDiscount(row.original.id);
-                toggleDeleteModal();
-              }}
-            >
-              <Icon
-                icon="it-delete"
+          {agreement.state === "ApprovedAgreement" && (
+            <div className="mt-10 d-flex flex-row justify-content-between">
+              <Button
+                className="mr-4"
+                color="secondary"
+                outline
+                tag="button"
+                onClick={() => history.push(`edit-discount/${row.original.id}`)}
+              >
+                <Icon icon="it-pencil" padding={false} size="sm" />
+                <span>Modifica</span>
+              </Button>
+              <Button
                 color="primary"
-                padding={false}
-                size="sm"
-              />{" "}
-              Elimina
-            </Button>
-            <Button
-              className="mr-4"
-              color="primary"
-              tag="button"
-              onClick={() => {
-                setSelectedPublish(row.original.id);
-                togglePublishModal();
-              }}
-            >
-              <Icon
-                icon="it-external-link"
-                color="white"
-                padding={false}
-                size="sm"
-              />
-              <span>Pubblica</span>
-            </Button>
-          </div>
+                outline
+                icon
+                tag="button"
+                onClick={() => {
+                  setSelectedDiscount(row.original.id);
+                  toggleDeleteModal();
+                }}
+              >
+                <Icon
+                  icon="it-delete"
+                  color="primary"
+                  padding={false}
+                  size="sm"
+                />{" "}
+                Elimina
+              </Button>
+              <Button
+                className="mr-4"
+                color="primary"
+                tag="button"
+                onClick={() => {
+                  setSelectedPublish(row.original.id);
+                  togglePublishModal();
+                }}
+              >
+                <Icon
+                  icon="it-external-link"
+                  color="white"
+                  padding={false}
+                  size="sm"
+                />
+                <span>Pubblica</span>
+              </Button>
+            </div>
+          )}
         </section>
       </>
     ),
@@ -408,11 +410,13 @@ const Discounts = () => {
           })}
         </tbody>
       </table>
-      <div className="bg-white px-8 pt-10 pb-10">
-        <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
-          Nuova agevolazione
-        </Link>
-      </div>
+      {agreement.state === "ApprovedAgreement" && (
+        <div className="bg-white px-8 pt-10 pb-10">
+          <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
+            Nuova agevolazione
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
