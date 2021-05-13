@@ -1,5 +1,6 @@
 import React from "react";
-import { ErrorMessage, Field } from "formik";
+import { Field } from "formik";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
   index?: number;
@@ -17,7 +18,7 @@ const DiscountConditions = ({ index }: Props) => {
         maxLength="200"
         rows="4"
       />
-      <ErrorMessage
+      <CustomErrorMessage
         name={hasIndex ? `discounts[${index}].condition` : `condition`}
       />
     </>

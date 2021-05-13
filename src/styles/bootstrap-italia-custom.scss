@@ -62,22 +62,22 @@ input {
 }
 
 /* Chrome/Opera/Safari */
-::-webkit-input-placeholder { 
+::-webkit-input-placeholder {
     font-style: italic;
 }
 
 /* Firefox 19+ */
-::-moz-placeholder { 
+::-moz-placeholder {
     font-style: italic;
 }
 
 /* IE 10+ */
-:-ms-input-placeholder { 
+:-ms-input-placeholder {
     font-style: italic;
 }
 
 /* Firefox 18- */
-:-moz-placeholder { 
+:-moz-placeholder {
     font-style: italic;
 }
 
@@ -85,7 +85,7 @@ textarea {
     resize: none !important;
 }
 
-/* 
+/*
 
 #app {
     display: grid;
@@ -99,7 +99,7 @@ textarea {
 }
 
 .text-dark-blue {
-    color: $secondary; 
+    color: $secondary;
 }
 
 .text-gray {
@@ -110,12 +110,12 @@ textarea {
 
 .text-sm {
     font-size: 0.875rem;
-    line-height: 1.25rem;  
+    line-height: 1.25rem;
 }
 
 .text-base {
     font-size: 1rem;
-    line-height: 1.25rem;    
+    line-height: 1.25rem;
 }
 
 /* Letter spacing */
@@ -138,6 +138,12 @@ textarea {
     cursor: pointer;
 }
 
+.dot {
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+  }
+.text-red { color: #ff0000}
 $link-hover-decoration: none;
 
 @import "../../node_modules/bootstrap-italia/src/scss/bootstrap-italia.scss";
