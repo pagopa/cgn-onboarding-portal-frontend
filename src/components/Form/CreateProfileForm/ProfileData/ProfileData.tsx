@@ -1,7 +1,7 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
@@ -14,7 +14,6 @@ import ReferentData from "./ReferentData";
 import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
-import "yup-phone";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -48,10 +47,15 @@ type Props = {
   isCompleted: boolean;
   handleBack: () => void;
   handleNext: () => void;
+  onUpdate: () => void;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
+const ProfileData = ({
+  isCompleted,
+  handleBack,
+  handleNext,
+  onUpdate
+}: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const user = useSelector((state: RootState) => state.user.data);
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
@@ -66,7 +70,9 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
 
   const updateProfile = (discount: any) => {
     if (agreement) {
-      void Api.Profile.updateProfile(agreement.id, discount);
+      void Api.Profile.updateProfile(agreement.id, discount).then(() =>
+        onUpdate()
+      );
     }
   };
 
@@ -102,6 +108,7 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
 
   return (
     <Formik
+      enableReinitialize
       initialValues={{
         ...initialValues,
         salesChannel: {
