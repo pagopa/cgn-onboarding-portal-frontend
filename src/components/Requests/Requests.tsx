@@ -5,9 +5,16 @@ import React, {
   useCallback,
   useRef
 } from "react";
-import { useTable, useExpanded, Row, UseExpandedRowProps } from "react-table";
+import {
+  useTable,
+  useExpanded,
+  Row,
+  UseExpandedRowProps,
+  usePagination
+} from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import cx from "classnames";
 import { Icon, Button } from "design-react-kit";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
@@ -16,7 +23,9 @@ import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const Requests = () => {
+  const pageSize = 20;
   const [agreements, setAgreements] = useState<Agreements>();
   const [loading, setLoading] = useState(false);
   const refForm = useRef<any>(null);
@@ -30,7 +39,7 @@ const Requests = () => {
           params.profileFullName,
           params.requestDateFrom,
           params.requestDateTo,
-          params.pageSize,
+          pageSize,
           params.page
         ),
       toError
@@ -46,15 +55,9 @@ const Requests = () => {
       .run();
 
   const getAgreements = (params?: any) => {
-    if (!loading) {
-      setLoading(true);
-    }
+    setLoading(true);
     void getAgreementsApi(params);
   };
-
-  useEffect(() => {
-    getAgreements({});
-  }, []);
 
   const data = useMemo(() => agreements?.items || [], [agreements]);
   const columns = useMemo(
@@ -108,17 +111,43 @@ const Requests = () => {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
     prepareRow,
-    visibleColumns
+    visibleColumns,
+    canPreviousPage,
+    canNextPage,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    state: { pageIndex }
   } = useTable<any>(
     {
       columns,
       data,
-      autoResetExpanded: false
+      autoResetExpanded: false,
+      initialState: { pageIndex: 0, pageSize },
+      manualPagination: true,
+      pageCount: agreements?.total ? Math.ceil(agreements?.total / pageSize) : 0
     },
-    useExpanded
+    useExpanded,
+    usePagination
   );
+
+  useEffect(() => {
+    refForm.current?.setFieldValue("page", pageIndex);
+    refForm.current?.submitForm();
+  }, [pageIndex]);
+
+  const startRowIndex: number = pageIndex * pageSize + 1;
+  // eslint-disable-next-line functional/no-let
+  let endRowIndex: number = startRowIndex - 1 + pageSize;
+
+  if (endRowIndex > (agreements?.total || 0)) {
+    endRowIndex = agreements?.total || 0;
+  }
+
+  const pageArray = Array.from(Array(pageCount).keys());
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
@@ -127,6 +156,49 @@ const Requests = () => {
         <CenteredLoading />
       ) : (
         <>
+          <div className="mb-2 mt-4 d-flex justify-content-between">
+            {!!agreements?.total && (
+              <strong>
+                {startRowIndex}-{endRowIndex} di {agreements?.total}
+              </strong>
+            )}
+            <div className="d-flex align-items-center">
+              {canPreviousPage && (
+                <Icon
+                  icon="it-arrow-left"
+                  size="sm"
+                  color="primary"
+                  className="cursor-pointer mx-1"
+                  onClick={() => previousPage()}
+                />
+              )}
+              {pageArray.map(page => (
+                <div
+                  className={cx(
+                    "font-weight-bold mx-1",
+                    page !== pageIndex ? "cursor-pointer primary-color" : false
+                  )}
+                  key={page}
+                  onClick={() => {
+                    if (page !== pageIndex) {
+                      gotoPage(page);
+                    }
+                  }}
+                >
+                  {page + 1}
+                </div>
+              ))}
+              {canNextPage && (
+                <Icon
+                  icon="it-arrow-right"
+                  size="sm"
+                  color="primary"
+                  className="cursor-pointer mx-1"
+                  onClick={() => nextPage()}
+                />
+              )}
+            </div>
+          </div>
           <table
             {...getTableProps()}
             style={{ width: "100%" }}
@@ -155,7 +227,7 @@ const Requests = () => {
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {rows.map(row => {
+              {page.map(row => {
                 prepareRow(row);
                 return (
                   <React.Fragment key={row.getRowProps().key}>

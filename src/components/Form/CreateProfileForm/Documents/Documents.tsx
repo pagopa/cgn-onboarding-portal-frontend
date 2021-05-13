@@ -8,6 +8,7 @@ import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
 import { Documents } from "../../../../api/generated";
+import { useTooltip, Severity } from "../../../../context/tooltip";
 import FileRow from "./FileRow";
 import RequestApproval from "./RequestApproval";
 
@@ -21,6 +22,7 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
   const [loading, setLoading] = useState(true);
   const [documents, setDocuments] = useState<Documents>({ items: [] });
   const [showRequireApproval, setShowRequireApproval] = useState(false);
+  const { triggerTooltip } = useTooltip();
 
   const getFiles = async () =>
     await tryCatch(() => Api.Document.getDocuments(agreement.id), toError)
@@ -35,9 +37,15 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
       .run();
 
   const requireApproval = () => {
-    void Api.Agreement.requestApproval(agreement.id).then(() =>
-      setShowRequireApproval(true)
-    );
+    void Api.Agreement.requestApproval(agreement.id)
+      .then(() => setShowRequireApproval(true))
+      .catch(() =>
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text:
+            "Errore durante l'invio della richiesta di approvazione, riprovare in seguito"
+        })
+      );
   };
 
   const getUploadedDoc = (type: string) =>
