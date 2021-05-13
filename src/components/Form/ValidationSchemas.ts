@@ -4,7 +4,7 @@ const INCORRECT_EMAIL_ADDRESS = 'L’indirizzo inserito non è corretto';
 const REQUIRED_FIELD = 'Campo obbligatorio';
 const ONLY_NUMBER = 'Solo numeri';
 const ONLY_STRING = 'Solo lettere';
-const DISCOUNT_RANGE = 'Lo sconto deve essere compreso tra 0 e 100';
+const DISCOUNT_RANGE = 'Lo sconto deve essere un numero intero compreso tra 0 e 100';
 const PRODUCT_CATEGORIES_ONE = 'Selezionare almeno una categoria merceologica';
 const INCORRECT_TELEPHONE_NUMBER = 'Numero di telefono non valido';
 const INCORRECT_TAX_CODE_OR_VAT = 'Il numero di caratteri inseriti non è corretto';
@@ -56,14 +56,25 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 });
 
 export const discountDataValidationSchema = Yup.object().shape({
+			name: Yup.string().max(100).required(REQUIRED_FIELD),
+			description: Yup.string().max(250).required(REQUIRED_FIELD),
+			startDate: Yup.string().required(REQUIRED_FIELD),
+			endDate: Yup.string().required(REQUIRED_FIELD),
+			discount: Yup.number().integer(DISCOUNT_RANGE).min(1, DISCOUNT_RANGE).max(100, DISCOUNT_RANGE).required(REQUIRED_FIELD),
+			productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(),
+			condition: Yup.string(),
+			staticCode: Yup.string()
+});
+
+export const discountsListDataValidationSchema = Yup.object().shape({
 	discounts: Yup.array().of(
 		Yup.object().shape({
 			name: Yup.string().max(100).required(REQUIRED_FIELD),
 			description: Yup.string().max(250).required(REQUIRED_FIELD),
 			startDate: Yup.string().required(REQUIRED_FIELD),
 			endDate: Yup.string().required(REQUIRED_FIELD),
-			discount: Yup.number().min(1, DISCOUNT_RANGE).max(100, DISCOUNT_RANGE).required(REQUIRED_FIELD),
 			productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(REQUIRED_FIELD),
+			discount: Yup.number().integer(DISCOUNT_RANGE).min(1, DISCOUNT_RANGE).max(100, DISCOUNT_RANGE).required(REQUIRED_FIELD),
 			condition: Yup.string(),
 			staticCode: Yup.string()
 		})
