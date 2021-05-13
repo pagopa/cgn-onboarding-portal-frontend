@@ -17,7 +17,7 @@ import FormSection from "../../FormSection";
 import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { CreateDiscount, Discount } from "../../../../api/generated";
-import { discountDataValidationSchema } from "../../ValidationSchemas";
+import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 
 const emptyInitialValues = {
   discounts: [
@@ -139,7 +139,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={discountDataValidationSchema}
+      validationSchema={discountsListDataValidationSchema}
       onSubmit={values => {
         const newValues = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
