@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { identity } from "fp-ts/lib/function";
 import cx from "classnames";
 import { Icon } from "design-react-kit";
 import Api from "../../api/backoffice";
@@ -59,6 +58,8 @@ const getView = (
             discount={discount}
           />
         );
+      } else {
+        return <h6>Nessuna Agevolazione pubblicata</h6>;
       }
     }
     switch (view) {
@@ -149,30 +150,32 @@ const ConventionDetails = ({
                       setView,
                       "agevolazione",
                       "Agevolazioni",
-                      <ul className="link-list">
-                        {details?.discounts?.map((d, i: number) => (
-                          <li className="nav-link" key={i}>
-                            <a
-                              className={cx(
-                                "nav-link primary-color cursor-pointer",
-                                {
-                                  "font-weight-bold": view.includes(
-                                    `agevolazione${i + 1}`
-                                  )
-                                }
-                              )}
-                              onClick={() => setView(`agevolazione${i + 1}`)}
-                            >
-                              <span className="d-flex align-items-center">
-                                Agevolazione #{i + 1}
-                                {d.state === "suspended" && (
-                                  <span className="dot ml-2 bg-warning" />
+                      details?.discounts?.length ? (
+                        <ul className="link-list">
+                          {details?.discounts?.map((d, i: number) => (
+                            <li className="nav-link" key={i}>
+                              <a
+                                className={cx(
+                                  "nav-link primary-color cursor-pointer",
+                                  {
+                                    "font-weight-bold": view.includes(
+                                      `agevolazione${i + 1}`
+                                    )
+                                  }
                                 )}
-                              </span>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
+                                onClick={() => setView(`agevolazione${i + 1}`)}
+                              >
+                                <span className="d-flex align-items-center">
+                                  Agevolazione #{i + 1}
+                                  {d.state === "suspended" && (
+                                    <span className="dot ml-2 bg-warning" />
+                                  )}
+                                </span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null
                     )}
                     {menuLink(view, setView, "profilo", "Profilo")}
                     {menuLink(view, setView, "referente", "Referente")}
