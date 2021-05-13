@@ -29,7 +29,11 @@ interface AgreementState {
 export const agreementSlice = createSlice({
 	name: 'agreement',
 	initialState: { value: {}, loading: true } as AgreementState,
-	reducers: {},
+	reducers: {
+		setImage: (state, action) => {
+			state.value.imageUrl = action.payload;
+		}
+	},
 	extraReducers: (builder) => {
 		builder.addCase(createAgreement.pending, (state, action) => {
 			state.loading = true;
@@ -45,5 +49,7 @@ export const agreementSlice = createSlice({
 		});
 	}
 });
+
+export const { setImage } = agreementSlice.actions;
 
 export default agreementSlice.reducer;
