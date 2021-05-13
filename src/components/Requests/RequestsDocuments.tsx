@@ -15,11 +15,13 @@ import {
 const CheckedDocument = ({
   doc,
   i,
-  deleteDocument
+  deleteDocument,
+  assignedToMe
 }: {
   doc: Document;
   i: number;
   deleteDocument: (type: DocumentType) => void;
+  assignedToMe: boolean;
 }) => {
   const label =
     doc.documentType === "Agreement"
@@ -38,13 +40,15 @@ const CheckedDocument = ({
           </div>
         </div>
 
-        <span
-          className="d-flex flex-row align-items-center cursor-pointer"
-          onClick={() => deleteDocument(doc.documentType)}
-        >
-          <Icon icon="it-delete" size="sm" color="primary" />
-          <span className="text-sm text-blue">Elimina</span>
-        </span>
+        {assignedToMe && (
+          <span
+            className="d-flex flex-row align-items-center cursor-pointer"
+            onClick={() => deleteDocument(doc.documentType)}
+          >
+            <Icon icon="it-delete" size="sm" color="primary" />
+            <span className="text-sm text-blue">Elimina</span>
+          </span>
+        )}
       </div>
     </div>
   );
@@ -54,12 +58,14 @@ const UncheckedDocument = ({
   doc,
   i,
   original,
-  uploadDocument
+  uploadDocument,
+  assignedToMe
 }: {
   doc: Document;
   i: number;
   original: Agreement;
   uploadDocument: (type: DocumentType, file: File) => void;
+  assignedToMe: boolean;
 }) => {
   const uploadInputRef = useRef<any>(null);
   const label =
@@ -78,23 +84,25 @@ const UncheckedDocument = ({
             </a>
           </div>
         </div>
-        <Button
-          color="primary"
-          icon
-          size="sm"
-          tag="button"
-          disabled={original.state === "PendingAgreement"}
-          onClick={() => uploadInputRef.current?.click()}
-        >
-          <Icon
-            color="white"
-            icon="it-upload"
-            padding={false}
-            size="xs"
-            className="mr-2"
-          />
-          Carica controfirmato
-        </Button>
+        {assignedToMe && (
+          <Button
+            color="primary"
+            icon
+            size="sm"
+            tag="button"
+            disabled={original.state === "PendingAgreement"}
+            onClick={() => uploadInputRef.current?.click()}
+          >
+            <Icon
+              color="white"
+              icon="it-upload"
+              padding={false}
+              size="xs"
+              className="mr-2"
+            />
+            Carica controfirmato
+          </Button>
+        )}
         <input
           type="file"
           style={{ display: "none" }}
@@ -113,9 +121,11 @@ const UncheckedDocument = ({
 
 const RequestsDetails = ({
   original,
+  assignedToMe,
   setCheckAllDocs
 }: {
   original: Agreement;
+  assignedToMe: boolean;
   setCheckAllDocs: (state: boolean) => void;
 }) => {
   const [documents, setDocuments] = useState<Array<Document>>();
@@ -206,6 +216,7 @@ const RequestsDetails = ({
                 i={i}
                 original={original}
                 uploadDocument={uploadDocument}
+                assignedToMe={assignedToMe}
               />
             );
           } else {
@@ -215,6 +226,7 @@ const RequestsDetails = ({
                 doc={doc}
                 i={i}
                 deleteDocument={deleteDocument}
+                assignedToMe={assignedToMe}
               />
             );
           }

@@ -16,6 +16,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import cx from "classnames";
 import { Icon, Button } from "design-react-kit";
+import { format } from "date-fns";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import { Agreements } from "../../api/generated_backoffice";
@@ -68,7 +69,9 @@ const Requests = () => {
       },
       {
         Header: "Data Richiesta",
-        accessor: "requestDate"
+        accessor: "requestDate",
+        Cell: ({ row }: { row: Row }) =>
+          format(new Date(row.values.requestDate), "dd/MM/yyyy")
       },
       {
         Header: "Stato",

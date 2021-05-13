@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import { format } from "date-fns";
 import { useTooltip, Severity } from "../../context/tooltip";
 import Api from "../../api/backoffice";
 import { ApprovedAgreementDiscount } from "../../api/generated_backoffice";
@@ -67,9 +68,12 @@ const Discount = ({
       <Item label="Descrizione agevolazione" value={discount.description} />
       <Item
         label="Data di inizio dell'agevolazione"
-        value={discount.startDate}
+        value={format(new Date(discount.startDate), "dd/MM/yyyy")}
       />
-      <Item label="Data di fine agevolazione" value={discount.endDate} />
+      <Item
+        label="Data di fine agevolazione"
+        value={format(new Date(discount.endDate), "dd/MM/yyyy")}
+      />
       <Item label="Entità dello sconto" value={`${discount.discount} %`} />
       <Item
         label="Categorie merceologiche"
