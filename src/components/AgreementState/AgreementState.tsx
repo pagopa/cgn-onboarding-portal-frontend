@@ -1,5 +1,6 @@
 import React from "react";
 import { Badge, Icon } from "design-react-kit";
+import { format } from "date-fns";
 import Hourglass from "../../assets/icons/hourglass.svg";
 import { AgreementState as AgreementStateType } from "../../api/generated";
 import Check from "../../assets/icons/check.svg";
@@ -10,12 +11,15 @@ type Props = {
   endDate: any;
 };
 
-const Date = ({ className = "", title, date }: any) => (
-  <div className={`${className} d-flex flex-column text-center`}>
-    <span className="text-sm font-weight-light text-gray">{title}</span>
-    <span className="text-sm font-weight-bold text-black">gg/mm/aaaa</span>
-  </div>
-);
+const DateLabel = ({ className = "", title, date }: any) => {
+  const newDate = format(new Date(date), "dd/MM/yyyy");
+  return (
+    <div className={`${className} d-flex flex-column text-center`}>
+      <span className="text-sm font-weight-light text-gray">{title}</span>
+      <span className="text-sm font-weight-bold text-black">{newDate}</span>
+    </div>
+  );
+};
 
 const AgreementState = ({ state, startDate, endDate }: Props) => (
   <section className="bg-white d-flex flex-column align-items-center px-4">
@@ -45,8 +49,8 @@ const AgreementState = ({ state, startDate, endDate }: Props) => (
     </div>
     {state === AgreementStateType.ApprovedAgreement && (
       <div className="d-flex flex-row justify-content-between pb-10">
-        <Date className="mr-6" title="Data di inizio" date={startDate} />
-        <Date title="Data di fine" date={endDate} />
+        <DateLabel className="mr-6" title="Data di inizio" date={startDate} />
+        <DateLabel title="Data di fine" date={endDate} />
       </div>
     )}
     {state === AgreementStateType.PendingAgreement && (

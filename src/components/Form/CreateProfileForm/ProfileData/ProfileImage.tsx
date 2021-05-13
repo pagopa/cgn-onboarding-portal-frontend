@@ -24,6 +24,7 @@ type Props = {
   handleImage?: any;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const ProfileImage = ({ handleImage }: Props) => {
   const dispatch = useDispatch();
   const agreement = useSelector((state: RootState) => state.agreement.value);
