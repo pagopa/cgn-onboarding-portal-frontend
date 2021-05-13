@@ -1,7 +1,8 @@
 import React from "react";
-import { Field, ErrorMessage } from "formik";
+import { Field } from "formik";
 import FormSection from "../../FormSection";
 import InputField from "../../FormField";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
   children?: any;
@@ -15,11 +16,11 @@ const ReferentData = ({ children }: Props) => (
   >
     <InputField htmlFor="firstName" title="Nome" required>
       <Field id="referent.firstName" name="referent.firstName" type="text" />
-      <ErrorMessage name="referent.firstName" />
+      <CustomErrorMessage name="referent.firstName" />
     </InputField>
     <InputField htmlFor="referent.lastName" title="Cognome" required>
       <Field id="referent.lastName" name="referent.lastName" type="text" />
-      <ErrorMessage name="referent.lastName" />
+      <CustomErrorMessage name="referent.lastName" />
     </InputField>
     <InputField
       htmlFor="referent.role"
@@ -27,7 +28,7 @@ const ReferentData = ({ children }: Props) => (
       required
     >
       <Field id="referent.role" name="referent.role" type="text" />
-      <ErrorMessage name="referent.role" />
+      <CustomErrorMessage name="referent.role" />
     </InputField>
     <InputField
       htmlFor="referent.emailAddress"
@@ -39,7 +40,7 @@ const ReferentData = ({ children }: Props) => (
         name="referent.emailAddress"
         type="email"
       />
-      <ErrorMessage name="referent.email" />
+      <CustomErrorMessage name="referent.emailAddress" />
     </InputField>
     <InputField
       htmlFor="referent.telephoneNumber"
@@ -47,12 +48,13 @@ const ReferentData = ({ children }: Props) => (
       required
     >
       <Field
+        maxLength={15}
         id="referent.telephoneNumber"
         name="referent.telephoneNumber"
         type="tel"
         placeholder="Inserisci il numero di telefono"
       />
-      <ErrorMessage name="referent.referent" />
+      <CustomErrorMessage name="referent.telephoneNumber" />
     </InputField>
     {children}
   </FormSection>

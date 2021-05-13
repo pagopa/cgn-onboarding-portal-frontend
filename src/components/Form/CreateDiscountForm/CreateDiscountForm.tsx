@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -17,6 +17,7 @@ import FormSection from "../FormSection";
 import FormField from "../FormField";
 import { CreateDiscount, Discount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
+import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
@@ -29,33 +30,11 @@ const emptyInitialValues = {
   staticCode: ""
 };
 
-const validationSchema = Yup.object().shape({
-  discounts: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string()
-        .max(100, "Massimo 100 caratteri")
-        .required("Campo Obbligatorio"),
-      description: Yup.string()
-        .max(250, "Massimo 250 caratteri")
-        .required("Campo Obbligatorio"),
-      startDate: Yup.string().required("Campo Obbligatorio"),
-      endDate: Yup.string().required("Campo Obbligatorio"),
-      discount: Yup.number()
-        .min(1, "Almeno un carattere")
-        .max(100, "Massimo 100 caratteri")
-        .required("Campo Obbligatorio"),
-      productCategories: Yup.array()
-        .min(1, "Almeno un carattere")
-        .required(),
-      condition: Yup.string().max(200, "Massimo 200 caratteri"),
-      staticCode: Yup.string()
-    })
-  )
-});
-
 const CreateDiscountForm = () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>();
 
   const createDiscount = async (
     agreementId: string,
@@ -72,10 +51,30 @@ const CreateDiscountForm = () => {
       )
       .run();
 
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => setLoading(false),
+        profile => {
+          setProfile({
+            ...profile,
+            hasDifferentFullName: !!profile.name
+          });
+          setLoading(false);
+        }
+      )
+      .run();
+
+  useEffect(() => {
+    setLoading(true);
+    void getProfile(agreement.id);
+  }, []);
+
   return (
     <Formik
       initialValues={emptyInitialValues}
-      validationSchema={validationSchema}
+      validationSchema={discountDataValidationSchema}
       onSubmit={values => {
         const newValues = {
           ...values,
@@ -109,15 +108,21 @@ const CreateDiscountForm = () => {
             >
               <DiscountConditions />
             </FormField>
-            <FormField
-              htmlFor="staticCode"
-              isTitleHeading
-              title="Codice statico"
-              description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
-              isVisible
-            >
-              <StaticCode />
-            </FormField>
+            {profile &&
+              (profile.salesChannel.channelType === "OnlineChannel" ||
+                profile.salesChannel.channelType === "BothChannels") &&
+              profile.salesChannel.discountCodeType === "Static" && (
+                <FormField
+                  htmlFor="staticCode"
+                  isTitleHeading
+                  title="Codice statico"
+                  description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                  isVisible
+                  required
+                >
+                  <StaticCode />
+                </FormField>
+              )}
             <div className="mt-10">
               <Button
                 className="px-14 mr-4"
