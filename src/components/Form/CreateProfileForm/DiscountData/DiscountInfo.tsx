@@ -14,6 +14,14 @@ type Props = {
 const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
   const hasIndex = index !== undefined;
 
+  const dateFrom = hasIndex
+    ? formValues.discounts[index as number].startDate
+    : formValues.startDate;
+
+  const dateTo = hasIndex
+    ? formValues.discounts[index as number].endDate
+    : formValues.endDate;
+
   return (
     <>
       <InputField
@@ -61,19 +69,13 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         <DatePicker
           id="startDate"
           name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
-          dateFormat="yyyy-MM-dd"
+          dateFormat="dd/MM/yyyy"
           minDate={new Date()}
           showDisabledMonthNavigation
-          selected={
-            hasIndex
-              ? formValues.discounts[index as number].startDate
-              : formValues.startDate
-          }
-          value={
-            hasIndex
-              ? formValues.discounts[index as number].startDate
-              : formValues.startDate
-          }
+          selected={dateFrom}
+          selectsStart
+          startDate={dateFrom}
+          endDate={dateTo}
           onChange={date =>
             setFieldValue(
               hasIndex ? `discounts[${index}].startDate` : "startDate",
@@ -95,18 +97,13 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         <DatePicker
           id="endDate"
           name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
-          dateFormat="yyyy-MM-dd"
+          dateFormat="dd/MM/yyyy"
           showDisabledMonthNavigation
-          selected={
-            hasIndex
-              ? formValues.discounts[index as number].endDate
-              : formValues.endDate
-          }
-          value={
-            hasIndex
-              ? formValues.discounts[index as number].endDate
-              : formValues.endDate
-          }
+          selected={dateTo}
+          selectsEnd
+          startDate={dateFrom}
+          endDate={dateTo}
+          minDate={dateFrom}
           onChange={date => {
             setFieldValue(
               hasIndex ? `discounts[${index}].endDate` : "endDate",

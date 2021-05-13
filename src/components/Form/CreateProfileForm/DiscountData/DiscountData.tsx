@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
@@ -38,14 +39,24 @@ type Props = {
   isCompleted: boolean;
   handleBack: () => void;
   handleNext: () => void;
+  onUpdate: () => void;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
+const DiscountData = ({
+  handleBack,
+  handleNext,
+  onUpdate,
+  isCompleted
+}: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
+
+  const checkStaticCode =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Static";
 
   const createDiscount = async (
     agreementId: string,
@@ -93,7 +104,8 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
             discounts: discounts.items.map(discount => ({
               ...discount,
               startDate: new Date(discount.startDate),
-              endDate: new Date(discount.endDate)
+              endDate: new Date(discount.endDate),
+              staticCode: checkStaticCode ? initialValues.staticCode : undefined
             }))
           });
           setLoading(false);
@@ -138,6 +150,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
 
   return (
     <Formik
+      enableReinitialize
       initialValues={initialValues}
       validationSchema={discountsListDataValidationSchema}
       onSubmit={values => {
@@ -150,7 +163,9 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
         };
         newValues.discounts.forEach((discount: CreateDiscount) => {
           if (isCompleted) {
-            void updateDiscount(agreement.id, discount as Discount);
+            void updateDiscount(agreement.id, discount as Discount).then(() =>
+              onUpdate()
+            );
           } else {
             void createDiscount(agreement.id, discount);
           }
@@ -204,40 +219,36 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
                       >
                         <DiscountConditions index={index} />
                       </FormField>
-                      {profile &&
-                        (profile.salesChannel.channelType === "OnlineChannel" ||
-                          profile.salesChannel.channelType ===
-                            "BothChannels") &&
-                        profile.salesChannel.discountCodeType === "Static" && (
-                          <FormField
-                            htmlFor="staticCode"
-                            isTitleHeading
-                            title="Codice statico"
-                            description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-                            isVisible
-                            required
-                          >
-                            <StaticCode index={index} />
-                          </FormField>
-                        )}
+                      {checkStaticCode && (
+                        <FormField
+                          htmlFor="staticCode"
+                          isTitleHeading
+                          title="Codice statico"
+                          description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                          isVisible
+                          required
+                        >
+                          <StaticCode index={index} />
+                        </FormField>
+                      )}
                       {values.discounts.length - 1 === index && (
                         <>
-                          <div className="mt-8">
-                            <PlusCircleIcon
-                              className="mr-2"
-                              onClick={() =>
-                                arrayHelpers.push({
-                                  name: "",
-                                  description: "",
-                                  startDate: "",
-                                  endDate: "",
-                                  discount: "",
-                                  productCategories: [],
-                                  condition: "",
-                                  staticCode: ""
-                                })
-                              }
-                            />
+                          <div
+                            className="mt-8 cursor-pointer"
+                            onClick={() =>
+                              arrayHelpers.push({
+                                name: "",
+                                description: "",
+                                startDate: "",
+                                endDate: "",
+                                discount: "",
+                                productCategories: [],
+                                condition: "",
+                                staticCode: ""
+                              })
+                            }
+                          >
+                            <PlusCircleIcon className="mr-2" />
                             <span className="text-base font-weight-semibold text-blue">
                               Aggiungi un&apos;altra agevolazione
                             </span>

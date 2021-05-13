@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
@@ -26,6 +26,12 @@ const ProfileImage = ({ handleImage }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const imageInput = useRef<any>();
 
+  useEffect(() => {
+    if (agreement.imageUrl) {
+      setImage(`${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`);
+      handleImage();
+    }
+  }, []);
   const uploadImage = async (image: any) =>
     await tryCatch(
       () => Api.Agreement.uploadImage(agreement.id, image[0]),

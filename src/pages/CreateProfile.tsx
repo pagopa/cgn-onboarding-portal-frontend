@@ -24,6 +24,10 @@ const CreateProfile = () => {
     setStep(step);
   };
 
+  const onUpdate = () => {
+    setCompletedSteps([...completedSteps.filter(step => step !== "Document")]);
+  };
+
   useEffect(() => {
     if (agreement.completedSteps.includes(CompletedStep.Profile)) {
       setCompletedSteps([...completedSteps, "Guide"]);
@@ -49,6 +53,7 @@ const CreateProfile = () => {
             isCompleted={completedSteps.includes("Profile")}
             handleNext={() => handleNext(2, "Profile")}
             handleBack={() => setStep(0)}
+            onUpdate={onUpdate}
           />
         );
       case 2:
@@ -57,6 +62,7 @@ const CreateProfile = () => {
             isCompleted={completedSteps.includes("Discount")}
             handleNext={() => handleNext(3, "Discount")}
             handleBack={() => setStep(1)}
+            onUpdate={onUpdate}
           />
         );
       case 3:
