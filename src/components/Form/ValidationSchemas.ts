@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import 'yup-phone';
 
 const INCORRECT_EMAIL_ADDRESS = 'L’indirizzo inserito non è corretto';
-const REQUIRED_FIELD = 'Campo obbligato';
+const REQUIRED_FIELD = 'Campo obbligatorio';
 const ONLY_NUMBER = 'Solo numeri';
 const ONLY_STRING = 'Solo lettere';
 const DISCOUNT_RANGE = 'Lo sconto deve essere compreso tra 0 e 100';
