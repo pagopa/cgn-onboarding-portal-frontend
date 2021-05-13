@@ -33,12 +33,14 @@ const Header = ({ hasBorder = false }: Props) => {
           <Logo />
         </div>
         <div className="d-flex align-items-center">
-          <Link
-            to={HELP}
-            className="mr-11 text-base text-blue font-weight-semibold no-underline"
-          >
-            Serve aiuto?
-          </Link>
+          {type !== "ADMIN" && (
+            <Link
+              to={HELP}
+              className="mr-11 text-base text-blue font-weight-semibold no-underline"
+            >
+              Serve aiuto?
+            </Link>
+          )}
           {token ? (
             <>
               {location.pathname === CREATE_PROFILE && (
