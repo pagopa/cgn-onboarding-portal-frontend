@@ -47,6 +47,11 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
 
+  const checkStaticCode =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Static";
+
   const createDiscount = async (
     agreementId: string,
     discount: CreateDiscount
@@ -93,7 +98,8 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
             discounts: discounts.items.map(discount => ({
               ...discount,
               startDate: new Date(discount.startDate),
-              endDate: new Date(discount.endDate)
+              endDate: new Date(discount.endDate),
+              staticCode: checkStaticCode ? initialValues.staticCode : undefined
             }))
           });
           setLoading(false);
@@ -138,6 +144,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
 
   return (
     <Formik
+      enableReinitialize
       initialValues={initialValues}
       validationSchema={discountDataValidationSchema}
       onSubmit={values => {
@@ -157,7 +164,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
         });
       }}
     >
-      {({ isValid, dirty, values, setFieldValue }) => (
+      {({ isValid, values, setFieldValue }) => (
         <Form autoComplete="off">
           <FieldArray
             name="discounts"
@@ -204,22 +211,18 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
                       >
                         <DiscountConditions index={index} />
                       </FormField>
-                      {profile &&
-                        (profile.salesChannel.channelType === "OnlineChannel" ||
-                          profile.salesChannel.channelType ===
-                            "BothChannels") &&
-                        profile.salesChannel.discountCodeType === "Static" && (
-                          <FormField
-                            htmlFor="staticCode"
-                            isTitleHeading
-                            title="Codice statico"
-                            description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-                            isVisible
-                            required
-                          >
-                            <StaticCode index={index} />
-                          </FormField>
-                        )}
+                      {checkStaticCode && (
+                        <FormField
+                          htmlFor="staticCode"
+                          isTitleHeading
+                          title="Codice statico"
+                          description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                          isVisible
+                          required
+                        >
+                          <StaticCode index={index} />
+                        </FormField>
+                      )}
                       {values.discounts.length - 1 === index && (
                         <>
                           <div className="mt-8">
@@ -257,7 +260,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
                               className="px-14 mr-4"
                               color="primary"
                               tag="button"
-                              disabled={!isValid || !dirty}
+                              disabled={!isValid}
                             >
                               Continua
                             </Button>

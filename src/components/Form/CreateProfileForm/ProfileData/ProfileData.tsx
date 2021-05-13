@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
@@ -14,7 +13,6 @@ import ReferentData from "./ReferentData";
 import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
-import "yup-phone";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -102,6 +100,7 @@ const ProfileData = ({ isCompleted, handleBack, handleNext }: Props) => {
 
   return (
     <Formik
+      enableReinitialize
       initialValues={{
         ...initialValues,
         salesChannel: {
