@@ -1,27 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { Agreement } from "../../api/generated_backoffice";
 import Api from "../../api/backoffice";
-
+import { RootState } from "../../store/store";
 import { useTooltip, Severity } from "../../context/tooltip";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
+import AssignRequest from "./AssignRequest";
 
 const RequestsDetails = ({
   original,
   updateList,
   setLoading
 }: {
-  original: Agreement;
+  original: any;
   updateList: () => void;
   setLoading: (state: boolean) => void;
 }) => {
+  const { data: user }: { data: any } = useSelector(
+    (state: RootState) => state.user
+  );
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [checkAllDocs, setCheckAllDocs] = useState(false);
   const { triggerTooltip } = useTooltip();
+
+  const assignedToMe =
+    `${user.given_name} ${user.family_name}` === original.assignee?.fullName;
 
   const assignAgreementsApi = async () =>
     await tryCatch(() => Api.Agreement.assignAgreement(original.id), toError)
@@ -187,7 +194,7 @@ const RequestsDetails = ({
             tag="button"
             className="ml-4"
             onClick={() => setRejectMode(true)}
-            disabled={original.state === "PendingAgreement"}
+            disabled={!assignedToMe}
           >
             Rifiuta
           </Button>
@@ -196,20 +203,19 @@ const RequestsDetails = ({
             tag="button"
             className="ml-4"
             onClick={approveAgreement}
-            disabled={original.state === "PendingAgreement" || !checkAllDocs}
+            disabled={
+              !assignedToMe &&
+              (original.state === "PendingAgreement" || !checkAllDocs)
+            }
           >
             Approva
           </Button>
-          {original.state !== "AssignedAgreement" && (
-            <Button
-              color="primary"
-              tag="button"
-              className="ml-4"
-              onClick={assignAgreements}
-            >
-              Prendi in carico
-            </Button>
-          )}
+          <AssignRequest
+            original={original}
+            assignedToMe={assignedToMe}
+            updateList={updateList}
+            setLoading={setLoading}
+          />
         </div>
       )}
     </section>
