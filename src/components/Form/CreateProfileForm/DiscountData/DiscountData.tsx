@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
@@ -38,10 +39,15 @@ type Props = {
   isCompleted: boolean;
   handleBack: () => void;
   handleNext: () => void;
+  onUpdate: () => void;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
+const DiscountData = ({
+  handleBack,
+  handleNext,
+  onUpdate,
+  isCompleted
+}: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
@@ -150,7 +156,9 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
         };
         newValues.discounts.forEach((discount: CreateDiscount) => {
           if (isCompleted) {
-            void updateDiscount(agreement.id, discount as Discount);
+            void updateDiscount(agreement.id, discount as Discount).then(() =>
+              onUpdate()
+            );
           } else {
             void createDiscount(agreement.id, discount);
           }
