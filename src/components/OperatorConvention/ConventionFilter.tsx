@@ -9,6 +9,7 @@ interface FilterFormValues {
   fullName: string | undefined;
   lastUpdateDateFrom: Date | undefined;
   lastUpdateDateTo: Date | undefined;
+  page: number;
 }
 
 const ConventionFilter = ({
@@ -56,13 +57,14 @@ const ConventionFilter = ({
     } else if (dateTo) {
       return `Al ${format(dateTo, "dd/MM/yyyy")}`;
     }
-    return "Data";
+    return "Data ultima modifica";
   };
 
   const initialValues: FilterFormValues = {
     fullName: "",
     lastUpdateDateFrom: undefined,
-    lastUpdateDateTo: undefined
+    lastUpdateDateTo: undefined,
+    page: 0
   };
 
   return (
@@ -110,6 +112,7 @@ const ConventionFilter = ({
                 <button
                   onClick={e => {
                     e.stopPropagation();
+                    setFieldValue("page", 0);
                     setFieldValue("lastUpdateDateFrom", undefined);
                     setFieldValue("lastUpdateDateTo", undefined);
                   }}
@@ -128,6 +131,7 @@ const ConventionFilter = ({
                     clearTimeout(timeout);
                   }
                   timeout = setTimeout(() => {
+                    setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);
                 }}
@@ -138,7 +142,7 @@ const ConventionFilter = ({
           {/* DATE MODAL */}
           <Modal isOpen={isOpenDateModal} toggle={toggleDateModal}>
             <ModalHeader toggle={toggleDateModal}>
-              Filtra per data di ultimo aggiornamento
+              Filtra per data di ultima modifica
             </ModalHeader>
             <ModalBody>
               <div className="d-flex flex-column mt-4">
@@ -181,6 +185,7 @@ const ConventionFilter = ({
               <Button
                 color="primary"
                 onClick={() => {
+                  setFieldValue("page", 0);
                   void submitForm();
                   toggleDateModal();
                 }}
