@@ -32,7 +32,10 @@ const Discounts = () => {
   const getDiscounts = async () =>
     await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
       .map(response => response.data.items)
-      .fold(() => void 0, identity)
+      .fold(
+        () => void 0,
+        discounts => setDiscounts(discounts)
+      )
       .run();
 
   const deleteDiscount = async () =>
@@ -48,6 +51,17 @@ const Discounts = () => {
               (discount: any) => discount.id !== selectedDiscount
             )
           )
+      )
+      .run();
+
+  const publishDiscount = async (discountId: string) =>
+    await tryCatch(
+      () => Api.Discount.publishDiscount(agreement.id, discountId),
+      toError
+    )
+      .fold(
+        () => void 0,
+        () => getDiscounts()
       )
       .run();
 
@@ -76,7 +90,23 @@ const Discounts = () => {
           </Badge>
         );
 
-      case "rejected":
+      case "suspended":
+        return (
+          <Badge
+            className="font-weight-normal"
+            pill
+            tag="span"
+            style={{
+              backgroundColor: "#EA7614",
+              border: "1px solid #EA7614",
+              color: "white"
+            }}
+          >
+            Sospesa
+          </Badge>
+        );
+
+      case "expired":
         return (
           <Badge
             className="font-weight-normal"
@@ -88,7 +118,7 @@ const Discounts = () => {
               color: "#C02927"
             }}
           >
-            Sospesa
+            Scaduta
           </Badge>
         );
     }
@@ -113,10 +143,7 @@ const Discounts = () => {
   };
 
   useEffect(() => {
-    void getDiscounts().then(response => {
-      setDiscounts(response);
-      history.push(DASHBOARD);
-    });
+    void getDiscounts();
   }, []);
 
   const data = useMemo(() => discounts, [discounts]);
@@ -200,7 +227,7 @@ const Discounts = () => {
             )}
           </tbody>
         </table>
-        <div className="mt-10">
+        <div className="mt-10 d-flex flex-row justify-content-between">
           <Button
             className="mr-4"
             color="secondary"
@@ -213,6 +240,7 @@ const Discounts = () => {
           </Button>
           <Button
             color="primary"
+            outline
             icon
             tag="button"
             onClick={() => {
@@ -220,8 +248,22 @@ const Discounts = () => {
               toggle();
             }}
           >
-            <Icon icon="it-delete" color="white" padding={false} size="sm" />{" "}
+            <Icon icon="it-delete" color="primary" padding={false} size="sm" />{" "}
             Elimina
+          </Button>
+          <Button
+            className="mr-4"
+            color="primary"
+            tag="button"
+            onClick={() => publishDiscount(row.original.id)}
+          >
+            <Icon
+              icon="it-external-link"
+              color="white"
+              padding={false}
+              size="sm"
+            />
+            <span>Pubblica</span>
           </Button>
         </div>
       </section>
