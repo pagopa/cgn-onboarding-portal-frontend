@@ -29,7 +29,9 @@ const ProfileImage = ({ handleImage }: Props) => {
   useEffect(() => {
     if (agreement.imageUrl) {
       setImage(`${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`);
-      handleImage();
+      if (handleImage) {
+        handleImage();
+      }
     }
   }, []);
   const uploadImage = async (image: any) =>
@@ -42,7 +44,9 @@ const ProfileImage = ({ handleImage }: Props) => {
         () => void 0,
         newImage => {
           setImage(`${process.env.BASE_IMAGE_PATH}/${newImage}`);
-          handleImage();
+          if (handleImage) {
+            handleImage();
+          }
         }
       )
       .run();
