@@ -8,13 +8,13 @@ import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
+import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
 import ProfileImage from "./ProfileImage";
 import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 import "yup-phone";
-import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 
 const defaultSalesChannel = {
   channelType: "",
