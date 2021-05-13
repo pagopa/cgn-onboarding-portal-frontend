@@ -1,7 +1,8 @@
 import React from "react";
-import { ErrorMessage, Field } from "formik";
+import { Field } from "formik";
 import { FormGroup } from "design-react-kit";
 import { Label } from "reactstrap";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
   index?: number;
@@ -171,7 +172,7 @@ const ProductCategories = ({ index }: Props) => {
           Sport
         </Label>
       </FormGroup>
-      <ErrorMessage
+      <CustomErrorMessage
         name={
           hasIndex
             ? `discounts[${index}].productCategories`

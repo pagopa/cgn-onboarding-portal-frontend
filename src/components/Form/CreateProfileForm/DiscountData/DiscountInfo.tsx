@@ -1,7 +1,8 @@
 import React from "react";
-import { ErrorMessage, Field } from "formik";
+import { Field } from "formik";
 import DatePicker from "react-datepicker";
 import InputField from "../../FormField";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
   formValues?: any;
@@ -23,11 +24,14 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         required
       >
         <Field
+          maxLength={100}
           id="name"
           name={hasIndex ? `discounts[${index}].name` : "name"}
           type="text"
         />
-        <ErrorMessage name={hasIndex ? `discounts[${index}].name` : "name"} />
+        <CustomErrorMessage
+          name={hasIndex ? `discounts[${index}].name` : "name"}
+        />
       </InputField>
       <InputField
         htmlFor="description"
@@ -43,7 +47,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           maxLength="250"
           rows="4"
         />
-        <ErrorMessage
+        <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].description` : "description"}
         />
       </InputField>
@@ -58,6 +62,8 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           id="startDate"
           name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
           dateFormat="yyyy-MM-dd"
+          minDate={new Date()}
+          showDisabledMonthNavigation
           selected={
             hasIndex
               ? formValues.discounts[index as number].startDate
@@ -75,7 +81,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
             )
           }
         />
-        <ErrorMessage
+        <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
         />
       </InputField>
@@ -90,6 +96,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           id="endDate"
           name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
           dateFormat="yyyy-MM-dd"
+          showDisabledMonthNavigation
           selected={
             hasIndex
               ? formValues.discounts[index as number].endDate
@@ -107,7 +114,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
             );
           }}
         />
-        <ErrorMessage
+        <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
         />
       </InputField>
@@ -123,7 +130,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           name={hasIndex ? `discounts[${index}].discount` : "discount"}
           type="text"
         />
-        <ErrorMessage
+        <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].discount` : "discount"}
         />
       </InputField>

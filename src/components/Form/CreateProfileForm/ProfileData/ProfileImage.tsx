@@ -17,14 +17,14 @@ const FooterDescription = (
   </p>
 );
 
-const ProfileImage = () => {
+type Props = {
+  handleImage?: any;
+};
+
+const ProfileImage = ({ handleImage }: Props) => {
   const [image, setImage] = useState<any>();
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const imageInput = useRef<any>();
-
-  const handleImage = () => {
-    imageInput.current.click();
-  };
 
   const uploadImage = async (image: any) =>
     await tryCatch(
@@ -34,7 +34,10 @@ const ProfileImage = () => {
       .map(response => response.data.imageUrl)
       .fold(
         () => void 0,
-        newImage => setImage(`${process.env.BASE_IMAGE_PATH}/${newImage}`)
+        newImage => {
+          setImage(`${process.env.BASE_IMAGE_PATH}/${newImage}`);
+          handleImage();
+        }
       )
       .run();
 
@@ -45,6 +48,7 @@ const ProfileImage = () => {
       description="Caricare un'immagine che rappresenti i beni o i servizi trattati dall'Operatore"
       footerDescription={FooterDescription}
       isVisible
+      required
     >
       <ul className="upload-pictures-wall">
         <li>
