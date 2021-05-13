@@ -77,12 +77,14 @@ const ProfileData = () => {
                 )}
               </tbody>
             </table>
-            <Link
-              className="mt-8 btn btn-outline-primary"
-              to={EDIT_OPERATOR_DATA}
-            >
-              Modifica dati
-            </Link>
+            {agreement.state === "ApprovedAgreement" && (
+              <Link
+                className="mt-8 btn btn-outline-primary"
+                to={EDIT_OPERATOR_DATA}
+              >
+                Modifica dati
+              </Link>
+            )}
           </section>
         </section>
       )}
