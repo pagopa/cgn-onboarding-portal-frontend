@@ -59,7 +59,8 @@
     "typeface-titillium-web": "^1.1.13",
     "universal-cookie": "^4.0.4",
     "url": "^0.11.0",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "yup-phone": "^1.2.19"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.2.6",

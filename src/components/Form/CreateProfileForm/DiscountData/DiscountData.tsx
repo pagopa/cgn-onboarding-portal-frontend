@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
-import * as Yup from "yup";
 import { Button } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
@@ -18,6 +17,7 @@ import FormSection from "../../FormSection";
 import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { CreateDiscount, Discount } from "../../../../api/generated";
+import { discountDataValidationSchema } from "../../ValidationSchemas";
 
 const emptyInitialValues = {
   discounts: [
@@ -34,30 +34,6 @@ const emptyInitialValues = {
   ]
 };
 
-const validationSchema = Yup.object().shape({
-  discounts: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string()
-        .max(100, "Massimo 100 caratteri")
-        .required("Campo Obbligatorio"),
-      description: Yup.string()
-        .max(250, "Massimo 250 caratteri")
-        .required("Campo Obbligatorio"),
-      startDate: Yup.string().required("Campo Obbligatorio"),
-      endDate: Yup.string().required("Campo Obbligatorio"),
-      discount: Yup.number()
-        .min(1, "Almeno un carattere")
-        .max(100, "Massimo 100 caratteri")
-        .required("Campo Obbligatorio"),
-      productCategories: Yup.array()
-        .min(1, "Almeno un carattere")
-        .required(),
-      condition: Yup.string().max(200, "Massimo 200 caratteri"),
-      staticCode: Yup.string()
-    })
-  )
-});
-
 type Props = {
   isCompleted: boolean;
   handleBack: () => void;
@@ -69,6 +45,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>();
 
   const createDiscount = async (
     agreementId: string,
@@ -130,6 +107,21 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
       toError
     ).run();
 
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => setLoading(false),
+        profile => {
+          setProfile({
+            ...profile,
+            hasDifferentFullName: !!profile.name
+          });
+          setLoading(false);
+        }
+      )
+      .run();
+
   useEffect(() => {
     if (isCompleted) {
       setLoading(true);
@@ -137,6 +129,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
     } else {
       setLoading(false);
     }
+    void getProfile(agreement.id);
   }, []);
 
   if (loading) {
@@ -146,7 +139,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={discountDataValidationSchema}
       onSubmit={values => {
         const newValues = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
@@ -211,15 +204,22 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
                       >
                         <DiscountConditions index={index} />
                       </FormField>
-                      <FormField
-                        htmlFor="staticCode"
-                        isTitleHeading
-                        title="Codice statico"
-                        description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
-                        isVisible
-                      >
-                        <StaticCode index={index} />
-                      </FormField>
+                      {profile &&
+                        (profile.salesChannel.channelType === "OnlineChannel" ||
+                          profile.salesChannel.channelType ===
+                            "BothChannels") &&
+                        profile.salesChannel.discountCodeType === "Static" && (
+                          <FormField
+                            htmlFor="staticCode"
+                            isTitleHeading
+                            title="Codice statico"
+                            description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                            isVisible
+                            required
+                          >
+                            <StaticCode index={index} />
+                          </FormField>
+                        )}
                       {values.discounts.length - 1 === index && (
                         <>
                           <div className="mt-8">

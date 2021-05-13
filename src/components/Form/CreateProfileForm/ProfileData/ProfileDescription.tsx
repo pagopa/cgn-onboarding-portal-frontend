@@ -1,6 +1,7 @@
 import React from "react";
-import { Field, ErrorMessage } from "formik";
+import { Field } from "formik";
 import FormSection from "../../FormSection";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 const ProfileDescription = () => (
   <FormSection
@@ -17,7 +18,7 @@ const ProfileDescription = () => (
       maxLength="300"
       rows="4"
     />
-    <ErrorMessage name="description" />
+    <CustomErrorMessage name="description" />
   </FormSection>
 );
 

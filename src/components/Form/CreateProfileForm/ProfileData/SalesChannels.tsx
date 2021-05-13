@@ -1,9 +1,10 @@
 import React from "react";
-import { ErrorMessage, Field, FieldArray } from "formik";
+import { Field, FieldArray } from "formik";
 import { Button, Icon } from "design-react-kit";
 import FormSection from "../../FormSection";
 import InputFieldMultiple from "../../InputFieldMultiple";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import CustomErrorMessage from "../../CustomErrorMessage";
 import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 
 const hasOfflineOrBothChannels = (channelType: string) =>
@@ -113,7 +114,7 @@ const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
                             name={`salesChannel.addresses[${index}].street`}
                             type="text"
                           />
-                          <ErrorMessage
+                          <CustomErrorMessage
                             name={`salesChannel.addresses[${index}].street`}
                           />
                         </InputFieldMultiple>
@@ -126,7 +127,7 @@ const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
                             type="text"
                             placeholder="Inserisci il CAP"
                           />
-                          <ErrorMessage
+                          <CustomErrorMessage
                             name={`salesChannel.addresses[${index}].zipCode`}
                           />
                         </InputFieldMultiple>
@@ -141,7 +142,7 @@ const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
                             type="text"
                             placeholder="Inserisci la città"
                           />
-                          <ErrorMessage
+                          <CustomErrorMessage
                             name={`salesChannel.addresses[${index}].city`}
                           />
                         </InputFieldMultiple>
@@ -152,12 +153,13 @@ const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
                           title="Provincia"
                         >
                           <Field
+                            maxLength={2}
                             id="district"
                             name={`salesChannel.addresses[${index}].district`}
                             type="text"
                             placeholder="Inserisci la provincia"
                           />
-                          <ErrorMessage
+                          <CustomErrorMessage
                             name={`salesChannel.addresses[${index}].district`}
                           />
                         </InputFieldMultiple>
@@ -225,7 +227,7 @@ const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
         isVisible
       >
         <Field id="websiteUrl" name="salesChannel.websiteUrl" type="text" />
-        <ErrorMessage name="salesChannel.websiteUrl" />
+        <CustomErrorMessage name="salesChannel.websiteUrl" />
         <div className="mt-10">
           <Button
             className="px-14 mr-4"
