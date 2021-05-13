@@ -157,7 +157,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
         });
       }}
     >
-      {({ isValid, values, setFieldValue }) => (
+      {({ isValid, dirty, values, setFieldValue }) => (
         <Form autoComplete="off">
           <FieldArray
             name="discounts"
@@ -257,7 +257,7 @@ const DiscountData = ({ handleBack, handleNext, isCompleted }: Props) => {
                               className="px-14 mr-4"
                               color="primary"
                               tag="button"
-                              disabled={!isValid}
+                              disabled={!isValid || !dirty}
                             >
                               Continua
                             </Button>
