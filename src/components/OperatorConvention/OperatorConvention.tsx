@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useTable, usePagination } from "react-table";
+import { useTable, usePagination, Row } from "react-table";
 import cx from "classnames";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Button, Icon } from "design-react-kit";
+import { format } from "date-fns";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
@@ -60,11 +61,15 @@ const OperatorConvention = () => {
       },
       {
         Header: "Data Convenzionamento",
-        accessor: "agreementStartDate"
+        accessor: "agreementStartDate",
+        Cell: ({ row }: { row: Row }) =>
+          format(new Date(row.values.agreementStartDate), "dd/MM/yyyy")
       },
       {
         Header: "Data Ultima Modifica",
-        accessor: "agreementLastUpdateDate"
+        accessor: "agreementLastUpdateDate",
+        Cell: ({ row }: { row: Row }) =>
+          format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
       }
     ],
     []

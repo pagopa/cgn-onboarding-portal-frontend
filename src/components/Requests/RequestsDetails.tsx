@@ -144,6 +144,7 @@ const RequestsDetails = ({
       </div>
       <RequestsDocuments
         original={original}
+        assignedToMe={assignedToMe}
         setCheckAllDocs={setCheckAllDocs}
       />
       {rejectMode ? (
@@ -204,8 +205,9 @@ const RequestsDetails = ({
             className="ml-4"
             onClick={approveAgreement}
             disabled={
-              !assignedToMe &&
-              (original.state === "PendingAgreement" || !checkAllDocs)
+              !assignedToMe ||
+              original.state === "PendingAgreement" ||
+              !checkAllDocs
             }
           >
             Approva
