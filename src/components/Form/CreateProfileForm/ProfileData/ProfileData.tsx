@@ -72,25 +72,24 @@ const ProfileData = ({
     });
   };
 
-  const createProfile = (discount: any) => {
-    if (agreement) {
-      void Api.Profile.createProfile(agreement.id, discount)
-        .then(() => {
-          handleNext();
-        })
-        .catch(throwErrorTooltip);
-    }
-  };
+  const createProfile = async (discount: any) =>
+    await tryCatch(
+      () => Api.Profile.createProfile(agreement.id, discount),
+      toError
+    )
+      .fold(throwErrorTooltip, () => handleNext())
+      .run();
 
-  const updateProfile = (discount: any) => {
-    if (agreement) {
-      void Api.Profile.updateProfile(agreement.id, discount)
-        .then(() => {
-          onUpdate();
-          handleNext();
-        })
-        .catch(throwErrorTooltip);
-    }
+  const updateProfile = async (discount: any) => {
+    await tryCatch(
+      () => Api.Profile.updateProfile(agreement.id, discount),
+      toError
+    )
+      .fold(throwErrorTooltip, () => {
+        onUpdate();
+        handleNext();
+      })
+      .run();
   };
 
   const submitProfile = () => (isCompleted ? updateProfile : createProfile);
