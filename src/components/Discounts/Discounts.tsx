@@ -1,3 +1,5 @@
+import { fsync } from "fs";
+import { format } from "path";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useTable, useExpanded, useSortBy } from "react-table";
@@ -8,6 +10,7 @@ import { Badge } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import { compareDesc } from "date-fns/esm";
 import Api from "../../api/index";
 import { Discounts } from "../../api/generated";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
@@ -122,6 +125,16 @@ const Discounts = () => {
     }
   };
 
+  const isVisible = (state: any, startDate: any, endDate: any) => {
+    const today = new Date();
+    return (
+      (state === "Published" &&
+        compareDesc(new Date(startDate), today) === 1) ||
+      (compareDesc(new Date(startDate), today) === 0 &&
+        compareDesc(new Date(endDate), today)) === 1
+    );
+  };
+
   const getVisibleComponent = (isVisible: boolean) => {
     if (isVisible) {
       return (
@@ -163,7 +176,13 @@ const Discounts = () => {
       {
         Header: "Visibile",
         Cell: ({ row }: any) =>
-          getVisibleComponent(row.values.state === "published")
+          getVisibleComponent(
+            isVisible(
+              row.values.state,
+              row.values.startDate,
+              row.values.endDate
+            )
+          )
       },
       {
         Header: () => null,
