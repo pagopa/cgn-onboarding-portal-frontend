@@ -233,7 +233,7 @@ const Requests = () => {
                 prepareRow(row);
                 return (
                   <React.Fragment key={row.getRowProps().key}>
-                    <tr>
+                    <tr className="cursor-pointer">
                       {row.cells.map((cell, i) => (
                         <td
                           className="px-6 py-2 border-bottom text-sm"
