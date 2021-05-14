@@ -8,6 +8,7 @@ import DocumentIcon from "../../../../assets/icons/document.svg";
 import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
 import { Document } from "../../../../api/generated";
+import { formatDate } from "../../../../utils/dates";
 import DeleteDocument from "./DeleteDocument";
 
 type Props = {
@@ -97,7 +98,7 @@ const FileRow = ({
 
   return (
     <div className="border-bottom py-8">
-      <div className="d-flex flex-row justify-content-between">
+      <div className="d-flex flex-row justify-content-between align-items-center">
         <div className="d-flex flex-row align-items-center">
           {!uploadedDoc ? (
             <DocumentIcon className="mr-4" />
@@ -105,7 +106,12 @@ const FileRow = ({
             <DocumentSuccess className="mr-4" />
           )}
           {uploadedDoc ? (
-            <a href={uploadedDoc.documentUrl}>{label}</a>
+            <div className="d-flex flex-column ">
+              <a href={uploadedDoc.documentUrl}>{label}</a>
+              <span className="text-gray">
+                {formatDate(uploadedDoc.documentTimestamp)}
+              </span>
+            </div>
           ) : (
             <div>{label}</div>
           )}
