@@ -6,7 +6,9 @@ import { Button } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
+import { useTooltip, Severity } from "../../../../context/tooltip";
 import Api from "../../../../api";
+import chainAxios from "../../../../utils/chainAxios";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
@@ -49,9 +51,18 @@ const DiscountData = ({
   isCompleted
 }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
+  const { triggerTooltip } = useTooltip();
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
+
+  const throwErrorTooltip = () => {
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text:
+        "Errore durante la creazione del profilo, controllare i dati e riprovare"
+    });
+  };
 
   const checkStaticCode =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
@@ -66,11 +77,9 @@ const DiscountData = ({
       () => Api.Discount.createDiscount(agreementId, discount),
       toError
     )
+      .chain(chainAxios)
       .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => handleNext()
-      )
+      .fold(throwErrorTooltip, () => handleNext())
       .run();
 
   const updateDiscount = async (agreementId: string, discount: Discount) => {
@@ -86,22 +95,21 @@ const DiscountData = ({
         Api.Discount.updateDiscount(agreementId, discount.id, updatedDiscount),
       toError
     )
+      .chain(chainAxios)
       .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => handleNext()
-      )
+      .fold(throwErrorTooltip, () => handleNext())
       .run();
   };
 
   const getDiscounts = async (agreementId: string) =>
     await tryCatch(() => Api.Discount.getDiscounts(agreementId), toError)
+      .chain(chainAxios)
       .map(response => response.data)
       .fold(
         () => setLoading(false),
         discounts => {
           setInitialValues({
-            discounts: discounts.items.map(discount => ({
+            discounts: discounts.items.map((discount: any) => ({
               ...discount,
               startDate: new Date(discount.startDate),
               endDate: new Date(discount.endDate),
@@ -121,6 +129,7 @@ const DiscountData = ({
 
   const getProfile = async (agreementId: string) =>
     await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .chain(chainAxios)
       .map(response => response.data)
       .fold(
         () => setLoading(false),
