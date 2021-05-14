@@ -46,11 +46,25 @@ function TooltipProvider({ children }: ProviderProps): ReactElement {
     TooltipProviderState
   >(initialState);
 
-  const closeTooltip = (): void => openTooltip(false);
+  // eslint-disable-next-line functional/no-let
+  let timeout: any = null;
+
+  const closeTooltip = (): void => {
+    openTooltip(false);
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+  };
 
   const triggerTooltip = (tooltip: TooltipProviderState): void => {
     openTooltip(true);
     setTooltip(tooltip);
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      openTooltip(false);
+    }, 5000);
   };
 
   return (
