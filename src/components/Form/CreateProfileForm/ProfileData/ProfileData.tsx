@@ -144,7 +144,6 @@ const ProfileData = ({
   if (loading) {
     return <CenteredLoading />;
   }
-  
   return (
     <Formik
       enableReinitialize

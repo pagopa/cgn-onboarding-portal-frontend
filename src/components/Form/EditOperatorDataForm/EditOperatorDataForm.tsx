@@ -84,6 +84,23 @@ const EditOperatorDataForm = () => {
     void getProfile(agreement.id);
   }, []);
 
+  const getSalesChannel = (salesChannel: any) => {
+    switch (salesChannel.channelType) {
+      case "OnlineChannel":
+        const { addresses, ...OnlineChannel } = salesChannel;
+        return OnlineChannel;
+      case "OfflineChannel":
+        const {
+          websiteUrl,
+          discountCodeType,
+          ...OfflineChannel
+        } = salesChannel;
+        return OfflineChannel;
+      case "BothChannels":
+        return salesChannel;
+    }
+  };
+
   if (loading) {
     return <CenteredLoading />;
   }
@@ -103,22 +120,13 @@ const EditOperatorDataForm = () => {
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...discount } = values;
-        if (discount.salesChannel?.channelType === "OnlineChannel") {
-          const newSalesChannel = discount.salesChannel;
-          const { addresses, ...salesChannel } = newSalesChannel;
-          void updateProfile({ ...discount, salesChannel });
-        } else {
-          const newSalesChannel = discount.salesChannel;
-          const {
-            websiteUrl,
-            discountCodeType,
-            ...salesChannel
-          } = newSalesChannel;
-          void updateProfile({ ...discount, salesChannel });
-        }
+        void updateProfile({
+          ...discount,
+          ...getSalesChannel(discount.salesChannel)
+        });
       }}
     >
-      {({ values, isValid }) => (
+      {({ values }) => (
         <Form autoComplete="off">
           <ProfileInfo formValues={values} />
           <ReferentData />

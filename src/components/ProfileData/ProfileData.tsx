@@ -10,7 +10,6 @@ import ProfileDataItem from "./ProfileDataItem";
 
 const ProfileData = () => {
   const [profile, setProfile] = useState<any>(null);
-  const [image, setImage] = useState<any>(null);
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
   const getProfile = async (agreementId: string) =>
@@ -22,12 +21,14 @@ const ProfileData = () => {
       )
       .run();
 
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    agreement && getProfile(agreement.id);
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  const getImage = () =>
     agreement &&
-      setImage(`${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`);
+    agreement.imageUrl?.includes(process.env.BASE_IMAGE_PATH as string)
+      ? agreement.imageUrl
+      : `${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`;
+
+  useEffect(() => {
+    void getProfile(agreement.id);
   }, []);
 
   return (
@@ -60,21 +61,19 @@ const ProfileData = () => {
                   label="Indirizzo"
                   value={profile.legalOffice}
                 />
-                {image && (
-                  <tr>
-                    <td className="px-0 border-bottom-0">Immagine operatore</td>
-                    <td className="text-gray border-bottom-0">
-                      <img
-                        src={image}
-                        style={{
-                          width: "170px",
-                          height: "130px",
-                          objectFit: "cover"
-                        }}
-                      />
-                    </td>
-                  </tr>
-                )}
+                <tr>
+                  <td className="px-0 border-bottom-0">Immagine operatore</td>
+                  <td className="text-gray border-bottom-0">
+                    <img
+                      src={getImage()}
+                      style={{
+                        width: "170px",
+                        height: "130px",
+                        objectFit: "cover"
+                      }}
+                    />
+                  </td>
+                </tr>
               </tbody>
             </table>
             {agreement.state === "ApprovedAgreement" && (
