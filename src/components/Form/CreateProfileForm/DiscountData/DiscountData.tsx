@@ -56,6 +56,10 @@ const DiscountData = ({
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const throwErrorTooltip = () => {
     triggerTooltip({
       severity: Severity.DANGER,
@@ -112,8 +116,7 @@ const DiscountData = ({
             discounts: discounts.items.map((discount: any) => ({
               ...discount,
               startDate: new Date(discount.startDate),
-              endDate: new Date(discount.endDate),
-              staticCode: checkStaticCode ? initialValues.staticCode : undefined
+              endDate: new Date(discount.endDate)
             }))
           });
           setLoading(false);
@@ -161,7 +164,7 @@ const DiscountData = ({
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={discountsListDataValidationSchema}
+      validationSchema={discountsListDataValidationSchema(checkStaticCode)}
       onSubmit={values => {
         const newValues = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
@@ -170,18 +173,16 @@ const DiscountData = ({
             endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
           }))
         };
-        newValues.discounts.forEach((discount: CreateDiscount) => {
-          if (isCompleted) {
-            void updateDiscount(agreement.id, discount as Discount).then(() =>
-              onUpdate()
-            );
+        newValues.discounts.forEach((discount: Discount) => {
+          if (isCompleted && discount.id) {
+            void updateDiscount(agreement.id, discount).then(() => onUpdate());
           } else {
             void createDiscount(agreement.id, discount);
           }
         });
       }}
     >
-      {({ isValid, values, setFieldValue }) => (
+      {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           <FieldArray
             name="discounts"
@@ -277,7 +278,6 @@ const DiscountData = ({
                               className="px-14 mr-4"
                               color="primary"
                               tag="button"
-                              disabled={!isValid}
                             >
                               Continua
                             </Button>

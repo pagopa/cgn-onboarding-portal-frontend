@@ -4,7 +4,7 @@ const INCORRECT_EMAIL_ADDRESS = 'L’indirizzo inserito non è corretto';
 const REQUIRED_FIELD = 'Campo obbligatorio';
 const ONLY_NUMBER = 'Solo numeri';
 const ONLY_STRING = 'Solo lettere';
-const DISCOUNT_RANGE = 'Lo sconto deve essere un numero intero compreso tra 0 e 100';
+const DISCOUNT_RANGE = 'Lo sconto deve essere un numero intero compreso tra 5 e 100';
 const PRODUCT_CATEGORIES_ONE = 'Selezionare almeno una categoria merceologica';
 
 export const ProfileDataValidationSchema = Yup.object().shape({
@@ -62,7 +62,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 	})
 });
 
-export const discountDataValidationSchema = Yup.object().shape({
+export const discountDataValidationSchema = (staticCheck: boolean) => Yup.object().shape({
 	name: Yup.string().max(100).required(REQUIRED_FIELD),
 	description: Yup.string().max(250),
 	startDate: Yup.string().required(REQUIRED_FIELD),
@@ -75,10 +75,14 @@ export const discountDataValidationSchema = Yup.object().shape({
 		.required(REQUIRED_FIELD),
 	productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(),
 	condition: Yup.string(),
-	staticCode: Yup.string()
+	staticCode: Yup.string().when("condition", {
+		is: () => staticCheck,
+		then: Yup.string().required(REQUIRED_FIELD),
+		otherwise: Yup.string()
+	})
 });
 
-export const discountsListDataValidationSchema = Yup.object().shape({
+export const discountsListDataValidationSchema = (staticCheck:boolean) => Yup.object().shape({
 	discounts: Yup.array().of(
 		Yup.object().shape({
 			name: Yup.string().max(100).required(REQUIRED_FIELD),
@@ -93,7 +97,11 @@ export const discountsListDataValidationSchema = Yup.object().shape({
 				.max(100, DISCOUNT_RANGE)
 				.required(REQUIRED_FIELD),
 			condition: Yup.string(),
-			staticCode: Yup.string()
+			staticCode: Yup.string().when("condition", {
+				is: () => staticCheck,
+				then: Yup.string().required(REQUIRED_FIELD),
+				otherwise: Yup.string()
+			})
 		})
 	)
 });

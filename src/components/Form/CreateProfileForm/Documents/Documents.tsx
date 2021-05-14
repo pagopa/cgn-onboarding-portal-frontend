@@ -24,6 +24,10 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
   const [showRequireApproval, setShowRequireApproval] = useState(false);
   const { triggerTooltip } = useTooltip();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const getFiles = async () =>
     await tryCatch(() => Api.Document.getDocuments(agreement.id), toError)
       .map(response => response.data)
