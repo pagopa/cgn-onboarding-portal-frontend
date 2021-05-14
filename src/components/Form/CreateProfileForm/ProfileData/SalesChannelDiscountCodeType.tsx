@@ -1,5 +1,6 @@
 import React from "react";
 import { Field } from "formik";
+import CustomErrorMessage from "../../CustomErrorMessage";
 import FormSection from "../../FormSection";
 
 const SalesChannelDiscountCodeType = () => (
@@ -43,6 +44,7 @@ const SalesChannelDiscountCodeType = () => (
           </span>
         </label>
       </div>
+      <CustomErrorMessage name={`salesChannel.discountCodeType`} />
     </div>
   </FormSection>
 );
