@@ -13,7 +13,7 @@ const PublishModal = ({ isOpen, toggle, publish }: Props) => (
     <ModalHeader toggle={toggle}>Pubblica agevolazione</ModalHeader>
     <ModalBody>
       Attenzione: hai terminato tutte le integrazioni tecniche per la
-      validazione? Se procedi con la pubblicazione gli utenti utilizzeranno un
+      validazione dei codici sconto? Se procedi con la pubblicazione gli utenti utilizzeranno un
       codice generato che non troverà nessun riscontro
     </ModalBody>
     <ModalFooter className="d-flex flex-column">
