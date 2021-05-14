@@ -20,13 +20,17 @@ const ProfileDocuments = () => {
         documents => {
           setAgreementDocument(
             documents.find(
-              document => document.documentType === "backoffice_agreement"
+              document =>
+                document.documentType === "backoffice_agreement" ||
+                document.documentType === "agreeement"
             )
           );
           setManifestationDocument(
             documents.find(
               document =>
-                document.documentType === "backoffice_manifestation_of_interest"
+                document.documentType ===
+                  "backoffice_manifestation_of_interest" ||
+                document.documentType === "manifestation_of_interest"
             )
           );
         }
