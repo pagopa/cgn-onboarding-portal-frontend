@@ -211,6 +211,7 @@ const OperatorConvention = () => {
                 return (
                   <React.Fragment key={row.getRowProps().key}>
                     <tr
+                      className="cursor-pointer"
                       onClick={() => {
                         setShowDetails(true);
                         setSelectedConvention(row.original);
