@@ -67,6 +67,7 @@ export const discountDataValidationSchema = Yup.object().shape({
 	startDate: Yup.string().required(REQUIRED_FIELD),
 	endDate: Yup.string().required(REQUIRED_FIELD),
 	discount: Yup.number()
+		.typeError(DISCOUNT_RANGE)
 		.integer(DISCOUNT_RANGE)
 		.min(5, DISCOUNT_RANGE)
 		.max(100, DISCOUNT_RANGE)
@@ -85,6 +86,7 @@ export const discountsListDataValidationSchema = Yup.object().shape({
 			endDate: Yup.string().required(REQUIRED_FIELD),
 			productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(REQUIRED_FIELD),
 			discount: Yup.number()
+				.typeError(DISCOUNT_RANGE)
 				.integer(DISCOUNT_RANGE)
 				.min(5, DISCOUNT_RANGE)
 				.max(100, DISCOUNT_RANGE)
