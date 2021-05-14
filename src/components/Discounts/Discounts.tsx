@@ -11,6 +11,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { compareDesc } from "date-fns/esm";
+import { compareAsc } from "date-fns";
 import Api from "../../api/index";
 import { Discounts } from "../../api/generated";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
@@ -128,10 +129,11 @@ const Discounts = () => {
   const isVisible = (state: any, startDate: any, endDate: any) => {
     const today = new Date();
     return (
-      (state === "Published" &&
-        compareDesc(new Date(startDate), today) === 1) ||
-      (compareDesc(new Date(startDate), today) === 0 &&
-        compareDesc(new Date(endDate), today)) === 1
+      state === "published" &&
+      (compareAsc(today, new Date(startDate)) === 1 ||
+        compareAsc(today, new Date(startDate)) === 0) &&
+      (compareAsc(new Date(endDate), today) === 1 ||
+        compareAsc(new Date(endDate), today) === 0)
     );
   };
 
@@ -178,9 +180,9 @@ const Discounts = () => {
         Cell: ({ row }: any) =>
           getVisibleComponent(
             isVisible(
-              row.values.state,
-              row.values.startDate,
-              row.values.endDate
+              row.original.state,
+              row.original.startDate,
+              row.original.endDate
             )
           )
       },

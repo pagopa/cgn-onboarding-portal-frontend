@@ -2,13 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
-import { tryCatch } from "fp-ts/lib/TaskEither";
+import { tryCatch, fromPredicate } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
+import chainAxios from "../../../../utils/chainAxios";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import { useTooltip, Severity } from "../../../../context/tooltip";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
 import ProfileImage from "./ProfileImage";
@@ -59,21 +61,38 @@ const ProfileData = ({
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const user = useSelector((state: RootState) => state.user.data);
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
+  const { triggerTooltip } = useTooltip();
   const [loading, setLoading] = useState(true);
   const [hasImage, setHasImage] = useState(false);
 
-  const createProfile = (discount: any) => {
-    if (agreement) {
-      void Api.Profile.createProfile(agreement.id, discount);
-    }
+  const throwErrorTooltip = () => {
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text:
+        "Errore durante la creazione del profilo, controllare i dati e riprovare"
+    });
   };
 
-  const updateProfile = (discount: any) => {
-    if (agreement) {
-      void Api.Profile.updateProfile(agreement.id, discount).then(() =>
-        onUpdate()
-      );
-    }
+  const createProfile = async (discount: any) =>
+    await tryCatch(
+      () => Api.Profile.createProfile(agreement.id, discount),
+      toError
+    )
+      .chain(chainAxios)
+      .fold(throwErrorTooltip, () => handleNext())
+      .run();
+
+  const updateProfile = async (discount: any) => {
+    await tryCatch(
+      () => Api.Profile.updateProfile(agreement.id, discount),
+      toError
+    )
+      .chain(chainAxios)
+      .fold(throwErrorTooltip, () => {
+        onUpdate();
+        handleNext();
+      })
+      .run();
   };
 
   const submitProfile = () => (isCompleted ? updateProfile : createProfile);
@@ -102,6 +121,23 @@ const ProfileData = ({
     }
   }, []);
 
+  const getSalesChannel = (salesChannel: any) => {
+    switch (salesChannel.channelType) {
+      case "OnlineChannel":
+        const { addresses, ...OnlineChannel } = salesChannel;
+        return OnlineChannel;
+      case "OfflineChannel":
+        const {
+          websiteUrl,
+          discountCodeType,
+          ...OfflineChannel
+        } = salesChannel;
+        return OfflineChannel;
+      case "BothChannels":
+        return salesChannel;
+    }
+  };
+
   if (loading) {
     return <CenteredLoading />;
   }
@@ -122,20 +158,10 @@ const ProfileData = ({
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...discount } = values;
-        if (discount.salesChannel?.channelType === "OnlineChannel") {
-          const newSalesChannel = discount.salesChannel;
-          const { addresses, ...salesChannel } = newSalesChannel;
-          submitProfile()({ ...discount, salesChannel });
-        } else {
-          const newSalesChannel = discount.salesChannel;
-          const {
-            websiteUrl,
-            discountCodeType,
-            ...salesChannel
-          } = newSalesChannel;
-          submitProfile()({ ...discount, salesChannel });
-        }
-        handleNext();
+        void submitProfile()({
+          ...discount,
+          ...getSalesChannel(discount.salesChannel)
+        });
       }}
     >
       {({ values, isValid }) => (

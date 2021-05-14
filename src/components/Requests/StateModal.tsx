@@ -43,6 +43,7 @@ const StateModal = ({
               e.stopPropagation();
               setFieldValue("page", 0);
               setFieldValue("states", undefined);
+              void submitForm();
             }}
           >
             <Icon color="" icon="it-close" size="" />
