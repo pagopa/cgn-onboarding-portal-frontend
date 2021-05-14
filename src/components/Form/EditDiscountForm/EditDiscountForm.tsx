@@ -121,6 +121,7 @@ const EditDiscountForm = () => {
   return (
     <>
       <Formik
+        enableReinitialize
         initialValues={initialValues}
         validationSchema={discountDataValidationSchema}
         onSubmit={values => {
@@ -156,29 +157,21 @@ const EditDiscountForm = () => {
               >
                 <DiscountConditions />
               </FormField>
-              <FormField
-                htmlFor="staticCode"
-                isTitleHeading
-                title="Codice statico"
-                description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
-                isVisible
-              >
-                {profile &&
-                  (profile.salesChannel.channelType === "OnlineChannel" ||
-                    profile.salesChannel.channelType === "BothChannels") &&
-                  profile.salesChannel.discountCodeType === "Static" && (
-                    <FormField
-                      htmlFor="staticCode"
-                      isTitleHeading
-                      title="Codice statico"
-                      description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-                      isVisible
-                      required
-                    >
-                      <StaticCode />
-                    </FormField>
-                  )}
-              </FormField>
+              {profile &&
+                (profile.salesChannel.channelType === "OnlineChannel" ||
+                  profile.salesChannel.channelType === "BothChannels") &&
+                profile.salesChannel.discountCodeType === "Static" && (
+                  <FormField
+                    htmlFor="staticCode"
+                    isTitleHeading
+                    title="Codice statico"
+                    description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                    isVisible
+                    required
+                  >
+                    <StaticCode />
+                  </FormField>
+                )}
               {initialValues.state !== "draft" && (
                 <div className="mt-10">
                   <Button
