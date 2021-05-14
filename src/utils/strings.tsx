@@ -1,6 +1,16 @@
+const PRODUCT_CATEGORIES: any = {
+  Entertainments: "Teatro, cinema e spettacolo",
+  Travels: "Viaggi",
+  Transportation: "Carsharing, mobilità",
+  Connectivity: "Telefonia, servizi internet",
+  Books: "Libri, audiolibri, e-book",
+  Arts: "Musei, gallerie, parchi",
+  Sports: "Sport",
+  Health: "Salute e benessere"
+};
+
 export function makeProductCategoriesString(productCategories: Array<string>) {
-  if (productCategories.length === 1) {return productCategories[0];}
-  const firsts = productCategories.slice(0, productCategories.length - 1);
-  const last = productCategories[productCategories.length - 1];
-  return firsts.join(", ") + " e " + last;
+  return productCategories.map(
+    (productCategory: any) => PRODUCT_CATEGORIES[productCategory]
+  );
 }

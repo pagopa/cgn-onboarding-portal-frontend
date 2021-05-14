@@ -219,10 +219,14 @@ const Discounts = () => {
                   value={row.original.description}
                 />
               )}
-              <ProfileItem
-                label="Stato agevolazione"
-                value={row.original.state}
-              />
+              <tr>
+                <td className={`px-0 text-gray border-bottom-0`}>
+                  Stato Agevolazione
+                </td>
+                <td className={`border-bottom-0`}>
+                  {getDiscountComponent(row.values.state)}
+                </td>
+              </tr>
               <ProfileItem
                 label="Data di inizio dell'agevolazione"
                 value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
@@ -235,12 +239,18 @@ const Discounts = () => {
                 label="Entità dello sconto"
                 value={`${row.original.discount}%`}
               />
-              <ProfileItem
-                label="Categorie merceologiche"
-                value={makeProductCategoriesString(
-                  row.original.productCategories
-                )}
-              />
+              <tr>
+                <td className={`px-0 text-gray border-bottom-0`}>
+                  Categorie merceologiche
+                </td>
+                <td className={`border-bottom-0`}>
+                  {makeProductCategoriesString(
+                    row.original.productCategories
+                  ).map((productCategory, index) => (
+                    <p key={index}>{productCategory}</p>
+                  ))}
+                </td>
+              </tr>
               {row.original.conditions && (
                 <ProfileItem
                   label="Condizioni dell’agevolazione"
@@ -256,7 +266,11 @@ const Discounts = () => {
                 color="secondary"
                 outline
                 tag="button"
-                onClick={() => history.push(`edit-discount/${row.original.id}`)}
+                onClick={() =>
+                  history.push(
+                    `/admin/operatori/agevolazioni/modifica/${row.original.id}`
+                  )
+                }
               >
                 <Icon icon="it-pencil" padding={false} size="sm" />
                 <span>Modifica</span>
