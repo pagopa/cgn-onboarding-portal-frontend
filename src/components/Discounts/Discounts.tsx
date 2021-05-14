@@ -179,7 +179,14 @@ const Discounts = () => {
       },
       {
         Header: "Visibile",
-        Cell: ({ row }: any) => getVisibleComponent(isVisible())
+        Cell: ({ row }: any) =>
+          getVisibleComponent(
+            isVisible(
+              row.values.state,
+              row.values.startDate,
+              row.values.endDate
+            )
+          )
       },
       {
         Header: () => null,
