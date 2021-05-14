@@ -63,7 +63,7 @@ const ProfileDocuments = () => {
                   Convenzione
                 </a>
                 <p className="text-sm font-weight-light text-dark-blue">
-                  Approvato il {formatDate(agreementDocument.documentTimestamp)}
+                  Caricato il {formatDate(agreementDocument.documentTimestamp)}
                 </p>
               </div>
             </LinkListItem>
@@ -82,7 +82,7 @@ const ProfileDocuments = () => {
                   Allegato 1 - Manifestazione di interesse
                 </a>
                 <p className="text-sm font-weight-light text-dark-blue">
-                  Approvato il
+                  Caricato il
                   {formatDate(manifestationDocument.documentTimestamp)}
                 </p>
               </div>
