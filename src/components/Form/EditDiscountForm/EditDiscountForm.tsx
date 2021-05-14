@@ -126,6 +126,7 @@ const EditDiscountForm = () => {
   return (
     <>
       <Formik
+        enableReinitialize
         initialValues={initialValues}
         validationSchema={() => discountDataValidationSchema(checkStaticCode)}
         onSubmit={values => {
@@ -161,26 +162,18 @@ const EditDiscountForm = () => {
               >
                 <DiscountConditions />
               </FormField>
-              <FormField
-                htmlFor="staticCode"
-                isTitleHeading
-                title="Codice statico"
-                description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
-                isVisible
-              >
-                {checkStaticCode && (
-                  <FormField
-                    htmlFor="staticCode"
-                    isTitleHeading
-                    title="Codice statico"
-                    description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-                    isVisible
-                    required
-                  >
-                    <StaticCode />
-                  </FormField>
-                )}
-              </FormField>
+              {checkStaticCode && (
+                <FormField
+                  htmlFor="staticCode"
+                  isTitleHeading
+                  title="Codice statico"
+                  description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                  isVisible
+                  required
+                >
+                  <StaticCode />
+                </FormField>
+              )}
               {initialValues.state !== "draft" && (
                 <div className="mt-10">
                   <Button
