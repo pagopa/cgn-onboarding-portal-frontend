@@ -144,7 +144,7 @@ const ProfileData = ({
   if (loading) {
     return <CenteredLoading />;
   }
-
+  
   return (
     <Formik
       enableReinitialize
@@ -167,7 +167,7 @@ const ProfileData = ({
         });
       }}
     >
-      {({ values, isValid }) => (
+      {({ values }) => (
         <Form autoComplete="off">
           <FormContainer className="mb-20">
             <ProfileInfo formValues={values} />

@@ -242,7 +242,7 @@ const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
             className="px-14 mr-4"
             color="primary"
             tag="button"
-            disabled={isValid}
+            disabled={!isValid}
           >
             Continua
           </Button>
