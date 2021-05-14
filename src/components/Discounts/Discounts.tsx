@@ -339,7 +339,6 @@ const Discounts = () => {
     <div>
       <div>
         <PublishModal
-          type=
           isOpen={publishModal}
           toggle={togglePublishModal}
           publish={() => publishDiscount(selectedPublish)}
