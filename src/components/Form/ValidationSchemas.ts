@@ -6,8 +6,6 @@ const ONLY_NUMBER = 'Solo numeri';
 const ONLY_STRING = 'Solo lettere';
 const DISCOUNT_RANGE = 'Lo sconto deve essere un numero intero compreso tra 0 e 100';
 const PRODUCT_CATEGORIES_ONE = 'Selezionare almeno una categoria merceologica';
-const INCORRECT_TELEPHONE_NUMBER = 'Numero di telefono non valido';
-const INCORRECT_TAX_CODE_OR_VAT = 'Il numero di caratteri inseriti non è corretto';
 
 export const ProfileDataValidationSchema = Yup.object().shape({
 	hasDifferentName: Yup.boolean(),
@@ -52,7 +50,10 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 			then: Yup.array().of(
 				Yup.object().shape({
 					street: Yup.string().required(REQUIRED_FIELD),
-					zipCode: Yup.string().matches(/^[0-9]*$/, ONLY_NUMBER).required(REQUIRED_FIELD),
+					zipCode: Yup.string().matches(/^[0-9]*$/, ONLY_NUMBER)
+					.min(5, 'Deve essere di 5 caratteri')
+					.max(5, 'Deve essere di 5 caratteri')
+					.required(REQUIRED_FIELD),
 					city: Yup.string().required(REQUIRED_FIELD),
 					district: Yup.string().required(REQUIRED_FIELD)
 				})
