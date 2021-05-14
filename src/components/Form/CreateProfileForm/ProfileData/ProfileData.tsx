@@ -63,7 +63,10 @@ const ProfileData = ({
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const { triggerTooltip } = useTooltip();
   const [loading, setLoading] = useState(true);
-  const [hasImage, setHasImage] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const throwErrorTooltip = () => {
     triggerTooltip({
@@ -169,12 +172,12 @@ const ProfileData = ({
           <FormContainer className="mb-20">
             <ProfileInfo formValues={values} />
             <ReferentData />
-            <ProfileImage handleImage={() => setHasImage(true)} />
+            <ProfileImage />
             <ProfileDescription />
             <SalesChannels
               handleBack={handleBack}
               formValues={values}
-              isValid={isValid && hasImage}
+              isValid={!!agreement.imageUrl}
             />
           </FormContainer>
         </Form>

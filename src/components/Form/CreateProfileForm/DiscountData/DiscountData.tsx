@@ -56,6 +56,10 @@ const DiscountData = ({
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const throwErrorTooltip = () => {
     triggerTooltip({
       severity: Severity.DANGER,
@@ -112,8 +116,7 @@ const DiscountData = ({
             discounts: discounts.items.map((discount: any) => ({
               ...discount,
               startDate: new Date(discount.startDate),
-              endDate: new Date(discount.endDate),
-              staticCode: checkStaticCode ? initialValues.staticCode : undefined
+              endDate: new Date(discount.endDate)
             }))
           });
           setLoading(false);
@@ -181,7 +184,7 @@ const DiscountData = ({
         });
       }}
     >
-      {({ isValid, values, setFieldValue }) => (
+      {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           <FieldArray
             name="discounts"
@@ -277,7 +280,6 @@ const DiscountData = ({
                               className="px-14 mr-4"
                               color="primary"
                               tag="button"
-                              disabled={!isValid}
                             >
                               Continua
                             </Button>

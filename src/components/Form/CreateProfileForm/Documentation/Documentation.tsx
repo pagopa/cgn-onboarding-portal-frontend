@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "design-react-kit";
 import FormContainer from "../../FormContainer";
@@ -22,6 +22,10 @@ const Documentation = ({
     setIsDocumentationRead(true);
     return true;
   }
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <FormContainer className="mb-10">

@@ -127,7 +127,7 @@ const EditOperatorDataForm = () => {
           <SalesChannels
             handleBack={() => history.push(DASHBOARD)}
             formValues={values}
-            isValid={isValid}
+            isValid
           />
         </Form>
       )}
