@@ -18,7 +18,7 @@ const hasBothChannels = (channelType: string) => channelType === "BothChannels";
 type Props = {
   handleBack: any;
   formValues: any;
-  isValid: any;
+  isValid: boolean;
 };
 
 const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
@@ -203,7 +203,6 @@ const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
                               className="px-14 mr-4"
                               color="primary"
                               tag="button"
-                              disabled={!isValid}
                             >
                               Continua
                             </Button>

@@ -20,12 +20,8 @@ const FooterDescription = (
   </p>
 );
 
-type Props = {
-  handleImage?: any;
-};
-
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const ProfileImage = ({ handleImage }: Props) => {
+const ProfileImage = () => {
   const dispatch = useDispatch();
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const imageInput = useRef<any>();
@@ -40,9 +36,6 @@ const ProfileImage = ({ handleImage }: Props) => {
       dispatch(
         setImage(`${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`)
       );
-      if (handleImage) {
-        handleImage();
-      }
     }
   }, []);
 
@@ -59,9 +52,6 @@ const ProfileImage = ({ handleImage }: Props) => {
             dispatch(
               setImage(`${process.env.BASE_IMAGE_PATH}/${response.imageUrl}`)
             );
-            if (handleImage) {
-              handleImage();
-            }
           } else {
             triggerTooltip({
               severity: Severity.DANGER,
@@ -107,7 +97,7 @@ const ProfileImage = ({ handleImage }: Props) => {
             agreement.imageUrl && (
               <div className="d-flex flex-row align-items-end">
                 <img
-                  src={agreement.imageUrl}
+                  src={`${agreement.imageUrl}?${Date.now()}`}
                   style={{
                     width: "128px",
                     height: "128px",

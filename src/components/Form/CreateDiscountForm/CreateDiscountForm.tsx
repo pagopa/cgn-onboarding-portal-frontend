@@ -15,7 +15,7 @@ import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
 import { RootState } from "../../../store/store";
 import FormSection from "../FormSection";
 import FormField from "../FormField";
-import { CreateDiscount, Discount } from "../../../api/generated";
+import { CreateDiscount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 
@@ -35,6 +35,11 @@ const CreateDiscountForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
+
+  const checkStaticCode =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Static";
 
   const createDiscount = async (
     agreementId: string,
@@ -74,7 +79,7 @@ const CreateDiscountForm = () => {
   return (
     <Formik
       initialValues={emptyInitialValues}
-      validationSchema={discountDataValidationSchema}
+      validationSchema={() => discountDataValidationSchema(checkStaticCode)}
       onSubmit={values => {
         const newValues = {
           ...values,
@@ -108,21 +113,18 @@ const CreateDiscountForm = () => {
             >
               <DiscountConditions />
             </FormField>
-            {profile &&
-              (profile.salesChannel.channelType === "OnlineChannel" ||
-                profile.salesChannel.channelType === "BothChannels") &&
-              profile.salesChannel.discountCodeType === "Static" && (
-                <FormField
-                  htmlFor="staticCode"
-                  isTitleHeading
-                  title="Codice statico"
-                  description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-                  isVisible
-                  required
-                >
-                  <StaticCode />
-                </FormField>
-              )}
+            {checkStaticCode && (
+              <FormField
+                htmlFor="staticCode"
+                isTitleHeading
+                title="Codice statico"
+                description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                isVisible
+                required
+              >
+                <StaticCode />
+              </FormField>
+            )}
             <div className="mt-10">
               <Button
                 className="px-14 mr-4"
