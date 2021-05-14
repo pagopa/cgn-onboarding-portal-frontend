@@ -73,6 +73,7 @@ const DateModal = ({
               setFieldValue("page", 0);
               setFieldValue("requestDateFrom", undefined);
               setFieldValue("requestDateTo", undefined);
+              void submitForm();
             }}
           >
             <Icon color="" icon="it-close" size="" />

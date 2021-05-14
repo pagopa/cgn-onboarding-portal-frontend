@@ -75,6 +75,7 @@ const DateModal = ({
               setFieldValue("page", 0);
               setFieldValue("lastUpdateDateFrom", undefined);
               setFieldValue("lastUpdateDateTo", undefined);
+              void submitForm();
             }}
           >
             <Icon color="" icon="it-close" size="" />
