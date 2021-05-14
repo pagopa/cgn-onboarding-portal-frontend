@@ -1,5 +1,3 @@
-import { fsync } from "fs";
-import { format } from "path";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useTable, useExpanded, useSortBy } from "react-table";
@@ -10,8 +8,7 @@ import { Badge } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { compareDesc } from "date-fns/esm";
-import { compareAsc } from "date-fns";
+import { compareAsc, format } from "date-fns";
 import Api from "../../api/index";
 import { Discounts } from "../../api/generated";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
@@ -168,7 +165,9 @@ const Discounts = () => {
       },
       {
         Header: "Aggiunta il",
-        accessor: "startDate"
+        accessor: "startDate",
+        Cell: ({ row }: any) =>
+          format(new Date(row.values.startDate), "dd/MM/yyyy")
       },
       {
         Header: "Stato",
@@ -226,11 +225,11 @@ const Discounts = () => {
               />
               <ProfileItem
                 label="Data di inizio dell'agevolazione"
-                value={row.original.startDate}
+                value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
               />
               <ProfileItem
                 label="Data di fine agevolazione"
-                value={row.original.endDate}
+                value={format(new Date(row.original.endDate), "dd/MM/yyyy")}
               />
               <ProfileItem
                 label="Entità dello sconto"

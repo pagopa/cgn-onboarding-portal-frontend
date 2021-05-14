@@ -3,6 +3,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import cx from "classnames";
 import { Icon } from "design-react-kit";
+import { format } from "date-fns";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
@@ -122,11 +123,15 @@ const ConventionDetails = ({
         <h4>{agreement.fullName}</h4>
         <div>
           <div className="mb-3 text-gray">Data convenzionamento</div>
-          <div>{agreement.agreementStartDate}</div>
+          <div>
+            {format(new Date(agreement.agreementStartDate), "dd/MM/yyyy")}
+          </div>
         </div>
         <div>
           <div className="mb-3 text-gray">Data ultima modifica</div>
-          <div>{agreement.agreementLastUpdateDate}</div>
+          <div>
+            {format(new Date(agreement.agreementLastUpdateDate), "dd/MM/yyyy")}
+          </div>
         </div>
         <div onClick={onClose} className="cursor-pointer">
           <Icon color="primary" icon="it-close" size="" />
