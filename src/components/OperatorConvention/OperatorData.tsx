@@ -1,4 +1,5 @@
 import React from "react";
+import { format } from "date-fns";
 import {
   ApprovedAgreementProfile,
   BothChannels
@@ -38,7 +39,10 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
           )}
         </div>
       </div>
-      <Item label="Data ultima modifica" value={profile.lastUpateDate} />
+      <Item
+        label="Data ultima modifica"
+        value={format(new Date(profile.lastUpateDate), "dd/MM/yyyy")}
+      />
     </div>
   );
 };

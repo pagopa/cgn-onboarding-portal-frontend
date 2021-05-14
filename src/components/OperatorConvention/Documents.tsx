@@ -1,4 +1,5 @@
 import React from "react";
+import { format } from "date-fns";
 import { Document } from "../../api/generated_backoffice";
 import DocumentIcon from "../../assets/icons/document.svg";
 
@@ -19,7 +20,7 @@ const Document = ({ doc, i }: { doc: Document; i: number }) => {
             </a>
           </div>
           <span className="text-muted" style={{ fontSize: "14px" }}>
-            {doc.creationDate}
+            {format(new Date(doc.creationDate), "dd/MM/yyyy")}
           </span>
         </div>
       </div>
