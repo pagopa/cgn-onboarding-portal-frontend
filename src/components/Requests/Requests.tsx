@@ -128,7 +128,6 @@ const Requests = () => {
     {
       columns,
       data,
-      autoResetExpanded: false,
       initialState: { pageIndex: 0, pageSize },
       manualPagination: true,
       pageCount: agreements?.total ? Math.ceil(agreements?.total / pageSize) : 0

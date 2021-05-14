@@ -30,22 +30,6 @@ const RequestsDetails = ({
   const assignedToMe =
     `${user.given_name} ${user.family_name}` === original.assignee?.fullName;
 
-  const assignAgreementsApi = async () =>
-    await tryCatch(() => Api.Agreement.assignAgreement(original.id), toError)
-      .fold(
-        () => setLoading(false),
-        () => {
-          updateList();
-          setLoading(false);
-        }
-      )
-      .run();
-
-  const assignAgreements = () => {
-    setLoading(true);
-    void assignAgreementsApi();
-  };
-
   const approveAgreementApi = async () =>
     await tryCatch(() => Api.Agreement.approveAgreement(original.id), toError)
       .fold(
