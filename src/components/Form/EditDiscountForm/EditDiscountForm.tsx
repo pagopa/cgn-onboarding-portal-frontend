@@ -42,6 +42,11 @@ const EditDiscountForm = () => {
   const togglePublishModal = () => setPublishModal(!publishModal);
   const [selectedPublish, setSelectedPublish] = useState<any>();
 
+  const checkStaticCode =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Static";
+
   const updateDiscount = async (agreementId: string, discount: Discount) => {
     const {
       id,
@@ -122,7 +127,7 @@ const EditDiscountForm = () => {
     <>
       <Formik
         initialValues={initialValues}
-        validationSchema={discountDataValidationSchema}
+        validationSchema={() => discountDataValidationSchema(checkStaticCode)}
         onSubmit={values => {
           const newValues = {
             ...values,
@@ -163,21 +168,18 @@ const EditDiscountForm = () => {
                 description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online*"
                 isVisible
               >
-                {profile &&
-                  (profile.salesChannel.channelType === "OnlineChannel" ||
-                    profile.salesChannel.channelType === "BothChannels") &&
-                  profile.salesChannel.discountCodeType === "Static" && (
-                    <FormField
-                      htmlFor="staticCode"
-                      isTitleHeading
-                      title="Codice statico"
-                      description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
-                      isVisible
-                      required
-                    >
-                      <StaticCode />
-                    </FormField>
-                  )}
+                {checkStaticCode && (
+                  <FormField
+                    htmlFor="staticCode"
+                    isTitleHeading
+                    title="Codice statico"
+                    description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                    isVisible
+                    required
+                  >
+                    <StaticCode />
+                  </FormField>
+                )}
               </FormField>
               {initialValues.state !== "draft" && (
                 <div className="mt-10">

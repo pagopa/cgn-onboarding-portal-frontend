@@ -164,7 +164,7 @@ const DiscountData = ({
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={discountsListDataValidationSchema}
+      validationSchema={discountsListDataValidationSchema(checkStaticCode)}
       onSubmit={values => {
         const newValues = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
@@ -173,11 +173,9 @@ const DiscountData = ({
             endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
           }))
         };
-        newValues.discounts.forEach((discount: CreateDiscount) => {
-          if (isCompleted) {
-            void updateDiscount(agreement.id, discount as Discount).then(() =>
-              onUpdate()
-            );
+        newValues.discounts.forEach((discount: Discount) => {
+          if (isCompleted && discount.id) {
+            void updateDiscount(agreement.id, discount).then(() => onUpdate());
           } else {
             void createDiscount(agreement.id, discount);
           }
