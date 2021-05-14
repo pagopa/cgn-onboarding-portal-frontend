@@ -13,11 +13,7 @@ import { toError } from "fp-ts/lib/Either";
 import { compareDesc } from "date-fns/esm";
 import Api from "../../api/index";
 import { Discounts } from "../../api/generated";
-import {
-  CREATE_DISCOUNT,
-  DASHBOARD,
-  EDIT_DISCOUNT
-} from "../../navigation/routes";
+import { CREATE_DISCOUNT } from "../../navigation/routes";
 import ProfileItem from "../Profile/ProfileItem";
 import { makeProductCategoriesString } from "../../utils/strings";
 import { RootState } from "../../store/store";

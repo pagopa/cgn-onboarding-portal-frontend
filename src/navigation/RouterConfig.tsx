@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Switch, Route, useHistory } from "react-router-dom";
+import { Switch, Route, useHistory, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { createAgreement } from "../store/agreement/agreementSlice";
 import { RootState } from "../store/store";
@@ -21,7 +21,8 @@ import {
   CREATE_DISCOUNT,
   EDIT_DISCOUNT,
   EDIT_OPERATOR_DATA,
-  ADMIN_PANEL
+  ADMIN_PANEL_RICHIESTE,
+  ADMIN_PANEL_CONVENZIONATI
 } from "./routes";
 
 export const RouterConfig = ({
@@ -35,8 +36,11 @@ export const RouterConfig = ({
     (state: RootState) => state.agreement
   );
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const isAdmin = userType === "ADMIN";
+
+  const adminRoutes = [ADMIN_PANEL_RICHIESTE, ADMIN_PANEL_CONVENZIONATI];
 
   useEffect(() => {
     if (!isAdmin) {
@@ -57,14 +61,19 @@ export const RouterConfig = ({
           break;
       }
     } else {
-      history.push(ADMIN_PANEL);
+      history.push(
+        adminRoutes.includes(location.pathname)
+          ? location.pathname
+          : ADMIN_PANEL_RICHIESTE
+      );
     }
   }, [agreement.state]);
 
   if (isAdmin) {
     return (
       <Switch>
-        <Route exact path={ADMIN_PANEL} component={AdminPanel} />
+        <Route exact path={ADMIN_PANEL_RICHIESTE} component={AdminPanel} />
+        <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
       </Switch>
     );
   }
