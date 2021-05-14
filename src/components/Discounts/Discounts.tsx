@@ -260,7 +260,13 @@ const Discounts = () => {
             </tbody>
           </table>
           {agreement.state === "ApprovedAgreement" && (
-            <div className="mt-10 d-flex flex-row justify-content-between">
+            <div
+              className={
+                row.original.state !== "suspended"
+                  ? "mt-10 d-flex flex-row justify-content-between"
+                  : "mt-10"
+              }
+            >
               <Button
                 className="mr-4"
                 color="secondary"
@@ -293,23 +299,25 @@ const Discounts = () => {
                 />{" "}
                 Elimina
               </Button>
-              <Button
-                className="mr-4"
-                color="primary"
-                tag="button"
-                onClick={() => {
-                  setSelectedPublish(row.original.id);
-                  togglePublishModal();
-                }}
-              >
-                <Icon
-                  icon="it-external-link"
-                  color="white"
-                  padding={false}
-                  size="sm"
-                />
-                <span>Pubblica</span>
-              </Button>
+              {row.original.state !== "suspended" && (
+                <Button
+                  className="mr-4"
+                  color="primary"
+                  tag="button"
+                  onClick={() => {
+                    setSelectedPublish(row.original.id);
+                    togglePublishModal();
+                  }}
+                >
+                  <Icon
+                    icon="it-external-link"
+                    color="white"
+                    padding={false}
+                    size="sm"
+                  />
+                  <span>Pubblica</span>
+                </Button>
+              )}
             </div>
           )}
         </section>
@@ -331,6 +339,7 @@ const Discounts = () => {
     <div>
       <div>
         <PublishModal
+          type=
           isOpen={publishModal}
           toggle={togglePublishModal}
           publish={() => publishDiscount(selectedPublish)}
