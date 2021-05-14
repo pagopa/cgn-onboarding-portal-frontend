@@ -68,7 +68,7 @@ const Header = ({ hasBorder = false }: Props) => {
                 </Button>
               )}
             </>
-          ) 
+          )}
         </div>
         <LogoutModal
           isOpen={modal}
