@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
-import { tryCatch } from "fp-ts/lib/TaskEither";
+import { tryCatch, fromPredicate } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
+import chainAxios from "../../../../utils/chainAxios";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 import { useTooltip, Severity } from "../../../../context/tooltip";
 import ProfileInfo from "./ProfileInfo";
@@ -77,6 +78,7 @@ const ProfileData = ({
       () => Api.Profile.createProfile(agreement.id, discount),
       toError
     )
+      .chain(chainAxios)
       .fold(throwErrorTooltip, () => handleNext())
       .run();
 
@@ -85,6 +87,7 @@ const ProfileData = ({
       () => Api.Profile.updateProfile(agreement.id, discount),
       toError
     )
+      .chain(chainAxios)
       .fold(throwErrorTooltip, () => {
         onUpdate();
         handleNext();
@@ -155,7 +158,7 @@ const ProfileData = ({
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...discount } = values;
-        submitProfile()({
+        void submitProfile()({
           ...discount,
           ...getSalesChannel(discount.salesChannel)
         });
