@@ -41,7 +41,7 @@ const Header = ({ hasBorder = false }: Props) => {
               Serve aiuto?
             </Link>
           )}
-          {token ? (
+          {token && (
             <>
               {location.pathname === CREATE_PROFILE && (
                 <Button
@@ -68,17 +68,7 @@ const Header = ({ hasBorder = false }: Props) => {
                 </Button>
               )}
             </>
-          ) : (
-            <Button
-              className="px-8"
-              color="primary"
-              size="xs"
-              icon={false}
-              tag="button"
-            >
-              Accedi
-            </Button>
-          )}
+          ) 
         </div>
         <LogoutModal
           isOpen={modal}
