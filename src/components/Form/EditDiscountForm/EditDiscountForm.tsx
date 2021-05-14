@@ -196,7 +196,7 @@ const EditDiscountForm = () => {
                 </div>
               )}
               {initialValues.state === "draft" && (
-                <div className="mt-10 d-flex flex-row justify-content-between">
+                <div className="mt-10">
                   <Button
                     className="px-14 mr-4"
                     color="secondary"
@@ -213,18 +213,6 @@ const EditDiscountForm = () => {
                     tag="button"
                   >
                     Salva
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="px-14 mr-4"
-                    color="primary"
-                    tag="button"
-                    onClick={() => {
-                      setPublishModal(true);
-                      setSelectedPublish(values.id);
-                    }}
-                  >
-                    Pubblica
                   </Button>
                 </div>
               )}
