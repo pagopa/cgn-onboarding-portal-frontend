@@ -95,7 +95,9 @@ const DateModal = ({
                     {...field}
                     dateFormat="dd/MM/yyyy"
                     selected={dateFrom}
-                    onChange={val => setDateFrom(val as Date)}
+                    onChange={(val: Date) =>
+                      setDateFrom(new Date(format(val, "yyyy-MM-dd")))
+                    }
                     selectsStart
                     startDate={dateFrom}
                     endDate={dateTo}
@@ -113,7 +115,9 @@ const DateModal = ({
                     {...field}
                     dateFormat="dd/MM/yyyy"
                     selected={dateTo}
-                    onChange={val => setDateTo(val as Date)}
+                    onChange={(val: Date) =>
+                      setDateTo(new Date(format(val, "yyyy-MM-dd")))
+                    }
                     selectsEnd
                     startDate={dateFrom}
                     endDate={dateTo}
