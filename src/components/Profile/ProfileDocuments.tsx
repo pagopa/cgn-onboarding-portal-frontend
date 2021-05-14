@@ -1,9 +1,11 @@
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { LinkList, LinkListItem, Icon } from "design-react-kit";
 import { useSelector } from "react-redux";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import Api from "../../api";
+import { formatDate } from "../../utils/dates";
 
 const ProfileDocuments = () => {
   const [agreementDocument, setAgreementDocument] = useState<any>();
@@ -17,11 +19,18 @@ const ProfileDocuments = () => {
         () => void 0,
         documents => {
           setAgreementDocument(
-            documents.filter(document => document.documentType === "agreement")
+            documents.find(
+              document =>
+                document.documentType === "backoffice_agreement" ||
+                document.documentType === "agreeement"
+            )
           );
           setManifestationDocument(
-            documents.filter(
-              document => document.documentType === "manifestation_of_interest"
+            documents.find(
+              document =>
+                document.documentType ===
+                  "backoffice_manifestation_of_interest" ||
+                document.documentType === "manifestation_of_interest"
             )
           );
         }
@@ -54,7 +63,7 @@ const ProfileDocuments = () => {
                   Convenzione
                 </a>
                 <p className="text-sm font-weight-light text-dark-blue">
-                  Approvato il 24/04/2021, 15:17
+                  Approvato il {formatDate(agreementDocument.documentTimestamp)}
                 </p>
               </div>
             </LinkListItem>
@@ -73,7 +82,8 @@ const ProfileDocuments = () => {
                   Allegato 1 - Manifestazione di interesse
                 </a>
                 <p className="text-sm font-weight-light text-dark-blue">
-                  Approvato il 24/04/2021, 15:17
+                  Approvato il
+                  {formatDate(manifestationDocument.documentTimestamp)}
                 </p>
               </div>
             </LinkListItem>
