@@ -80,7 +80,10 @@ const Discount = ({
         value={discount.productCategories.toString()}
       />
       <Item label="Condizioni dell’agevolazione" value={discount.condition} />
-      <Item label="Data ultima modifica" value={discount.lastUpateDate} />
+      <Item
+        label="Data ultima modifica"
+        value={format(new Date(discount.lastUpateDate), "dd/MM/yyyy")}
+      />
       {suspendMode ? (
         <div className="mt-10">
           <h6 className="text-gray">Aggiungi una nota</h6>
