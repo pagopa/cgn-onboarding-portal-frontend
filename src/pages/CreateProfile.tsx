@@ -29,7 +29,10 @@ const CreateProfile = () => {
   };
 
   useEffect(() => {
-    if (agreement.completedSteps.includes(CompletedStep.Profile)) {
+    if (agreement.state === "RejectedAgreement") {
+      setStep(1);
+      setCompletedSteps([...completedSteps, "Guide"]);
+    } else if (agreement.completedSteps.includes(CompletedStep.Profile)) {
       setCompletedSteps([...completedSteps, "Guide"]);
       if (step < 3) {
         setStep(step + 1);
