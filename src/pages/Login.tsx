@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "design-react-kit";
+import { useLocation, useParams } from "react-router-dom";
 import { setCookie } from "../utils/cookie";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import Spid from "../assets/icons/spid.svg";
 import { AdminAccess, loginRequest } from "../authConfig";
 import SpidSelect from "./SpidSelect";
+import Help from "./Help";
 
 const Login = () => {
+  const location = useLocation();
   const [showIDPS, setShowIDPS] = useState(false);
 
   useEffect(() => {
@@ -22,6 +25,10 @@ const Login = () => {
   const AdminLogin = () => {
     void AdminAccess.loginRedirect(loginRequest);
   };
+
+  if (location.pathname === "/admin/operatori/login/help") {
+    return <Help />;
+  }
 
   if (showIDPS) {
     return <SpidSelect onBack={() => setShowIDPS(false)} />;
