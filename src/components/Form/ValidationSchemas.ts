@@ -3,6 +3,7 @@ import { HelpRequestCategoryEnum } from '../../api/generated';
 import Help from '../../pages/Help';
 
 const INCORRECT_EMAIL_ADDRESS = 'L’indirizzo inserito non è corretto';
+const INCORRECT_CONFIRM_EMAIL_ADDRESS = 'I due indirizzi devono combaciare';
 const REQUIRED_FIELD = 'Campo obbligatorio';
 const ONLY_NUMBER = 'Solo numeri';
 const ONLY_STRING = 'Solo lettere';
@@ -154,5 +155,13 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
 			HelpRequestCategoryEnum.DataFilling,
 		then: Yup.string().required(REQUIRED_FIELD)
 	}),
-	message: Yup.string().required(REQUIRED_FIELD)
+	message: Yup.string().required(REQUIRED_FIELD),
+	referentFirstName: Yup.string().matches(/^[a-zA-Z\s]*$/, ONLY_STRING).required(REQUIRED_FIELD),
+	referentLastName: Yup.string().matches(/^[a-zA-Z\s]*$/, ONLY_STRING).required(REQUIRED_FIELD),
+	legalName: Yup.string().matches(/^[a-zA-Z\s]*$/, ONLY_STRING).required(REQUIRED_FIELD),
+	emailAddress: Yup.string().email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD),
+	confirmEmailAddress: Yup.string().email(INCORRECT_EMAIL_ADDRESS).when('emailAddress', {
+		is: (email: any) => (email && email.length > 0 ? true : false),
+		then: Yup.string().oneOf([ Yup.ref('emailAddress') ], INCORRECT_CONFIRM_EMAIL_ADDRESS)
+	})
 });
