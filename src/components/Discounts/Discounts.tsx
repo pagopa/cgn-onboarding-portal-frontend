@@ -172,7 +172,8 @@ const Discounts = () => {
       {
         Header: "Stato",
         accessor: "state",
-        Cell: ({ row }: any) => getDiscountComponent(row.values.state)
+        Cell: ({ row }: any) => getDiscountComponent(row.values.state),
+        disableSortBy: true
       },
       {
         Header: "Visibile",
@@ -183,7 +184,8 @@ const Discounts = () => {
               row.original.startDate,
               row.original.endDate
             )
-          )
+          ),
+        disableSortBy: true
       },
       {
         Header: () => null,
@@ -393,24 +395,33 @@ const Discounts = () => {
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   className="px-6 py-2 text-sm font-weight-bold text-gray text-uppercase"
                 >
-                  <span className="d-flex flex-row align-items-center">
+                  <span className="d-flex flex-row align-items-center justify-items-between">
                     {column.render("Header")}
                     {
                       <span>
-                        {column.isSorted ? (
-                          column.isSortedDesc ? (
-                            <Icon
-                              icon="it-arrow-up-triangle"
-                              style={{ color: "#5C6F82" }}
-                            />
-                          ) : (
-                            <Icon
-                              icon="it-arrow-down-triangle"
-                              style={{ color: "#5C6F82" }}
-                            />
-                          )
-                        ) : (
-                          ""
+                        {column.canSort && (
+                          <>
+                            {column.isSorted ? (
+                              <>
+                                {column.isSortedDesc ? (
+                                  <Icon
+                                    icon="it-arrow-up-triangle"
+                                    style={{ color: "#5C6F82" }}
+                                  />
+                                ) : (
+                                  <Icon
+                                    icon="it-arrow-down-triangle"
+                                    style={{ color: "#5C6F82" }}
+                                  />
+                                )}
+                              </>
+                            ) : (
+                              <Icon
+                                icon="it-arrow-up-triangle"
+                                style={{ color: "#5C6F82" }}
+                              />
+                            )}
+                          </>
                         )}
                       </span>
                     }
