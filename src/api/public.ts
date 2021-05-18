@@ -11,5 +11,5 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use((response) => response, (error: AxiosError) => error);
 
 export default {
-	NotLoggedHelp: new HelpApi(undefined, 'https://api.cgn-dev.caravan-azure.bitrock.it/public/v1', axiosInstance)
+	NotLoggedHelp: new HelpApi(undefined, process.env.BASE_PUBLIC_PATH, axiosInstance)
 };
