@@ -11,6 +11,7 @@ import CreateDiscount from "../pages/CreateDiscount";
 import EditDiscount from "../pages/EditDiscount";
 import AdminPanel from "../pages/AdminPanel";
 import EditOperatorData from "../pages/EditOperatorData";
+import RejectedProfile from "../pages/RejectedProfile";
 import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
 import {
@@ -22,7 +23,8 @@ import {
   EDIT_DISCOUNT,
   EDIT_OPERATOR_DATA,
   ADMIN_PANEL_RICHIESTE,
-  ADMIN_PANEL_CONVENZIONATI
+  ADMIN_PANEL_CONVENZIONATI,
+  REJECT_PROFILE
 } from "./routes";
 
 export const RouterConfig = ({
@@ -56,8 +58,10 @@ export const RouterConfig = ({
           break;
         case AgreementState.PendingAgreement:
         case AgreementState.ApprovedAgreement:
-        case AgreementState.RejectedAgreement:
           history.push(DASHBOARD);
+          break;
+        case AgreementState.RejectedAgreement:
+          history.push(REJECT_PROFILE);
           break;
       }
     } else {
@@ -89,6 +93,7 @@ export const RouterConfig = ({
       <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
       <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
       <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
+      <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
     </Switch>
   );
 };

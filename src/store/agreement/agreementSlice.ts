@@ -17,6 +17,7 @@ await tryCatch(() => Api.Agreement.createAgreement(), toError)
 
 
 interface ExtendedAgreement extends Agreement {
+	reasonMessage?: string;
     startDate?: string;
     endDate?: string;
 }
