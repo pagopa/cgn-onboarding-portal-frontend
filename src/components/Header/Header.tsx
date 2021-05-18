@@ -34,12 +34,27 @@ const Header = ({ hasBorder = false }: Props) => {
         </div>
         <div className="d-flex align-items-center">
           {type !== "ADMIN" && (
-            <Link
-              to={HELP}
-              className="mr-11 text-base text-blue font-weight-semibold no-underline"
-            >
-              Serve aiuto?
-            </Link>
+            <>
+              {token ? (
+                <Link
+                  to={HELP}
+                  className="mr-11 text-base text-blue font-weight-semibold no-underline"
+                >
+                  Serve aiuto?
+                </Link>
+              ) : (
+                <a
+                  onClick={() =>
+                    window.location.replace(
+                      token ? HELP : "/admin/operatori/login/help"
+                    )
+                  }
+                  className="mr-11 text-base text-blue font-weight-semibold no-underline"
+                >
+                  Serve aiuto?
+                </a>
+              )}
+            </>
           )}
           {token && (
             <>

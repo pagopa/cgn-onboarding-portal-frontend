@@ -27,6 +27,7 @@ local.settings.json
 node_modules
 generated
 generated_backoffice
+generated_public
 build
 local
 dist

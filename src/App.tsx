@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { setCookie, getCookie } from "./utils/cookie";
 import { setUser } from "./store/user/userSlice";
 import CenteredLoading from "./components/CenteredLoading/CenteredLoading";

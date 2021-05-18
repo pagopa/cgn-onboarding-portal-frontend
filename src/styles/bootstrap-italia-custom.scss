@@ -85,13 +85,6 @@ textarea {
     resize: none !important;
 }
 
-/*
-
-#app {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-} */
-
 /* Text */
 
 .text-blue {
@@ -144,6 +137,15 @@ textarea {
     border-radius: 50%;
   }
 .text-red { color: #ff0000}
+
 $link-hover-decoration: none;
+
+/* Select */ 
+.select {
+    border: 0;
+    border-bottom: 1px solid #000000;
+    padding: 1em;
+    background-color: #ffffff;  
+}
 
 @import "../../node_modules/bootstrap-italia/src/scss/bootstrap-italia.scss";
