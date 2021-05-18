@@ -1,7 +1,6 @@
 import React from "react";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { Link, useHistory } from "react-router-dom";
+import { Field, Form, Formik } from "formik";
+import { useHistory } from "react-router-dom";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { useSelector } from "react-redux";
@@ -20,6 +19,7 @@ import { getCookie } from "../../../utils/cookie";
 import InputFieldMultiple from "../InputFieldMultiple";
 import NotLoggedHelpApi from "../../../api/public";
 import { HelpRequest as NotLoggedHelpRequest } from "../../../api/generated_public";
+import CustomErrorMessage from "../CustomErrorMessage";
 import FormButtons from "./HelpFormButtons";
 
 const initialValues = {
@@ -231,7 +231,7 @@ const HelpForm = () => {
                 description="Seleziona l’argomento per cui hai bisogno di aiuto"
               >
                 <div>
-                  <Field name="topic" as="select">
+                  <Field className="select" name="topic" as="select">
                     <>
                       {topics
                         .find(topic => topic.key === values.category)
@@ -280,7 +280,7 @@ const HelpForm = () => {
                       type="text"
                       placeholder="Inserisci il nome"
                     />
-                    <ErrorMessage name="referentFirstName" />
+                    <CustomErrorMessage name="referentFirstName" />
                   </InputFieldMultiple>
                 </div>
                 <div className="col-5 offset-1">
@@ -295,7 +295,7 @@ const HelpForm = () => {
                       type="text"
                       placeholder="Inserisci il cognome"
                     />
-                    <ErrorMessage name="referentLastName" />
+                    <CustomErrorMessage name="referentLastName" />
                   </InputFieldMultiple>
                 </div>
               </div>
@@ -311,7 +311,7 @@ const HelpForm = () => {
                     type="text"
                     placeholder="Inserisci la denominazione e ragione sociale Operatore"
                   />
-                  <ErrorMessage name="legalName" />
+                  <CustomErrorMessage name="legalName" />
                 </InputFieldMultiple>
               </div>
               <div className="mt-10 row">
@@ -327,7 +327,7 @@ const HelpForm = () => {
                       type="text"
                       placeholder="Inserisci un'indirizzo e-mail"
                     />
-                    <ErrorMessage name="emailAddress" />
+                    <CustomErrorMessage name="emailAddress" />
                   </InputFieldMultiple>
                 </div>
                 <div className="col-5 offset-1">
@@ -342,7 +342,7 @@ const HelpForm = () => {
                       type="text"
                       placeholder="Conferma l'indirizzo e-mail"
                     />
-                    <ErrorMessage name="confirmEmailAddress" />
+                    <CustomErrorMessage name="confirmEmailAddress" />
                   </InputFieldMultiple>
                 </div>
               </div>
