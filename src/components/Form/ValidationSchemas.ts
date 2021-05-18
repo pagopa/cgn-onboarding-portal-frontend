@@ -9,6 +9,7 @@ const ONLY_NUMBER = 'Solo numeri';
 const ONLY_STRING = 'Solo lettere';
 const DISCOUNT_RANGE = 'Lo sconto deve essere un numero intero compreso tra 5 e 100';
 const PRODUCT_CATEGORIES_ONE = 'Selezionare almeno una categoria merceologica';
+const INCORRECT_WEBSITE_URL = 'L’indirizzo inserito non è corretto';
 
 export const ProfileDataValidationSchema = Yup.object().shape({
 	hasDifferentName: Yup.boolean(),
@@ -42,7 +43,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 		channelType: Yup.mixed().oneOf([ 'OnlineChannel', 'OfflineChannel', 'BothChannels' ]),
 		websiteUrl: Yup.string().when('channelType', {
 			is: (val: string) => val === 'OnlineChannel' || val === 'BothChannels',
-			then: Yup.string().required(REQUIRED_FIELD)
+			then: Yup.string().matches(/((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/, INCORRECT_WEBSITE_URL).required(REQUIRED_FIELD)
 		}),
 		discountCodeType: Yup.string().when('channelType', {
 			is: (val: string) => val === 'OnlineChannel' || val === 'BothChannels',
