@@ -43,16 +43,12 @@ const Header = ({ hasBorder = false }: Props) => {
                   Serve aiuto?
                 </Link>
               ) : (
-                <a
-                  onClick={() =>
-                    window.location.replace(
-                      token ? HELP : "/admin/operatori/login/help"
-                    )
-                  }
+                <Link
+                  to={`/admin/operatori/login/help`}
                   className="mr-11 text-base text-blue font-weight-semibold no-underline"
                 >
                   Serve aiuto?
-                </a>
+                </Link>
               )}
             </>
           )}
