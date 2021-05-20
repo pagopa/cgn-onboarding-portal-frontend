@@ -108,77 +108,24 @@ const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
                     )}
                     <div className="mt-10 row">
                       <div className="col-7">
-                        <InputFieldMultiple htmlFor="street" title="Indirizzo">
+                        <InputFieldMultiple htmlFor="address" title="Indirizzo">
                           <Field
-                            id="street"
-                            name={`salesChannel.addresses[${index}].street`}
+                            id={`salesChannel.addresses[${index}]`}
+                            name={`salesChannel.addresses[${index}]`}
                             type="text"
                           />
                           <CustomErrorMessage
-                            name={`salesChannel.addresses[${index}].street`}
-                          />
-                        </InputFieldMultiple>
-                      </div>
-                      <div className="col-2 offset-1">
-                        <InputFieldMultiple htmlFor="zipCode" title="CAP">
-                          <Field
-                            id="zipCode"
-                            name={`salesChannel.addresses[${index}].zipCode`}
-                            type="text"
-                            placeholder="Inserisci il CAP"
-                          />
-                          <CustomErrorMessage
-                            name={`salesChannel.addresses[${index}].zipCode`}
+                            name={`salesChannel.addresses[${index}]`}
                           />
                         </InputFieldMultiple>
                       </div>
                     </div>
-                    <div className="mt-10 row">
-                      <div className="col-6">
-                        <InputFieldMultiple htmlFor="city" title="Città">
-                          <Field
-                            id="city"
-                            name={`salesChannel.addresses[${index}].city`}
-                            type="text"
-                            placeholder="Inserisci la città"
-                          />
-                          <CustomErrorMessage
-                            name={`salesChannel.addresses[${index}].city`}
-                          />
-                        </InputFieldMultiple>
-                      </div>
-                      <div className="col-3 offset-1">
-                        <InputFieldMultiple
-                          htmlFor="district"
-                          title="Provincia"
-                        >
-                          <Field
-                            maxLength={2}
-                            id="district"
-                            name={`salesChannel.addresses[${index}].district`}
-                            type="text"
-                            placeholder="Inserisci la provincia"
-                          />
-                          <CustomErrorMessage
-                            name={`salesChannel.addresses[${index}].district`}
-                          />
-                        </InputFieldMultiple>
-                      </div>
-                    </div>
-
                     {formValues.salesChannel?.addresses?.length ===
                       index + 1 && (
                       <>
                         <div
                           className="mt-8 cursor-pointer"
-                          onClick={() =>
-                            arrayHelpers.push({
-                              street: "",
-                              zipCode: "",
-                              city: "",
-                              district: ""
-                            })
-                          }
+                          onClick={() => arrayHelpers.push("")}
                         >
                           <PlusCircleIcon className="mr-2" />
                           <span className="text-base font-weight-semibold text-blue">

@@ -21,7 +21,7 @@ const defaultSalesChannel = {
   channelType: "",
   websiteUrl: "",
   discountCodeType: "",
-  addresses: [{ street: "", zipCode: "", city: "", district: "" }]
+  addresses: [""]
 };
 
 const defaultInitialValues = {

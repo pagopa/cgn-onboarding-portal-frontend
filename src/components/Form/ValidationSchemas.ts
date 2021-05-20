@@ -43,7 +43,12 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 		channelType: Yup.mixed().oneOf([ 'OnlineChannel', 'OfflineChannel', 'BothChannels' ]),
 		websiteUrl: Yup.string().when('channelType', {
 			is: (val: string) => val === 'OnlineChannel' || val === 'BothChannels',
-			then: Yup.string().matches(/((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/, INCORRECT_WEBSITE_URL).required(REQUIRED_FIELD)
+			then: Yup.string()
+				.matches(
+					/((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+					INCORRECT_WEBSITE_URL
+				)
+				.required(REQUIRED_FIELD)
 		}),
 		discountCodeType: Yup.string().when('channelType', {
 			is: (val: string) => val === 'OnlineChannel' || val === 'BothChannels',
@@ -51,18 +56,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 		}),
 		addresses: Yup.array().when('channelType', {
 			is: (val: string) => val === 'OfflineChannel' || val === 'BothChannels',
-			then: Yup.array().of(
-				Yup.object().shape({
-					street: Yup.string().required(REQUIRED_FIELD),
-					zipCode: Yup.string()
-						.matches(/^[0-9]*$/, ONLY_NUMBER)
-						.min(5, 'Deve essere di 5 caratteri')
-						.max(5, 'Deve essere di 5 caratteri')
-						.required(REQUIRED_FIELD),
-					city: Yup.string().required(REQUIRED_FIELD),
-					district: Yup.string().required(REQUIRED_FIELD)
-				})
-			)
+			then: Yup.array().of(Yup.string().required(REQUIRED_FIELD))
 		})
 	})
 });
