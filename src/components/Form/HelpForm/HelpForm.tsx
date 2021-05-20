@@ -74,6 +74,7 @@ const HelpForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const history = useHistory();
   const token = getCookie();
+  const recaptcha_api_key = process.env.RECAPTCHA_API_KEY;
 
   const createLoggedHelp = async (agreementId: string, help: HelpRequest) =>
     await tryCatch(() => Api.Help.sendHelpRequest(agreementId, help), toError)
@@ -112,10 +113,11 @@ const HelpForm = () => {
         token ? loggedHelpValidationSchema : notLoggedHelpValidationSchema
       }
       onSubmit={(values: any) => {
+        const { confirmEmailAddress, ...newValues } = values;
         if (token) {
           void createLoggedHelp(agreement.id, values);
         } else {
-          void createNotLoggedHelp(values);
+          void createNotLoggedHelp(newValues);
         }
       }}
     >
@@ -357,7 +359,7 @@ const HelpForm = () => {
               {!token && (
                 <div className="mt-10">
                   <ReCAPTCHA
-                    sitekey=""
+                    sitekey={process.env.RECAPTCHA_API_KEY}
                     onChange={event => setFieldValue("recaptchaToken", event)}
                   />
                 </div>
