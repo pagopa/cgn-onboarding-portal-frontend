@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { useSelector } from "react-redux";
+import ReCAPTCHA from "react-google-recaptcha";
 import FormSection from "../FormSection";
 import { DASHBOARD } from "../../../navigation/routes";
 import InputField from "../FormField";
@@ -30,7 +31,8 @@ const initialValues = {
   referentLastName: "",
   legalName: "",
   emailAddress: "",
-  confirmEmailAddress: ""
+  confirmEmailAddress: "",
+  recaptchaToken: ""
 };
 
 const topics = [
@@ -111,7 +113,7 @@ const HelpForm = () => {
         }
       }}
     >
-      {({ values, isValid, dirty }) => (
+      {({ values, isValid, dirty, setFieldValue }) => (
         <Form autoComplete="off">
           <FormSection
             description="Come possiamo aiutarti? Compila il modulo e invialo online, sarai ricontattato al più presto"
@@ -345,6 +347,12 @@ const HelpForm = () => {
                     <CustomErrorMessage name="confirmEmailAddress" />
                   </InputFieldMultiple>
                 </div>
+              </div>
+              <div className="mt-10">
+                <ReCAPTCHA
+                  sitekey=""
+                  onChange={event => setFieldValue("recaptchaToken", event)}
+                />
               </div>
               <FormButtons isValid={isValid} dirty={dirty} />
               <p className="mt-4 text-gray">
