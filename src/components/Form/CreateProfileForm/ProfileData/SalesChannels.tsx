@@ -1,6 +1,10 @@
 import React from "react";
 import { Field, FieldArray } from "formik";
 import { Button, Icon } from "design-react-kit";
+import AsyncSelect from "react-select/async";
+import Axios from "axios";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
 import FormSection from "../../FormSection";
 import InputFieldMultiple from "../../InputFieldMultiple";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
@@ -19,184 +23,211 @@ type Props = {
   handleBack: any;
   formValues: any;
   isValid: boolean;
+  setFieldValue: any;
 };
 
-const SalesChannels = ({ handleBack, formValues, isValid }: Props) => (
-  <>
-    <FormSection
-      title="Definizione del canale di vendita"
-      description="Seleziona una delle opzioni disponibili"
-      required
-      isVisible={false}
-    >
-      <div className="d-flex flex-column">
-        <div className="form-check">
-          <Field
-            type="radio"
-            id="OfflineChannel"
-            name="salesChannel.channelType"
-            value="OfflineChannel"
-          />
-          <label
-            className="text-sm font-weight-normal text-black"
-            htmlFor="OfflineChannel"
-          >
-            <span className="text-sm">Fisico</span>
-          </label>
+const SalesChannels = ({
+  handleBack,
+  formValues,
+  isValid,
+  setFieldValue
+}: Props) => {
+  const autocomplete = (q: any) =>
+    Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
+      params: {
+        apiKey: "",
+        q
+      }
+    }).then((response: any) =>
+      response.data.items.map((item: any) => ({
+        value: item.title,
+        label: item.title
+      }))
+    );
+
+  return (
+    <>
+      <FormSection
+        title="Definizione del canale di vendita"
+        description="Seleziona una delle opzioni disponibili"
+        required
+        isVisible={false}
+      >
+        <div className="d-flex flex-column">
+          <div className="form-check">
+            <Field
+              type="radio"
+              id="OfflineChannel"
+              name="salesChannel.channelType"
+              value="OfflineChannel"
+            />
+            <label
+              className="text-sm font-weight-normal text-black"
+              htmlFor="OfflineChannel"
+            >
+              <span className="text-sm">Fisico</span>
+            </label>
+          </div>
+          <div className="form-check">
+            <Field
+              type="radio"
+              id="OnlineChannel"
+              name="salesChannel.channelType"
+              value="OnlineChannel"
+            />
+            <label
+              className="text-sm font-weight-normal text-black"
+              htmlFor="OnlineChannel"
+            >
+              <span className="text-sm">Online</span>
+            </label>
+          </div>
+          <div className="form-check">
+            <Field
+              type="radio"
+              id="BothChannels"
+              name="salesChannel.channelType"
+              value="BothChannels"
+            />
+            <label
+              className="text-sm font-weight-normal text-black"
+              htmlFor="BothChannels"
+            >
+              <span className="text-sm">Entrambi</span>
+            </label>
+          </div>
         </div>
-        <div className="form-check">
-          <Field
-            type="radio"
-            id="OnlineChannel"
-            name="salesChannel.channelType"
-            value="OnlineChannel"
-          />
-          <label
-            className="text-sm font-weight-normal text-black"
-            htmlFor="OnlineChannel"
-          >
-            <span className="text-sm">Online</span>
-          </label>
-        </div>
-        <div className="form-check">
-          <Field
-            type="radio"
-            id="BothChannels"
-            name="salesChannel.channelType"
-            value="BothChannels"
-          />
-          <label
-            className="text-sm font-weight-normal text-black"
-            htmlFor="BothChannels"
-          >
-            <span className="text-sm">Entrambi</span>
-          </label>
-        </div>
-      </div>
-    </FormSection>
-    {hasOnlineOrBothChannels(formValues.salesChannel?.channelType) && (
-      <SalesChannelDiscountCodeType />
-    )}
-    {hasOfflineOrBothChannels(formValues.salesChannel?.channelType) && (
-      <FieldArray
-        name="salesChannel.addresses"
-        render={arrayHelpers => (
-          <>
-            {formValues.salesChannel?.addresses?.map(
-              (address: any, index: number) => (
-                <FormSection
-                  key={index}
-                  title={
-                    index + 1 >= 2 ? `Indirizzo ${index + 1}` : `Indirizzo`
-                  }
-                  description="Inserisci l'indirizzo del punto vendita, se si hanno più punti vendita inserisci gli indirizzi aggiuntivi"
-                  required={index + 1 === 1}
-                  isVisible
-                >
-                  <div key={index}>
-                    {!!index && (
-                      <Icon
-                        icon="it-close"
-                        style={{
-                          position: "absolute",
-                          right: "0",
-                          top: "40px",
-                          cursor: "pointer"
-                        }}
-                        onClick={() => arrayHelpers.remove(index)}
-                      />
-                    )}
-                    <div className="mt-10 row">
-                      <div className="col-7">
-                        <InputFieldMultiple htmlFor="address" title="Indirizzo">
-                          <Field
-                            id={`salesChannel.addresses[${index}]`}
-                            name={`salesChannel.addresses[${index}]`}
-                            type="text"
+      </FormSection>
+      {hasOnlineOrBothChannels(formValues.salesChannel?.channelType) && (
+        <SalesChannelDiscountCodeType />
+      )}
+      {hasOfflineOrBothChannels(formValues.salesChannel?.channelType) && (
+        <FieldArray
+          name="salesChannel.addresses"
+          render={arrayHelpers => (
+            <>
+              {formValues.salesChannel?.addresses?.map(
+                (address: any, index: number) => (
+                  <FormSection
+                    key={index}
+                    title={
+                      index + 1 >= 2 ? `Indirizzo ${index + 1}` : `Indirizzo`
+                    }
+                    description="Inserisci l'indirizzo del punto vendita, se si hanno più punti vendita inserisci gli indirizzi aggiuntivi"
+                    required={index + 1 === 1}
+                    isVisible
+                  >
+                    <div key={index}>
+                      {!!index && (
+                        <Icon
+                          icon="it-close"
+                          style={{
+                            position: "absolute",
+                            right: "0",
+                            top: "40px",
+                            cursor: "pointer"
+                          }}
+                          onClick={() => arrayHelpers.remove(index)}
+                        />
+                      )}
+                      <div className="mt-10 row">
+                        <div className="col-7">
+                          <AsyncSelect
+                            placeholder="Inserisci indirizzo"
+                            cacheOptions
+                            defaultOptions
+                            loadOptions={autocomplete}
+                            noOptionsMessage={() => "Nessun risultato"}
+                            onChange={(e: any) =>
+                              setFieldValue(
+                                `salesChannel.addresses[${index}]`,
+                                e.value
+                              )
+                            }
                           />
                           <CustomErrorMessage
                             name={`salesChannel.addresses[${index}]`}
                           />
-                        </InputFieldMultiple>
-                      </div>
-                    </div>
-                    {formValues.salesChannel?.addresses?.length ===
-                      index + 1 && (
-                      <>
-                        <div
-                          className="mt-8 cursor-pointer"
-                          onClick={() => arrayHelpers.push("")}
-                        >
-                          <PlusCircleIcon className="mr-2" />
-                          <span className="text-base font-weight-semibold text-blue">
-                            Aggiungi un indirizzo
-                          </span>
                         </div>
-                        {!hasBothChannels(
-                          formValues.salesChannel?.channelType
-                        ) && (
-                          <div className="mt-10">
-                            <Button
-                              className="px-14 mr-4"
-                              outline
-                              color="primary"
-                              tag="button"
-                              onClick={handleBack}
-                            >
-                              Indietro
-                            </Button>
-                            <Button
-                              type="submit"
-                              className="px-14 mr-4"
-                              color="primary"
-                              tag="button"
-                            >
-                              Continua
-                            </Button>
+                      </div>
+                      {formValues.salesChannel?.addresses?.length ===
+                        index + 1 && (
+                        <>
+                          <div
+                            className="mt-8 cursor-pointer"
+                            onClick={() => arrayHelpers.push("")}
+                          >
+                            <PlusCircleIcon className="mr-2" />
+                            <span className="text-base font-weight-semibold text-blue">
+                              Aggiungi un indirizzo
+                            </span>
                           </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </FormSection>
-              )
-            )}
-          </>
-        )}
-      ></FieldArray>
-    )}
-    {hasOnlineOrBothChannels(formValues.salesChannel?.channelType) && (
-      <FormSection
-        title="Sito web"
-        description="Inserire l'URL del proprio e-commerce"
-        required
-        isVisible
-      >
-        <Field id="websiteUrl" name="salesChannel.websiteUrl" type="text" />
-        <CustomErrorMessage name="salesChannel.websiteUrl" />
-        <div className="mt-10">
-          <Button
-            className="px-14 mr-4"
-            outline
-            color="primary"
-            tag="button"
-            onClick={handleBack}
-          >
-            Indietro
-          </Button>
-          <Button
-            type="submit"
-            className="px-14 mr-4"
-            color="primary"
-            tag="button"
-            disabled={!isValid}
-          >
-            Continua
-          </Button>
-        </div>
-      </FormSection>
-    )}
-  </>
-);
+                          {!hasBothChannels(
+                            formValues.salesChannel?.channelType
+                          ) && (
+                            <div className="mt-10">
+                              <Button
+                                className="px-14 mr-4"
+                                outline
+                                color="primary"
+                                tag="button"
+                                onClick={handleBack}
+                              >
+                                Indietro
+                              </Button>
+                              <Button
+                                type="submit"
+                                className="px-14 mr-4"
+                                color="primary"
+                                tag="button"
+                              >
+                                Continua
+                              </Button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </FormSection>
+                )
+              )}
+            </>
+          )}
+        ></FieldArray>
+      )}
+      {hasOnlineOrBothChannels(formValues.salesChannel?.channelType) && (
+        <FormSection
+          title="Sito web"
+          description="Inserire l'URL del proprio e-commerce"
+          required
+          isVisible
+        >
+          <Field id="websiteUrl" name="salesChannel.websiteUrl" type="text" />
+          <CustomErrorMessage name="salesChannel.websiteUrl" />
+          <div className="mt-10">
+            <Button
+              className="px-14 mr-4"
+              outline
+              color="primary"
+              tag="button"
+              onClick={handleBack}
+            >
+              Indietro
+            </Button>
+            <Button
+              type="submit"
+              className="px-14 mr-4"
+              color="primary"
+              tag="button"
+              disabled={!isValid}
+            >
+              Continua
+            </Button>
+          </div>
+        </FormSection>
+      )}
+    </>
+  );
+};
 
 export default SalesChannels;

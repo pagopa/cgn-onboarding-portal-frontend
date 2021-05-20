@@ -166,7 +166,7 @@ const ProfileData = ({
         });
       }}
     >
-      {({ values }) => (
+      {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           <FormContainer className="mb-20">
             <ProfileInfo formValues={values} />
@@ -177,6 +177,7 @@ const ProfileData = ({
               handleBack={handleBack}
               formValues={values}
               isValid={!!agreement.imageUrl}
+              setFieldValue={setFieldValue}
             />
           </FormContainer>
         </Form>
