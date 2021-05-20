@@ -23,7 +23,13 @@ import { HelpRequest as NotLoggedHelpRequest } from "../../../api/generated_publ
 import CustomErrorMessage from "../CustomErrorMessage";
 import FormButtons from "./HelpFormButtons";
 
-const initialValues = {
+const loggedInitialValues = {
+  category: "",
+  topic: "",
+  message: ""
+};
+
+const notLoggedInitialValues = {
   category: "",
   topic: "",
   message: "",
@@ -101,7 +107,7 @@ const HelpForm = () => {
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={token ? loggedInitialValues : notLoggedInitialValues}
       validationSchema={
         token ? loggedHelpValidationSchema : notLoggedHelpValidationSchema
       }
@@ -348,12 +354,14 @@ const HelpForm = () => {
                   </InputFieldMultiple>
                 </div>
               </div>
-              <div className="mt-10">
-                <ReCAPTCHA
-                  sitekey=""
-                  onChange={event => setFieldValue("recaptchaToken", event)}
-                />
-              </div>
+              {!token && (
+                <div className="mt-10">
+                  <ReCAPTCHA
+                    sitekey=""
+                    onChange={event => setFieldValue("recaptchaToken", event)}
+                  />
+                </div>
+              )}
               <FormButtons isValid={isValid} dirty={dirty} />
               <p className="mt-4 text-gray">
                 Form protetto tramite reCAPTCHA e Google{" "}
