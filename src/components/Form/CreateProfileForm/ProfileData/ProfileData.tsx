@@ -21,7 +21,7 @@ const defaultSalesChannel = {
   channelType: "",
   websiteUrl: "",
   discountCodeType: "",
-  addresses: [""]
+  addresses: [{ fullAddress: "", coordinates: { latitude: "", longitude: "" } }]
 };
 
 const defaultInitialValues = {

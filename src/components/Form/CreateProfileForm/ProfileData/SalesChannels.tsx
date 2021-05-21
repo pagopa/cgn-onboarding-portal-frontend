@@ -155,7 +155,12 @@ const SalesChannels = ({
                         <>
                           <div
                             className="mt-8 cursor-pointer"
-                            onClick={() => arrayHelpers.push("")}
+                            onClick={() =>
+                              arrayHelpers.push({
+                                fullAddress: "",
+                                coordinates: { latitude: "", longitude: "" }
+                              })
+                            }
                           >
                             <PlusCircleIcon className="mr-2" />
                             <span className="text-base font-weight-semibold text-blue">
