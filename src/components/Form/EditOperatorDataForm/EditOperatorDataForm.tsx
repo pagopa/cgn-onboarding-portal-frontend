@@ -19,7 +19,7 @@ const defaultSalesChannel = {
   channelType: "",
   websiteUrl: "",
   discountCodeType: "",
-  addresses: [{ street: "", zipCode: "", city: "", district: "" }]
+  addresses: [{ fullAddress: "", coordinates: { latitude: "", longitude: "" } }]
 };
 
 const defaultInitialValues = {
@@ -72,6 +72,13 @@ const EditOperatorDataForm = () => {
         profile => {
           setInitialValues({
             ...profile,
+            salesChannel: {
+              ...profile.salesChannel,
+              addresses: profile.salesChannel.addresses.map((address: any) => ({
+                value: address.fullAddress,
+                label: address.fullAddress
+              }))
+            },
             hasDifferentFullName: !!profile.name
           });
           setLoading(false);
@@ -126,13 +133,14 @@ const EditOperatorDataForm = () => {
         });
       }}
     >
-      {({ values }) => (
+      {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           <ProfileInfo formValues={values} />
           <ReferentData />
           <ProfileImage />
           <ProfileDescription />
           <SalesChannels
+            setFieldValue={setFieldValue}
             handleBack={() => history.push(DASHBOARD)}
             formValues={values}
             isValid

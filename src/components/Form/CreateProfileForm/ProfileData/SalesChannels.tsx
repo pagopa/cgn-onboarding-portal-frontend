@@ -9,6 +9,7 @@ import FormSection from "../../FormSection";
 import InputFieldMultiple from "../../InputFieldMultiple";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import CustomErrorMessage from "../../CustomErrorMessage";
+import Item from "../../../OperatorConvention/Item";
 import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 
 const hasOfflineOrBothChannels = (channelType: string) =>
@@ -32,16 +33,24 @@ const SalesChannels = ({
   isValid,
   setFieldValue
 }: Props) => {
+  const isUpdate = true;
   const autocomplete = (q: any) =>
     Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
       params: {
-        apiKey: "",
+        apiKey: "RfAgQkH2Zh2Cvpg_HhWGH_DVqw9y_YzsD9rKJ9PfHp8",
         q
       }
     }).then((response: any) =>
       response.data.items.map((item: any) => ({
         value: item.title,
-        label: item.title
+        label: item.title,
+        address: {
+          fullAddress: item.title,
+          coordinates: {
+            latitude: item.position.lat,
+            longitude: item.position.lng
+          }
+        }
       }))
     );
 
@@ -135,13 +144,14 @@ const SalesChannels = ({
                           <AsyncSelect
                             placeholder="Inserisci indirizzo"
                             cacheOptions
-                            defaultOptions
                             loadOptions={autocomplete}
                             noOptionsMessage={() => "Nessun risultato"}
+                            value={formValues.salesChannel.addresses[index]}
                             onChange={(e: any) =>
+                              e.address &&
                               setFieldValue(
                                 `salesChannel.addresses[${index}]`,
-                                e.value
+                                e
                               )
                             }
                           />
