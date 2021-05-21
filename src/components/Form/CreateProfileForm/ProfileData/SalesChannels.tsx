@@ -33,7 +33,6 @@ const SalesChannels = ({
   isValid,
   setFieldValue
 }: Props) => {
-  const isUpdate = true;
   const autocomplete = (q: any) =>
     Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
       params: {
@@ -44,12 +43,10 @@ const SalesChannels = ({
       response.data.items.map((item: any) => ({
         value: item.title,
         label: item.title,
-        address: {
-          fullAddress: item.title,
-          coordinates: {
-            latitude: item.position.lat,
-            longitude: item.position.lng
-          }
+        fullAddress: item.title,
+        coordinates: {
+          latitude: item.position.lat,
+          longitude: item.position.lng
         }
       }))
     );
@@ -148,15 +145,11 @@ const SalesChannels = ({
                             noOptionsMessage={() => "Nessun risultato"}
                             value={formValues.salesChannel.addresses[index]}
                             onChange={(e: any) =>
-                              e.address &&
                               setFieldValue(
                                 `salesChannel.addresses[${index}]`,
                                 e
                               )
                             }
-                          />
-                          <CustomErrorMessage
-                            name={`salesChannel.addresses[${index}]`}
                           />
                         </div>
                       </div>

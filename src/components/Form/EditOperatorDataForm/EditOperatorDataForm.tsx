@@ -70,15 +70,30 @@ const EditOperatorDataForm = () => {
       .fold(
         () => setLoading(false),
         profile => {
-          setInitialValues({
-            ...profile,
-            salesChannel: {
+          if (profile.salesChannel.channelType === "OfflineChannel") {
+            setInitialValues({
+              ...profile,
+              salesChannel: {
+                ...profile.salesChannel,
+                addresses: profile.salesChannel.addresses.map(
+                  (address: any) => ({
+                    value: address.fullAddress,
+                    label: address.fullAddress
+                  })
+                )
+              },
+              hasDifferentFullName: !!profile.name
+            });
+          }
+          /* salesChannel: {
               ...profile.salesChannel,
               addresses: profile.salesChannel.addresses.map((address: any) => ({
                 value: address.fullAddress,
                 label: address.fullAddress
               }))
-            },
+            }, */
+          setInitialValues({
+            ...profile,
             hasDifferentFullName: !!profile.name
           });
           setLoading(false);

@@ -63,7 +63,9 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 					coordinates: Yup.object().shape({
 						latitude: Yup.number().required(REQUIRED_FIELD),
 						longitude: Yup.number().required(REQUIRED_FIELD)
-					})
+					}),
+					label: Yup.string(),
+					value: Yup.string()
 				})
 			)
 		})
