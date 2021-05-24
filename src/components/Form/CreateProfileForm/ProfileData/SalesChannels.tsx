@@ -10,6 +10,7 @@ import InputFieldMultiple from "../../InputFieldMultiple";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import Item from "../../../OperatorConvention/Item";
+import chainAxios from "../../../../utils/chainAxios";
 import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 
 const hasOfflineOrBothChannels = (channelType: string) =>
@@ -33,12 +34,12 @@ const SalesChannels = ({
   isValid,
   setFieldValue
 }: Props) => {
-  /* const autocomplete = async (q: any) =>
+  const autocomplete = async (q: any) =>
     await tryCatch(
       () =>
         Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
           params: {
-            apiKey: "",
+            apiKey: "RfAgQkH2Zh2Cvpg_HhWGH_DVqw9y_YzsD9rKJ9PfHp8",
             q
           }
         }),
@@ -47,8 +48,8 @@ const SalesChannels = ({
       .chain(chainAxios)
       .map((response: any) => response.data)
       .fold(
-        () => void 0,
-        profile => {
+        () => [{ value: "", label: "" }],
+        profile =>
           profile.items.map((item: any) => ({
             value: item.title,
             label: item.title,
@@ -57,28 +58,9 @@ const SalesChannels = ({
               latitude: item.position.lat,
               longitude: item.position.lng
             }
-          }));
-        }
+          }))
       )
-      .run(); */
-
-  const autocomplete = (q: any) =>
-    Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
-      params: {
-        apiKey: "",
-        q
-      }
-    }).then((response: any) =>
-      response.data.items.map((item: any) => ({
-        value: item.title,
-        label: item.title,
-        fullAddress: item.title,
-        coordinates: {
-          latitude: item.position.lat,
-          longitude: item.position.lng
-        }
-      }))
-    );
+      .run();
 
   return (
     <>
