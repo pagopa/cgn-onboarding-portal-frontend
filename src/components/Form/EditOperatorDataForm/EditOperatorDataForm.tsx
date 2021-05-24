@@ -69,31 +69,22 @@ const EditOperatorDataForm = () => {
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        profile => {
-          if (profile.salesChannel.channelType === "OfflineChannel") {
-            setInitialValues({
-              ...profile,
-              salesChannel: {
-                ...profile.salesChannel,
-                addresses: profile.salesChannel.addresses.map(
-                  (address: any) => ({
-                    value: address.fullAddress,
-                    label: address.fullAddress
-                  })
-                )
-              },
-              hasDifferentFullName: !!profile.name
-            });
-          }
-          /* salesChannel: {
-              ...profile.salesChannel,
-              addresses: profile.salesChannel.addresses.map((address: any) => ({
-                value: address.fullAddress,
-                label: address.fullAddress
-              }))
-            }, */
+        (profile: any) => {
           setInitialValues({
             ...profile,
+            salesChannel:
+              profile.salesChannel.channelType === "OfflineChannel"
+                ? {
+                    ...profile.salesChannel,
+                    addresses: profile.salesChannel.addresses.map(
+                      (address: any) => ({
+                        ...address,
+                        value: address.fullAddress,
+                        label: address.fullAddress
+                      })
+                    )
+                  }
+                : profile.salesChannel,
             hasDifferentFullName: !!profile.name
           });
           setLoading(false);

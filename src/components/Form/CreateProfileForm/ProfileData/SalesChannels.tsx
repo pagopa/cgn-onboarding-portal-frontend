@@ -33,10 +33,39 @@ const SalesChannels = ({
   isValid,
   setFieldValue
 }: Props) => {
+  /* const autocomplete = async (q: any) =>
+    await tryCatch(
+      () =>
+        Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
+          params: {
+            apiKey: "",
+            q
+          }
+        }),
+      toError
+    )
+      .chain(chainAxios)
+      .map((response: any) => response.data)
+      .fold(
+        () => void 0,
+        profile => {
+          profile.items.map((item: any) => ({
+            value: item.title,
+            label: item.title,
+            fullAddress: item.title,
+            coordinates: {
+              latitude: item.position.lat,
+              longitude: item.position.lng
+            }
+          }));
+        }
+      )
+      .run(); */
+
   const autocomplete = (q: any) =>
     Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
       params: {
-        apiKey: "RfAgQkH2Zh2Cvpg_HhWGH_DVqw9y_YzsD9rKJ9PfHp8",
+        apiKey: "",
         q
       }
     }).then((response: any) =>

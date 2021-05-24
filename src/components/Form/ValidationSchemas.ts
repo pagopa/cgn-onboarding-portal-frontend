@@ -42,7 +42,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 	description: Yup.string().required(REQUIRED_FIELD),
 	salesChannel: Yup.object().shape({
 		channelType: Yup.mixed().oneOf([ 'OnlineChannel', 'OfflineChannel', 'BothChannels' ]),
-		websiteUrl: Yup.string().when('channelType', {
+		websiteUrl: Yup.string().nullable().when('channelType', {
 			is: (val: string) => val === 'OnlineChannel' || val === 'BothChannels',
 			then: Yup.string()
 				.matches(
