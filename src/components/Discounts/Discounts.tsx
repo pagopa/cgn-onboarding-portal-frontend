@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useTable, useExpanded, useSortBy } from "react-table";
-import { Button, Icon } from "design-react-kit";
+import {
+  Button,
+  Callout,
+  CalloutText,
+  CalloutTitle,
+  Icon
+} from "design-react-kit";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { Badge } from "design-react-kit";
@@ -123,6 +129,76 @@ const Discounts = () => {
     }
   };
 
+  const getDiscountButtons = (row: any) => (
+    <div
+      className={
+        row.original.state !== "suspended" && row.original.state !== "expired"
+          ? "mt-10 d-flex flex-row justify-content-between"
+          : "mt-10"
+      }
+    >
+      <Button
+        className="mr-4"
+        color={row.original.state === "expired" ? "primary" : "secondary"}
+        outline
+        tag="button"
+        onClick={() =>
+          history.push(
+            `/admin/operatori/agevolazioni/modifica/${row.original.id}`
+          )
+        }
+      >
+        <Icon
+          icon={row.original.state !== "expired" ? "it-pencil" : "it-restore"}
+          padding={false}
+          size="sm"
+          color={row.original.state === "expired" ? "primary" : ""}
+        />
+        <span>
+          {row.original.state !== "expired" ? "Modifica" : "Riattiva"}
+        </span>
+      </Button>
+      <Button
+        color={row.original.state !== "expired" ? "primary" : "secondary"}
+        className={row.original.state === "expired" ? "mr-4" : ""}
+        outline
+        icon
+        tag="button"
+        onClick={() => {
+          setSelectedDiscount(row.original.id);
+          toggleDeleteModal();
+        }}
+      >
+        <Icon
+          icon="it-delete"
+          color={row.original.state !== "expired" ? "primary" : "secondary"}
+          padding={false}
+          size="sm"
+        />{" "}
+        Elimina
+      </Button>
+      {row.original.state !== "suspended" && row.original.state !== "expired" && (
+        <Button
+          className="mr-4"
+          color="primary"
+          tag="button"
+          onClick={() => {
+            setSelectedPublish(row.original.id);
+            togglePublishModal();
+          }}
+        >
+          <Icon
+            icon={"it-external-link"}
+            color="white"
+            padding={false}
+            size="sm"
+          />
+          <span>Pubblica</span>
+        </Button>
+      )}
+    </div>
+  );
+
   const isVisible = (state: any, startDate: any, endDate: any) => {
     const today = new Date();
     return (
@@ -208,6 +284,26 @@ const Discounts = () => {
     ({ row }) => (
       <>
         <section className="px-6 py-4 bg-white">
+          {row.original.state === "suspended" && (
+            <Callout
+              highlight
+              tag="div"
+              style={{
+                borderLeftColor: "#ea7614"
+              }}
+            >
+              <CalloutTitle tag="div" className="py-2 text-base text-black">
+                Questa agevolazione è stata sospesa dal Dipartimento
+              </CalloutTitle>
+              <CalloutText
+                bigText={false}
+                tag="p"
+                className="py-2 text-base text-dark-gray"
+              >
+                {row.original.suspendedReasonMessage}
+              </CalloutText>
+            </Callout>
+          )}
           <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
           <table className="table">
             <tbody>
@@ -261,67 +357,7 @@ const Discounts = () => {
               )}
             </tbody>
           </table>
-          {agreement.state === "ApprovedAgreement" && (
-            <div
-              className={
-                row.original.state !== "suspended"
-                  ? "mt-10 d-flex flex-row justify-content-between"
-                  : "mt-10"
-              }
-            >
-              <Button
-                className="mr-4"
-                color="secondary"
-                outline
-                tag="button"
-                onClick={() =>
-                  history.push(
-                    `/admin/operatori/agevolazioni/modifica/${row.original.id}`
-                  )
-                }
-              >
-                <Icon icon="it-pencil" padding={false} size="sm" />
-                <span>Modifica</span>
-              </Button>
-              <Button
-                color="primary"
-                outline
-                icon
-                tag="button"
-                onClick={() => {
-                  setSelectedDiscount(row.original.id);
-                  toggleDeleteModal();
-                }}
-              >
-                <Icon
-                  icon="it-delete"
-                  color="primary"
-                  padding={false}
-                  size="sm"
-                />{" "}
-                Elimina
-              </Button>
-              {row.original.state !== "suspended" && (
-                <Button
-                  className="mr-4"
-                  color="primary"
-                  tag="button"
-                  onClick={() => {
-                    setSelectedPublish(row.original.id);
-                    togglePublishModal();
-                  }}
-                >
-                  <Icon
-                    icon="it-external-link"
-                    color="white"
-                    padding={false}
-                    size="sm"
-                  />
-                  <span>Pubblica</span>
-                </Button>
-              )}
-            </div>
-          )}
+          {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
         </section>
       </>
     ),
