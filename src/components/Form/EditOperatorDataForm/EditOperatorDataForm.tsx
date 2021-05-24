@@ -49,6 +49,7 @@ const EditOperatorDataForm = () => {
   const user = useSelector((state: RootState) => state.user.data);
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const [loading, setLoading] = useState(true);
+  const [geolocationToken, setGeolocationToken] = useState<any>();
 
   const updateProfile = async (discount: any) => {
     if (agreement) {
@@ -92,9 +93,19 @@ const EditOperatorDataForm = () => {
       )
       .run();
 
+  const getGeolocationToken = async (agreementId: string) =>
+    await tryCatch(() => Api.GeolocationToken.getGeolocationToken(), toError)
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        token => setGeolocationToken(token)
+      )
+      .run();
+
   useEffect(() => {
     setLoading(true);
     void getProfile(agreement.id);
+    void getGeolocationToken(agreement.id);
   }, []);
 
   const getSalesChannel = (salesChannel: any) => {
