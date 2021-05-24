@@ -157,6 +157,7 @@ const EditOperatorDataForm = () => {
           <ProfileImage />
           <ProfileDescription />
           <SalesChannels
+            geolocationToken={geolocationToken}
             setFieldValue={setFieldValue}
             handleBack={() => history.push(DASHBOARD)}
             formValues={values}

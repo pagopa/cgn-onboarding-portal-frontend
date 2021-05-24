@@ -26,20 +26,22 @@ type Props = {
   formValues: any;
   isValid: boolean;
   setFieldValue: any;
+  geolocationToken: string;
 };
 
 const SalesChannels = ({
   handleBack,
   formValues,
   isValid,
-  setFieldValue
+  setFieldValue,
+  geolocationToken
 }: Props) => {
   const autocomplete = async (q: any) =>
     await tryCatch(
       () =>
         Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
           params: {
-            apiKey: "RfAgQkH2Zh2Cvpg_HhWGH_DVqw9y_YzsD9rKJ9PfHp8",
+            apiKey: geolocationToken,
             q
           }
         }),
