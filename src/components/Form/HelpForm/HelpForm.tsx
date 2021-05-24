@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import { useHistory } from "react-router-dom";
 import { tryCatch } from "fp-ts/lib/TaskEither";
@@ -74,7 +74,7 @@ const HelpForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const history = useHistory();
   const token = getCookie();
-  const recaptcha_api_key = process.env.RECAPTCHA_API_KEY;
+  const [recaptchaApiKey, setRecaptchaApiKey] = useState<any>("");
 
   const createLoggedHelp = async (agreementId: string, help: HelpRequest) =>
     await tryCatch(() => Api.Help.sendHelpRequest(agreementId, help), toError)
@@ -105,6 +105,10 @@ const HelpForm = () => {
       category === HelpRequestCategoryEnum.Documents
     );
   };
+
+  useEffect(() => {
+    setRecaptchaApiKey(process.env.RECAPTCHA_API_KEY);
+  });
 
   return (
     <Formik
@@ -359,7 +363,7 @@ const HelpForm = () => {
               {!token && (
                 <div className="mt-10">
                   <ReCAPTCHA
-                    sitekey={process.env.RECAPTCHA_API_KEY}
+                    sitekey={recaptchaApiKey}
                     onChange={event => setFieldValue("recaptchaToken", event)}
                   />
                 </div>
