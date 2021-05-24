@@ -98,7 +98,7 @@ const EditOperatorDataForm = () => {
       .map(response => response.data)
       .fold(
         () => void 0,
-        token => setGeolocationToken(token)
+        token => setGeolocationToken(token.token)
       )
       .run();
 

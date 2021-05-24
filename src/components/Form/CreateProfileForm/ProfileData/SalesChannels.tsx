@@ -6,10 +6,8 @@ import Axios from "axios";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import FormSection from "../../FormSection";
-import InputFieldMultiple from "../../InputFieldMultiple";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import CustomErrorMessage from "../../CustomErrorMessage";
-import Item from "../../../OperatorConvention/Item";
 import chainAxios from "../../../../utils/chainAxios";
 import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 
@@ -42,7 +40,8 @@ const SalesChannels = ({
         Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
           params: {
             apiKey: geolocationToken,
-            q
+            q,
+            lang: "it"
           }
         }),
       toError
