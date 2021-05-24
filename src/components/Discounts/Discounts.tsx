@@ -285,14 +285,20 @@ const Discounts = () => {
       <>
         <section className="px-6 py-4 bg-white">
           {row.original.state === "suspended" && (
-            <Callout highlight tag="div" style={{ borderLeftColor: "#ea7614" }}>
-              <CalloutTitle tag="div" className="text-base text-black">
+            <Callout
+              highlight
+              tag="div"
+              style={{
+                borderLeftColor: "#ea7614"
+              }}
+            >
+              <CalloutTitle tag="div" className="py-2 text-base text-black">
                 Questa agevolazione è stata sospesa dal Dipartimento
               </CalloutTitle>
               <CalloutText
                 bigText={false}
                 tag="p"
-                className="text-base text-dark-gray"
+                className="py-2 text-base text-dark-gray"
               >
                 {row.original.suspendedReasonMessage}
               </CalloutText>
