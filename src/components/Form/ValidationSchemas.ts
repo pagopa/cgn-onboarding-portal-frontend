@@ -168,7 +168,7 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
 	emailAddress: Yup.string().email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD),
 	confirmEmailAddress: Yup.string().email(INCORRECT_EMAIL_ADDRESS).when('emailAddress', {
 		is: (email: any) => (email && email.length > 0 ? true : false),
-		then: Yup.string().oneOf([ Yup.ref('emailAddress') ], INCORRECT_CONFIRM_EMAIL_ADDRESS)
+		then: Yup.string().oneOf([ Yup.ref('emailAddress') ], INCORRECT_CONFIRM_EMAIL_ADDRESS).required(REQUIRED_FIELD)
 	}),
 	recaptchaToken: Yup.string().required(REQUIRED_FIELD)
 });
