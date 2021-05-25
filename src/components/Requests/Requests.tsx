@@ -10,7 +10,8 @@ import {
   useExpanded,
   Row,
   UseExpandedRowProps,
-  usePagination
+  usePagination,
+  useSortBy
 } from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
@@ -41,7 +42,9 @@ const Requests = () => {
           params.requestDateFrom,
           params.requestDateTo,
           pageSize,
-          params.page
+          params.page,
+          params.sortColumn,
+          params.sortDirection
         ),
       toError
     )
@@ -123,23 +126,50 @@ const Requests = () => {
     gotoPage,
     nextPage,
     previousPage,
-    state: { pageIndex }
+    state: { pageIndex, sortBy }
   } = useTable<any>(
     {
       columns,
       data,
       initialState: { pageIndex: 0, pageSize },
       manualPagination: true,
+      manualSortBy: true,
+      disableMultiSort: true,
       pageCount: agreements?.total ? Math.ceil(agreements?.total / pageSize) : 0
     },
+    useSortBy,
     useExpanded,
     usePagination
   );
 
+  const getSortColumn = (id: string) => {
+    switch (id) {
+      case "profile.fullName":
+        return "Operator";
+      case "requestDate":
+        return "RequestDate";
+      case "state":
+        return "State";
+      case "assignee.fullName":
+        return "Assignee";
+    }
+  };
+
   useEffect(() => {
+    const sortField = sortBy[0];
+    if (sortField) {
+      refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
+      refForm.current?.setFieldValue(
+        "sortDirection",
+        sortField.desc ? "DESC" : "ASC"
+      );
+    } else {
+      refForm.current?.setFieldValue("sortColumn", undefined);
+      refForm.current?.setFieldValue("sortDirection", undefined);
+    }
     refForm.current?.setFieldValue("page", pageIndex);
     refForm.current?.submitForm();
-  }, [pageIndex]);
+  }, [pageIndex, sortBy]);
 
   const startRowIndex: number = pageIndex * pageSize + 1;
   // eslint-disable-next-line functional/no-let
@@ -218,11 +248,38 @@ const Requests = () => {
                 >
                   {headerGroup.headers.map((column, i) => (
                     <th
-                      {...column.getHeaderProps()}
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
                       key={i}
-                      className="px-6 py-2 text-sm font-weight-bold text-gray text-uppercase"
+                      className="px-6 py-2 text-sm font-weight-bold text-gray
+                      text-uppercase"
                     >
                       {column.render("Header")}
+                      <span>
+                        {column.canSort && (
+                          <>
+                            {column.isSorted ? (
+                              <>
+                                {column.isSortedDesc ? (
+                                  <Icon
+                                    icon="it-arrow-up-triangle"
+                                    style={{ color: "#5C6F82" }}
+                                  />
+                                ) : (
+                                  <Icon
+                                    icon="it-arrow-down-triangle"
+                                    style={{ color: "#5C6F82" }}
+                                  />
+                                )}
+                              </>
+                            ) : (
+                              <Icon
+                                icon="it-arrow-up-triangle"
+                                style={{ color: "#5C6F82" }}
+                              />
+                            )}
+                          </>
+                        )}
+                      </span>
                     </th>
                   ))}
                 </tr>
