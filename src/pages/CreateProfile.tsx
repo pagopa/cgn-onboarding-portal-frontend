@@ -8,6 +8,7 @@ import DiscountData from "../components/Form/CreateProfileForm/DiscountData/Disc
 import Documents from "../components/Form/CreateProfileForm/Documents/Documents";
 import { RootState } from "../store/store";
 import { CompletedStep } from "../api/generated";
+import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
 
 const CreateProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
@@ -16,6 +17,7 @@ const CreateProfile = () => {
   const [completedSteps, setCompletedSteps] = useState<Array<string>>(
     agreement.completedSteps
   );
+  const [showRequireApproval, setShowRequireApproval] = useState(false);
 
   const handleNext = (step: number, key?: string) => {
     if (key && !completedSteps.includes(key)) {
@@ -73,6 +75,7 @@ const CreateProfile = () => {
           <Documents
             isCompleted={completedSteps.includes("Document")}
             handleBack={() => setStep(2)}
+            setShowRequireApproval={setShowRequireApproval}
           />
         );
     }
@@ -87,31 +90,33 @@ const CreateProfile = () => {
             Portale Operatori
           </h2>
         </div>
-        <Stepper
-          activeStep={step}
-          completedSteps={completedSteps}
-          handleChangeStep={setStep}
-          steps={[
-            {
-              key: "Guide",
-              label: "Documentazione"
-            },
-            {
-              key: "Profile",
-              label: "Dati operatore"
-            },
-            {
-              key: "Discount",
-              label: "Dati agevolazione"
-            },
-            {
-              key: "Document",
-              label: "Documenti"
-            }
-          ]}
-        ></Stepper>
+        {!showRequireApproval && (
+          <Stepper
+            activeStep={step}
+            completedSteps={completedSteps}
+            handleChangeStep={setStep}
+            steps={[
+              {
+                key: "Guide",
+                label: "Documentazione"
+              },
+              {
+                key: "Profile",
+                label: "Dati operatore"
+              },
+              {
+                key: "Discount",
+                label: "Dati agevolazione"
+              },
+              {
+                key: "Document",
+                label: "Documenti"
+              }
+            ]}
+          ></Stepper>
+        )}
       </div>
-      {selectedTab()}
+      {showRequireApproval ? <RequestApproval /> : selectedTab()}
     </Layout>
   ) : null;
 };
