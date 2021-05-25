@@ -58,6 +58,8 @@ paths:
           format: date
         - $ref: '#/parameters/PageSize'
         - $ref: '#/parameters/PageNumber'
+        - $ref: '#/parameters/RequestColumnSort'
+        - $ref: '#/parameters/SortDirection'
       responses:
         200:
           description: List of agreements
@@ -320,7 +322,27 @@ parameters:
     enum:
       - Agreement
       - ManifestationOfInterest
-
+  RequestColumnSort:
+    name: sortColumn
+    in: query
+    description: Sort by column
+    required: false
+    type: string
+    enum:
+      - Operator
+      - RequestDate
+      - State
+      - Assignee
+  SortDirection:
+    name: sortDirection
+    in: query
+    description: Sort Direction
+    required: false
+    type: string
+    default: ASC
+    enum:
+      - ASC
+      - DESC
 definitions:
   Agreements:
     type: object
@@ -432,6 +454,7 @@ definitions:
     properties:
       reasonMessage:
         type: string
+        maxLength: 500
 
   Assignee:
     type: object
@@ -496,15 +519,21 @@ definitions:
       pecAddress:
         type: string
         format: email
+        minLength: 5
+        maxLength: 100
       legalOffice:
         type: string
+        maxLength: 255
       telephoneNumber:
         type: string
+        minLength: 4
         maxLength: 15
       legalRepresentativeFullName:
         type: string
       legalRepresentativeTaxCode:
         type: string
+        maxLength: 16
+        minLength: 16
       referent:
         $ref: '#/definitions/ApprovedAgreementReferent'
 
@@ -518,12 +547,17 @@ definitions:
     properties:
       firstName:
         type: string
+        maxLength: 100
       lastName:
         type: string
+        maxLength: 100
       emailAddress:
         type: string
+        minLength: 5
+        maxLength: 100
       telephoneNumber:
         type: string
+        minLength: 4
         maxLength: 15
 
   ApprovedAgreementReferent:
@@ -542,11 +576,15 @@ definitions:
       emailAddress:
         type: string
         format: email
+        minLength: 5
+        maxLength: 100
       telephoneNumber:
         type: string
+        minLength: 4
         maxLength: 15
       role:
         type: string
+        maxLength: 100
 
   Discounts:
     type: array
@@ -574,6 +612,7 @@ definitions:
         $ref: '#/definitions/DiscountState'
       name:
         type: string
+        maxLength: 100
 
   ApprovedAgreementDiscount:
     type: object
@@ -593,6 +632,7 @@ definitions:
         type: string
       name:
         type: string
+        maxLength: 100
       description:
         type: string
       startDate:
@@ -604,6 +644,8 @@ definitions:
       discount:
         type: integer
         format: int32
+        minimum: 5
+        maximum: 99
       productCategories:
         type: array
         items:
@@ -669,7 +711,9 @@ definitions:
             type: array
             minItems: 1
             items:
-              $ref: '#/definitions/Address'
+              type: string
+              minLength: 10
+              maxLength: 500
 
   BothChannels:
     allOf:
@@ -685,7 +729,9 @@ definitions:
             type: array
             minItems: 1
             items:
-              $ref: '#/definitions/Address'
+              type: string
+              minLength: 10
+              maxLength: 500
 
   SalesChannelType:
     type: string
@@ -693,26 +739,6 @@ definitions:
       - OnlineChannel
       - OfflineChannel
       - BothChannels
-  Address:
-    type: object
-    required:
-      - street
-      - zipCode
-      - city
-      - district
-    properties:
-      street:
-        type: string
-      zipCode:
-        type: string
-        minLength: 5
-        maxLength: 5
-      city:
-        type: string
-      district:
-        type: string
-        minLength: 2
-        maxLength: 2
 
   Documents:
     type: array
@@ -747,6 +773,7 @@ definitions:
     properties:
       reasonMessage:
         type: string
+        maxLength: 500
 
 responses:
   InvalidRequest:
