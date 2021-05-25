@@ -113,7 +113,7 @@ const HelpForm = () => {
       .map((response: any) => response.data)
       .fold(
         () => void 0,
-        response => console.log(response)
+        response => setRecaptchaApiKey(response)
       )
       .run();
 
