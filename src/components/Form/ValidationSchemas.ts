@@ -43,7 +43,12 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 		channelType: Yup.mixed().oneOf([ 'OnlineChannel', 'OfflineChannel', 'BothChannels' ]),
 		websiteUrl: Yup.string().when('channelType', {
 			is: (val: string) => val === 'OnlineChannel' || val === 'BothChannels',
-			then: Yup.string().matches(/((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/, INCORRECT_WEBSITE_URL).required(REQUIRED_FIELD)
+			then: Yup.string()
+				.matches(
+					/((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+					INCORRECT_WEBSITE_URL
+				)
+				.required(REQUIRED_FIELD)
 		}),
 		discountCodeType: Yup.string().when('channelType', {
 			is: (val: string) => val === 'OnlineChannel' || val === 'BothChannels',
@@ -164,5 +169,6 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
 	confirmEmailAddress: Yup.string().email(INCORRECT_EMAIL_ADDRESS).when('emailAddress', {
 		is: (email: any) => (email && email.length > 0 ? true : false),
 		then: Yup.string().oneOf([ Yup.ref('emailAddress') ], INCORRECT_CONFIRM_EMAIL_ADDRESS)
-	})
+	}),
+	recaptchaToken: Yup.string().required(REQUIRED_FIELD)
 });
