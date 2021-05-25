@@ -237,7 +237,8 @@ const Discounts = () => {
     () => [
       {
         Header: "Nome agevolazione",
-        accessor: "name"
+        accessor: "name",
+        sortType: "string"
       },
       {
         Header: "Aggiunta il",
