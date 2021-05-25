@@ -19,7 +19,7 @@ const defaultSalesChannel = {
   channelType: "",
   websiteUrl: "",
   discountCodeType: "",
-  addresses: [{ street: "", zipCode: "", city: "", district: "" }]
+  addresses: [{ fullAddress: "", coordinates: { latitude: "", longitude: "" } }]
 };
 
 const defaultInitialValues = {
@@ -49,6 +49,7 @@ const EditOperatorDataForm = () => {
   const user = useSelector((state: RootState) => state.user.data);
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const [loading, setLoading] = useState(true);
+  const [geolocationToken, setGeolocationToken] = useState<any>();
 
   const updateProfile = async (discount: any) => {
     if (agreement) {
@@ -69,9 +70,22 @@ const EditOperatorDataForm = () => {
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        profile => {
+        (profile: any) => {
           setInitialValues({
             ...profile,
+            salesChannel:
+              profile.salesChannel.channelType === "OfflineChannel"
+                ? {
+                    ...profile.salesChannel,
+                    addresses: profile.salesChannel.addresses.map(
+                      (address: any) => ({
+                        ...address,
+                        value: address.fullAddress,
+                        label: address.fullAddress
+                      })
+                    )
+                  }
+                : profile.salesChannel,
             hasDifferentFullName: !!profile.name
           });
           setLoading(false);
@@ -79,9 +93,19 @@ const EditOperatorDataForm = () => {
       )
       .run();
 
+  const getGeolocationToken = async (agreementId: string) =>
+    await tryCatch(() => Api.GeolocationToken.getGeolocationToken(), toError)
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        token => setGeolocationToken(token.token)
+      )
+      .run();
+
   useEffect(() => {
     setLoading(true);
     void getProfile(agreement.id);
+    void getGeolocationToken(agreement.id);
   }, []);
 
   const getSalesChannel = (salesChannel: any) => {
@@ -126,13 +150,15 @@ const EditOperatorDataForm = () => {
         });
       }}
     >
-      {({ values }) => (
+      {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           <ProfileInfo formValues={values} />
           <ReferentData />
           <ProfileImage />
           <ProfileDescription />
           <SalesChannels
+            geolocationToken={geolocationToken}
+            setFieldValue={setFieldValue}
             handleBack={() => history.push(DASHBOARD)}
             formValues={values}
             isValid

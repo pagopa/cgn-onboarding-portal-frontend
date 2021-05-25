@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { getCookie, logout } from '../utils/cookie';
-import {AgreementApi, ProfileApi, DiscountApi, DocumentApi, DocumentTemplateApi, ApiTokenApi, HelpApi } from './generated';
+import {AgreementApi, ProfileApi, DiscountApi, DocumentApi, DocumentTemplateApi, ApiTokenApi, HelpApi, GeolocationTokenApi } from './generated';
 
 const token = getCookie();
 
@@ -30,4 +30,5 @@ export default {
 	DocumentTemplate: new DocumentTemplateApi(undefined, process.env.BASE_API_PATH, axiosInstance),
 	ApiToken: new ApiTokenApi(undefined, process.env.BASE_API_PATH, axiosInstance),
 	Help: new HelpApi(undefined, process.env.BASE_API_PATH, axiosInstance), 
+	GeolocationToken: new GeolocationTokenApi(undefined, process.env.BASE_API_PATH, axiosInstance), 
 };

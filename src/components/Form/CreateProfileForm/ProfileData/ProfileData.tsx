@@ -21,7 +21,7 @@ const defaultSalesChannel = {
   channelType: "",
   websiteUrl: "",
   discountCodeType: "",
-  addresses: [{ street: "", zipCode: "", city: "", district: "" }]
+  addresses: [{ fullAddress: "", coordinates: { latitude: "", longitude: "" } }]
 };
 
 const defaultInitialValues = {
@@ -63,6 +63,7 @@ const ProfileData = ({
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const { triggerTooltip } = useTooltip();
   const [loading, setLoading] = useState(true);
+  const [geolocationToken, setGeolocationToken] = useState<any>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -105,13 +106,35 @@ const ProfileData = ({
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        profile => {
+        (profile: any) => {
           setInitialValues({
             ...profile,
+            salesChannel:
+              profile.salesChannel.channelType === "OfflineChannel"
+                ? {
+                    ...profile.salesChannel,
+                    addresses: profile.salesChannel.addresses.map(
+                      (address: any) => ({
+                        ...address,
+                        value: address.fullAddress,
+                        label: address.fullAddress
+                      })
+                    )
+                  }
+                : profile.salesChannel,
             hasDifferentFullName: !!profile.name
           });
           setLoading(false);
         }
+      )
+      .run();
+
+  const getGeolocationToken = async () =>
+    await tryCatch(() => Api.GeolocationToken.getGeolocationToken(), toError)
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        token => setGeolocationToken(token.token)
       )
       .run();
 
@@ -122,6 +145,7 @@ const ProfileData = ({
     } else {
       setLoading(false);
     }
+    void getGeolocationToken();
   }, []);
 
   const getSalesChannel = (salesChannel: any) => {
@@ -166,7 +190,7 @@ const ProfileData = ({
         });
       }}
     >
-      {({ values }) => (
+      {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           <FormContainer className="mb-20">
             <ProfileInfo formValues={values} />
@@ -174,9 +198,11 @@ const ProfileData = ({
             <ProfileImage />
             <ProfileDescription />
             <SalesChannels
+              geolocationToken={geolocationToken}
               handleBack={handleBack}
               formValues={values}
               isValid={!!agreement.imageUrl}
+              setFieldValue={setFieldValue}
             />
           </FormContainer>
         </Form>
