@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { string } from 'yup/lib/locale';
 import { HelpRequestCategoryEnum } from '../../api/generated';
 import Help from '../../pages/Help';
 
@@ -41,7 +42,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 	description: Yup.string().required(REQUIRED_FIELD),
 	salesChannel: Yup.object().shape({
 		channelType: Yup.mixed().oneOf([ 'OnlineChannel', 'OfflineChannel', 'BothChannels' ]),
-		websiteUrl: Yup.string().when('channelType', {
+		websiteUrl: Yup.string().nullable().when('channelType', {
 			is: (val: string) => val === 'OnlineChannel' || val === 'BothChannels',
 			then: Yup.string()
 				.matches(
@@ -58,14 +59,13 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 			is: (val: string) => val === 'OfflineChannel' || val === 'BothChannels',
 			then: Yup.array().of(
 				Yup.object().shape({
-					street: Yup.string().required(REQUIRED_FIELD),
-					zipCode: Yup.string()
-						.matches(/^[0-9]*$/, ONLY_NUMBER)
-						.min(5, 'Deve essere di 5 caratteri')
-						.max(5, 'Deve essere di 5 caratteri')
-						.required(REQUIRED_FIELD),
-					city: Yup.string().required(REQUIRED_FIELD),
-					district: Yup.string().required(REQUIRED_FIELD)
+					fullAddress: Yup.string().min(10).required(REQUIRED_FIELD),
+					coordinates: Yup.object().shape({
+						latitude: Yup.number().required(REQUIRED_FIELD),
+						longitude: Yup.number().required(REQUIRED_FIELD)
+					}),
+					label: Yup.string(),
+					value: Yup.string()
 				})
 			)
 		})
