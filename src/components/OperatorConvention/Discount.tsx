@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { useTooltip, Severity } from "../../context/tooltip";
 import Api from "../../api/backoffice";
 import { ApprovedAgreementDiscount } from "../../api/generated_backoffice";
+import { makeProductCategoriesString } from "../../utils/strings";
 import Item from "./Item";
 
 const Discount = ({
@@ -75,10 +76,16 @@ const Discount = ({
         value={format(new Date(discount.endDate), "dd/MM/yyyy")}
       />
       <Item label="Entità dello sconto" value={`${discount.discount} %`} />
-      <Item
-        label="Categorie merceologiche"
-        value={discount.productCategories.toString()}
-      />
+      <div className="row mb-5">
+        <div className="col-4 text-gray">Categorie merceologiche</div>
+        <div className="col-8">
+          {makeProductCategoriesString(discount.productCategories).map(
+            (productCategory, index) => (
+              <p key={index}>{productCategory}</p>
+            )
+          )}
+        </div>
+      </div>
       <Item label="Condizioni dell’agevolazione" value={discount.condition} />
       <Item
         label="Data ultima modifica"
