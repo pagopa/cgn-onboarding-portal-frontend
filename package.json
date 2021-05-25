@@ -71,7 +71,7 @@
     "@pagopa/openapi-codegen-ts": "9.0.0",
     "@pagopa/ts-commons": "9.1.0",
     "@svgr/parcel-plugin-svgr": "^5.5.0",
-    "@types/react-select": "^4.0.15"
+    "@types/react-select": "^4.0.15",
     "@types/react-google-recaptcha": "^2.1.0",
     "@types/classnames": "^2.2.11",
     "@types/file-saver": "^2.0.2",
