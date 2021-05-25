@@ -74,7 +74,8 @@ const EditOperatorDataForm = () => {
           setInitialValues({
             ...profile,
             salesChannel:
-              profile.salesChannel.channelType === "OfflineChannel"
+              profile.salesChannel.channelType === "OfflineChannel" ||
+              profile.salesChannel.channelType === "BothChannels"
                 ? {
                     ...profile.salesChannel,
                     addresses: profile.salesChannel.addresses.map(
