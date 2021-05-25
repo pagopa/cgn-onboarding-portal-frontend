@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import { useHistory } from "react-router-dom";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { useSelector } from "react-redux";
+import ReCAPTCHA from "react-google-recaptcha";
 import FormSection from "../FormSection";
 import { DASHBOARD } from "../../../navigation/routes";
 import InputField from "../FormField";
@@ -22,7 +23,13 @@ import { HelpRequest as NotLoggedHelpRequest } from "../../../api/generated_publ
 import CustomErrorMessage from "../CustomErrorMessage";
 import FormButtons from "./HelpFormButtons";
 
-const initialValues = {
+const loggedInitialValues = {
+  category: "",
+  topic: "",
+  message: ""
+};
+
+const notLoggedInitialValues = {
   category: "",
   topic: "",
   message: "",
@@ -30,7 +37,8 @@ const initialValues = {
   referentLastName: "",
   legalName: "",
   emailAddress: "",
-  confirmEmailAddress: ""
+  confirmEmailAddress: "",
+  recaptchaToken: ""
 };
 
 const topics = [
@@ -66,6 +74,7 @@ const HelpForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const history = useHistory();
   const token = getCookie();
+  const [recaptchaApiKey, setRecaptchaApiKey] = useState<any>("");
 
   const createLoggedHelp = async (agreementId: string, help: HelpRequest) =>
     await tryCatch(() => Api.Help.sendHelpRequest(agreementId, help), toError)
@@ -97,21 +106,26 @@ const HelpForm = () => {
     );
   };
 
+  useEffect(() => {
+    setRecaptchaApiKey(process.env.RECAPTCHA_API_KEY);
+  });
+
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={token ? loggedInitialValues : notLoggedInitialValues}
       validationSchema={
         token ? loggedHelpValidationSchema : notLoggedHelpValidationSchema
       }
       onSubmit={(values: any) => {
+        const { confirmEmailAddress, ...newValues } = values;
         if (token) {
           void createLoggedHelp(agreement.id, values);
         } else {
-          void createNotLoggedHelp(values);
+          void createNotLoggedHelp(newValues);
         }
       }}
     >
-      {({ values, isValid, dirty }) => (
+      {({ values, isValid, dirty, setFieldValue }) => (
         <Form autoComplete="off">
           <FormSection
             description="Come possiamo aiutarti? Compila il modulo e invialo online, sarai ricontattato al più presto"
@@ -346,6 +360,14 @@ const HelpForm = () => {
                   </InputFieldMultiple>
                 </div>
               </div>
+              {!token && (
+                <div className="mt-10">
+                  <ReCAPTCHA
+                    sitekey={recaptchaApiKey}
+                    onChange={event => setFieldValue("recaptchaToken", event)}
+                  />
+                </div>
+              )}
               <FormButtons isValid={isValid} dirty={dirty} />
               <p className="mt-4 text-gray">
                 Form protetto tramite reCAPTCHA e Google{" "}
