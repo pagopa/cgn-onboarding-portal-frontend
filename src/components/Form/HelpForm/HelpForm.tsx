@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import { useHistory } from "react-router-dom";
 import { tryCatch } from "fp-ts/lib/TaskEither";
@@ -75,6 +75,7 @@ const HelpForm = () => {
   const history = useHistory();
   const token = getCookie();
   const [recaptchaApiKey, setRecaptchaApiKey] = useState<any>("");
+  const recaptchaRef = useRef<any>();
 
   const createLoggedHelp = async (agreementId: string, help: HelpRequest) =>
     await tryCatch(() => Api.Help.sendHelpRequest(agreementId, help), toError)
@@ -85,7 +86,7 @@ const HelpForm = () => {
       )
       .run();
 
-  const createNotLoggedHelp = async (help: NotLoggedHelpRequest) =>
+  const createNotLoggedHelp = async (help: NotLoggedHelpRequest) => {
     await tryCatch(
       () => NotLoggedHelpApi.NotLoggedHelp.sendHelpRequest(help),
       toError
@@ -96,6 +97,7 @@ const HelpForm = () => {
         () => history.push(DASHBOARD)
       )
       .run();
+  };
 
   const hasTopicDropdown = (category: string): boolean => {
     const newCategory = category as HelpRequestCategoryEnum;
@@ -106,8 +108,20 @@ const HelpForm = () => {
     );
   };
 
+  const getRecaptchaApiKey = async () =>
+    await tryCatch(() => recaptchaRef.current.executeAsync(), toError)
+      .map((response: any) => response.data)
+      .fold(
+        () => void 0,
+        response => console.log(response)
+      )
+      .run();
+
   useEffect(() => {
     setRecaptchaApiKey(process.env.RECAPTCHA_API_KEY);
+    if (!token) {
+      void getRecaptchaApiKey();
+    }
   });
 
   return (
@@ -127,6 +141,16 @@ const HelpForm = () => {
     >
       {({ values, isValid, dirty, setFieldValue }) => (
         <Form autoComplete="off">
+          {!token && (
+            <div className="mt-10">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                size="invisible"
+                sitekey={recaptchaApiKey}
+                onChange={event => setFieldValue("recaptchaToken", event)}
+              />
+            </div>
+          )}
           <FormSection
             description="Come possiamo aiutarti? Compila il modulo e invialo online, sarai ricontattato al più presto"
             required
@@ -360,14 +384,6 @@ const HelpForm = () => {
                   </InputFieldMultiple>
                 </div>
               </div>
-              {!token && (
-                <div className="mt-10">
-                  <ReCAPTCHA
-                    sitekey={recaptchaApiKey}
-                    onChange={event => setFieldValue("recaptchaToken", event)}
-                  />
-                </div>
-              )}
               <FormButtons isValid={isValid} dirty={dirty} />
               <p className="mt-4 text-gray">
                 Form protetto tramite reCAPTCHA e Google{" "}
