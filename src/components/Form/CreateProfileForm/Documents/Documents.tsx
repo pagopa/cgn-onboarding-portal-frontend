@@ -10,18 +10,21 @@ import { RootState } from "../../../../store/store";
 import { Documents } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
 import FileRow from "./FileRow";
-import RequestApproval from "./RequestApproval";
 
 type Props = {
+  setShowRequireApproval: (b: boolean) => void;
   handleBack: () => void;
   isCompleted: boolean;
 };
 
-const Documents = ({ handleBack, isCompleted }: Props) => {
+const Documents = ({
+  setShowRequireApproval,
+  handleBack,
+  isCompleted
+}: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [loading, setLoading] = useState(true);
   const [documents, setDocuments] = useState<Documents>({ items: [] });
-  const [showRequireApproval, setShowRequireApproval] = useState(false);
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {
@@ -63,10 +66,6 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
 
   if (loading) {
     return <CenteredLoading />;
-  }
-
-  if (showRequireApproval) {
-    return <RequestApproval />;
   }
 
   return (
