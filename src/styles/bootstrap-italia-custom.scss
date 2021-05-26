@@ -148,4 +148,14 @@ $link-hover-decoration: none;
     background-color: #ffffff;  
 }
 
+/* Request approval */
+.request-approval {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
 @import "../../node_modules/bootstrap-italia/src/scss/bootstrap-italia.scss";
