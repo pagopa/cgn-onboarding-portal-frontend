@@ -81,6 +81,10 @@ const CreateProfile = () => {
     }
   };
 
+  if (showRequireApproval) {
+    return <RequestApproval />;
+  }
+
   return !loading ? (
     <Layout hasHeaderBorder>
       <div className="bg-white">
@@ -90,33 +94,31 @@ const CreateProfile = () => {
             Portale Operatori
           </h2>
         </div>
-        {!showRequireApproval && (
-          <Stepper
-            activeStep={step}
-            completedSteps={completedSteps}
-            handleChangeStep={setStep}
-            steps={[
-              {
-                key: "Guide",
-                label: "Documentazione"
-              },
-              {
-                key: "Profile",
-                label: "Dati operatore"
-              },
-              {
-                key: "Discount",
-                label: "Dati agevolazione"
-              },
-              {
-                key: "Document",
-                label: "Documenti"
-              }
-            ]}
-          ></Stepper>
-        )}
+        <Stepper
+          activeStep={step}
+          completedSteps={completedSteps}
+          handleChangeStep={setStep}
+          steps={[
+            {
+              key: "Guide",
+              label: "Documentazione"
+            },
+            {
+              key: "Profile",
+              label: "Dati operatore"
+            },
+            {
+              key: "Discount",
+              label: "Dati agevolazione"
+            },
+            {
+              key: "Document",
+              label: "Documenti"
+            }
+          ]}
+        ></Stepper>
       </div>
-      {showRequireApproval ? <RequestApproval /> : selectedTab()}
+      {selectedTab()}
     </Layout>
   ) : null;
 };
