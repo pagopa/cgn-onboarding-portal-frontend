@@ -1,6 +1,7 @@
 import React from "react";
 import { Field } from "formik";
 import DatePicker from "react-datepicker";
+import { addDays } from "date-fns";
 import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
 
@@ -103,7 +104,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           selectsEnd
           startDate={dateFrom}
           endDate={dateTo}
-          minDate={dateFrom}
+          minDate={addDays(dateFrom, 1)}
           onChange={date => {
             setFieldValue(
               hasIndex ? `discounts[${index}].endDate` : "endDate",
