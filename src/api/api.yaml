@@ -76,6 +76,8 @@ paths:
           description: Image uploaded
           schema:
             $ref: '#/definitions/UploadedImage'
+        400:
+          $ref: '#/definitions/ImageErrorCode'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -508,6 +510,7 @@ definitions:
         properties:
           reasonMessage:
             type: string
+            maxLength: 500
 
   AgreementState:
     type: string
@@ -555,10 +558,13 @@ definitions:
       pecAddress:
         type: string
         format: email
+        minLength: 5
+        maxLength: 100
       legalOffice:
         type: string
       telephoneNumber:
         type: string
+        minLength: 4
         maxLength: 15
       legalRepresentativeFullName:
         type: string
@@ -590,10 +596,13 @@ definitions:
       pecAddress:
         type: string
         format: email
+        minLength: 5
+        maxLength: 100
       legalOffice:
         type: string
       telephoneNumber:
         type: string
+        minLength: 4
         maxLength: 15
       legalRepresentativeFullName:
         type: string
@@ -637,10 +646,13 @@ definitions:
       pecAddress:
         type: string
         format: email
+        minLength: 5
+        maxLength: 100
       legalOffice:
         type: string
       telephoneNumber:
         type: string
+        minLength: 4
         maxLength: 15
       legalRepresentativeFullName:
         type: string
@@ -666,15 +678,21 @@ definitions:
     properties:
       firstName:
         type: string
+        maxLength: 100
       lastName:
         type: string
+        maxLength: 100
       role:
         type: string
+        maxLength: 100
       emailAddress:
         type: string
         format: email
+        minLength: 5
+        maxLength: 100
       telephoneNumber:
         type: string
+        minLength: 4
         maxLength: 15
 
   SalesChannel:
@@ -756,15 +774,21 @@ definitions:
     properties:
       firstName:
         type: string
+        maxLength: 100
       lastName:
         type: string
+        maxLength: 100
       role:
         type: string
+        maxLength: 100
       emailAddress:
         type: string
         format: email
+        minLength: 5
+        maxLength: 100
       telephoneNumber:
         type: string
+        minLength: 4
         maxLength: 15
 
   UpdateReferent:
@@ -778,15 +802,21 @@ definitions:
     properties:
       firstName:
         type: string
+        maxLength: 100
       lastName:
         type: string
+        maxLength: 100
       role:
         type: string
+        maxLength: 100
       emailAddress:
         type: string
         format: email
+        minLength: 5
+        maxLength: 100
       telephoneNumber:
         type: string
+        minLength: 4
         maxLength: 15
 
   CreateDiscount:
@@ -813,8 +843,8 @@ definitions:
       discount:
         type: integer
         format: int32
-        minimum: 0
-        maximum: 100
+        minimum: 5
+        maximum: 99
       productCategories:
         type: array
         items:
@@ -825,6 +855,7 @@ definitions:
         maxLength: 200
       staticCode:
         type: string
+        maxLength: 100
 
   UpdateDiscount:
     type: object
@@ -852,8 +883,8 @@ definitions:
       discount:
         type: integer
         format: int32
-        minimum: 0
-        maximum: 100
+        minimum: 5
+        maximum: 99
       productCategories:
         type: array
         items:
@@ -864,6 +895,7 @@ definitions:
         maxLength: 200
       staticCode:
         type: string
+        maxLength: 100
 
   Discounts:
     type: object
@@ -897,6 +929,7 @@ definitions:
         $ref: '#/definitions/DiscountState'
       name:
         type: string
+        maxLength: 100
       description:
         type: string
       startDate:
@@ -908,8 +941,8 @@ definitions:
       discount:
         type: integer
         format: int32
-        minimum: 0
-        maximum: 100
+        minimum: 5
+        maximum: 99
       productCategories:
         type: array
         items:
@@ -919,6 +952,7 @@ definitions:
         type: string
       staticCode:
         type: string
+        maxLength: 100
       creationDate:
         type: string
         format: date
@@ -952,6 +986,7 @@ definitions:
       fullAddress:
         type: string
         minLength: 10
+        maxLength: 500
       coordinates:
         $ref: '#/definitions/Coordinates'
 
@@ -1032,6 +1067,14 @@ definitions:
       token:
         type: string
         minLength: 1
+
+  ImageErrorCode:
+    type: string
+    enum:
+      - INVALID_IMAGE_TYPE
+      - INVALID_DIMENSION
+      - GENERIC
+      - IMAGE_SIZE_EXCEEDED
 
 responses:
   InvalidRequest:

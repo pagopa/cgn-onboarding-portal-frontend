@@ -9,6 +9,8 @@ import { setImage } from "../../../../store/agreement/agreementSlice";
 import PlusIcon from "../../../../assets/icons/plus.svg";
 import { RootState } from "../../../../store/store";
 import Api from "../../../../api/index";
+import { ImageErrorCode } from "../../../../api/generated";
+import chainAxios from "../../../../utils/chainAxios";
 
 const FooterDescription = (
   <p className="text-base font-weight-normal text-gray">
@@ -39,25 +41,39 @@ const ProfileImage = () => {
     }
   }, []);
 
+  const getImageErrorCodeDescription = (imageErrorCode: string) => {
+    switch (imageErrorCode) {
+      case ImageErrorCode.ImageSizeExceeded:
+        return "La dimensione dell'immagine non è valida. L'immagine deve pesare al massimo 5mb. ";
+      case ImageErrorCode.InvalidDimension:
+        return "Le dimensioni dell'immagine non sono valide. L'immagine dev'essere minimo 800x600px.";
+      case ImageErrorCode.InvalidImageType:
+        return "Il formato dell'immagine non è valido. L'immagine dev'essere di formato JPG o PNG.";
+      default:
+        return "Errore durante il caricamento dell'immagine, riprovare in seguito o cambiare immagine";
+    }
+  };
+
   const uploadImage = async (image: any) =>
     await tryCatch(
       () => Api.Agreement.uploadImage(agreement.id, image[0]),
       toError
     )
+      .chain(chainAxios)
       .map(response => response.data)
       .fold(
-        () => setLoading(false),
+        response => {
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text: getImageErrorCodeDescription(response.message)
+          });
+          setLoading(false);
+        },
         response => {
           if (response?.imageUrl) {
             dispatch(
               setImage(`${process.env.BASE_IMAGE_PATH}/${response.imageUrl}`)
             );
-          } else {
-            triggerTooltip({
-              severity: Severity.DANGER,
-              text:
-                "Errore durante il caricamento dell'immagine, riprovare in seguito o cambiare immagine"
-            });
           }
           setLoading(false);
         }
