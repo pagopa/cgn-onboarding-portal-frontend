@@ -99,7 +99,10 @@ const ProfileImage = () => {
                 id="profileImage"
                 className="upload pictures-wall"
                 ref={imageInput}
-                onChange={() => uploadImage(imageInput.current.files)}
+                onChange={() => {
+                  setLoading(true);
+                  void uploadImage(imageInput.current.files);
+                }}
               />
               <label htmlFor="profileImage">
                 <PlusIcon className="icon icon-sm" />
