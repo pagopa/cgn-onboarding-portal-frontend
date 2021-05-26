@@ -82,7 +82,7 @@ const HelpForm = () => {
       .map(response => response.data)
       .fold(
         () => void 0,
-        () => history.push(DASHBOARD)
+        () => history.goBack()
       )
       .run();
 
@@ -94,7 +94,7 @@ const HelpForm = () => {
       .map(response => response.data)
       .fold(
         () => void 0,
-        () => history.push(DASHBOARD)
+        () => history.goBack()
       )
       .run();
   };
