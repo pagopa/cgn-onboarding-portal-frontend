@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useTable, usePagination, Row } from "react-table";
+import { useTable, usePagination, Row, useSortBy } from "react-table";
 import cx from "classnames";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
@@ -33,7 +33,9 @@ const OperatorConvention = () => {
           params.lastUpdateDateFrom,
           params.lastUpdateDateTo,
           pageSize,
-          params.page
+          params.page,
+          params.sortColumn,
+          params.sortDirection
         ),
       toError
     )
@@ -87,24 +89,49 @@ const OperatorConvention = () => {
     gotoPage,
     nextPage,
     previousPage,
-    state: { pageIndex }
+    state: { pageIndex, sortBy }
   } = useTable<any>(
     {
       columns,
       data,
       initialState: { pageIndex: 0, pageSize },
       manualPagination: true,
+      manualSortBy: true,
+      disableMultiSort: true,
       pageCount: conventions?.total
         ? Math.ceil(conventions?.total / pageSize)
         : 0
     },
+    useSortBy,
     usePagination
   );
 
+  const getSortColumn = (id: string) => {
+    switch (id) {
+      case "fullName":
+        return "Operator";
+      case "agreementStartDate":
+        return "AgreementDate";
+      case "agreementLastUpdateDate":
+        return "LastModifyDate";
+    }
+  };
+
   useEffect(() => {
+    const sortField = sortBy[0];
+    if (sortField) {
+      refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
+      refForm.current?.setFieldValue(
+        "sortDirection",
+        sortField.desc ? "DESC" : "ASC"
+      );
+    } else {
+      refForm.current?.setFieldValue("sortColumn", undefined);
+      refForm.current?.setFieldValue("sortDirection", undefined);
+    }
     refForm.current?.setFieldValue("page", pageIndex);
     refForm.current?.submitForm();
-  }, [pageIndex]);
+  }, [pageIndex, sortBy]);
 
   if (showDetails && selectedConvention) {
     return (
@@ -195,11 +222,38 @@ const OperatorConvention = () => {
                 >
                   {headerGroup.headers.map((column, i) => (
                     <th
-                      {...column.getHeaderProps()}
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
                       key={i}
-                      className="px-6 py-2 text-sm font-weight-bold text-gray text-uppercase"
+                      className="px-6 py-2 text-sm font-weight-bold text-gray
+                    text-uppercase"
                     >
                       {column.render("Header")}
+                      <span>
+                        {column.canSort && (
+                          <>
+                            {column.isSorted ? (
+                              <>
+                                {column.isSortedDesc ? (
+                                  <Icon
+                                    icon="it-arrow-up-triangle"
+                                    style={{ color: "#5C6F82" }}
+                                  />
+                                ) : (
+                                  <Icon
+                                    icon="it-arrow-down-triangle"
+                                    style={{ color: "#5C6F82" }}
+                                  />
+                                )}
+                              </>
+                            ) : (
+                              <Icon
+                                icon="it-arrow-up-triangle"
+                                style={{ color: "#5C6F82" }}
+                              />
+                            )}
+                          </>
+                        )}
+                      </span>
                     </th>
                   ))}
                 </tr>
