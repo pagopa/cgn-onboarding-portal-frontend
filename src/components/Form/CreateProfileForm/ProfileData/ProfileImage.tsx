@@ -43,11 +43,11 @@ const ProfileImage = () => {
 
   const getImageErrorCodeDescription = (imageErrorCode: string) => {
     switch (imageErrorCode) {
-      case ImageErrorCode.ImageSizeExceeded:
+      case "IMAGE_SIZE_EXCEEDED":
         return "La dimensione dell'immagine non è valida. L'immagine deve pesare al massimo 5mb. ";
-      case ImageErrorCode.InvalidDimension:
+      case "INVALID_DIMENSION":
         return "Le dimensioni dell'immagine non sono valide. L'immagine dev'essere minimo 800x600px.";
-      case ImageErrorCode.InvalidImageType:
+      case "INVALID_IMAGE_TYPE":
         return "Il formato dell'immagine non è valido. L'immagine dev'essere di formato JPG o PNG.";
       default:
         return "Errore durante il caricamento dell'immagine, riprovare in seguito o cambiare immagine";
@@ -97,10 +97,10 @@ const ProfileImage = () => {
                 type="file"
                 name="profileImage"
                 id="profileImage"
-                className="upload pictures-wall"
+                className="upload
+              pictures-wall"
                 ref={imageInput}
                 onChange={() => {
-                  setLoading(true);
                   void uploadImage(imageInput.current.files);
                 }}
               />
