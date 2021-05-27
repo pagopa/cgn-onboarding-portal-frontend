@@ -30,11 +30,17 @@ const EditProfileForm = () => {
     void getProfile(agreement.id);
   }, []);
 
-  const editProfile = (profile: any) => {
-    if (agreement.id) {
-      void Api.Profile.updateProfile(agreement.id, profile);
-    }
-  };
+  const editProfile = async (profile: any) =>
+    await tryCatch(
+      () => Api.Profile.updateProfile(agreement.id, profile),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        () => history.push(DASHBOARD)
+      )
+      .run();
 
   return (
     <>
@@ -44,8 +50,7 @@ const EditProfileForm = () => {
           validationSchema={ProfileDataValidationSchema}
           onSubmit={values => {
             const { hasDifferentFullName, ...profile } = values;
-            editProfile(profile);
-            history.push(DASHBOARD);
+            void editProfile(profile);
           }}
         >
           {({ values }) => (
