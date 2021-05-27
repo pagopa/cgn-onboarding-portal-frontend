@@ -41,7 +41,8 @@ const SalesChannels = ({
           params: {
             apiKey: geolocationToken,
             q,
-            lang: "it"
+            lang: "it",
+            in: "countryCode:ITA"
           }
         }),
       toError
