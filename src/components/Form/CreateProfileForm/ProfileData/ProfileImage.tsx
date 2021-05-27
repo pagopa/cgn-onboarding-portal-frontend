@@ -91,57 +91,59 @@ const ProfileImage = () => {
     >
       <ul className="upload-pictures-wall">
         <li>
-          {!agreement.imageUrl && (
-            <>
-              <input
-                type="file"
-                name="profileImage"
-                id="profileImage"
-                className="upload
-              pictures-wall"
-                ref={imageInput}
-                onChange={() => {
-                  void uploadImage(imageInput.current.files);
-                }}
-              />
-              <label htmlFor="profileImage">
-                <PlusIcon className="icon icon-sm" />
-                <span>Add photo</span>
-              </label>
-            </>
-          )}
           {loading ? (
             <CenteredLoading />
           ) : (
-            agreement.imageUrl && (
-              <div className="d-flex flex-row align-items-end">
-                <img
-                  src={`${agreement.imageUrl}?${Date.now()}`}
-                  style={{
-                    width: "128px",
-                    height: "128px",
-                    objectFit: "cover"
-                  }}
-                />
-                <input
-                  type="file"
-                  name="profileImage"
-                  id="profileImage"
-                  ref={imageInput}
-                  onChange={() => {
-                    setLoading(true);
-                    void uploadImage(imageInput.current.files);
-                  }}
-                  style={{ display: "none" }}
-                />
-                <label
-                  htmlFor="profileImage"
-                  className="ml-4 mb-0 text-primary underline cursor-pointer"
-                >
-                  Cambia immagine
-                </label>
-              </div>
-            )
+            <>
+              {agreement.imageUrl ? (
+                <div className="d-flex flex-row align-items-end">
+                  <img
+                    src={`${agreement.imageUrl}?${Date.now()}`}
+                    style={{
+                      width: "128px",
+                      height: "128px",
+                      objectFit: "cover"
+                    }}
+                  />
+                  <input
+                    type="file"
+                    name="profileImage"
+                    id="profileImage"
+                    ref={imageInput}
+                    onChange={() => {
+                      setLoading(true);
+                      void uploadImage(imageInput.current.files);
+                    }}
+                    style={{ display: "none" }}
+                  />
+                  <label
+                    htmlFor="profileImage"
+                    className="ml-4 mb-0 text-primary underline cursor-pointer"
+                  >
+                    Cambia immagine
+                  </label>
+                </div>
+              ) : (
+                <>
+                  <input
+                    type="file"
+                    name="profileImage"
+                    id="profileImage"
+                    className="upload
+                pictures-wall"
+                    ref={imageInput}
+                    onChange={() => {
+                      setLoading(true);
+                      void uploadImage(imageInput.current.files);
+                    }}
+                  />
+                  <label htmlFor="profileImage">
+                    <PlusIcon className="icon icon-sm" />
+                    <span>Add photo</span>
+                  </label>
+                </>
+              )}
+            </>
           )}
         </li>
       </ul>
