@@ -1,5 +1,9 @@
 import Cookies from "universal-cookie";
+import Axios from "axios";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
 import { AdminAccess } from "../authConfig";
+import chainAxios from "./chainAxios";
 
 const cookieKey = "pagopa_token";
 
@@ -35,10 +39,35 @@ export function deleteCookie() {
   cookies.remove(cookieKey, cookieOptions);
 }
 
+const invalidate = async () => {
+  const token = getCookie();
+  await tryCatch(
+    () =>
+      Axios.post(`${process.env.BASE_SPID_LOGIN_PATH}/invalidate`, {
+        token
+      }),
+    toError
+  )
+    .chain(chainAxios)
+    .fold(
+      () => {
+        deleteCookie();
+        window.location.replace("/");
+      },
+      () => {
+        deleteCookie();
+        window.location.replace("/");
+      }
+    )
+    .run();
+};
+
 export function logout(userType: string) {
-  deleteCookie();
   if (userType === "ADMIN") {
     void AdminAccess.logoutRedirect();
+    deleteCookie();
+    window.location.replace("/");
+  } else if (userType === "USER") {
+    void invalidate();
   }
-  window.location.replace("/");
 }
