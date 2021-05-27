@@ -65,7 +65,7 @@ const ProfileData = () => {
                   <td className="px-0 border-bottom-0">Immagine operatore</td>
                   <td className="text-gray border-bottom-0">
                     <img
-                      src={getImage()}
+                      src={`${getImage()}?${Date.now()}`}
                       style={{
                         width: "170px",
                         height: "130px",
