@@ -62,10 +62,10 @@ const ProfileImage = () => {
       .chain(chainAxios)
       .map(response => response.data)
       .fold(
-        response => {
+        (error: any) => {
           triggerTooltip({
             severity: Severity.DANGER,
-            text: getImageErrorCodeDescription(response.message)
+            text: getImageErrorCodeDescription(error?.response?.data)
           });
           setLoading(false);
         },
