@@ -90,8 +90,8 @@ const CreateDiscountForm = () => {
         void createDiscount(agreement.id, newValues);
       }}
     >
-      {({ values, setFieldValue }) => (
-        <Form autoComplete="off">
+      {({ values, setFieldValue, isSubmitting }) => (
+        <Form autoComplete="off" >
           <FormSection hasIntroduction>
             <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
             <FormField
@@ -140,6 +140,7 @@ const CreateDiscountForm = () => {
                 className="px-14 mr-4"
                 color="primary"
                 tag="button"
+                aria-disabled={isSubmitting}
               >
                 Salva
               </Button>

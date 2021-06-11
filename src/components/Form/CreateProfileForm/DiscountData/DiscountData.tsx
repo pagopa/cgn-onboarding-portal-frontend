@@ -182,7 +182,7 @@ const DiscountData = ({
         });
       }}
     >
-      {({ values, setFieldValue }) => (
+      {({ values, setFieldValue, isSubmitting }) => (
         <Form autoComplete="off">
           <FieldArray
             name="discounts"
@@ -278,6 +278,7 @@ const DiscountData = ({
                               className="px-14 mr-4"
                               color="primary"
                               tag="button"
+                              aria-disabled={isSubmitting}
                             >
                               Continua
                             </Button>
