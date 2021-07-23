@@ -55,8 +55,9 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 			is: (val: string) => val === 'OnlineChannel' || val === 'BothChannels',
 			then: Yup.string().required(REQUIRED_FIELD)
 		}),
-		addresses: Yup.array().when('channelType', {
-			is: (val: string) => val === 'OfflineChannel' || val === 'BothChannels',
+		allNationalAddresses: Yup.boolean().required(REQUIRED_FIELD),
+		addresses: Yup.array().when(["channelType", "allNationalAddresses"], {
+			is: (channel: string, allNationalAddr: boolean) => (channel === 'OfflineChannel' || channel === 'BothChannels') && !allNationalAddr,
 			then: Yup.array().of(
 				Yup.object().shape({
 					fullAddress: Yup.string().min(10).required(REQUIRED_FIELD),
@@ -67,7 +68,8 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 					label: Yup.string(),
 					value: Yup.string()
 				})
-			)
+			).required(REQUIRED_FIELD),
+			otherwise: Yup.array().notRequired()
 		})
 	})
 });

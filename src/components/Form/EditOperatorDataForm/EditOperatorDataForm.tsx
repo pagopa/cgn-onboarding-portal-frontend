@@ -4,6 +4,7 @@ import { Form, Formik } from "formik";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { useHistory } from "react-router-dom";
+import * as H from 'history';
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import Api from "../../../api";
 import { RootState } from "../../../store/store";
@@ -14,11 +15,13 @@ import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescript
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { DASHBOARD } from "../../../navigation/routes";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
+import { EmptyAddresses } from "../../../utils/form_types";
 
 const defaultSalesChannel = {
   channelType: "",
   websiteUrl: "",
   discountCodeType: "",
+  allNationalAddresses: false,
   addresses: [{ fullAddress: "", coordinates: { latitude: "", longitude: "" } }]
 };
 
@@ -43,6 +46,20 @@ const defaultInitialValues = {
   salesChannel: defaultSalesChannel
 };
 
+const updateProfile = (agreement: any, history: H.History) => async (discount: any) => {
+  if (agreement) {
+    await tryCatch(
+      () => Api.Profile.updateProfile(agreement.id, discount),
+      toError
+    )
+      .fold(
+        () => void 0,
+        () => history.push(DASHBOARD)
+      )
+      .run();
+  }
+};
+
 const EditOperatorDataForm = () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
@@ -50,20 +67,7 @@ const EditOperatorDataForm = () => {
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const [loading, setLoading] = useState(true);
   const [geolocationToken, setGeolocationToken] = useState<any>();
-
-  const updateProfile = async (discount: any) => {
-    if (agreement) {
-      await tryCatch(
-        () => Api.Profile.updateProfile(agreement.id, discount),
-        toError
-      )
-        .fold(
-          () => void 0,
-          () => history.push(DASHBOARD)
-        )
-        .run();
-    }
-  };
+  const updateProfileHandler = updateProfile(agreement, history);
 
   const getProfile = async (agreementId: string) =>
     await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
@@ -75,17 +79,17 @@ const EditOperatorDataForm = () => {
             ...profile,
             salesChannel:
               profile.salesChannel.channelType === "OfflineChannel" ||
-              profile.salesChannel.channelType === "BothChannels"
+                profile.salesChannel.channelType === "BothChannels"
                 ? {
-                    ...profile.salesChannel,
-                    addresses: profile.salesChannel.addresses.map(
-                      (address: any) => ({
-                        ...address,
-                        value: address.fullAddress,
-                        label: address.fullAddress
-                      })
-                    )
-                  }
+                  ...profile.salesChannel,
+                  addresses: profile.salesChannel.addresses.map(
+                    (address: any) => ({
+                      ...address,
+                      value: address.fullAddress,
+                      label: address.fullAddress
+                    })
+                  )
+                }
                 : profile.salesChannel,
             hasDifferentFullName: !!profile.name
           });
@@ -94,7 +98,7 @@ const EditOperatorDataForm = () => {
       )
       .run();
 
-  const getGeolocationToken = async (agreementId: string) =>
+  const getGeolocationToken = async (_: string) =>
     await tryCatch(() => Api.GeolocationToken.getGeolocationToken(), toError)
       .map(response => response.data)
       .fold(
@@ -120,9 +124,9 @@ const EditOperatorDataForm = () => {
           discountCodeType,
           ...OfflineChannel
         } = salesChannel;
-        return OfflineChannel;
+        return { ...OfflineChannel, addresses: EmptyAddresses.is(OfflineChannel.addresses) ? [] : OfflineChannel.addresses };
       case "BothChannels":
-        return salesChannel;
+        return { ...salesChannel, addresses: EmptyAddresses.is(salesChannel.addresses) ? [] : salesChannel.addresses };
     }
   };
 
@@ -145,7 +149,7 @@ const EditOperatorDataForm = () => {
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...discount } = values;
-        void updateProfile({
+        void updateProfileHandler({
           ...discount,
           ...getSalesChannel(discount.salesChannel)
         });

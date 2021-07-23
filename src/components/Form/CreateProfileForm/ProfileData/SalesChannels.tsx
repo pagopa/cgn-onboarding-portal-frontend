@@ -1,5 +1,5 @@
 import React from "react";
-import { Field, FieldArray } from "formik";
+import { ErrorMessage, Field, FieldArray } from "formik";
 import { Button, Icon } from "design-react-kit";
 import AsyncSelect from "react-select/async";
 import Axios from "axios";
@@ -9,10 +9,10 @@ import FormSection from "../../FormSection";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import chainAxios from "../../../../utils/chainAxios";
+import ToggleField from "../../ToggleField";
 import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 
-const hasOfflineOrBothChannels = (channelType: string) =>
-  channelType === "OfflineChannel" || channelType === "BothChannels";
+const hasOfflineOrBothChannels = (channelType: string) => channelType === "OfflineChannel" || channelType === "BothChannels";
 
 const hasOnlineOrBothChannels = (channelType: string) =>
   channelType === "OnlineChannel" || channelType === "BothChannels";
@@ -126,7 +126,7 @@ const SalesChannels = ({
           render={arrayHelpers => (
             <>
               {formValues.salesChannel?.addresses?.map(
-                (address: any, index: number) => (
+                (_: any, index: number) => (
                   <FormSection
                     key={index}
                     title={
@@ -136,6 +136,16 @@ const SalesChannels = ({
                     required={index + 1 === 1}
                     isVisible
                   >
+                    {index === 0 && (
+                      <ToggleField
+                        htmlFor="allNationalAddresses"
+                        text="Tutti i punti vendita sul territorio nazionale">
+                        <Field
+                          id="allNationalAddresses"
+                          name="salesChannel.allNationalAddresses"
+                          type="checkbox"/>
+                      </ToggleField>
+                    )}
                     <div key={index}>
                       {!!index && (
                         <Icon
