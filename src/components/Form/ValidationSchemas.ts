@@ -83,7 +83,7 @@ export const discountDataValidationSchema = (staticCheck: boolean) =>
 			.integer(DISCOUNT_RANGE)
 			.min(5, DISCOUNT_RANGE)
 			.max(100, DISCOUNT_RANGE)
-			.required(REQUIRED_FIELD),
+			.notRequired(),
 		productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(),
 		condition: Yup.string(),
 		staticCode: Yup.string().when('condition', {
@@ -107,7 +107,7 @@ export const discountsListDataValidationSchema = (staticCheck: boolean) =>
 					.integer(DISCOUNT_RANGE)
 					.min(5, DISCOUNT_RANGE)
 					.max(100, DISCOUNT_RANGE)
-					.required(REQUIRED_FIELD),
+					.notRequired(),
 				condition: Yup.string(),
 				staticCode: Yup.string().when('condition', {
 					is: () => staticCheck,
