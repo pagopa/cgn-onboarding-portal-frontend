@@ -1,5 +1,5 @@
 import React from "react";
-import { ErrorMessage, Field, FieldArray } from "formik";
+import { Field, FieldArray } from "formik";
 import { Button, Icon } from "design-react-kit";
 import AsyncSelect from "react-select/async";
 import Axios from "axios";
@@ -133,21 +133,27 @@ const SalesChannels = ({
                       index + 1 >= 2 ? `Indirizzo ${index + 1}` : `Indirizzo`
                     }
                     description="Inserisci l'indirizzo del punto vendita, se si hanno più punti vendita inserisci gli indirizzi aggiuntivi"
-                    required={index + 1 === 1}
+                    required={formValues.salesChannel?.allNationalAddresses !== true && index + 1 === 1}
                     isVisible
                   >
                     {index === 0 && (
                       <ToggleField
                         htmlFor="allNationalAddresses"
-                        text="Tutti i punti vendita sul territorio nazionale">
+                        text="Tutti i punti vendita sul territorio nazionale"
+                        >
                         <Field
                           id="allNationalAddresses"
                           name="salesChannel.allNationalAddresses"
-                          type="checkbox"/>
+                          type="checkbox"
+                          onClick={() => setFieldValue("salesChannel.addresses", [{
+                            fullAddress: "",
+                            coordinates: { latitude: "", longitude: "" }
+                          }])}/>
                       </ToggleField>
                     )}
+
                     <div key={index}>
-                      {!!index && (
+                      {!!index && formValues.salesChannel?.allNationalAddresses === false && (
                         <Icon
                           icon="it-close"
                           style={{
@@ -159,40 +165,44 @@ const SalesChannels = ({
                           onClick={() => arrayHelpers.remove(index)}
                         />
                       )}
-                      <div className="mt-10 row">
-                        <div className="col-7">
-                          <AsyncSelect
-                            placeholder="Inserisci indirizzo"
-                            cacheOptions
-                            loadOptions={autocomplete}
-                            noOptionsMessage={() => "Nessun risultato"}
-                            value={formValues.salesChannel.addresses[index]}
-                            onChange={(e: any) =>
-                              setFieldValue(
-                                `salesChannel.addresses[${index}]`,
-                                e
-                              )
-                            }
-                          />
+                      {formValues.salesChannel?.allNationalAddresses === false && (
+                        <div className="mt-10 row">
+                          <div className="col-7">
+                            <AsyncSelect
+                              placeholder="Inserisci indirizzo"
+                              cacheOptions
+                              loadOptions={autocomplete}
+                              noOptionsMessage={() => "Nessun risultato"}
+                              value={formValues.salesChannel.addresses[index]}
+                              onChange={(e: any) =>
+                                setFieldValue(
+                                  `salesChannel.addresses[${index}]`,
+                                  e
+                                )
+                              }
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
                       {formValues.salesChannel?.addresses?.length ===
                         index + 1 && (
                         <>
-                          <div
-                            className="mt-8 cursor-pointer"
-                            onClick={() =>
-                              arrayHelpers.push({
-                                fullAddress: "",
-                                coordinates: { latitude: "", longitude: "" }
-                              })
-                            }
-                          >
-                            <PlusCircleIcon className="mr-2" />
-                            <span className="text-base font-weight-semibold text-blue">
-                              Aggiungi un indirizzo
-                            </span>
-                          </div>
+                          {formValues.salesChannel?.allNationalAddresses === false && (
+                            <div
+                              className="mt-8 cursor-pointer"
+                              onClick={() =>
+                                arrayHelpers.push({
+                                  fullAddress: "",
+                                  coordinates: { latitude: "", longitude: "" }
+                                })
+                              }
+                            >
+                              <PlusCircleIcon className="mr-2" />
+                              <span className="text-base font-weight-semibold text-blue">
+                                Aggiungi un indirizzo
+                              </span>
+                            </div>
+                          )}
                           {!hasBothChannels(
                             formValues.salesChannel?.channelType
                           ) && (
