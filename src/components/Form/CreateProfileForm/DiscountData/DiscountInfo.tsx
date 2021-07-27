@@ -121,7 +121,6 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         title="Entità dello sconto"
         description="Inserire la percentuale di sconto erogata"
         isVisible
-        required
       >
         <Field
           id="discount"
