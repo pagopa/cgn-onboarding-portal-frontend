@@ -15,15 +15,71 @@ const ProductCategories = ({ index }: Props) => {
     : `productCategories`;
   return (
     <>
-      <FormGroup check tag="div">
+      <FormGroup check tag="div" className="mt-4">
         <Field
-          id={`${name}.travels`}
+          id={`${name}.entertainment`}
           name={name}
-          value="Travels"
+          value="Entertainment"
           type="checkbox"
         />
-        <Label check for={`${name}.travels`} tag="label">
+        <Label check for={`${name}.entertainment`} tag="label">
+          Tempo libero
+        </Label>
+      </FormGroup>
+      <FormGroup check tag="div">
+        <Field
+          id={`${name}.travelling`}
+          name={name}
+          value="Travelling"
+          type="checkbox"
+        />
+        <Label check for={`${name}.travelling`} tag="label">
           Viaggi
+        </Label>
+      </FormGroup>
+      <FormGroup check tag="div">
+        <Field
+          id={`${name}.foodDrink`}
+          name={name}
+          value="FoodDrink"
+          type="checkbox"
+        />
+        <Label check for={`${name}.foodDrink`} tag="label">
+          Ristoranti e cucina
+        </Label>
+      </FormGroup>
+      <FormGroup check tag="div" className="mt-4">
+        <Field
+          id={`${name}.services`}
+          name={name}
+          value="Services"
+          type="checkbox"
+        />
+        <Label check for={`${name}.services`} tag="label">
+          Servizi
+        </Label>
+      </FormGroup>
+      <FormGroup check tag="div" className="mt-4">
+        <Field id={`${name}.learning`} name={name} value="Learning" type="checkbox" />
+        <Label check for={`${name}.learning`} tag="label">
+          Istruzione e formazione
+        </Label>
+      </FormGroup>
+      <FormGroup check tag="div" className="mt-4">
+        <Field id={`${name}.hotels`} name={name} value="Hotels" type="checkbox" />
+        <Label check for={`${name}.hotels`} tag="label">
+          Hotel
+        </Label>
+      </FormGroup>
+      <FormGroup check tag="div" className="mt-4">
+        <Field
+          id={`${name}.sports`}
+          name={name}
+          value="Sports"
+          type="checkbox"
+        />
+        <Label check for={`${name}.sports`} tag="label">
+          Sport
         </Label>
       </FormGroup>
       <FormGroup check tag="div" className="mt-4">
@@ -39,58 +95,13 @@ const ProductCategories = ({ index }: Props) => {
       </FormGroup>
       <FormGroup check tag="div" className="mt-4">
         <Field
-          id={`${name}.entertainments`}
+          id={`${name}.shopping`}
           name={name}
-          value="Entertainments"
+          value="Shopping"
           type="checkbox"
         />
-        <Label check for={`${name}.entertainments`} tag="label">
-          Teatro, cinema e spettacolo
-        </Label>
-      </FormGroup>
-      <FormGroup check tag="div" className="mt-4">
-        <Field
-          id={`${name}.transportation`}
-          name={name}
-          value="Transportation"
-          type="checkbox"
-        />
-        <Label check for={`${name}.transportation`} tag="label">
-          Carsharing e mobilità
-        </Label>
-      </FormGroup>
-      <FormGroup check tag="div" className="mt-4">
-        <Field
-          id={`${name}.connectivity`}
-          name={name}
-          value="Connectivity"
-          type="checkbox"
-        />
-        <Label check for={`${name}.connectivity`} tag="label">
-          Telefonia, servizi internet
-        </Label>
-      </FormGroup>
-      <FormGroup check tag="div" className="mt-4">
-        <Field id={`${name}.books`} name={name} value="Books" type="checkbox" />
-        <Label check for={`${name}.books`} tag="label">
-          Libri, audiolibri, e-book
-        </Label>
-      </FormGroup>
-      <FormGroup check tag="div" className="mt-4">
-        <Field id={`${name}.arts`} name={name} value="Arts" type="checkbox" />
-        <Label check for={`${name}.arts`} tag="label">
-          Musei, gallerie e parchi
-        </Label>
-      </FormGroup>
-      <FormGroup check tag="div" className="mt-4">
-        <Field
-          id={`${name}.sports`}
-          name={name}
-          value="Sports"
-          type="checkbox"
-        />
-        <Label check for={`${name}.sports`} tag="label">
-          Sport
+        <Label check for={`${name}.shopping`} tag="label">
+          Shopping
         </Label>
       </FormGroup>
       <CustomErrorMessage name={name} />
