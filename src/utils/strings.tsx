@@ -1,3 +1,5 @@
+import { fromNullable } from "fp-ts/lib/Option";
+
 const PRODUCT_CATEGORIES: any = {
   Entertainment: "Tempo libero",
   Travelling: "Viaggi Trasporti e Mobilità",
@@ -15,3 +17,8 @@ export function makeProductCategoriesString(productCategories: Array<string>) {
     (productCategory: any) => PRODUCT_CATEGORIES[productCategory]
   );
 }
+
+export const formatPercentage = (discountValue: number | undefined) => 
+fromNullable(discountValue)
+.map(value => `${value} %`)
+.getOrElse("");

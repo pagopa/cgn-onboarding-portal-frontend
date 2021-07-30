@@ -19,7 +19,7 @@ import Api from "../../api/index";
 import { Discounts } from "../../api/generated";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import ProfileItem from "../Profile/ProfileItem";
-import { makeProductCategoriesString } from "../../utils/strings";
+import { formatPercentage, makeProductCategoriesString } from "../../utils/strings";
 import { RootState } from "../../store/store";
 import PublishModal from "./PublishModal";
 
@@ -336,7 +336,7 @@ const Discounts = () => {
               />
               <ProfileItem
                 label="Entità dello sconto"
-                value={`${row.original.discount}%`}
+                value={formatPercentage(row.original.discount)}
               />
               <tr>
                 <td className={`px-0 text-gray border-bottom-0`}>

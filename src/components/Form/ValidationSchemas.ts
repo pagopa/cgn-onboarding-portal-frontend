@@ -8,7 +8,7 @@ const INCORRECT_CONFIRM_EMAIL_ADDRESS = 'I due indirizzi devono combaciare';
 const REQUIRED_FIELD = 'Campo obbligatorio';
 const ONLY_NUMBER = 'Solo numeri';
 const ONLY_STRING = 'Solo lettere';
-const DISCOUNT_RANGE = 'Lo sconto deve essere un numero intero compreso tra 5 e 100';
+const DISCOUNT_RANGE = 'Lo sconto deve essere un numero intero compreso tra 1 e 100';
 const PRODUCT_CATEGORIES_ONE = 'Selezionare almeno una categoria merceologica';
 const INCORRECT_WEBSITE_URL = 'L’indirizzo inserito non è corretto';
 
@@ -81,9 +81,9 @@ export const discountDataValidationSchema = (staticCheck: boolean) =>
 		discount: Yup.number()
 			.typeError(DISCOUNT_RANGE)
 			.integer(DISCOUNT_RANGE)
-			.min(5, DISCOUNT_RANGE)
+			.min(1, DISCOUNT_RANGE)
 			.max(100, DISCOUNT_RANGE)
-			.required(REQUIRED_FIELD),
+			.notRequired(),
 		productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(),
 		condition: Yup.string(),
 		staticCode: Yup.string().when('condition', {
@@ -105,9 +105,9 @@ export const discountsListDataValidationSchema = (staticCheck: boolean) =>
 				discount: Yup.number()
 					.typeError(DISCOUNT_RANGE)
 					.integer(DISCOUNT_RANGE)
-					.min(5, DISCOUNT_RANGE)
+					.min(1, DISCOUNT_RANGE)
 					.max(100, DISCOUNT_RANGE)
-					.required(REQUIRED_FIELD),
+					.notRequired(),
 				condition: Yup.string(),
 				staticCode: Yup.string().when('condition', {
 					is: () => staticCheck,
