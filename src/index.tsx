@@ -7,9 +7,12 @@ import it from "date-fns/locale/it";
 import { TooltipProvider } from "./context/tooltip";
 import App from "./App";
 import { store } from "./store/store";
+import { renderCSP } from "./utils/meta";
 
 registerLocale("it", it);
 setDefaultLocale("it");
+
+renderCSP();
 
 ReactDOM.render(
   <React.StrictMode>
