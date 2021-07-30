@@ -1,14 +1,15 @@
 import { fromNullable } from "fp-ts/lib/Option";
 
 const PRODUCT_CATEGORIES: any = {
-  Entertainments: "Teatro, cinema e spettacolo",
-  Travels: "Viaggi",
-  Transportation: "Carsharing, mobilità",
-  Connectivity: "Telefonia, servizi internet",
-  Books: "Libri, audiolibri, e-book",
-  Arts: "Musei, gallerie, parchi",
+  Entertainment: "Tempo libero",
+  Travelling: "Viaggi Trasporti e Mobilità",
+  FoodDrink: "Ristoranti e cucina",
+  Services: "Servizi",
+  Learning: "Istruzione e formazione",
+  Hotels: "Hotel",
   Sports: "Sport",
-  Health: "Salute e benessere"
+  Health: "Salute e benessere",
+  Shopping: "Shopping"
 };
 
 export function makeProductCategoriesString(productCategories: Array<string>) {
