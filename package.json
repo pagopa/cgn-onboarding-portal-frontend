@@ -19,9 +19,9 @@
     "test:coverage": "jest --passWithNoTests --coverage --coverageReporters=cobertura",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
-    "generate:api": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/PE-179_change_discount_range/openapi/openapi.yaml -g typescript-axios -o ./src/api/generated",
-    "generate:api_backoffice": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/PE-179_change_discount_range/openapi/backoffice/openapi.yaml -g typescript-axios -o ./src/api/generated_backoffice",
-    "generate:api_public": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/PE-179_change_discount_range/openapi/public.yaml -g typescript-axios -o ./src/api/generated_public",
+    "generate:api": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/openapi.yaml -g typescript-axios -o ./src/api/generated",
+    "generate:api_backoffice": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/backoffice/openapi.yaml -g typescript-axios -o ./src/api/generated_backoffice",
+    "generate:api_public": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/public.yaml -g typescript-axios -o ./src/api/generated_public",
     "generate": "npm-run-all generate:*",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "typescript:dts": "node scripts/dts.js"
