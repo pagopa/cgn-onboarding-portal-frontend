@@ -4,7 +4,7 @@ import { Form, Formik } from "formik";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { useHistory } from "react-router-dom";
-import * as H from 'history';
+import * as H from "history";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import Api from "../../../api";
 import { RootState } from "../../../store/store";
@@ -22,7 +22,7 @@ const defaultSalesChannel = {
   websiteUrl: "",
   discountCodeType: "",
   allNationalAddresses: false,
-  addresses: [{ fullAddress: "", coordinates: { latitude: "", longitude: "" } }]
+  addresses: [{ street: "", zipCode: "", city: "", district: "" }]
 };
 
 const defaultInitialValues = {
@@ -46,7 +46,9 @@ const defaultInitialValues = {
   salesChannel: defaultSalesChannel
 };
 
-const updateProfile = (agreement: any, history: H.History) => async (discount: any) => {
+const updateProfile = (agreement: any, history: H.History) => async (
+  discount: any
+) => {
   if (agreement) {
     await tryCatch(
       () => Api.Profile.updateProfile(agreement.id, discount),
@@ -79,17 +81,26 @@ const EditOperatorDataForm = () => {
             ...profile,
             salesChannel:
               profile.salesChannel.channelType === "OfflineChannel" ||
-                profile.salesChannel.channelType === "BothChannels"
+              profile.salesChannel.channelType === "BothChannels"
                 ? {
-                  ...profile.salesChannel,
-                  addresses: profile.salesChannel.addresses.map(
-                    (address: any) => ({
-                      ...address,
-                      value: address.fullAddress,
-                      label: address.fullAddress
-                    })
-                  )
-                }
+                    ...profile.salesChannel,
+                    addresses: profile.salesChannel.addresses.map(
+                      (address: any) => {
+                        const addressSplit = address.fullAddress
+                          .split(",")
+                          .map((item: string) => item.trim());
+                        return {
+                          ...address,
+                          street: addressSplit[0],
+                          city: addressSplit[1],
+                          district: addressSplit[2],
+                          zipCode: addressSplit[4],
+                          value: address.fullAddress,
+                          label: address.fullAddress
+                        };
+                      }
+                    )
+                  }
                 : profile.salesChannel,
             hasDifferentFullName: !!profile.name
           });
@@ -124,9 +135,19 @@ const EditOperatorDataForm = () => {
           discountCodeType,
           ...OfflineChannel
         } = salesChannel;
-        return { ...OfflineChannel, addresses: EmptyAddresses.is(OfflineChannel.addresses) ? [] : OfflineChannel.addresses };
+        return {
+          ...OfflineChannel,
+          addresses: EmptyAddresses.is(OfflineChannel.addresses)
+            ? []
+            : OfflineChannel.addresses
+        };
       case "BothChannels":
-        return { ...salesChannel, addresses: EmptyAddresses.is(salesChannel.addresses) ? [] : salesChannel.addresses };
+        return {
+          ...salesChannel,
+          addresses: EmptyAddresses.is(salesChannel.addresses)
+            ? []
+            : salesChannel.addresses
+        };
     }
   };
 
@@ -162,7 +183,7 @@ const EditOperatorDataForm = () => {
           <ProfileImage />
           <ProfileDescription />
           <SalesChannels
-            geolocationToken={geolocationToken}
+            // geolocationToken={geolocationToken}
             setFieldValue={setFieldValue}
             handleBack={() => history.push(DASHBOARD)}
             formValues={values}

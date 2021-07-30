@@ -24,7 +24,15 @@ const defaultSalesChannel = {
   websiteUrl: "",
   discountCodeType: "",
   allNationalAddresses: false,
-  addresses: [{ fullAddress: "", coordinates: { latitude: "", longitude: "" } }]
+  addresses: [
+    {
+      street: "",
+      zipCode: "",
+      city: "",
+      district: "",
+      coordinates: { latitude: "", longitude: "" }
+    }
+  ]
 };
 
 const defaultInitialValues = {
@@ -116,14 +124,18 @@ const ProfileData = ({
               profile.salesChannel.channelType === "OfflineChannel"
                 ? {
                     ...profile.salesChannel,
-                    addresses: !array.isEmpty(profile.salesChannel.addresses) ? 
-                    profile.salesChannel.addresses.map(
-                      (address: any) => ({
-                        ...address,
-                        value: address.fullAddress,
-                        label: address.fullAddress
-                      })
-                    ) : [{ fullAddress: "", coordinates: { latitude: "", longitude: "" } }]
+                    addresses: !array.isEmpty(profile.salesChannel.addresses)
+                      ? profile.salesChannel.addresses.map((address: any) => ({
+                          ...address,
+                          value: address.fullAddress,
+                          label: address.fullAddress
+                        }))
+                      : [
+                          {
+                            fullAddress: "",
+                            coordinates: { latitude: "", longitude: "" }
+                          }
+                        ]
                   }
                 : profile.salesChannel,
             hasDifferentFullName: !!profile.name
@@ -161,17 +173,28 @@ const ProfileData = ({
         const {
           websiteUrl,
           discountCodeType,
-          ...OfflineChannel          
+          ...OfflineChannel
         } = salesChannel;
         return {
           salesChannel: {
-            ...OfflineChannel, 
-            addresses: EmptyAddresses.is(OfflineChannel.addresses) ? [] : OfflineChannel.addresses}
+            ...OfflineChannel,
+            addresses: EmptyAddresses.is(OfflineChannel.addresses)
+              ? []
+              : OfflineChannel.addresses.map((add: any) => ({
+                  fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                  coordinates: add.coordinates
+                }))
+          }
         };
       case "BothChannels":
         return {
-          ...salesChannel, 
-          addresses: EmptyAddresses.is(salesChannel.addresses) ? [] : salesChannel.addresses
+          ...salesChannel,
+          addresses: EmptyAddresses.is(salesChannel.addresses)
+            ? []
+            : salesChannel.addresses.map((add: any) => ({
+                fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                coordinates: add.coordinates
+              }))
         };
     }
   };
@@ -209,7 +232,7 @@ const ProfileData = ({
             <ProfileImage />
             <ProfileDescription />
             <SalesChannels
-              geolocationToken={geolocationToken}
+              // geolocationToken={geolocationToken}
               handleBack={handleBack}
               formValues={values}
               isValid={!!agreement.imageUrl}
