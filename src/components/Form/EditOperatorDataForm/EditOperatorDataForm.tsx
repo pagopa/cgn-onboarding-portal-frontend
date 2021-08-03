@@ -90,11 +90,10 @@ const EditOperatorDataForm = () => {
                           .split(",")
                           .map((item: string) => item.trim());
                         return {
-                          ...address,
                           street: addressSplit[0],
                           city: addressSplit[1],
                           district: addressSplit[2],
-                          zipCode: addressSplit[4],
+                          zipCode: addressSplit[3],
                           value: address.fullAddress,
                           label: address.fullAddress
                         };
@@ -139,14 +138,20 @@ const EditOperatorDataForm = () => {
           ...OfflineChannel,
           addresses: EmptyAddresses.is(OfflineChannel.addresses)
             ? []
-            : OfflineChannel.addresses
+            : OfflineChannel.addresses.map((add: any) => ({
+                fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                coordinates: add.coordinates
+              }))
         };
       case "BothChannels":
         return {
           ...salesChannel,
           addresses: EmptyAddresses.is(salesChannel.addresses)
             ? []
-            : salesChannel.addresses
+            : salesChannel.addresses.map((add: any) => ({
+                fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                coordinates: add.coordinates
+              }))
         };
     }
   };
@@ -172,7 +177,7 @@ const EditOperatorDataForm = () => {
         const { hasDifferentFullName, ...discount } = values;
         void updateProfileHandler({
           ...discount,
-          ...getSalesChannel(discount.salesChannel)
+          salesChannel: { ...getSalesChannel(discount.salesChannel) }
         });
       }}
     >
