@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import * as array from "fp-ts/lib/Array";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
@@ -11,6 +12,7 @@ import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 import { useTooltip, Severity } from "../../../../context/tooltip";
+import { EmptyAddresses } from "../../../../utils/form_types";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
 import ProfileImage from "./ProfileImage";
@@ -21,7 +23,15 @@ const defaultSalesChannel = {
   channelType: "",
   websiteUrl: "",
   discountCodeType: "",
-  addresses: [{ fullAddress: "", coordinates: { latitude: "", longitude: "" } }]
+  allNationalAddresses: false,
+  addresses: [
+    {
+      street: "",
+      zipCode: "",
+      city: "",
+      district: ""
+    }
+  ]
 };
 
 const defaultInitialValues = {
@@ -113,13 +123,17 @@ const ProfileData = ({
               profile.salesChannel.channelType === "OfflineChannel"
                 ? {
                     ...profile.salesChannel,
-                    addresses: profile.salesChannel.addresses.map(
-                      (address: any) => ({
-                        ...address,
-                        value: address.fullAddress,
-                        label: address.fullAddress
-                      })
-                    )
+                    addresses: !array.isEmpty(profile.salesChannel.addresses)
+                      ? profile.salesChannel.addresses.map((address: any) => ({
+                          ...address,
+                          value: address.fullAddress,
+                          label: address.fullAddress
+                        }))
+                      : [
+                          {
+                            fullAddress: ""
+                          }
+                        ]
                   }
                 : profile.salesChannel,
             hasDifferentFullName: !!profile.name
@@ -159,9 +173,27 @@ const ProfileData = ({
           discountCodeType,
           ...OfflineChannel
         } = salesChannel;
-        return OfflineChannel;
+        return {
+          salesChannel: {
+            ...OfflineChannel,
+            addresses: EmptyAddresses.is(OfflineChannel.addresses)
+              ? []
+              : OfflineChannel.addresses.map((add: any) => ({
+                  fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                  coordinates: add.coordinates
+                }))
+          }
+        };
       case "BothChannels":
-        return salesChannel;
+        return {
+          ...salesChannel,
+          addresses: EmptyAddresses.is(salesChannel.addresses)
+            ? []
+            : salesChannel.addresses.map((add: any) => ({
+                fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                coordinates: add.coordinates
+              }))
+        };
     }
   };
 
@@ -198,7 +230,7 @@ const ProfileData = ({
             <ProfileImage />
             <ProfileDescription />
             <SalesChannels
-              geolocationToken={geolocationToken}
+              // geolocationToken={geolocationToken}
               handleBack={handleBack}
               formValues={values}
               isValid={!!agreement.imageUrl}
