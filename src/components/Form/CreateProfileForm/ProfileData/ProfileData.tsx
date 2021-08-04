@@ -124,11 +124,19 @@ const ProfileData = ({
                 ? {
                     ...profile.salesChannel,
                     addresses: !array.isEmpty(profile.salesChannel.addresses)
-                      ? profile.salesChannel.addresses.map((address: any) => ({
-                          ...address,
+                      ? profile.salesChannel.addresses.map((address: any) => {
+                        const addressSplit = address.fullAddress
+                          .split(",")
+                          .map((item: string) => item.trim());
+                        return {
+                          street: addressSplit[0],
+                          city: addressSplit[1],
+                          district: addressSplit[2],
+                          zipCode: addressSplit[3],
                           value: address.fullAddress,
                           label: address.fullAddress
-                        }))
+                        };
+                      })
                       : [
                           {
                             fullAddress: ""
