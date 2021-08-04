@@ -29,8 +29,7 @@ const defaultSalesChannel = {
       street: "",
       zipCode: "",
       city: "",
-      district: "",
-      coordinates: { latitude: "", longitude: "" }
+      district: ""
     }
   ]
 };
@@ -132,8 +131,7 @@ const ProfileData = ({
                         }))
                       : [
                           {
-                            fullAddress: "",
-                            coordinates: { latitude: "", longitude: "" }
+                            fullAddress: ""
                           }
                         ]
                   }

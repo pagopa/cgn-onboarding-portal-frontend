@@ -155,8 +155,7 @@ Props) => (
                               street: "",
                               zipCode: "",
                               city: "",
-                              district: "",
-                              coordinates: { latitude: "", longitude: "" }
+                              district: ""
                             }
                           ])
                         }
@@ -275,8 +274,7 @@ Props) => (
                                 street: "",
                                 zipCode: "",
                                 city: "",
-                                district: "",
-                                coordinates: { latitude: "", longitude: "" }
+                                district: ""
                               })
                             }
                           >
