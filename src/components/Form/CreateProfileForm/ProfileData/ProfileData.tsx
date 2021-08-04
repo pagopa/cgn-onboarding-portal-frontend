@@ -120,7 +120,8 @@ const ProfileData = ({
           setInitialValues({
             ...profile,
             salesChannel:
-              profile.salesChannel.channelType === "OfflineChannel"
+              profile.salesChannel.channelType === "OfflineChannel" ||
+              profile.salesChannel.channelType === "BothChannels"
                 ? {
                     ...profile.salesChannel,
                     addresses: !array.isEmpty(profile.salesChannel.addresses)
