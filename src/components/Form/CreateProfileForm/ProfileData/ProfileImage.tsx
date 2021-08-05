@@ -16,7 +16,7 @@ const FooterDescription = (
   <p className="text-base font-weight-normal text-gray">
     Il file deve avere le seguenti caratteristiche:
     <br />
-    Dimensione del file: minimo 800x600px
+    Dimensione dell&#39;immagine: minimo 800x600px / Dimensione del file: massimo 5Mb
     <br />
     Formato del file: JPG, PNG
   </p>

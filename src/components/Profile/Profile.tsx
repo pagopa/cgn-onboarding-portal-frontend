@@ -52,7 +52,7 @@ const Profile = () => {
                 <ProfileItem label="Indirizzo PEC" value={profile.pecAddress} />
                 <ProfileItem label="Sede legale" value={profile.legalOffice} />
                 <ProfileItem
-                  label="Numero di telefono"
+                  label="Numero di telefono azienda"
                   value={profile.telephoneNumber}
                 />
                 <ProfileItem
@@ -87,7 +87,7 @@ const Profile = () => {
                   value={profile.referent.emailAddress}
                 />
                 <ProfileItem
-                  label="Numero di telefono"
+                  label="Numero di telefono diretto"
                   value={profile.referent.telephoneNumber}
                 />
               </tbody>

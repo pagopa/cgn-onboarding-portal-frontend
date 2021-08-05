@@ -44,7 +44,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
       <InputField
         htmlFor="description"
         title="Descrizione agevolazione"
-        description="Inserire una descrizione leggermente più approfondita dell'agevolazione, se lo ritenete necessario (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri"
+        description="Se necessario, inserire una descrizione più approfondita dell'agevolazione (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri"
         isVisible
       >
         <Field
@@ -118,7 +118,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
       <InputField
         htmlFor="discount"
         title="Entità dello sconto"
-        description="Inserire la percentuale di sconto erogata"
+        description="Se l'agevolazione lo prevede, inserire la percentuale (%) di sconto erogata"
         isVisible
       >
         <Field

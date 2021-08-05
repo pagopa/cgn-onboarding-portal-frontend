@@ -9,7 +9,7 @@ const Profile = ({ profile }: { profile: ApprovedAgreementProfile }) => (
       <Item label="Codice Fiscale / Partita IVA" value={profile.taxCodeOrVat} />
       <Item label="Indirizzo PEC" value={profile.pecAddress} />
       <Item label="Sede legale" value={profile.legalOffice} />
-      <Item label="Numero di telefono" value={profile.telephoneNumber} />
+      <Item label="Numero di telefono azienda" value={profile.telephoneNumber} />
       <Item
         label="Nome e cognome del legale rappresentante"
         value={profile.legalRepresentativeFullName}

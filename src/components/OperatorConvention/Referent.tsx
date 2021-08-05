@@ -9,7 +9,7 @@ const Referent = ({ referent }: { referent: ApprovedAgreementReferent }) => (
       <Item label="Cognome" value={referent.lastName} />
       <Item label="Ruolo all’interno dell’azienda" value={referent.role} />
       <Item label="Indirizzo e-mail" value={referent.emailAddress} />
-      <Item label="Numero di telefono" value={referent.telephoneNumber} />
+      <Item label="Numero di telefono diretto" value={referent.telephoneNumber} />
     </div>
   );
 
