@@ -11,7 +11,6 @@ type Props = {
   index?: number;
 };
 
-type CustomDatePicker = Omit<React.ComponentProps<typeof DateInputComponent>, 'ref'>;
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
   const hasIndex = index !== undefined;
