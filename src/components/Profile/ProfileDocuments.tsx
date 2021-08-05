@@ -79,7 +79,7 @@ const ProfileDocuments = () => {
                   href={manifestationDocument.documentUrl}
                   style={{ padding: 0 }}
                 >
-                  Allegato 1 - Manifestazione di interesse
+                  Allegato 1 - Domanda di adesione alla CGN
                 </a>
                 <p className="text-sm font-weight-light text-dark-blue">
                   Caricato il

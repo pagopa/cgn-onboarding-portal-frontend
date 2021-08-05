@@ -22,7 +22,7 @@ const FormField = ({
   isVisible = false
 }: Props) => (
   <div className="mt-10 row">
-    <div className="col-8">
+    <div>
       <label htmlFor={htmlFor}>
         <span className="d-flex flex-row align-items-center">
           <span
