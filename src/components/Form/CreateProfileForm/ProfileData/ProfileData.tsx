@@ -195,14 +195,16 @@ const ProfileData = ({
         };
       case "BothChannels":
         return {
-          ...salesChannel,
-          addresses: EmptyAddresses.is(salesChannel.addresses)
-            ? []
-            : salesChannel.addresses.map((add: any) => ({
-                fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
-                coordinates: add.coordinates
-              }))
-        };
+          salesChannel: {
+            ...salesChannel,
+            addresses: EmptyAddresses.is(salesChannel.addresses)
+              ? []
+              : salesChannel.addresses.map((add: any) => ({
+                  fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                  coordinates: add.coordinates
+                }))
+              }
+          };
     }
   };
 
