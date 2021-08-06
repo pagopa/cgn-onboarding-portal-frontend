@@ -21,6 +21,7 @@ const ProfileInfo = ({ formValues }: Props) => (
       <CustomErrorMessage name="fullName" />
     </InputField>
     <ToggleField
+      small={true}
       htmlFor="hasDifferentFullName"
       text="Vuoi visualizzare un nome diverso dentro l’app?"
     >

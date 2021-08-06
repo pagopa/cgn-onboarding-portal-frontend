@@ -142,6 +142,7 @@ Props) => (
                 >
                   {index === 0 && (
                     <ToggleField
+                      small={false}
                       htmlFor="allNationalAddresses"
                       text="Rappresenti un franchising e vuoi che le agevolazioni valgano in tutti i punti vendita presenti sul territorio nazionale?"
                     >
