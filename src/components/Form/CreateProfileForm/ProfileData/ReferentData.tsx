@@ -44,7 +44,7 @@ const ReferentData = ({ children }: Props) => (
     </InputField>
     <InputField
       htmlFor="referent.telephoneNumber"
-      title="Numero di telefono"
+      title="Numero di telefono diretto"
       required
     >
       <Field

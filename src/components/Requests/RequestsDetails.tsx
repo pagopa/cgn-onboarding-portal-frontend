@@ -122,7 +122,7 @@ const RequestsDetails = ({
           value={original.profile?.referent.emailAddress}
         />
         <RequestItem
-          label="Numero di telefono"
+          label="Numero di telefono diretto"
           value={original.profile?.referent.telephoneNumber}
         />
       </div>
