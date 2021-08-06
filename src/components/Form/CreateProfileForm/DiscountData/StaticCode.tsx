@@ -11,19 +11,17 @@ type Props = {
 const StaticCode = ({ children, index }: Props) => {
   const hasIndex = index !== undefined;
   return (
-    <>
-      <InputField htmlFor="staticCode">
-        <Field
-          id="staticCode"
-          name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
-          type="text"
-        />
-      </InputField>
+    <div className="col-10">
+      <Field
+        id="staticCode"
+        name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
+        type="text"
+      />
       <CustomErrorMessage
         name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
       />
       {children}
-    </>
+    </div>
   );
 };
 

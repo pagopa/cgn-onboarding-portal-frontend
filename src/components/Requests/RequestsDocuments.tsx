@@ -26,7 +26,7 @@ const CheckedDocument = ({
   const label =
     doc.documentType === "Agreement"
       ? "Convenzione"
-      : "Manifestazione di interesse";
+      : "Domanda di adesione alla CGN";
   return (
     <div key={i} className="border-bottom py-5">
       <div className="d-flex flex-row justify-content-between align-items-center">
@@ -71,7 +71,7 @@ const UncheckedDocument = ({
   const label =
     doc.documentType === "Agreement"
       ? "Convenzione"
-      : "Manifestazione di interesse";
+      : "Domanda di adesione alla CGN";
   return (
     <div key={i} className="border-bottom py-5">
       <div className="d-flex flex-row justify-content-between align-items-center">

@@ -143,7 +143,7 @@ Props) => (
                   {index === 0 && (
                     <ToggleField
                       htmlFor="allNationalAddresses"
-                      text="Tutti i punti vendita sul territorio nazionale"
+                      text="Rappresenti un franchising e vuoi che le agevolazioni valgano in tutti i punti vendita presenti sul territorio nazionale?"
                     >
                       <Field
                         id="allNationalAddresses"
