@@ -4,63 +4,61 @@ const IDPS = {
       identifier: "Aruba",
       entityId: "arubaid",
       name: "Aruba.it ID",
-      imageUrl:
-        "https://www.spid.gov.it/assets/img/richiedi-spid/logo-aruba.svg"
+      imageUrl: "https://assets.cdn.io.italia.it/spid/idps/spid-idp-arubaid.png"
     },
     {
       identifier: "Poste",
       entityId: "posteid",
       name: "Poste ID",
-      imageUrl:
-        "https://www.spid.gov.it/assets/img/richiedi-spid/logo-poste.svg"
+      imageUrl: "https://assets.cdn.io.italia.it/spid/idps/spid-idp-posteid.png"
     },
     {
       identifier: "Infocert",
       entityId: "infocertid",
       name: "Infocert ID",
       imageUrl:
-        "https://www.spid.gov.it/assets/img/richiedi-spid/logo-infocert.svg"
+        "https://assets.cdn.io.italia.it/spid/idps/spid-idp-infocertid.png"
     },
     {
       identifier: "Register",
       entityId: "spiditalia",
       name: "SpidItalia",
       imageUrl:
-        "https://www.spid.gov.it/assets/img/richiedi-spid/logo-register.svg"
+        "https://assets.cdn.io.italia.it/spid/idps/spid-idp-spiditalia.png"
     },
     {
       identifier: "IntesaID",
       entityId: "intesaid",
       name: "Intesa",
       imageUrl:
-        "https://www.spid.gov.it/assets/img/richiedi-spid/logo-intesa.svg"
+        "https://assets.cdn.io.italia.it/spid/idps/spid-idp-intesaid.png"
     },
     {
       identifier: "Sielte",
       entityId: "sielteid",
       name: "Sielte id",
       imageUrl:
-        "https://www.spid.gov.it/assets/img/richiedi-spid/logo-sielte.svg"
+        "https://assets.cdn.io.italia.it/spid/idps/spid-idp-sielteid.png"
     },
     {
       identifier: "Namirial",
       entityId: "namirialid",
       name: "Namirial ID",
       imageUrl:
-        "https://www.spid.gov.it/assets/img/richiedi-spid/logo-namirial.svg"
+        "https://assets.cdn.io.italia.it/spid/idps/spid-idp-namirialid.png"
     },
     {
       identifier: "Tim",
       entityId: "timid",
       name: "TIM id",
-      imageUrl: "https://www.spid.gov.it/assets/img/richiedi-spid/logo-tim.svg"
+      imageUrl: "https://assets.cdn.io.italia.it/spid/idps/spid-idp-timid.png"
     }
   ],
-  richiediSpid: "https://www.spid.gov.it/richiedi-spid"
+  richiediSpid: "https://www.spid.gov.it/cos-e-spid/come-attivare-spid/"
 };
 
-if (process.env.NODE_ENV !== 'production') {
-// eslint-disable-next-line functional/immutable-data
+if (process.env.NODE_ENV !== "production") {
+  // eslint-disable-next-line functional/immutable-data
   IDPS.identityProviders.push({
     identifier: "test",
     entityId: "xx_testenv2",
@@ -70,6 +68,4 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-export {
-  IDPS
-};
+export { IDPS };
