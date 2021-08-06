@@ -7,7 +7,7 @@ const Document = ({ doc, i }: { doc: Document; i: number }) => {
   const label =
     doc.documentType === "Agreement"
       ? "Convenzione"
-      : "Manifestazione di interesse";
+      : "Domanda di adesione alla CGN";
   return (
     <div className="mb-5">
       <div className="mb-3 text-gray">{label}</div>

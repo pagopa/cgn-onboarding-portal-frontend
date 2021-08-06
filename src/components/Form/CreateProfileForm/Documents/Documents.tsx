@@ -89,7 +89,7 @@ const Documents = ({
           getFiles={getFiles}
           uploadedDoc={getUploadedDoc("manifestation_of_interest")}
           type="manifestation_of_interest"
-          label="Manifestazione di interesse"
+          label="Domanda di adesione alla CGN"
           agreementId={agreement.id}
         />
         {(isCompleted || allUploaded) && (
