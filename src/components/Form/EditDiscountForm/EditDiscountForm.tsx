@@ -19,6 +19,7 @@ import { Discount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import PublishModal from "../../Discounts/PublishModal";
+import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 
 const emptyInitialValues = {
   name: "",
@@ -46,6 +47,11 @@ const EditDiscountForm = () => {
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "Static";
+
+  const checkLanding =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Landing";
 
   const updateDiscount = async (agreementId: string, discount: Discount) => {
     const {
@@ -128,7 +134,9 @@ const EditDiscountForm = () => {
       <Formik
         enableReinitialize
         initialValues={initialValues}
-        validationSchema={() => discountDataValidationSchema(checkStaticCode)}
+        validationSchema={() =>
+          discountDataValidationSchema(checkStaticCode, checkLanding)
+        }
         onSubmit={values => {
           const newValues = {
             ...values,
@@ -172,6 +180,18 @@ const EditDiscountForm = () => {
                   required
                 >
                   <StaticCode />
+                </FormField>
+              )}
+              {checkLanding && (
+                <FormField
+                  htmlFor="landingPage"
+                  isTitleHeading
+                  title="Indirizzo della landing page"
+                  description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’agevolazione"
+                  isVisible
+                  required
+                >
+                  <LandingPage />
                 </FormField>
               )}
               {initialValues.state !== "draft" && (

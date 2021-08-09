@@ -21,6 +21,7 @@ import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { CreateDiscount, Discount } from "../../../../api/generated";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
+import LandingPage from "./LandingPage";
 
 const emptyInitialValues = {
   discounts: [
@@ -72,6 +73,11 @@ const DiscountData = ({
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "Static";
+
+  const checkLanding =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Landing";
 
   const createDiscount = async (
     agreementId: string,
@@ -164,7 +170,10 @@ const DiscountData = ({
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={discountsListDataValidationSchema(checkStaticCode)}
+      validationSchema={discountsListDataValidationSchema(
+        checkStaticCode,
+        checkLanding
+      )}
       onSubmit={values => {
         const newValues = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
@@ -241,6 +250,18 @@ const DiscountData = ({
                           <StaticCode index={index} />
                         </FormField>
                       )}
+                      {checkLanding && (
+                        <FormField
+                          htmlFor="landingPage"
+                          isTitleHeading
+                          title="Indirizzo della landing page"
+                          description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’agevolazione"
+                          isVisible
+                          required
+                        >
+                          <LandingPage index={index} />
+                        </FormField>
+                      )}
                       {values.discounts.length - 1 === index && (
                         <>
                           <div
@@ -290,7 +311,7 @@ const DiscountData = ({
                 ))}
               </>
             )}
-          ></FieldArray>
+          />
         </Form>
       )}
     </Formik>

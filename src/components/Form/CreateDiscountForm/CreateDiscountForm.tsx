@@ -17,6 +17,7 @@ import FormField from "../FormField";
 import { CreateDiscount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
+import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 
 const emptyInitialValues = {
   name: "",
@@ -39,6 +40,11 @@ const CreateDiscountForm = () => {
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "Static";
+
+  const checkLanding =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Landing";
 
   const createDiscount = async (
     agreementId: string,
@@ -78,7 +84,9 @@ const CreateDiscountForm = () => {
   return (
     <Formik
       initialValues={emptyInitialValues}
-      validationSchema={() => discountDataValidationSchema(checkStaticCode)}
+      validationSchema={() =>
+        discountDataValidationSchema(checkStaticCode, checkLanding)
+      }
       onSubmit={values => {
         const newValues = {
           ...values,
@@ -90,7 +98,7 @@ const CreateDiscountForm = () => {
       }}
     >
       {({ values, setFieldValue, isSubmitting }) => (
-        <Form autoComplete="off" >
+        <Form autoComplete="off">
           <FormSection hasIntroduction>
             <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
             <FormField
@@ -122,6 +130,18 @@ const CreateDiscountForm = () => {
                 required
               >
                 <StaticCode />
+              </FormField>
+            )}
+            {checkLanding && (
+              <FormField
+                htmlFor="landingPage"
+                isTitleHeading
+                title="Indirizzo della landing page*"
+                description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’agevolazione"
+                isVisible
+                required
+              >
+                <LandingPage />
               </FormField>
             )}
             <div className="mt-10">
