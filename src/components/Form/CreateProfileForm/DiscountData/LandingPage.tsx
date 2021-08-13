@@ -14,12 +14,16 @@ const LandingPage = ({ children, index }: Props) => {
     <>
       <Field
         id="landing"
-        name={hasIndex ? `discounts[${index}].landingPage.url` : "staticCode"}
+        name={
+          hasIndex ? `discounts[${index}].landingPageUrl` : "landingPageUrl"
+        }
         placeholder="Inserisci indirizzo"
         type="text"
       />
       <CustomErrorMessage
-        name={hasIndex ? `discounts[${index}].landingPage.url` : "staticCode"}
+        name={
+          hasIndex ? `discounts[${index}].landingPageUrl` : "landingPageUrl"
+        }
       />
       <p className="mt-4 text-sm font-weight-normal text-black">
         {
@@ -29,14 +33,18 @@ const LandingPage = ({ children, index }: Props) => {
       <Field
         id="landing"
         name={
-          hasIndex ? `discounts[${index}].landingPage.referrer` : "staticCode"
+          hasIndex
+            ? `discounts[${index}].landingPageReferrer`
+            : "landingPageReferrer"
         }
         placeholder="Inserisci valore referrer"
         type="text"
       />
       <CustomErrorMessage
         name={
-          hasIndex ? `discounts[${index}].landingPage.referrer` : "staticCode"
+          hasIndex
+            ? `discounts[${index}].landingPageReferrer`
+            : "landingPageReferrer"
         }
       />
       {children}

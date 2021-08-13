@@ -51,7 +51,7 @@ const EditDiscountForm = () => {
   const checkLanding =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
-    profile?.salesChannel?.discountCodeType === "Landing";
+    profile?.salesChannel?.discountCodeType === "LandingPage";
 
   const updateDiscount = async (agreementId: string, discount: Discount) => {
     const {

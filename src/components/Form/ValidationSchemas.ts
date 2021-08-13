@@ -175,18 +175,15 @@ export const discountsListDataValidationSchema = (
           then: Yup.string().required(REQUIRED_FIELD),
           otherwise: Yup.string()
         }),
-        landingPage: Yup.object().when("condition", {
+        landingPageUrl: Yup.string().when("condition", {
           is: () => landingCheck,
-          then: Yup.object()
-            .shape({
-              url: Yup.string().required(REQUIRED_FIELD),
-              referrer: Yup.string().required(REQUIRED_FIELD)
-            })
-            .required(REQUIRED_FIELD),
-          otherwise: Yup.object().shape({
-            url: Yup.string().required(REQUIRED_FIELD),
-            referrer: Yup.string().required(REQUIRED_FIELD)
-          })
+          then: Yup.string().required(REQUIRED_FIELD),
+          otherwise: Yup.string()
+        }),
+        landingPageReferrer: Yup.string().when("condition", {
+          is: () => landingCheck,
+          then: Yup.string().required(REQUIRED_FIELD),
+          otherwise: Yup.string()
         })
       })
     )

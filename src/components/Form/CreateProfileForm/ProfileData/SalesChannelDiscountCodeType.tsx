@@ -46,14 +46,14 @@ const SalesChannelDiscountCodeType = () => (
       </div>
       <div className="form-check">
         <Field
-          id="staticCode"
+          id="landingPage"
           type="radio"
           name="salesChannel.discountCodeType"
-          value="Landing"
+          value="LandingPage"
         />
         <label
           className="text-sm font-weight-normal text-black"
-          htmlFor="staticCode"
+          htmlFor="landingPage"
         >
           <span className="text-sm">
             <a href="#">Con link a landing page</a>: fornirò per ogni
