@@ -28,9 +28,8 @@ const ProfileDocuments = () => {
           setManifestationDocument(
             documents.find(
               document =>
-                document.documentType ===
-                  "backoffice_manifestation_of_interest" ||
-                document.documentType === "manifestation_of_interest"
+                document.documentType === "backoffice_adhesion_request" ||
+                document.documentType === "adhesion_request"
             )
           );
         }

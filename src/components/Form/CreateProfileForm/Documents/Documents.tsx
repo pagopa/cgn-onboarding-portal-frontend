@@ -87,8 +87,8 @@ const Documents = ({
         />
         <FileRow
           getFiles={getFiles}
-          uploadedDoc={getUploadedDoc("manifestation_of_interest")}
-          type="manifestation_of_interest"
+          uploadedDoc={getUploadedDoc("adhesion_request")}
+          type="adhesion_request"
           label="Domanda di adesione alla CGN"
           agreementId={agreement.id}
         />
