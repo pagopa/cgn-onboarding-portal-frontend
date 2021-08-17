@@ -3,14 +3,15 @@ import { string } from "yup/lib/locale";
 import { HelpRequestCategoryEnum } from "../../api/generated";
 import Help from "../../pages/Help";
 
-const INCORRECT_EMAIL_ADDRESS = 'L’indirizzo inserito non è corretto';
-const INCORRECT_CONFIRM_EMAIL_ADDRESS = 'I due indirizzi devono combaciare';
-const REQUIRED_FIELD = 'Campo obbligatorio';
-const ONLY_NUMBER = 'Solo numeri';
-const ONLY_STRING = 'Solo lettere';
-const DISCOUNT_RANGE = 'Lo sconto deve essere un numero intero compreso tra 1 e 100';
-const PRODUCT_CATEGORIES_ONE = 'Selezionare almeno una categoria merceologica';
-const INCORRECT_WEBSITE_URL = 'L’indirizzo inserito non è corretto';
+const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
+const INCORRECT_CONFIRM_EMAIL_ADDRESS = "I due indirizzi devono combaciare";
+const REQUIRED_FIELD = "Campo obbligatorio";
+const ONLY_NUMBER = "Solo numeri";
+const ONLY_STRING = "Solo lettere";
+const DISCOUNT_RANGE =
+  "Lo sconto deve essere un numero intero compreso tra 1 e 100";
+const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
+const INCORRECT_WEBSITE_URL = "L’indirizzo inserito non è corretto";
 
 export const ProfileDataValidationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
@@ -105,51 +106,85 @@ export const ProfileDataValidationSchema = Yup.object().shape({
   })
 });
 
-export const discountDataValidationSchema = (staticCheck: boolean) =>
-	Yup.object().shape({
-		name: Yup.string().max(100).required(REQUIRED_FIELD),
-		description: Yup.string().max(250),
-		startDate: Yup.string().required(REQUIRED_FIELD),
-		endDate: Yup.string().required(REQUIRED_FIELD),
-		discount: Yup.number()
-			.typeError(DISCOUNT_RANGE)
-			.integer(DISCOUNT_RANGE)
-			.min(1, DISCOUNT_RANGE)
-			.max(100, DISCOUNT_RANGE)
-			.notRequired(),
-		productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(),
-		condition: Yup.string(),
-		staticCode: Yup.string().when('condition', {
-			is: () => staticCheck,
-			then: Yup.string().required(REQUIRED_FIELD),
-			otherwise: Yup.string()
-		})
-	});
+export const discountDataValidationSchema = (
+  staticCheck: boolean,
+  landingCheck?: boolean
+) =>
+  Yup.object().shape({
+    name: Yup.string()
+      .max(100)
+      .required(REQUIRED_FIELD),
+    description: Yup.string().max(250),
+    startDate: Yup.string().required(REQUIRED_FIELD),
+    endDate: Yup.string().required(REQUIRED_FIELD),
+    discount: Yup.number()
+      .typeError(DISCOUNT_RANGE)
+      .integer(DISCOUNT_RANGE)
+      .min(1, DISCOUNT_RANGE)
+      .max(100, DISCOUNT_RANGE)
+      .notRequired(),
+    productCategories: Yup.array()
+      .min(1, PRODUCT_CATEGORIES_ONE)
+      .required(),
+    condition: Yup.string(),
+    staticCode: Yup.string().when("condition", {
+      is: () => staticCheck,
+      then: Yup.string().required(REQUIRED_FIELD),
+      otherwise: Yup.string()
+    }),
+    landingPageUrl: Yup.string().when("condition", {
+      is: () => landingCheck,
+      then: Yup.string().required(REQUIRED_FIELD),
+      otherwise: Yup.string()
+    }),
+    landingPageReferrer: Yup.string().when("condition", {
+      is: () => landingCheck,
+      then: Yup.string().required(REQUIRED_FIELD),
+      otherwise: Yup.string()
+    })
+  });
 
-export const discountsListDataValidationSchema = (staticCheck: boolean) =>
-	Yup.object().shape({
-		discounts: Yup.array().of(
-			Yup.object().shape({
-				name: Yup.string().max(100).required(REQUIRED_FIELD),
-				description: Yup.string().max(250),
-				startDate: Yup.string().required(REQUIRED_FIELD),
-				endDate: Yup.string().required(REQUIRED_FIELD),
-				productCategories: Yup.array().min(1, PRODUCT_CATEGORIES_ONE).required(REQUIRED_FIELD),
-				discount: Yup.number()
-					.typeError(DISCOUNT_RANGE)
-					.integer(DISCOUNT_RANGE)
-					.min(1, DISCOUNT_RANGE)
-					.max(100, DISCOUNT_RANGE)
-					.notRequired(),
-				condition: Yup.string(),
-				staticCode: Yup.string().when('condition', {
-					is: () => staticCheck,
-					then: Yup.string().required(REQUIRED_FIELD),
-					otherwise: Yup.string()
-				})
-			})
-		)
-	});
+export const discountsListDataValidationSchema = (
+  staticCheck: boolean,
+  landingCheck?: boolean
+) =>
+  Yup.object().shape({
+    discounts: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string()
+          .max(100)
+          .required(REQUIRED_FIELD),
+        description: Yup.string().max(250),
+        startDate: Yup.string().required(REQUIRED_FIELD),
+        endDate: Yup.string().required(REQUIRED_FIELD),
+        productCategories: Yup.array()
+          .min(1, PRODUCT_CATEGORIES_ONE)
+          .required(REQUIRED_FIELD),
+        discount: Yup.number()
+          .typeError(DISCOUNT_RANGE)
+          .integer(DISCOUNT_RANGE)
+          .min(1, DISCOUNT_RANGE)
+          .max(100, DISCOUNT_RANGE)
+          .notRequired(),
+        condition: Yup.string(),
+        staticCode: Yup.string().when("condition", {
+          is: () => staticCheck,
+          then: Yup.string().required(REQUIRED_FIELD),
+          otherwise: Yup.string()
+        }),
+        landingPageUrl: Yup.string().when("condition", {
+          is: () => landingCheck,
+          then: Yup.string().required(REQUIRED_FIELD),
+          otherwise: Yup.string()
+        }),
+        landingPageReferrer: Yup.string().when("condition", {
+          is: () => landingCheck,
+          then: Yup.string().required(REQUIRED_FIELD),
+          otherwise: Yup.string()
+        })
+      })
+    )
+  });
 
 export const loggedHelpValidationSchema = Yup.object().shape({
   category: Yup.string()

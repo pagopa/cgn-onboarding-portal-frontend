@@ -44,6 +44,24 @@ const SalesChannelDiscountCodeType = () => (
           </span>
         </label>
       </div>
+      <div className="form-check">
+        <Field
+          id="landingPage"
+          type="radio"
+          name="salesChannel.discountCodeType"
+          value="LandingPage"
+        />
+        <label
+          className="text-sm font-weight-normal text-black"
+          htmlFor="landingPage"
+        >
+          <span className="text-sm">
+            <a href="#">Con link a landing page</a>: fornirò per ogni
+            agevolazione un link a cui il cittadino che accede proveniendo da IO
+            potrà usufruire degli sconti a lui dedicati
+          </span>
+        </label>
+      </div>
       <CustomErrorMessage name={`salesChannel.discountCodeType`} />
     </div>
   </FormSection>
