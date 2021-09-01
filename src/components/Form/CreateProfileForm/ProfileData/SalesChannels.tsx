@@ -321,7 +321,7 @@ Props) => (
     {hasOnlineOrBothChannels(formValues.salesChannel?.channelType) && (
       <FormSection
         title="Sito web"
-        description="Inserire l'URL del proprio e-commerce"
+        description="Inserire l'URL del proprio e-commerce o del proprio sito istituzionale"
         required
         isVisible
       >
