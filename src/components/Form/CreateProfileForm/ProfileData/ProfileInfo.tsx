@@ -69,7 +69,7 @@ const ProfileInfo = ({ formValues }: Props) => (
       />
       <CustomErrorMessage name="legalOffice" />
     </InputField>
-    <InputField htmlFor="telephoneNumber" title="Numero di telefono azienda" required>
+    <InputField htmlFor="telephoneNumber" title="Numero di telefono Operatore" required>
       <Field
         maxLength={15}
         id="telephoneNumber"
