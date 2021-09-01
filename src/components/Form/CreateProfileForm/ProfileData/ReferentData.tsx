@@ -24,7 +24,7 @@ const ReferentData = ({ children }: Props) => (
     </InputField>
     <InputField
       htmlFor="referent.role"
-      title="Ruolo all'interno dell'azienda"
+      title="Ruolo all'interno dell'organizzazione"
       required
     >
       <Field id="referent.role" name="referent.role" type="text" />
