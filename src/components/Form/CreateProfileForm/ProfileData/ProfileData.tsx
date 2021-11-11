@@ -11,7 +11,7 @@ import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { useTooltip, Severity } from "../../../../context/tooltip";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import { EmptyAddresses } from "../../../../utils/form_types";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
@@ -126,18 +126,18 @@ const ProfileData = ({
                     ...profile.salesChannel,
                     addresses: !array.isEmpty(profile.salesChannel.addresses)
                       ? profile.salesChannel.addresses.map((address: any) => {
-                        const addressSplit = address.fullAddress
-                          .split(",")
-                          .map((item: string) => item.trim());
-                        return {
-                          street: addressSplit[0],
-                          city: addressSplit[1],
-                          district: addressSplit[2],
-                          zipCode: addressSplit[3],
-                          value: address.fullAddress,
-                          label: address.fullAddress
-                        };
-                      })
+                          const addressSplit = address.fullAddress
+                            .split(",")
+                            .map((item: string) => item.trim());
+                          return {
+                            street: addressSplit[0],
+                            city: addressSplit[1],
+                            district: addressSplit[2],
+                            zipCode: addressSplit[3],
+                            value: address.fullAddress,
+                            label: address.fullAddress
+                          };
+                        })
                       : [
                           {
                             fullAddress: ""
@@ -185,26 +185,30 @@ const ProfileData = ({
         return {
           salesChannel: {
             ...OfflineChannel,
-            addresses: EmptyAddresses.is(OfflineChannel.addresses)
-              ? []
-              : OfflineChannel.addresses.map((add: any) => ({
-                  fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
-                  coordinates: add.coordinates
-                }))
+            addresses:
+              EmptyAddresses.is(OfflineChannel.addresses) ||
+              OfflineChannel.allNationalAddresses
+                ? []
+                : OfflineChannel.addresses.map((add: any) => ({
+                    fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                    coordinates: add.coordinates
+                  }))
           }
         };
       case "BothChannels":
         return {
           salesChannel: {
             ...salesChannel,
-            addresses: EmptyAddresses.is(salesChannel.addresses)
-              ? []
-              : salesChannel.addresses.map((add: any) => ({
-                  fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
-                  coordinates: add.coordinates
-                }))
-              }
-          };
+            addresses:
+              EmptyAddresses.is(salesChannel.addresses) ||
+              salesChannel.allNationalAddresses
+                ? []
+                : salesChannel.addresses.map((add: any) => ({
+                    fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                    coordinates: add.coordinates
+                  }))
+          }
+        };
     }
   };
 
