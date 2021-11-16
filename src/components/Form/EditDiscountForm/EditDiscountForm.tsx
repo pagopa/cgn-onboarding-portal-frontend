@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import { Button } from "design-react-kit";
@@ -20,6 +20,7 @@ import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import PublishModal from "../../Discounts/PublishModal";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
 
 const emptyInitialValues = {
   name: "",
@@ -193,6 +194,14 @@ const EditDiscountForm = () => {
                 >
                   <LandingPage />
                 </FormField>
+              )}
+              {profile?.salesChannel?.channelType === "OnlineChannel" && (
+                <EnrollToEyca
+                  isEycaSupported={checkStaticCode}
+                  discountOption={checkLanding ? "Landing Page" : "API"}
+                  formValues={values}
+                  setFieldValue={setFieldValue}
+                />
               )}
               {initialValues.state !== "draft" && (
                 <div className="mt-10">

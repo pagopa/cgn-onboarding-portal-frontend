@@ -18,6 +18,7 @@ import { CreateDiscount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
 
 const emptyInitialValues = {
   name: "",
@@ -144,6 +145,12 @@ const CreateDiscountForm = () => {
                 <LandingPage />
               </FormField>
             )}
+            <EnrollToEyca
+              isEycaSupported={checkStaticCode}
+              discountOption={checkLanding ? "Landing Page" : "API"}
+              formValues={values}
+              setFieldValue={setFieldValue}
+            />
             <div className="mt-10">
               <Button
                 className="px-14 mr-4"

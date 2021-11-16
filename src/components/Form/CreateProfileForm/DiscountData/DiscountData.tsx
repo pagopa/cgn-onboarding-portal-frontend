@@ -1,12 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
 import { Button } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
-import { useTooltip, Severity } from "../../../../context/tooltip";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
 import chainAxios from "../../../../utils/chainAxios";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
@@ -22,6 +22,7 @@ import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { CreateDiscount, Discount } from "../../../../api/generated";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import LandingPage from "./LandingPage";
+import EnrollToEyca from "./EnrollToEyca";
 
 const emptyInitialValues = {
   discounts: [
@@ -261,6 +262,16 @@ const DiscountData = ({
                         >
                           <LandingPage index={index} />
                         </FormField>
+                      )}
+                      {profile?.salesChannel?.channelType ===
+                        "OnlineChannel" && (
+                        <EnrollToEyca
+                          isEycaSupported={checkStaticCode}
+                          discountOption={checkLanding ? "Landing Page" : "API"}
+                          index={index}
+                          formValues={values}
+                          setFieldValue={setFieldValue}
+                        />
                       )}
                       {values.discounts.length - 1 === index && (
                         <>

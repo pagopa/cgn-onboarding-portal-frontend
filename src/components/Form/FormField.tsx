@@ -1,12 +1,11 @@
 import React from "react";
-import Field from "formik";
 import VisibleIcon from "../../assets/icons/visible.svg";
 
 type Props = {
   htmlFor: string;
   isTitleHeading?: boolean;
   title?: string;
-  description?: string;
+  description?: string | React.ReactElement;
   children: any;
   required?: boolean;
   isVisible?: boolean;
