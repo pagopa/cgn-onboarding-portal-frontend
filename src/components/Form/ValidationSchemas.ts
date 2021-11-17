@@ -1,7 +1,5 @@
 import * as Yup from "yup";
-import { string } from "yup/lib/locale";
 import { HelpRequestCategoryEnum } from "../../api/generated";
-import Help from "../../pages/Help";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
 const INCORRECT_CONFIRM_EMAIL_ADDRESS = "I due indirizzi devono combaciare";
@@ -141,7 +139,8 @@ export const discountDataValidationSchema = (
       is: () => landingCheck,
       then: Yup.string().required(REQUIRED_FIELD),
       otherwise: Yup.string()
-    })
+    }),
+    enrollToEyca: Yup.boolean()
   });
 
 export const discountsListDataValidationSchema = (
@@ -181,7 +180,8 @@ export const discountsListDataValidationSchema = (
           is: () => landingCheck,
           then: Yup.string().required(REQUIRED_FIELD),
           otherwise: Yup.string()
-        })
+        }),
+        enrollToEyca: Yup.boolean()
       })
     )
   });

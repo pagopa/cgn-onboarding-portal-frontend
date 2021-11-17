@@ -34,7 +34,8 @@ const emptyInitialValues = {
       discount: "",
       productCategories: [],
       condition: "",
-      staticCode: ""
+      staticCode: "",
+      enrollToEyca: false
     }
   ]
 };

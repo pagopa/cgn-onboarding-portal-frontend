@@ -28,7 +28,8 @@ const emptyInitialValues = {
   discount: "",
   productCategories: [],
   condition: "",
-  staticCode: ""
+  staticCode: "",
+  enrollToEyca: false
 };
 
 const CreateDiscountForm = () => {
@@ -145,12 +146,14 @@ const CreateDiscountForm = () => {
                 <LandingPage />
               </FormField>
             )}
-            <EnrollToEyca
-              isEycaSupported={checkStaticCode}
-              discountOption={checkLanding ? "Landing Page" : "API"}
-              formValues={values}
-              setFieldValue={setFieldValue}
-            />
+            {profile?.salesChannel?.channelType === "OnlineChannel" && (
+              <EnrollToEyca
+                isEycaSupported={checkStaticCode}
+                discountOption={checkLanding ? "Landing Page" : "API"}
+                formValues={values}
+                setFieldValue={setFieldValue}
+              />
+            )}
             <div className="mt-10">
               <Button
                 className="px-14 mr-4"

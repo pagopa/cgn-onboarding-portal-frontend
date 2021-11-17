@@ -42,9 +42,9 @@ const EnrollToEyca = ({
   const hasIndex = index !== undefined;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkBoxValue, setCheckboxValue] = useState(
-    index !== undefined
+    (index !== undefined
       ? formValues.discounts[index].enrollToEyca
-      : formValues.enrollToEyca
+      : formValues.enrollToEyca) ?? false
   );
 
   const openModal = (val: any) => {
@@ -104,18 +104,20 @@ const EnrollToEyca = ({
             name={
               hasIndex ? `discounts[${index}].enrollToEyca` : `enrollToEyca`
             }
-            value="enrollToEyca"
             type="checkbox"
-            onChange={(e: any) =>
-              isEycaSupported
-                ? setFieldValue(
-                    hasIndex
-                      ? `discounts[${index}].enrollToEyca`
-                      : `enrollToEyca`,
-                    e.target.value
-                  )
-                : openModal(e.target.value)
-            }
+            onChange={(e: any) => {
+              const value = e.target.value === "true";
+              if (isEycaSupported || value) {
+                setFieldValue(
+                  hasIndex
+                    ? `discounts[${index}].enrollToEyca`
+                    : `enrollToEyca`,
+                  !value
+                );
+                return;
+              }
+              openModal(!value);
+            }}
           />
           <Label check for={`enrollToEyca`} tag="label">
             Sì, voglio che questa agevolazione sia valida anche per il circuito
