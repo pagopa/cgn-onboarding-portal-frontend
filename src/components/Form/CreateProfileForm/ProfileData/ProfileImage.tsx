@@ -1,22 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { useTooltip, Severity } from "../../../../context/tooltip";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormSection from "../../FormSection";
 import { setImage } from "../../../../store/agreement/agreementSlice";
 import PlusIcon from "../../../../assets/icons/plus.svg";
 import { RootState } from "../../../../store/store";
 import Api from "../../../../api/index";
-import { ImageErrorCode } from "../../../../api/generated";
 import chainAxios from "../../../../utils/chainAxios";
 
 const FooterDescription = (
   <p className="text-base font-weight-normal text-gray">
     Il file deve avere le seguenti caratteristiche:
     <br />
-    Dimensione dell&#39;immagine: minimo 800x600px / Dimensione del file: massimo 5Mb
+    Dimensione dell&#39;immagine: minimo 800x600px / Dimensione del file:
+    massimo 5Mb
     <br />
     Formato del file: JPG, PNG
   </p>
@@ -82,7 +82,6 @@ const ProfileImage = () => {
 
   return (
     <FormSection
-      hasIntroduction
       title="Immagine operatore"
       description="Caricare un'immagine che rappresenti i beni o i servizi trattati dall'Operatore"
       footerDescription={FooterDescription}
