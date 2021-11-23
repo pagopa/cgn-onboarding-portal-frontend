@@ -58,7 +58,7 @@ const SalesChannelDiscountCodeType = () => (
           <span className="text-sm">
             <a href="#">Con link a landing page</a>: fornirò per ogni
             agevolazione un link con cui il cittadino che accede proveniendo da IO
-            potrà usufruire degli sconti.
+            potrà usufruire degli sconti
           </span>
         </label>
       </div>
