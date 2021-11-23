@@ -18,6 +18,7 @@ import { CreateDiscount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 
 const emptyInitialValues = {
   name: "",
@@ -45,6 +46,11 @@ const CreateDiscountForm = () => {
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "LandingPage";
+
+  const checkBucket =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Bucket";
 
   const createDiscount = async (
     agreementId: string,
@@ -142,6 +148,62 @@ const CreateDiscountForm = () => {
                 required
               >
                 <LandingPage />
+              </FormField>
+            )}
+            {checkLanding && (
+              <FormField
+                htmlFor="bucket"
+                isTitleHeading
+                title="Carica la lista di codici sconto"
+                description={
+                  <>
+                    Caricare un file .CSV con la lista di almeno 1.000.000 di
+                    codici sconto statici relativi all’agevolazione.
+                    <br />
+                    Per maggiori informazioni, consultare la{" "}
+                    <a
+                      className="font-weight-semibold"
+                      href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Documentazione tecnica
+                    </a>{" "}
+                    o scaricare il <a href="#">file di esempio</a>
+                  </>
+                }
+                isVisible
+                required
+              >
+                <Bucket label={"Seleziona un file dal computer"} />
+              </FormField>
+            )}
+            {checkLanding && (
+              <FormField
+                htmlFor="bucket"
+                isTitleHeading
+                title="Carica la lista di codici sconto"
+                description={
+                  <>
+                    Caricare un file .CSV con la lista di almeno 1.000.000 di
+                    codici sconto statici relativi all’agevolazione.
+                    <br />
+                    Per maggiori informazioni, consultare la{" "}
+                    <a
+                      className="font-weight-semibold"
+                      href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Documentazione tecnica
+                    </a>{" "}
+                    o scaricare il <a href="#">file di esempio</a>
+                  </>
+                }
+                isVisible
+                required
+              >
+                <Bucket label={"Seleziona un file dal computer"} />
               </FormField>
             )}
             <div className="mt-10">

@@ -46,6 +46,26 @@ const SalesChannelDiscountCodeType = () => (
       </div>
       <div className="form-check">
         <Field
+          id="bucket"
+          type="radio"
+          name="salesChannel.discountCodeType"
+          value="Bucket"
+        />
+        <label
+          className="text-sm font-weight-normal text-black"
+          htmlFor="bucket"
+        >
+          <span className="text-sm">
+            <a href="#">Con lista di codici statici</a>: assocerò ad ogni
+            agevolazione una lista di codici statici che verranno letti e
+            accettati dai miei sistemi e che mi impegno a caricare
+            periodicamente, consapevole del fatto che, se si esaurissero,
+            l’agevolazione sarebbe sospesa
+          </span>
+        </label>
+      </div>
+      <div className="form-check">
+        <Field
           id="landingPage"
           type="radio"
           name="salesChannel.discountCodeType"

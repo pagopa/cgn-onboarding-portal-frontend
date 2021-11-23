@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import { Button } from "design-react-kit";
@@ -52,6 +52,11 @@ const EditDiscountForm = () => {
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "LandingPage";
+
+  const checkBucket =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Bucket";
 
   const updateDiscount = async (agreementId: string, discount: Discount) => {
     const {

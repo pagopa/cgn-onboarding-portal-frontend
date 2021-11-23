@@ -1,12 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
 import { Button } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
-import { useTooltip, Severity } from "../../../../context/tooltip";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
 import chainAxios from "../../../../utils/chainAxios";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
@@ -22,6 +22,7 @@ import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { CreateDiscount, Discount } from "../../../../api/generated";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import LandingPage from "./LandingPage";
+import Bucket from "./Bucket";
 
 const emptyInitialValues = {
   discounts: [
@@ -78,6 +79,11 @@ const DiscountData = ({
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "LandingPage";
+
+  const checkBucket =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Bucket";
 
   const createDiscount = async (
     agreementId: string,
@@ -260,6 +266,38 @@ const DiscountData = ({
                           required
                         >
                           <LandingPage index={index} />
+                        </FormField>
+                      )}
+                      {checkLanding && (
+                        <FormField
+                          htmlFor="bucket"
+                          isTitleHeading
+                          title="Carica la lista di codici sconto"
+                          description={
+                            <>
+                              Caricare un file .CSV con la lista di almeno
+                              1.000.000 di codici sconto statici relativi
+                              all’agevolazione.
+                              <br />
+                              Per maggiori informazioni, consultare la{" "}
+                              <a
+                                className="font-weight-semibold"
+                                href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                Documentazione tecnica
+                              </a>{" "}
+                              o scaricare il <a href="#">file di esempio</a>
+                            </>
+                          }
+                          isVisible
+                          required
+                        >
+                          <Bucket
+                            label={"Seleziona un file dal computer"}
+                            index={index}
+                          />
                         </FormField>
                       )}
                       {values.discounts.length - 1 === index && (
