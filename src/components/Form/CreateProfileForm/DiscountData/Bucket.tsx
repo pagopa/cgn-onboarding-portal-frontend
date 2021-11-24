@@ -18,8 +18,7 @@ type Props = {
 
 const Bucket = ({ label, uploadedDoc }: Props) => {
   const refFile = useRef<any>();
-  const [loadingTemplate, setLoadingTemplate] = useState(false);
-  const [loadingDoc, setLoadingDoc] = useState(false);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const { triggerTooltip } = useTooltip();
 
@@ -28,7 +27,7 @@ const Bucket = ({ label, uploadedDoc }: Props) => {
   };
 
   const addFile = async (files: any) => {
-    setLoadingDoc(true);
+    setUploadingDoc(true);
     await tryCatch(
       () =>
         Api.Document.uploadDocument("", "", files[0], {
@@ -40,7 +39,7 @@ const Bucket = ({ label, uploadedDoc }: Props) => {
     )
       .fold(
         () => {
-          setLoadingDoc(false);
+          setUploadingDoc(false);
           setUploadProgress(0);
         },
         _ => {
@@ -71,7 +70,7 @@ const Bucket = ({ label, uploadedDoc }: Props) => {
             <i>{label}</i>
           )}
         </div>
-        {!loadingTemplate && !loadingDoc && (
+        {!uploadingDoc && (
           <>
             <div className="d-flex flex-row">
               {!uploadedDoc && (
@@ -96,7 +95,7 @@ const Bucket = ({ label, uploadedDoc }: Props) => {
           </>
         )}
       </div>
-      {(loadingTemplate || loadingDoc) && (
+      {uploadingDoc && (
         <div className="pt-3">
           <Progress
             value={uploadProgress}
