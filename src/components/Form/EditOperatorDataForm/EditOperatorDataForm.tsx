@@ -62,6 +62,7 @@ const updateProfile = (agreement: any, history: H.History) => async (
   }
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const EditOperatorDataForm = () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
@@ -136,22 +137,26 @@ const EditOperatorDataForm = () => {
         } = salesChannel;
         return {
           ...OfflineChannel,
-          addresses: EmptyAddresses.is(OfflineChannel.addresses)
-            ? []
-            : OfflineChannel.addresses.map((add: any) => ({
-                fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
-                coordinates: add.coordinates
-              }))
+          addresses:
+            EmptyAddresses.is(OfflineChannel.addresses) ||
+            OfflineChannel.allNationalAddresses
+              ? []
+              : OfflineChannel.addresses.map((add: any) => ({
+                  fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                  coordinates: add.coordinates
+                }))
         };
       case "BothChannels":
         return {
           ...salesChannel,
-          addresses: EmptyAddresses.is(salesChannel.addresses)
-            ? []
-            : salesChannel.addresses.map((add: any) => ({
-                fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
-                coordinates: add.coordinates
-              }))
+          addresses:
+            EmptyAddresses.is(salesChannel.addresses) ||
+            salesChannel.allNationalAddresses
+              ? []
+              : salesChannel.addresses.map((add: any) => ({
+                  fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                  coordinates: add.coordinates
+                }))
         };
     }
   };
