@@ -140,7 +140,11 @@ const EditDiscountForm = () => {
         enableReinitialize
         initialValues={initialValues}
         validationSchema={() =>
-          discountDataValidationSchema(checkStaticCode, checkLanding)
+          discountDataValidationSchema(
+            checkStaticCode,
+            checkLanding,
+            checkBucket
+          )
         }
         onSubmit={values => {
           const newValues = {

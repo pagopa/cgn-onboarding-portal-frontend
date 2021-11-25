@@ -178,7 +178,8 @@ const DiscountData = ({
       initialValues={initialValues}
       validationSchema={discountsListDataValidationSchema(
         checkStaticCode,
-        checkLanding
+        checkLanding,
+        checkBucket
       )}
       onSubmit={values => {
         const newValues = {

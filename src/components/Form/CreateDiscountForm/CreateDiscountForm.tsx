@@ -91,7 +91,7 @@ const CreateDiscountForm = () => {
     <Formik
       initialValues={emptyInitialValues}
       validationSchema={() =>
-        discountDataValidationSchema(checkStaticCode, checkLanding)
+        discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
       }
       onSubmit={values => {
         const newValues = {

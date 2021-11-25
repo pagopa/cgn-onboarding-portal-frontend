@@ -1,21 +1,18 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { constNull } from "fp-ts/lib/function";
-import { useTooltip } from "../../../../context/tooltip";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
-import { Document } from "../../../../api/generated";
-import { formatDate } from "../../../../utils/dates";
-import DeleteDocument from "../Documents/DeleteDocument";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
   label: string;
   formValues: any;
   setFieldValue: any;
   agreementId: string;
-  uploadedDoc?: Document;
+  uploadedDoc?: { name: string };
   index?: number;
 };
 
@@ -24,17 +21,31 @@ const Bucket = ({
   label,
   uploadedDoc,
   agreementId,
+  formValues,
   setFieldValue
-}: Props) => {
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+Props) => {
   const hasIndex = index !== undefined;
   const refFile = useRef<any>();
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [currentDoc, setCurrentDoc] = useState(uploadedDoc);
   const { triggerTooltip } = useTooltip();
 
   const handleClick = () => {
     refFile.current.click();
   };
+
+  useEffect(() => {
+    const hasDocument =
+      (index !== undefined
+        ? formValues.discounts[index].lastBucketCodeFileUid
+        : formValues.lastBucketCodeFileUid) !== undefined;
+
+    if (hasDocument) {
+      setCurrentDoc({ name: "File già presente" });
+    }
+  }, []);
 
   const addFile = async (files: any) => {
     setUploadingDoc(true);
@@ -53,12 +64,19 @@ const Bucket = ({
           setUploadProgress(0);
         },
         response => {
-          setFieldValue(
-            hasIndex
-              ? `discounts[${index}].lastBucketCodeFileUid`
-              : "lastBucketCodeFileUid",
-            response.data.uid
-          );
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          response.status
+            ? setFieldValue(
+                hasIndex
+                  ? `discounts[${index}].lastBucketCodeFileUid`
+                  : "lastBucketCodeFileUid",
+                response.data.uid
+              )
+            : triggerTooltip({
+                severity: Severity.DANGER,
+                text: "Caricamento del file fallito"
+              });
+          setCurrentDoc({ name: files[0].name });
           setUploadingDoc(false);
           setUploadProgress(0);
         }
@@ -66,50 +84,38 @@ const Bucket = ({
       .run();
   };
 
-  const deleteFile = async () =>
-    await tryCatch(() => new Promise(constNull), toError)
-      .fold(() => void 0, constNull)
-      .run();
-
   return (
     <div className="border-bottom py-4">
       <div className="d-flex flex-row justify-content-between align-items-center">
         <div className="d-flex flex-row align-items-center">
-          {uploadedDoc && <DocumentSuccess className="mr-4" />}
-          {uploadedDoc ? (
+          {currentDoc && <DocumentSuccess className="mr-4" />}
+          {currentDoc ? (
             <div className="d-flex flex-column ">
-              <a href={uploadedDoc.documentUrl}>{label}</a>
-              <span className="text-gray">
-                {formatDate(uploadedDoc.documentTimestamp)}
-              </span>
+              <a href="#">{currentDoc.name}</a>
+              {/* <span className="text-gray"> */}
+              {/*  {formatDate(uploadedDoc.documentTimestamp)} */}
+              {/* </span> */}
             </div>
           ) : (
             <i>{label}</i>
           )}
         </div>
-        {!uploadingDoc && (
-          <>
-            <div className="d-flex flex-row">
-              {!uploadedDoc && (
-                <Button
-                  color="primary"
-                  icon
-                  size="sm"
-                  tag="button"
-                  onClick={handleClick}
-                >
-                  Carica file
-                  <input
-                    type="file"
-                    hidden
-                    ref={refFile}
-                    onChange={() => addFile(refFile.current.files)}
-                  />
-                </Button>
-              )}
-            </div>
-            {uploadedDoc && <DeleteDocument onDelete={deleteFile} />}
-          </>
+        {!uploadingDoc && !currentDoc && (
+          <Button
+            color="primary"
+            icon
+            size="sm"
+            tag="button"
+            onClick={handleClick}
+          >
+            Carica file
+            <input
+              type="file"
+              hidden
+              ref={refFile}
+              onChange={() => addFile(refFile.current.files)}
+            />
+          </Button>
         )}
       </div>
       {uploadingDoc && (
@@ -122,6 +128,13 @@ const Bucket = ({
           />
         </div>
       )}
+      <CustomErrorMessage
+        name={
+          hasIndex
+            ? `discounts[${index}].lastBucketCodeFileUid`
+            : "lastBucketCodeFileUid"
+        }
+      />
     </div>
   );
 };
