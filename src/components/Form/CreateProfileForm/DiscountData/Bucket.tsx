@@ -37,11 +37,12 @@ Props) => {
   };
 
   useEffect(() => {
-    // console.log(
-    //   index !== undefined
-    //     ? formValues.discounts[index].lastBucketCodeFileUid
-    //     : formValues.lastBucketCodeFileUid
-    // );
+    console.log(
+      formValues,
+      index !== undefined
+        ? formValues.discounts[index].lastBucketCodeFileUid
+        : formValues.lastBucketCodeFileUid
+    );
     const hasDocument =
       (index !== undefined
         ? formValues.discounts[index].lastBucketCodeFileUid
@@ -50,7 +51,7 @@ Props) => {
     if (hasDocument) {
       setCurrentDoc({ name: "File già presente" });
     }
-  }, []);
+  }, [formValues, index]);
 
   const addFile = async (files: any) => {
     setUploadingDoc(true);
