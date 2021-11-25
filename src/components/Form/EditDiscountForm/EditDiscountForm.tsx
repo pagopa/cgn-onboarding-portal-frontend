@@ -21,6 +21,8 @@ import { discountDataValidationSchema } from "../ValidationSchemas";
 import PublishModal from "../../Discounts/PublishModal";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import chainAxios from "../../../utils/chainAxios";
+import { Severity, useTooltip } from "../../../context/tooltip";
 
 const emptyInitialValues = {
   name: "",
@@ -44,6 +46,15 @@ const EditDiscountForm = () => {
   const [publishModal, setPublishModal] = useState(false);
   const togglePublishModal = () => setPublishModal(!publishModal);
   const [selectedPublish, setSelectedPublish] = useState<any>();
+  const { triggerTooltip } = useTooltip();
+
+  const throwErrorTooltip = () => {
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text:
+        "Errore durante la modifica dell'agevolazione, controllare i dati e riprovare"
+    });
+  };
 
   const checkStaticCode =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
@@ -73,11 +84,9 @@ const EditDiscountForm = () => {
         Api.Discount.updateDiscount(agreementId, discountId, updatedDiscount),
       toError
     )
+      .chain(chainAxios)
       .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => history.push(DASHBOARD)
-      )
+      .fold(throwErrorTooltip, () => history.push(DASHBOARD))
       .run();
   };
 

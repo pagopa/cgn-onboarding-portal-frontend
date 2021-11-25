@@ -19,6 +19,8 @@ import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import { Severity, useTooltip } from "../../../context/tooltip";
+import chainAxios from "../../../utils/chainAxios";
 
 const emptyInitialValues = {
   name: "",
@@ -35,6 +37,15 @@ const CreateDiscountForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
+  const { triggerTooltip } = useTooltip();
+
+  const throwErrorTooltip = () => {
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text:
+        "Errore durante la creazione dell'agevolazione, controllare i dati e riprovare"
+    });
+  };
 
   const checkStaticCode =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
@@ -59,11 +70,9 @@ const CreateDiscountForm = () => {
       () => Api.Discount.createDiscount(agreementId, discount),
       toError
     )
+      .chain(chainAxios)
       .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => history.push(DASHBOARD)
-      )
+      .fold(throwErrorTooltip, () => history.push(DASHBOARD))
       .run();
 
   const getProfile = async (agreementId: string) =>
