@@ -37,6 +37,11 @@ Props) => {
   };
 
   useEffect(() => {
+    // console.log(
+    //   index !== undefined
+    //     ? formValues.discounts[index].lastBucketCodeFileUid
+    //     : formValues.lastBucketCodeFileUid
+    // );
     const hasDocument =
       (index !== undefined
         ? formValues.discounts[index].lastBucketCodeFileUid
@@ -92,9 +97,6 @@ Props) => {
           {currentDoc ? (
             <div className="d-flex flex-column ">
               <a href="#">{currentDoc.name}</a>
-              {/* <span className="text-gray"> */}
-              {/*  {formatDate(uploadedDoc.documentTimestamp)} */}
-              {/* </span> */}
             </div>
           ) : (
             <i>{label}</i>

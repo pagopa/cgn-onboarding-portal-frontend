@@ -32,6 +32,7 @@ const emptyInitialValues = {
   staticCode: ""
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const EditDiscountForm = () => {
   const { discountId } = useParams<any>();
   const history = useHistory();
@@ -87,11 +88,29 @@ const EditDiscountForm = () => {
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        discount => {
+        (discount: Discount) => {
           setInitialValues({
             ...discount,
             startDate: new Date(discount.startDate),
-            endDate: new Date(discount.endDate)
+            endDate: new Date(discount.endDate),
+            landingPageReferrer:
+              discount.landingPageReferrer === null
+                ? undefined
+                : discount.landingPageReferrer,
+            landingPageUrl:
+              discount.landingPageUrl === null
+                ? undefined
+                : discount.landingPageUrl,
+            discount:
+              discount.landingPageUrl === null
+                ? undefined
+                : discount.landingPageUrl,
+            staticCode:
+              discount.staticCode === null ? undefined : discount.staticCode,
+            lastBucketCodeFileUid:
+              discount.lastBucketCodeFileUid === null
+                ? undefined
+                : discount.lastBucketCodeFileUid
           });
           setLoading(false);
         }

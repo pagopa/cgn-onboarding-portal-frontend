@@ -19,7 +19,7 @@ import { RootState } from "../../../../store/store";
 import FormSection from "../../FormSection";
 import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
-import { CreateDiscount, Discount } from "../../../../api/generated";
+import { CreateDiscount, Discount, Discounts } from "../../../../api/generated";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
@@ -123,12 +123,30 @@ const DiscountData = ({
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        discounts => {
+        (discounts: Discounts) => {
           setInitialValues({
-            discounts: discounts.items.map((discount: any) => ({
+            discounts: discounts.items.map((discount: Discount) => ({
               ...discount,
               startDate: new Date(discount.startDate),
-              endDate: new Date(discount.endDate)
+              endDate: new Date(discount.endDate),
+              landingPageReferrer:
+                discount.landingPageReferrer === null
+                  ? undefined
+                  : discount.landingPageReferrer,
+              landingPageUrl:
+                discount.landingPageUrl === null
+                  ? undefined
+                  : discount.landingPageUrl,
+              discount:
+                discount.landingPageUrl === null
+                  ? undefined
+                  : discount.landingPageUrl,
+              staticCode:
+                discount.staticCode === null ? undefined : discount.staticCode,
+              lastBucketCodeFileUid:
+                discount.lastBucketCodeFileUid === null
+                  ? undefined
+                  : discount.lastBucketCodeFileUid
             }))
           });
           setLoading(false);
