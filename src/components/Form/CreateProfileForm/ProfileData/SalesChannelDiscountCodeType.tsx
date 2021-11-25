@@ -2,6 +2,7 @@ import React from "react";
 import { Field } from "formik";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import FormSection from "../../FormSection";
+import { DiscountCodeType } from "../../../../api/generated";
 
 const SalesChannelDiscountCodeType = () => (
   <FormSection
@@ -16,7 +17,7 @@ const SalesChannelDiscountCodeType = () => (
           id="api"
           type="radio"
           name="salesChannel.discountCodeType"
-          value="API"
+          value={DiscountCodeType.Api}
         />
         <label className="text-sm font-weight-normal text-black" htmlFor="api">
           <span className="text-sm">
@@ -32,7 +33,7 @@ const SalesChannelDiscountCodeType = () => (
           id="staticCode"
           type="radio"
           name="salesChannel.discountCodeType"
-          value="Static"
+          value={DiscountCodeType.Static}
         />
         <label
           className="text-sm font-weight-normal text-black"
@@ -49,7 +50,7 @@ const SalesChannelDiscountCodeType = () => (
           id="bucket"
           type="radio"
           name="salesChannel.discountCodeType"
-          value="Bucket"
+          value={DiscountCodeType.Bucket}
         />
         <label
           className="text-sm font-weight-normal text-black"
@@ -69,7 +70,7 @@ const SalesChannelDiscountCodeType = () => (
           id="landingPage"
           type="radio"
           name="salesChannel.discountCodeType"
-          value="LandingPage"
+          value={DiscountCodeType.LandingPage}
         />
         <label
           className="text-sm font-weight-normal text-black"
@@ -77,8 +78,8 @@ const SalesChannelDiscountCodeType = () => (
         >
           <span className="text-sm">
             <a href="#">Con link a landing page</a>: fornirò per ogni
-            agevolazione un link con cui il cittadino che accede proveniendo da IO
-            potrà usufruire degli sconti
+            agevolazione un link con cui il cittadino che accede proveniendo da
+            IO potrà usufruire degli sconti
           </span>
         </label>
       </div>

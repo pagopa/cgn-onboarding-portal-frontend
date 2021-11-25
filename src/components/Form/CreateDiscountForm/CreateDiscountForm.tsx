@@ -150,7 +150,7 @@ const CreateDiscountForm = () => {
                 <LandingPage />
               </FormField>
             )}
-            {checkLanding && (
+            {checkBucket && (
               <FormField
                 htmlFor="bucket"
                 isTitleHeading
@@ -175,10 +175,15 @@ const CreateDiscountForm = () => {
                 isVisible
                 required
               >
-                <Bucket label={"Seleziona un file dal computer"} />
+                <Bucket
+                  agreementId={agreement.id}
+                  label={"Seleziona un file dal computer"}
+                  formValues={values}
+                  setFieldValue={setFieldValue}
+                />
               </FormField>
             )}
-            {checkLanding && (
+            {checkBucket && (
               <FormField
                 htmlFor="bucket"
                 isTitleHeading
@@ -203,7 +208,12 @@ const CreateDiscountForm = () => {
                 isVisible
                 required
               >
-                <Bucket label={"Seleziona un file dal computer"} />
+                <Bucket
+                  agreementId={agreement.id}
+                  label={"Seleziona un file dal computer"}
+                  formValues={values}
+                  setFieldValue={setFieldValue}
+                />
               </FormField>
             )}
             <div className="mt-10">

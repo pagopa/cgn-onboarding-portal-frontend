@@ -268,7 +268,7 @@ const DiscountData = ({
                           <LandingPage index={index} />
                         </FormField>
                       )}
-                      {checkLanding && (
+                      {checkBucket && (
                         <FormField
                           htmlFor="bucket"
                           isTitleHeading
@@ -295,8 +295,11 @@ const DiscountData = ({
                           required
                         >
                           <Bucket
+                            agreementId={agreement.id}
                             label={"Seleziona un file dal computer"}
                             index={index}
+                            formValues={values}
+                            setFieldValue={setFieldValue}
                           />
                         </FormField>
                       )}

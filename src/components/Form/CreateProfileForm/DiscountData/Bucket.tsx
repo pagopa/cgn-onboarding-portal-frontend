@@ -12,11 +12,21 @@ import DeleteDocument from "../Documents/DeleteDocument";
 
 type Props = {
   label: string;
+  formValues: any;
+  setFieldValue: any;
+  agreementId: string;
   uploadedDoc?: Document;
   index?: number;
 };
 
-const Bucket = ({ label, uploadedDoc }: Props) => {
+const Bucket = ({
+  index,
+  label,
+  uploadedDoc,
+  agreementId,
+  setFieldValue
+}: Props) => {
+  const hasIndex = index !== undefined;
   const refFile = useRef<any>();
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -30,7 +40,7 @@ const Bucket = ({ label, uploadedDoc }: Props) => {
     setUploadingDoc(true);
     await tryCatch(
       () =>
-        Api.Document.uploadDocument("", "", files[0], {
+        Api.Bucket.uploadBucket(agreementId, files[0], {
           onUploadProgress: (event: any) => {
             setUploadProgress(Math.round((100 * event.loaded) / event.total));
           }
@@ -42,8 +52,15 @@ const Bucket = ({ label, uploadedDoc }: Props) => {
           setUploadingDoc(false);
           setUploadProgress(0);
         },
-        _ => {
-          constNull();
+        response => {
+          setFieldValue(
+            hasIndex
+              ? `discounts[${index}].lastBucketCodeFileUid`
+              : "lastBucketCodeFileUid",
+            response.data.uid
+          );
+          setUploadingDoc(false);
+          setUploadProgress(0);
         }
       )
       .run();
