@@ -20,6 +20,7 @@ import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import PublishModal from "../../Discounts/PublishModal";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 
 const emptyInitialValues = {
   name: "",
@@ -220,6 +221,39 @@ const EditDiscountForm = () => {
                   required
                 >
                   <LandingPage />
+                </FormField>
+              )}
+              {checkBucket && (
+                <FormField
+                  htmlFor="bucket"
+                  isTitleHeading
+                  title="Carica la lista di codici sconto"
+                  description={
+                    <>
+                      Caricare un file .CSV con la lista di almeno 1.000.000 di
+                      codici sconto statici relativi all’agevolazione.
+                      <br />
+                      Per maggiori informazioni, consultare la{" "}
+                      <a
+                        className="font-weight-semibold"
+                        href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Documentazione tecnica
+                      </a>{" "}
+                      o scaricare il <a href="#">file di esempio</a>
+                    </>
+                  }
+                  isVisible
+                  required
+                >
+                  <Bucket
+                    agreementId={agreement.id}
+                    label={"Seleziona un file dal computer"}
+                    formValues={values}
+                    setFieldValue={setFieldValue}
+                  />
                 </FormField>
               )}
               {initialValues.state !== "draft" && (

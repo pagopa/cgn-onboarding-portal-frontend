@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
@@ -16,7 +16,7 @@ type Props = {
   index?: number;
 };
 
-const Bucket = ({
+const BucketComponent = ({
   index,
   label,
   uploadedDoc,
@@ -37,12 +37,6 @@ Props) => {
   };
 
   useEffect(() => {
-    console.log(
-      formValues,
-      index !== undefined
-        ? formValues.discounts[index].lastBucketCodeFileUid
-        : formValues.lastBucketCodeFileUid
-    );
     const hasDocument =
       (index !== undefined
         ? formValues.discounts[index].lastBucketCodeFileUid
@@ -141,5 +135,28 @@ Props) => {
     </div>
   );
 };
+
+const checkMemoization = (
+  prev: ComponentProps<typeof BucketComponent>,
+  next: ComponentProps<typeof BucketComponent>
+): boolean => {
+  if (prev.index === next.index) {
+    const previousValue =
+      prev.index !== undefined
+        ? prev.formValues.discounts[prev.index].lastBucketCodeFileUid
+        : prev.formValues.lastBucketCodeFileUid;
+    const nextValue =
+      next.index !== undefined
+        ? next.formValues.discounts[next.index].lastBucketCodeFileUid
+        : next.formValues.lastBucketCodeFileUid;
+    if (previousValue === nextValue) {
+      return true;
+    }
+    return false;
+  }
+  return false;
+};
+
+const Bucket = React.memo(BucketComponent, checkMemoization);
 
 export default Bucket;
