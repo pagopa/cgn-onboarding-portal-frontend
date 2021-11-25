@@ -108,6 +108,7 @@ Props) => {
             Carica file
             <input
               type="file"
+              accept="text/csv"
               hidden
               ref={refFile}
               onChange={() => addFile(refFile.current.files)}

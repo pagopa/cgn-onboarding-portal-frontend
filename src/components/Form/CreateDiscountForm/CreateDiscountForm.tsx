@@ -25,7 +25,6 @@ const emptyInitialValues = {
   description: "",
   startDate: "",
   endDate: "",
-  discount: "",
   productCategories: [],
   condition: "",
   staticCode: ""
@@ -97,8 +96,7 @@ const CreateDiscountForm = () => {
         const newValues = {
           ...values,
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-          endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
-          discount: Number(values.discount)
+          endDate: format(new Date(values.endDate), "yyyy-MM-dd")
         };
         void createDiscount(agreement.id, newValues);
       }}
