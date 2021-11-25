@@ -103,9 +103,7 @@ const EditDiscountForm = () => {
                 ? undefined
                 : discount.landingPageUrl,
             discount:
-              discount.landingPageUrl === null
-                ? undefined
-                : discount.landingPageUrl,
+              discount.discount === null ? undefined : discount.discount,
             staticCode:
               discount.staticCode === null ? undefined : discount.staticCode,
             lastBucketCodeFileUid:
@@ -170,8 +168,7 @@ const EditDiscountForm = () => {
           const newValues = {
             ...values,
             startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-            endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
-            discount: Number(values.discount)
+            endDate: format(new Date(values.endDate), "yyyy-MM-dd")
           };
           void updateDiscount(agreement.id, newValues);
         }}
@@ -225,7 +222,7 @@ const EditDiscountForm = () => {
               )}
               {checkBucket && (
                 <FormField
-                  htmlFor="bucket"
+                  htmlFor="lastBucketCodeFileUid"
                   isTitleHeading
                   title="Carica la lista di codici sconto"
                   description={

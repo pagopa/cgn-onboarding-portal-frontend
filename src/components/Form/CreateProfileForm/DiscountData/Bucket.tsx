@@ -2,6 +2,7 @@ import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import { Field } from "formik";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
@@ -106,6 +107,14 @@ Props) => {
             onClick={handleClick}
           >
             Carica file
+            <Field
+              name={
+                hasIndex
+                  ? `discounts[${index}].lastBucketCodeFileUid`
+                  : "lastBucketCodeFileUid"
+              }
+              hidden
+            />
             <input
               type="file"
               accept="text/csv"

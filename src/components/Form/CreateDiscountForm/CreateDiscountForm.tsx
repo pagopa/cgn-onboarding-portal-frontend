@@ -150,7 +150,7 @@ const CreateDiscountForm = () => {
             )}
             {checkBucket && (
               <FormField
-                htmlFor="bucket"
+                htmlFor="lastBucketCodeFileUid"
                 isTitleHeading
                 title="Carica la lista di codici sconto"
                 description={

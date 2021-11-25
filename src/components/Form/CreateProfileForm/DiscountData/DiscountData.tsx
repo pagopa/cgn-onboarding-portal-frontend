@@ -138,9 +138,7 @@ const DiscountData = ({
                   ? undefined
                   : discount.landingPageUrl,
               discount:
-                discount.landingPageUrl === null
-                  ? undefined
-                  : discount.landingPageUrl,
+                discount.discount === null ? undefined : discount.discount,
               staticCode:
                 discount.staticCode === null ? undefined : discount.staticCode,
               lastBucketCodeFileUid:
@@ -289,7 +287,7 @@ const DiscountData = ({
                       )}
                       {checkBucket && (
                         <FormField
-                          htmlFor="bucket"
+                          htmlFor="lastBucketCodeFileUid"
                           isTitleHeading
                           title="Carica la lista di codici sconto"
                           description={
