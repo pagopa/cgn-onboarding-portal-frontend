@@ -24,6 +24,7 @@ import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import bucketTemplate from "../../../templates/test-codes.csv";
 
 const emptyInitialValues = {
   name: "",
@@ -263,7 +264,8 @@ const EditDiscountForm = () => {
                       >
                         Documentazione tecnica
                       </a>{" "}
-                      o scaricare il <a href="#">file di esempio</a>
+                      o scaricare il{" "}
+                      <a href={bucketTemplate}>file di esempio</a>
                     </>
                   }
                   isVisible

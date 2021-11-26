@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "design-react-kit";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { setCookie } from "../utils/cookie";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
@@ -75,7 +75,8 @@ const Login = () => {
                   </Button>
                   <div className="mt-4">
                     <span>
-                      Non hai spid? <a href="#">Scopri di più</a>
+                      Non hai spid?{" "}
+                      <a href="https://www.spid.gov.it/">Scopri di più</a>
                     </span>
                   </div>
                 </div>

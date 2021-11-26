@@ -22,6 +22,7 @@ import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import chainAxios from "../../../utils/chainAxios";
 import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import bucketTemplate from "../../../templates/test-codes.csv";
 
 const emptyInitialValues = {
   name: "",
@@ -178,7 +179,10 @@ const CreateDiscountForm = () => {
                     >
                       Documentazione tecnica
                     </a>{" "}
-                    o scaricare il <a href="#">file di esempio</a>
+                    o scaricare il{" "}
+                    <a href={bucketTemplate} target="_blank" rel="noreferrer">
+                      file di esempio
+                    </a>
                   </>
                 }
                 isVisible

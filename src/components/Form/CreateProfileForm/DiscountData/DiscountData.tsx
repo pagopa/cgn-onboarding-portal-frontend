@@ -21,6 +21,7 @@ import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { CreateDiscount, Discount, Discounts } from "../../../../api/generated";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
+import bucketTemplate from "../../../../templates/test-codes.csv";
 import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
 import EnrollToEyca from "./EnrollToEyca";
@@ -328,7 +329,8 @@ const DiscountData = ({
                               >
                                 Documentazione tecnica
                               </a>{" "}
-                              o scaricare il <a href="#">file di esempio</a>
+                              o scaricare il{" "}
+                              <a href={bucketTemplate}>file di esempio</a>
                             </>
                           }
                           isVisible
