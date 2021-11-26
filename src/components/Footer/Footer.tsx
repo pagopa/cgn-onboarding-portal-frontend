@@ -6,7 +6,9 @@ const Footer = () => (
     <div className="container">
       <div className="row d-flex flex-row align-items-center">
         <div className="col-2">
-          <Logo />
+          <a href="https://www.pagopa.it/it/" target="_blank" rel="noreferrer">
+            <Logo />
+          </a>
         </div>
         <div className="col-9 text-left">
           <span className="text-sm text-white">
@@ -21,13 +23,13 @@ const Footer = () => (
         <div className="col-12">
           <ul className="p-0 mt-7 d-flex flex-row justify-content-start list-unstyled">
             <li className="mr-8">
-              <a className="text-gray no-underline" href="#">
+              <a
+                className="text-gray no-underline"
+                href="https://io.italia.it/carta-giovani-nazionale/informativa-operatori"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a className="text-gray no-underline" href="#">
-                Società trasparente
               </a>
             </li>
           </ul>
