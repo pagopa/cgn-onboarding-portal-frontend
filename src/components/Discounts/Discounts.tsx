@@ -199,25 +199,27 @@ const Discounts = () => {
         />{" "}
         Elimina
       </Button>
-      {row.original.state !== "suspended" && row.original.state !== "expired" && (
-        <Button
-          className="mr-4"
-          color="primary"
-          tag="button"
-          onClick={() => {
-            setSelectedPublish(row.original.id);
-            togglePublishModal();
-          }}
-        >
-          <Icon
-            icon={"it-external-link"}
-            color="white"
-            padding={false}
-            size="sm"
-          />
-          <span>Pubblica</span>
-        </Button>
-      )}
+      {row.original.state !== "published" &&
+        row.original.state !== "suspended" &&
+        row.original.state !== "expired" && (
+          <Button
+            className="mr-4"
+            color="primary"
+            tag="button"
+            onClick={() => {
+              setSelectedPublish(row.original.id);
+              togglePublishModal();
+            }}
+          >
+            <Icon
+              icon={"it-external-link"}
+              color="white"
+              padding={false}
+              size="sm"
+            />{" "}
+            <span>Pubblica</span>
+          </Button>
+        )}
     </div>
   );
 
