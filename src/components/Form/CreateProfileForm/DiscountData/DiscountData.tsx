@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray, Form, Formik } from "formik";
 import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
+import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
+import { AxiosResponse } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
-import chainAxios from "../../../../utils/chainAxios";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
@@ -46,6 +46,17 @@ type Props = {
   onUpdate: () => void;
 };
 
+const chainAxios = (response: AxiosResponse) =>
+  fromPredicate(
+    (_: AxiosResponse) => _.status === 200 || _.status === 204,
+    (r: AxiosResponse) =>
+      r.status === 409
+        ? new Error("Upload codici ancora in corso")
+        : new Error(
+            "Errore durante la modifica dell'agevolazione, controllare i dati e riprovare"
+          )
+  )(response);
+
 const DiscountData = ({
   handleBack,
   handleNext,
@@ -66,7 +77,14 @@ const DiscountData = ({
     triggerTooltip({
       severity: Severity.DANGER,
       text:
-        "Errore durante la creazione del profilo, controllare i dati e riprovare"
+        "Errore durante la creazione dell'agevolazione, controllare i dati e riprovare"
+    });
+  };
+
+  const editThrowErrorTooltip = (e: string) => {
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text: e
     });
   };
 
@@ -113,7 +131,10 @@ const DiscountData = ({
     )
       .chain(chainAxios)
       .map(response => response.data)
-      .fold(throwErrorTooltip, () => handleNext())
+      .fold(
+        e => editThrowErrorTooltip(e.name),
+        () => handleNext()
+      )
       .run();
   };
 

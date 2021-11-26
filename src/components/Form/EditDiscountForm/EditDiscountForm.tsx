@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
+import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
 import { useHistory, useParams } from "react-router-dom";
+import { AxiosResponse } from "axios";
 import Api from "../../../api";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -21,7 +22,6 @@ import { discountDataValidationSchema } from "../ValidationSchemas";
 import PublishModal from "../../Discounts/PublishModal";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
-import chainAxios from "../../../utils/chainAxios";
 import { Severity, useTooltip } from "../../../context/tooltip";
 
 const emptyInitialValues = {
@@ -34,6 +34,17 @@ const emptyInitialValues = {
   condition: "",
   staticCode: ""
 };
+
+const chainAxios = (response: AxiosResponse) =>
+  fromPredicate(
+    (_: AxiosResponse) => _.status === 200 || _.status === 204,
+    (r: AxiosResponse) =>
+      r.status === 409
+        ? new Error("Upload codici ancora in corso")
+        : new Error(
+            "Errore durante la modifica dell'agevolazione, controllare i dati e riprovare"
+          )
+  )(response);
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditDiscountForm = () => {
@@ -48,11 +59,10 @@ const EditDiscountForm = () => {
   const [selectedPublish, setSelectedPublish] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
-  const throwErrorTooltip = () => {
+  const throwErrorTooltip = (e: string) => {
     triggerTooltip({
       severity: Severity.DANGER,
-      text:
-        "Errore durante la modifica dell'agevolazione, controllare i dati e riprovare"
+      text: e
     });
   };
 
@@ -86,7 +96,10 @@ const EditDiscountForm = () => {
     )
       .chain(chainAxios)
       .map(response => response.data)
-      .fold(throwErrorTooltip, () => history.push(DASHBOARD))
+      .fold(
+        e => throwErrorTooltip(e.message),
+        () => history.push(DASHBOARD)
+      )
       .run();
   };
 

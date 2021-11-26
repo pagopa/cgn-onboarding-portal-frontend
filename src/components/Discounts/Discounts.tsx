@@ -1,27 +1,39 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { useTable, useExpanded, useSortBy } from "react-table";
+import { useExpanded, useSortBy, useTable } from "react-table";
 import {
+  Badge,
   Button,
   Callout,
   CalloutText,
   CalloutTitle,
   Icon
 } from "design-react-kit";
-import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
-import { Badge } from "design-react-kit";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { tryCatch } from "fp-ts/lib/TaskEither";
+import { Link, useHistory } from "react-router-dom";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { compareAsc, format } from "date-fns";
+import { AxiosResponse } from "axios";
 import Api from "../../api/index";
-import { Discounts } from "../../api/generated";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import ProfileItem from "../Profile/ProfileItem";
-import { formatPercentage, makeProductCategoriesString } from "../../utils/strings";
+import {
+  formatPercentage,
+  makeProductCategoriesString
+} from "../../utils/strings";
 import { RootState } from "../../store/store";
+import { Severity, useTooltip } from "../../context/tooltip";
 import PublishModal from "./PublishModal";
+
+const chainAxios = (response: AxiosResponse) =>
+  fromPredicate(
+    (_: AxiosResponse) => _.status === 200 || _.status === 204,
+    (r: AxiosResponse) =>
+      r.status === 409
+        ? new Error("Upload codici ancora in corso")
+        : new Error("Errore durante la pubblicazione dell'agevolazione")
+  )(response);
 
 const Discounts = () => {
   const history = useHistory();
@@ -33,6 +45,14 @@ const Discounts = () => {
   const toggleDeleteModal = () => setDeleteModal(!deleteModal);
   const togglePublishModal = () => setPublishModal(!publishModal);
   const [selectedPublish, setSelectedPublish] = useState<any>();
+  const { triggerTooltip } = useTooltip();
+
+  const throwErrorTooltip = (e: string) => {
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text: e
+    });
+  };
 
   const getDiscounts = async () =>
     await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
@@ -64,9 +84,11 @@ const Discounts = () => {
       () => Api.Discount.publishDiscount(agreement.id, discountId),
       toError
     )
+      .chain(chainAxios)
+      .map(response => response.data)
       .fold(
-        () => void 0,
-        () => getDiscounts()
+        e => throwErrorTooltip(e.message),
+        () => void getDiscounts()
       )
       .run();
 
