@@ -98,7 +98,7 @@ Props) => {
             <i>{label}</i>
           )}
         </div>
-        {!uploadingDoc && !currentDoc && (
+        {!uploadingDoc && (
           <Button
             color="primary"
             icon
