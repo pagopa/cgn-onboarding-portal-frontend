@@ -18,13 +18,15 @@ import { CreateDiscount } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import { Severity, useTooltip } from "../../../context/tooltip";
+import chainAxios from "../../../utils/chainAxios";
 
 const emptyInitialValues = {
   name: "",
   description: "",
   startDate: "",
   endDate: "",
-  discount: "",
   productCategories: [],
   condition: "",
   staticCode: ""
@@ -35,6 +37,15 @@ const CreateDiscountForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
+  const { triggerTooltip } = useTooltip();
+
+  const throwErrorTooltip = () => {
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text:
+        "Errore durante la creazione dell'agevolazione, controllare i dati e riprovare"
+    });
+  };
 
   const checkStaticCode =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
@@ -46,6 +57,11 @@ const CreateDiscountForm = () => {
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "LandingPage";
 
+  const checkBucket =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Bucket";
+
   const createDiscount = async (
     agreementId: string,
     discount: CreateDiscount
@@ -54,11 +70,9 @@ const CreateDiscountForm = () => {
       () => Api.Discount.createDiscount(agreementId, discount),
       toError
     )
+      .chain(chainAxios)
       .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => history.push(DASHBOARD)
-      )
+      .fold(throwErrorTooltip, () => history.push(DASHBOARD))
       .run();
 
   const getProfile = async (agreementId: string) =>
@@ -85,14 +99,13 @@ const CreateDiscountForm = () => {
     <Formik
       initialValues={emptyInitialValues}
       validationSchema={() =>
-        discountDataValidationSchema(checkStaticCode, checkLanding)
+        discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
       }
       onSubmit={values => {
         const newValues = {
           ...values,
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-          endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
-          discount: Number(values.discount)
+          endDate: format(new Date(values.endDate), "yyyy-MM-dd")
         };
         void createDiscount(agreement.id, newValues);
       }}
@@ -142,6 +155,39 @@ const CreateDiscountForm = () => {
                 required
               >
                 <LandingPage />
+              </FormField>
+            )}
+            {checkBucket && (
+              <FormField
+                htmlFor="lastBucketCodeFileUid"
+                isTitleHeading
+                title="Carica la lista di codici sconto"
+                description={
+                  <>
+                    Caricare un file .CSV con la lista di almeno 1.000.000 di
+                    codici sconto statici relativi all’agevolazione.
+                    <br />
+                    Per maggiori informazioni, consultare la{" "}
+                    <a
+                      className="font-weight-semibold"
+                      href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Documentazione tecnica
+                    </a>{" "}
+                    o scaricare il <a href="#">file di esempio</a>
+                  </>
+                }
+                isVisible
+                required
+              >
+                <Bucket
+                  agreementId={agreement.id}
+                  label={"Seleziona un file dal computer"}
+                  formValues={values}
+                  setFieldValue={setFieldValue}
+                />
               </FormField>
             )}
             <div className="mt-10">

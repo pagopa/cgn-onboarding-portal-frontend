@@ -6,16 +6,14 @@ import { toError } from "fp-ts/lib/Either";
 import { useSelector } from "react-redux";
 import ReCAPTCHA from "react-google-recaptcha";
 import FormSection from "../FormSection";
-import { DASHBOARD } from "../../../navigation/routes";
 import InputField from "../FormField";
 import {
   loggedHelpValidationSchema,
   notLoggedHelpValidationSchema
 } from "../ValidationSchemas";
 import { RootState } from "../../../store/store";
-import { HelpRequest } from "../../../api/generated";
+import { HelpRequest, HelpRequestCategoryEnum } from "../../../api/generated";
 import Api from "../../../api";
-import { HelpRequestCategoryEnum } from "../../../api/generated";
 import { getCookie } from "../../../utils/cookie";
 import InputFieldMultiple from "../InputFieldMultiple";
 import NotLoggedHelpApi from "../../../api/public";
@@ -387,8 +385,12 @@ const HelpForm = () => {
               <FormButtons isValid={isValid} dirty={dirty} />
               <p className="mt-4 text-gray">
                 Form protetto tramite reCAPTCHA e Google{" "}
-                <a href="#">Privacy Policy</a> e{" "}
-                <a href="#">Termini di servizio</a> applicati.
+                <a href="https://policies.google.com/privacy">Privacy Policy</a>{" "}
+                e{" "}
+                <a href="https://policies.google.com/terms">
+                  Termini di servizio
+                </a>{" "}
+                applicati.
               </p>
             </FormSection>
           )}

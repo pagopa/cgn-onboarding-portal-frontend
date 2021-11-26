@@ -1,12 +1,11 @@
 import React from "react";
-import Field from "formik";
 import VisibleIcon from "../../assets/icons/visible.svg";
 
 type Props = {
   htmlFor: string;
   isTitleHeading?: boolean;
   title?: string;
-  description?: string;
+  description?: string | React.ReactElement;
   children: any;
   required?: boolean;
   isVisible?: boolean;
@@ -21,7 +20,7 @@ const FormField = ({
   required = false,
   isVisible = false
 }: Props) => (
-  <div className="mt-10 row">
+  <div className="mt-10">
     <div>
       <label htmlFor={htmlFor}>
         <span className="d-flex flex-row align-items-center">

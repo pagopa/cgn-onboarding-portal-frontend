@@ -3,7 +3,7 @@ import { Button, Icon, Progress } from "design-react-kit";
 import { saveAs } from "file-saver";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { useTooltip, Severity } from "../../../../context/tooltip";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import DocumentIcon from "../../../../assets/icons/document.svg";
 import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
@@ -29,6 +29,7 @@ const FileRow = ({
   const refFile = useRef<any>();
   const [loadingTemplate, setLoadingTemplate] = useState(false);
   const [loadingDoc, setLoadingDoc] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const { triggerTooltip } = useTooltip();
 
   const handleClick = () => {
@@ -43,19 +44,26 @@ const FileRow = ({
           headers: {
             "Content-Type": "application/pdf"
           },
-          responseType: "arraybuffer"
+          responseType: "arraybuffer",
+          onDownloadProgress: (event: any) => {
+            setUploadProgress(Math.round((100 * event.loaded) / event.total));
+          }
         }),
       toError
     )
       .map(response => response.data)
       .fold(
-        () => setLoadingTemplate(false),
+        () => {
+          setLoadingTemplate(false);
+          setUploadProgress(0);
+        },
         response => {
           if (response) {
             const blob = new Blob([response], { type: "application/pdf" });
             saveAs(blob, label);
           }
           setLoadingTemplate(false);
+          setUploadProgress(0);
         }
       )
       .run();
@@ -64,12 +72,18 @@ const FileRow = ({
   const addFile = async (files: any) => {
     setLoadingDoc(true);
     await tryCatch(
-      () => Api.Document.uploadDocument(agreementId, type, files[0]),
+      () =>
+        Api.Document.uploadDocument(agreementId, type, files[0], {
+          onUploadProgress: (event: any) => {
+            setUploadProgress(Math.round((100 * event.loaded) / event.total));
+          }
+        }),
       toError
     )
       .fold(
         () => {
           setLoadingDoc(false);
+          setUploadProgress(0);
         },
         response => {
           // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -80,6 +94,7 @@ const FileRow = ({
                 text: "Caricamento del file fallito"
               });
           setLoadingDoc(false);
+          setUploadProgress(0);
         }
       )
       .run();
@@ -169,8 +184,8 @@ const FileRow = ({
       {(loadingTemplate || loadingDoc) && (
         <div className="pt-3">
           <Progress
-            indeterminate
-            label="Download in corso..."
+            value={uploadProgress}
+            label="progresso"
             role="progressbar"
             tag="div"
           />
