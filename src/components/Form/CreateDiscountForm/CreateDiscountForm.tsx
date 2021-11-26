@@ -21,6 +21,8 @@ import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import chainAxios from "../../../utils/chainAxios";
+import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import bucketTemplate from "../../../templates/test-codes.csv";
 
 const emptyInitialValues = {
   name: "",
@@ -29,7 +31,8 @@ const emptyInitialValues = {
   endDate: "",
   productCategories: [],
   condition: "",
-  staticCode: ""
+  staticCode: "",
+  enrollToEyca: false
 };
 
 const CreateDiscountForm = () => {
@@ -176,7 +179,10 @@ const CreateDiscountForm = () => {
                     >
                       Documentazione tecnica
                     </a>{" "}
-                    o scaricare il <a href="#">file di esempio</a>
+                    o scaricare il{" "}
+                    <a href={bucketTemplate} target="_blank" rel="noreferrer">
+                      file di esempio
+                    </a>
                   </>
                 }
                 isVisible
@@ -189,6 +195,14 @@ const CreateDiscountForm = () => {
                   setFieldValue={setFieldValue}
                 />
               </FormField>
+            )}
+            {profile?.salesChannel?.channelType === "OnlineChannel" && (
+              <EnrollToEyca
+                isEycaSupported={checkStaticCode}
+                discountOption={checkLanding ? "Landing Page" : "API"}
+                formValues={values}
+                setFieldValue={setFieldValue}
+              />
             )}
             <div className="mt-10">
               <Button

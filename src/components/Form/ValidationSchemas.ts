@@ -145,7 +145,8 @@ export const discountDataValidationSchema = (
       is: () => bucketCheck,
       then: Yup.string().required(REQUIRED_FIELD),
       otherwise: Yup.string()
-    })
+    }),
+    enrollToEyca: Yup.boolean()
   });
 
 export const discountsListDataValidationSchema = (
@@ -191,7 +192,8 @@ export const discountsListDataValidationSchema = (
           is: () => bucketCheck,
           then: Yup.string().required(REQUIRED_FIELD),
           otherwise: Yup.string()
-        })
+        }),
+        enrollToEyca: Yup.boolean()
       })
     )
   });

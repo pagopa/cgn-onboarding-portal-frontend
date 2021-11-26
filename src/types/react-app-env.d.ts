@@ -1,23 +1,28 @@
 // <reference types="react-scripts" />
 
-declare module '*.svg' {
-	const content: any;
-	export default content;
+declare module "*.svg" {
+  const content: any;
+  export default content;
 }
 
-declare module '*.png' {
-	const content: any;
-	export default content;
+declare module "*.png" {
+  const content: any;
+  export default content;
 }
 
-declare module 'design-react-kit' {
-	export { default as Badge } from 'src/components/Badge/Badge.js';
+declare module "*.csv" {
+  const content: any;
+  export default content;
 }
 
-declare module 'src/components/Badge/Badge' {
-	import * as React from 'react';
+declare module "design-react-kit" {
+  export { default as Badge } from "src/components/Badge/Badge.js";
+}
 
-	const Badge: React.FC;
+declare module "src/components/Badge/Badge" {
+  import * as React from "react";
 
-	export default Badge;
+  const Badge: React.FC;
+
+  export default Badge;
 }
