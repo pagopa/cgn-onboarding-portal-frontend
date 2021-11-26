@@ -132,7 +132,7 @@ const DiscountData = ({
       .chain(chainAxios)
       .map(response => response.data)
       .fold(
-        e => editThrowErrorTooltip(e.name),
+        e => editThrowErrorTooltip(e.message),
         () => handleNext()
       )
       .run();
