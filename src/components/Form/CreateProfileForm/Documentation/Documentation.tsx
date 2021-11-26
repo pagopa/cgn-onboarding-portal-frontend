@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "design-react-kit";
 import FormContainer from "../../FormContainer";
 import DocumentIcon from "../../../../assets/icons/document.svg";
 import { DASHBOARD } from "../../../../navigation/routes";
-import PrivacyModal from "./PrivacyModal";
 
 const Documentation = ({
   handleNext,
@@ -14,9 +13,6 @@ const Documentation = ({
   isCompleted: boolean;
 }) => {
   const [isDocumentationRead, setIsDocumentationRead] = useState(isCompleted);
-  const [modal, setModal] = useState(false);
-
-  const toggle = () => setModal(!modal);
 
   function handleClick() {
     setIsDocumentationRead(true);
@@ -54,7 +50,12 @@ const Documentation = ({
         </div>
         <p className="mt-8 text-sm font-weight-normal text-gray">
           Cliccando su Continua, dichiari di aver letto e compreso l’
-          <a className="font-weight-semibold cursor-pointer" onClick={toggle}>
+          <a
+            className="font-weight-semibold cursor-pointer"
+            href="https://io.italia.it/carta-giovani-nazionale/informativa-operatori"
+            target="_blank"
+            rel="noreferrer"
+          >
             informativa sulla privacy
           </a>{" "}
           relativa all’iniziativa.
@@ -74,7 +75,6 @@ const Documentation = ({
           </Button>
         </div>
       </div>
-      <PrivacyModal isOpen={modal} toggle={toggle} />
     </FormContainer>
   );
 };
