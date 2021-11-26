@@ -106,7 +106,8 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 
 export const discountDataValidationSchema = (
   staticCheck: boolean,
-  landingCheck?: boolean
+  landingCheck?: boolean,
+  bucketCheck?: boolean
 ) =>
   Yup.object().shape({
     name: Yup.string()
@@ -140,12 +141,18 @@ export const discountDataValidationSchema = (
       then: Yup.string().required(REQUIRED_FIELD),
       otherwise: Yup.string()
     }),
+    lastBucketCodeFileUid: Yup.string().when("condition", {
+      is: () => bucketCheck,
+      then: Yup.string().required(REQUIRED_FIELD),
+      otherwise: Yup.string()
+    }),
     enrollToEyca: Yup.boolean()
   });
 
 export const discountsListDataValidationSchema = (
   staticCheck: boolean,
-  landingCheck?: boolean
+  landingCheck?: boolean,
+  bucketCheck?: boolean
 ) =>
   Yup.object().shape({
     discounts: Yup.array().of(
@@ -178,6 +185,11 @@ export const discountsListDataValidationSchema = (
         }),
         landingPageReferrer: Yup.string().when("condition", {
           is: () => landingCheck,
+          then: Yup.string().required(REQUIRED_FIELD),
+          otherwise: Yup.string()
+        }),
+        lastBucketCodeFileUid: Yup.string().when("condition", {
+          is: () => bucketCheck,
           then: Yup.string().required(REQUIRED_FIELD),
           otherwise: Yup.string()
         }),

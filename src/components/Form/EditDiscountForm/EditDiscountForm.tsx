@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
+import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
 import { useHistory, useParams } from "react-router-dom";
+import { AxiosResponse } from "axios";
 import Api from "../../../api";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -20,6 +21,8 @@ import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import PublishModal from "../../Discounts/PublishModal";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import { Severity, useTooltip } from "../../../context/tooltip";
 import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
 
 const emptyInitialValues = {
@@ -34,6 +37,18 @@ const emptyInitialValues = {
   enrollToEyca: false
 };
 
+const chainAxios = (response: AxiosResponse) =>
+  fromPredicate(
+    (_: AxiosResponse) => _.status === 200 || _.status === 204,
+    (r: AxiosResponse) =>
+      r.status === 409
+        ? new Error("Upload codici ancora in corso")
+        : new Error(
+            "Errore durante la modifica dell'agevolazione, controllare i dati e riprovare"
+          )
+  )(response);
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const EditDiscountForm = () => {
   const { discountId } = useParams<any>();
   const history = useHistory();
@@ -44,6 +59,14 @@ const EditDiscountForm = () => {
   const [publishModal, setPublishModal] = useState(false);
   const togglePublishModal = () => setPublishModal(!publishModal);
   const [selectedPublish, setSelectedPublish] = useState<any>();
+  const { triggerTooltip } = useTooltip();
+
+  const throwErrorTooltip = (e: string) => {
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text: e
+    });
+  };
 
   const checkStaticCode =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
@@ -54,6 +77,11 @@ const EditDiscountForm = () => {
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "LandingPage";
+
+  const checkBucket =
+    (profile?.salesChannel?.channelType === "OnlineChannel" ||
+      profile?.salesChannel?.channelType === "BothChannels") &&
+    profile?.salesChannel?.discountCodeType === "Bucket";
 
   const updateDiscount = async (agreementId: string, discount: Discount) => {
     const {
@@ -68,9 +96,10 @@ const EditDiscountForm = () => {
         Api.Discount.updateDiscount(agreementId, discountId, updatedDiscount),
       toError
     )
+      .chain(chainAxios)
       .map(response => response.data)
       .fold(
-        () => void 0,
+        e => throwErrorTooltip(e.message),
         () => history.push(DASHBOARD)
       )
       .run();
@@ -84,11 +113,27 @@ const EditDiscountForm = () => {
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        discount => {
+        (discount: Discount) => {
           setInitialValues({
             ...discount,
             startDate: new Date(discount.startDate),
-            endDate: new Date(discount.endDate)
+            endDate: new Date(discount.endDate),
+            landingPageReferrer:
+              discount.landingPageReferrer === null
+                ? undefined
+                : discount.landingPageReferrer,
+            landingPageUrl:
+              discount.landingPageUrl === null
+                ? undefined
+                : discount.landingPageUrl,
+            discount:
+              discount.discount === null ? undefined : discount.discount,
+            staticCode:
+              discount.staticCode === null ? undefined : discount.staticCode,
+            lastBucketCodeFileUid:
+              discount.lastBucketCodeFileUid === null
+                ? undefined
+                : discount.lastBucketCodeFileUid
           });
           setLoading(false);
         }
@@ -137,14 +182,17 @@ const EditDiscountForm = () => {
         enableReinitialize
         initialValues={initialValues}
         validationSchema={() =>
-          discountDataValidationSchema(checkStaticCode, checkLanding)
+          discountDataValidationSchema(
+            checkStaticCode,
+            checkLanding,
+            checkBucket
+          )
         }
         onSubmit={values => {
           const newValues = {
             ...values,
             startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-            endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
-            discount: Number(values.discount)
+            endDate: format(new Date(values.endDate), "yyyy-MM-dd")
           };
           void updateDiscount(agreement.id, newValues);
         }}
@@ -194,6 +242,39 @@ const EditDiscountForm = () => {
                   required
                 >
                   <LandingPage />
+                </FormField>
+              )}
+              {checkBucket && (
+                <FormField
+                  htmlFor="lastBucketCodeFileUid"
+                  isTitleHeading
+                  title="Carica la lista di codici sconto"
+                  description={
+                    <>
+                      Caricare un file .CSV con la lista di almeno 1.000.000 di
+                      codici sconto statici relativi all’agevolazione.
+                      <br />
+                      Per maggiori informazioni, consultare la{" "}
+                      <a
+                        className="font-weight-semibold"
+                        href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Documentazione tecnica
+                      </a>{" "}
+                      o scaricare il <a href="#">file di esempio</a>
+                    </>
+                  }
+                  isVisible
+                  required
+                >
+                  <Bucket
+                    agreementId={agreement.id}
+                    label={"Seleziona un file dal computer"}
+                    formValues={values}
+                    setFieldValue={setFieldValue}
+                  />
                 </FormField>
               )}
               {profile?.salesChannel?.channelType === "OnlineChannel" && (
