@@ -43,8 +43,8 @@ const EnrollToEyca = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkBoxValue, setCheckboxValue] = useState(
     (index !== undefined
-      ? formValues.discounts[index].enrollToEyca
-      : formValues.enrollToEyca) ?? false
+      ? formValues.discounts[index].visibleOnEyca
+      : formValues.visibleOnEyca) ?? false
   );
 
   const openModal = (val: any) => {
@@ -54,7 +54,7 @@ const EnrollToEyca = ({
 
   const closeModal = () => {
     setFieldValue(
-      hasIndex ? `discounts[${index}].enrollToEyca` : `enrollToEyca`,
+      hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`,
       checkBoxValue
     );
     setIsModalOpen(false);
@@ -62,7 +62,7 @@ const EnrollToEyca = ({
   return (
     <>
       <FormField
-        htmlFor="enrollToEyca"
+        htmlFor={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
         isTitleHeading
         title="Vuoi che questa agevolazione sia visibile su EYCA?"
         description={
@@ -100,9 +100,9 @@ const EnrollToEyca = ({
       >
         <FormGroup check tag="div" className="mt-4">
           <Field
-            id={`enrollToEyca`}
+            id={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
             name={
-              hasIndex ? `discounts[${index}].enrollToEyca` : `enrollToEyca`
+              hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`
             }
             type="checkbox"
             onChange={(e: any) => {
@@ -110,8 +110,8 @@ const EnrollToEyca = ({
               if (isEycaSupported || value) {
                 setFieldValue(
                   hasIndex
-                    ? `discounts[${index}].enrollToEyca`
-                    : `enrollToEyca`,
+                    ? `discounts[${index}].visibleOnEyca`
+                    : `visibleOnEyca`,
                   !value
                 );
                 return;
@@ -119,7 +119,11 @@ const EnrollToEyca = ({
               openModal(!value);
             }}
           />
-          <Label check for={`enrollToEyca`} tag="label">
+          <Label
+            check
+            for={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
+            tag="label"
+          >
             Sì, voglio che questa agevolazione sia valida anche per il circuito
             EYCA
           </Label>
