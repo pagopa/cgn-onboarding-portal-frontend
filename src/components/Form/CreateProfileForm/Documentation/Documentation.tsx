@@ -4,6 +4,7 @@ import { Button } from "design-react-kit";
 import FormContainer from "../../FormContainer";
 import DocumentIcon from "../../../../assets/icons/document.svg";
 import { DASHBOARD } from "../../../../navigation/routes";
+import technicalDocumentation from "../../../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
 
 const Documentation = ({
   handleNext,
@@ -40,7 +41,7 @@ const Documentation = ({
           <DocumentIcon className="mr-5" />
           <a
             className="font-weight-semibold"
-            href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+            href={technicalDocumentation}
             target="_blank"
             onClick={handleClick}
             rel="noreferrer"

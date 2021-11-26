@@ -23,6 +23,7 @@ import { Severity, useTooltip } from "../../../context/tooltip";
 import chainAxios from "../../../utils/chainAxios";
 import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
 import bucketTemplate from "../../../templates/test-codes.csv";
+import technicalDocumentation from "../../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
 
 const emptyInitialValues = {
   name: "",
@@ -173,14 +174,22 @@ const CreateDiscountForm = () => {
                     Per maggiori informazioni, consultare la{" "}
                     <a
                       className="font-weight-semibold"
-                      href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                      href={technicalDocumentation}
                       target="_blank"
                       rel="noreferrer"
                     >
                       Documentazione tecnica
                     </a>{" "}
                     o scaricare il{" "}
-                    <a href={bucketTemplate} target="_blank" rel="noreferrer">
+                    <a
+                      href="#"
+                      onClick={() => {
+                        const blob = new Blob([bucketTemplate], {
+                          type: "text/csv"
+                        });
+                        saveAs(blob, "bucket_list_template");
+                      }}
+                    >
                       file di esempio
                     </a>
                   </>
@@ -199,7 +208,13 @@ const CreateDiscountForm = () => {
             {profile?.salesChannel?.channelType === "OnlineChannel" && (
               <EnrollToEyca
                 isEycaSupported={checkStaticCode}
-                discountOption={checkLanding ? "Landing Page" : "API"}
+                discountOption={
+                  checkLanding
+                    ? "Landing Page"
+                    : checkBucket
+                    ? "Lista di codici statici"
+                    : "API"
+                }
                 formValues={values}
                 setFieldValue={setFieldValue}
               />

@@ -1,11 +1,11 @@
-import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
-import { LinkList, LinkListItem, Icon } from "design-react-kit";
+import { Icon, LinkList, LinkListItem } from "design-react-kit";
 import { useSelector } from "react-redux";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import Api from "../../api";
 import { formatDate } from "../../utils/dates";
+import technicalDocumentation from "../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
 
 const ProfileDocuments = () => {
   const [agreementDocument, setAgreementDocument] = useState<any>();
@@ -94,7 +94,7 @@ const ProfileDocuments = () => {
               <Icon icon="it-file" color="primary" className="mr-4" />
               <div>
                 <a
-                  href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                  href={technicalDocumentation}
                   target="_blank"
                   className="text-sm font-weight-semibold text-blue"
                   rel="noreferrer"

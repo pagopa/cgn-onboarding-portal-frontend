@@ -3,6 +3,7 @@ import { Field } from "formik";
 import { Button, FormGroup } from "design-react-kit";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import FormField from "../../FormField";
+import technicalDocumentation from "../../../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
 
 type Props = {
   isEycaSupported: boolean;
@@ -73,7 +74,7 @@ const EnrollToEyca = ({
               Per maggiori informazioni, consultare la{" "}
               <a
                 className="font-weight-semibold"
-                href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                href={technicalDocumentation}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -88,7 +89,7 @@ const EnrollToEyca = ({
               <br /> Per maggiori informazioni, consultare la{" "}
               <a
                 className="font-weight-semibold"
-                href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                href={technicalDocumentation}
                 target="_blank"
                 rel="noreferrer"
               >

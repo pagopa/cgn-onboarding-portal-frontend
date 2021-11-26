@@ -15,6 +15,11 @@ declare module "*.csv" {
   export default content;
 }
 
+declare module "*.pdf" {
+  const content: any;
+  export default content;
+}
+
 declare module "design-react-kit" {
   export { default as Badge } from "src/components/Badge/Badge.js";
 }

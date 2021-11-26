@@ -22,6 +22,7 @@ import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { CreateDiscount, Discount, Discounts } from "../../../../api/generated";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import bucketTemplate from "../../../../templates/test-codes.csv";
+import technicalDocumentation from "../../../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
 import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
 import EnrollToEyca from "./EnrollToEyca";
@@ -323,14 +324,24 @@ const DiscountData = ({
                               Per maggiori informazioni, consultare la{" "}
                               <a
                                 className="font-weight-semibold"
-                                href="https://io.italia.it/carta-giovani-nazionale/guida-operatori"
+                                href={technicalDocumentation}
                                 target="_blank"
                                 rel="noreferrer"
                               >
                                 Documentazione tecnica
                               </a>{" "}
                               o scaricare il{" "}
-                              <a href={bucketTemplate}>file di esempio</a>
+                              <a
+                                href="#"
+                                onClick={() => {
+                                  const blob = new Blob([bucketTemplate], {
+                                    type: "text/csv"
+                                  });
+                                  saveAs(blob, "bucket_list_template");
+                                }}
+                              >
+                                file di esempio
+                              </a>
                             </>
                           }
                           isVisible
@@ -349,7 +360,13 @@ const DiscountData = ({
                         "OnlineChannel" && (
                         <EnrollToEyca
                           isEycaSupported={checkStaticCode}
-                          discountOption={checkLanding ? "Landing Page" : "API"}
+                          discountOption={
+                            checkLanding
+                              ? "Landing Page"
+                              : checkBucket
+                              ? "Lista di codici statici"
+                              : "API"
+                          }
                           index={index}
                           formValues={values}
                           setFieldValue={setFieldValue}
