@@ -7,6 +7,7 @@ import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
 import CustomErrorMessage from "../../CustomErrorMessage";
+import chainAxios from "../../../../utils/chainAxios";
 
 type Props = {
   label: string;
@@ -59,24 +60,24 @@ Props) => {
         }),
       toError
     )
+      .chain(chainAxios)
+      .map(response => response.data)
       .fold(
         () => {
           setUploadingDoc(false);
           setUploadProgress(0);
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text: "Caricamento del file fallito"
+          });
         },
-        response => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          response.status
-            ? setFieldValue(
-                hasIndex
-                  ? `discounts[${index}].lastBucketCodeFileUid`
-                  : "lastBucketCodeFileUid",
-                response.data.uid
-              )
-            : triggerTooltip({
-                severity: Severity.DANGER,
-                text: "Caricamento del file fallito"
-              });
+        data => {
+          setFieldValue(
+            hasIndex
+              ? `discounts[${index}].lastBucketCodeFileUid`
+              : "lastBucketCodeFileUid",
+            data.uid
+          );
           setCurrentDoc({ name: files[0].name });
           setUploadingDoc(false);
           setUploadProgress(0);
