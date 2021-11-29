@@ -7,14 +7,13 @@ script-src 'self';
 style-src 'self'; 
 object-src 'none'; 
 base-uri 'self';
-connect-src 'self' ${process.env.BASE_SPID_LOGIN_PATH} ${process.env.BASE_API_PATH} https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
+connect-src 'self' https://api.cgnonboardingportal.pagopa.it https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self'; 
 frame-src 'self'; 
-img-src 'self' https://cgnonboardingportalusa.blob.core.windows.net  https://www.spid.gov.it ${fromNullable(process.env.BASE_BLOB_PATH).getOrElse("")} ${process.env.NODE_ENV !== 'production' ? "https://upload.wikimedia.org/" : ""};
+img-src 'self' https://assets.cdn.io.italia.it https://cgnonboardingportalpsa.blob.core.windows.net https://www.spid.gov.it ${fromNullable(process.env.BASE_BLOB_PATH).getOrElse("")} ${process.env.NODE_ENV !== 'production' ? "https://upload.wikimedia.org/" : ""};
 manifest-src 'self'; 
 media-src 'self'; 
-worker-src 'none'; 
-frame-ancestors 'none';
+worker-src 'none';
 `;
 
 
