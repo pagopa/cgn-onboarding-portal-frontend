@@ -2,7 +2,8 @@ import { fromNullable } from "fp-ts/lib/Option";
 
 const getCSPContent = () => 
 `
-Content-Security-Policy-Report-Only: default-src 'self'; 
+Content-Security-Policy-Report-Only: 
+default-src 'self'; 
 script-src 'self'; 
 style-src 'self'; 
 object-src 'none'; 
@@ -18,7 +19,7 @@ worker-src 'none';
 
 
 export const renderCSP = () => {
-    if (process.env.NODE_ENV === 'production'){
+    if (process.env.NODE_ENV === 'production' && false){
         // eslint-disable-next-line functional/immutable-data
         document.getElementsByTagName("head")[0].innerHTML += `<meta http-equiv="Content-Security-Policy" content="${getCSPContent()}">`;
     }
