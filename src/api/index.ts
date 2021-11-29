@@ -14,6 +14,11 @@ import {
 
 const token = getCookie();
 
+const baseApiPath =
+  process.env.NODE_ENV === "local"
+    ? `${process.env.BASE_API_DOMAIN}`
+    : `${process.env.BASE_API_DOMAIN}/api/v1`;
+
 export const axiosInstance = axios.create({
   headers: {
     Authorization: `Bearer ${token}`,
@@ -33,37 +38,21 @@ axiosInstance.interceptors.response.use(
 );
 
 export default {
-  Agreement: new AgreementApi(
-    undefined,
-    process.env.BASE_API_PATH,
-    axiosInstance
-  ),
-  Profile: new ProfileApi(undefined, process.env.BASE_API_PATH, axiosInstance),
-  Discount: new DiscountApi(
-    undefined,
-    process.env.BASE_API_PATH,
-    axiosInstance
-  ),
-  Bucket: new BucketApi(undefined, process.env.BASE_API_PATH, axiosInstance),
-  Document: new DocumentApi(
-    undefined,
-    process.env.BASE_API_PATH,
-    axiosInstance
-  ),
+  Agreement: new AgreementApi(undefined, baseApiPath, axiosInstance),
+  Profile: new ProfileApi(undefined, baseApiPath, axiosInstance),
+  Discount: new DiscountApi(undefined, baseApiPath, axiosInstance),
+  Bucket: new BucketApi(undefined, baseApiPath, axiosInstance),
+  Document: new DocumentApi(undefined, baseApiPath, axiosInstance),
   DocumentTemplate: new DocumentTemplateApi(
     undefined,
-    process.env.BASE_API_PATH,
+    baseApiPath,
     axiosInstance
   ),
-  ApiToken: new ApiTokenApi(
-    undefined,
-    process.env.BASE_API_PATH,
-    axiosInstance
-  ),
-  Help: new HelpApi(undefined, process.env.BASE_API_PATH, axiosInstance),
+  ApiToken: new ApiTokenApi(undefined, baseApiPath, axiosInstance),
+  Help: new HelpApi(undefined, baseApiPath, axiosInstance),
   GeolocationToken: new GeolocationTokenApi(
     undefined,
-    process.env.BASE_API_PATH,
+    baseApiPath,
     axiosInstance
   )
 };
