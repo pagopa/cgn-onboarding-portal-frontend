@@ -3,7 +3,6 @@ import { Field } from "formik";
 import { Button, FormGroup } from "design-react-kit";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import FormField from "../../FormField";
-import technicalDocumentation from "../../../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
 
 type Props = {
   isEycaSupported: boolean;
@@ -74,7 +73,7 @@ const EnrollToEyca = ({
               Per maggiori informazioni, consultare la{" "}
               <a
                 className="font-weight-semibold"
-                href={technicalDocumentation}
+                href="https://pagopa.gitbook.io/documentazione-tecnica-portale-operatori-1.0.0"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -89,7 +88,7 @@ const EnrollToEyca = ({
               <br /> Per maggiori informazioni, consultare la{" "}
               <a
                 className="font-weight-semibold"
-                href={technicalDocumentation}
+                href="https://pagopa.gitbook.io/documentazione-tecnica-portale-operatori-1.0.0"
                 target="_blank"
                 rel="noreferrer"
               >

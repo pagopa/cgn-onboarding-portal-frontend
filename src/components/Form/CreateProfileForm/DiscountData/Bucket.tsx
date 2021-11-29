@@ -10,7 +10,6 @@ import CustomErrorMessage from "../../CustomErrorMessage";
 import chainAxios from "../../../../utils/chainAxios";
 import FormField from "../../FormField";
 import bucketTemplate from "../../../../templates/test-codes.csv";
-import technicalDocumentation from "../../../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
 
 type Props = {
   label: string;
@@ -102,13 +101,16 @@ Props) => {
           Per maggiori informazioni, consultare la{" "}
           <a
             className="font-weight-semibold"
-            href={technicalDocumentation}
+            href="https://pagopa.gitbook.io/documentazione-tecnica-portale-operatori-1.0.0"
             target="_blank"
             rel="noreferrer"
           >
             Documentazione tecnica
           </a>{" "}
-          o scaricare il <a href={bucketTemplate}>file di esempio</a>
+          o scaricare il{" "}
+          <a href={bucketTemplate} download={"template_bucket.csv"}>
+            file di esempio
+          </a>
         </>
       }
       isVisible

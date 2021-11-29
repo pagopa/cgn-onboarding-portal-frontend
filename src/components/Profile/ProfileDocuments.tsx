@@ -5,7 +5,6 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import Api from "../../api";
 import { formatDate } from "../../utils/dates";
-import technicalDocumentation from "../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
 
 const ProfileDocuments = () => {
   const [agreementDocument, setAgreementDocument] = useState<any>();
@@ -94,7 +93,7 @@ const ProfileDocuments = () => {
               <Icon icon="it-file" color="primary" className="mr-4" />
               <div>
                 <a
-                  href={technicalDocumentation}
+                  href="https://pagopa.gitbook.io/documentazione-tecnica-portale-operatori-1.0.0"
                   target="_blank"
                   className="text-sm font-weight-semibold text-blue"
                   rel="noreferrer"
