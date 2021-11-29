@@ -8,6 +8,8 @@ import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import chainAxios from "../../../../utils/chainAxios";
+import FormField from "../../FormField";
+import bucketTemplate from "../../../../templates/test-codes.csv";
 
 type Props = {
   label: string;
@@ -87,63 +89,91 @@ Props) => {
   };
 
   return (
-    <div className="border-bottom py-4">
-      <div className="d-flex flex-row justify-content-between align-items-center">
-        <div className="d-flex flex-row align-items-center">
-          {currentDoc && <DocumentSuccess className="mr-4" />}
-          {currentDoc ? (
-            <div className="d-flex flex-column ">
-              <a href="#">{currentDoc.name}</a>
-            </div>
-          ) : (
-            <i>{label}</i>
+    <FormField
+      htmlFor="lastBucketCodeFileUid"
+      isTitleHeading
+      title="Carica la lista di codici sconto"
+      description={
+        <>
+          Caricare un file .CSV con la lista di almeno 1.000.000 di codici
+          sconto statici relativi all’agevolazione.
+          <br />
+          Per maggiori informazioni, consultare la{" "}
+          <a
+            className="font-weight-semibold"
+            href="https://pagopa.gitbook.io/documentazione-tecnica-portale-operatori-1.0.0"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Documentazione tecnica
+          </a>{" "}
+          o scaricare il{" "}
+          <a href={bucketTemplate} download={"template_bucket.csv"}>
+            file di esempio
+          </a>
+        </>
+      }
+      isVisible
+      required
+    >
+      <div className="border-bottom py-4">
+        <div className="d-flex flex-row justify-content-between align-items-center">
+          <div className="d-flex flex-row align-items-center">
+            {currentDoc && <DocumentSuccess className="mr-4" />}
+            {currentDoc ? (
+              <div className="d-flex flex-column ">
+                <a href="#">{currentDoc.name}</a>
+              </div>
+            ) : (
+              <i>{label}</i>
+            )}
+          </div>
+          {!uploadingDoc && !currentDoc && (
+            <Button
+              color="primary"
+              icon
+              size="sm"
+              tag="button"
+              onClick={handleClick}
+            >
+              Carica file
+              <Field
+                name={
+                  hasIndex
+                    ? `discounts[${index}].lastBucketCodeFileUid`
+                    : "lastBucketCodeFileUid"
+                }
+                hidden
+              />
+              <input
+                type="file"
+                accept="text/csv"
+                hidden
+                ref={refFile}
+                onChange={() => addFile(refFile.current.files)}
+              />
+            </Button>
           )}
         </div>
-        {!uploadingDoc && !currentDoc && (
-          <Button
-            color="primary"
-            icon
-            size="sm"
-            tag="button"
-            onClick={handleClick}
-          >
-            Carica file
-            <Field
-              name={
-                hasIndex
-                  ? `discounts[${index}].lastBucketCodeFileUid`
-                  : "lastBucketCodeFileUid"
-              }
-              hidden
+        {uploadingDoc && (
+          <div className="pt-3">
+            <Progress
+              value={uploadProgress}
+              label="progresso"
+              role="progressbar"
+              tag="div"
             />
-            <input
-              type="file"
-              accept="text/csv"
-              hidden
-              ref={refFile}
-              onChange={() => addFile(refFile.current.files)}
-            />
-          </Button>
+          </div>
         )}
+        <CustomErrorMessage
+          name={
+            hasIndex
+              ? `discounts[${index}].lastBucketCodeFileUid`
+              : "lastBucketCodeFileUid"
+          }
+        />
       </div>
-      {uploadingDoc && (
-        <div className="pt-3">
-          <Progress
-            value={uploadProgress}
-            label="progresso"
-            role="progressbar"
-            tag="div"
-          />
-        </div>
-      )}
-      <CustomErrorMessage
-        name={
-          hasIndex
-            ? `discounts[${index}].lastBucketCodeFileUid`
-            : "lastBucketCodeFileUid"
-        }
-      />
-    </div>
+    </FormField>
   );
 };
 

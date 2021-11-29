@@ -4,7 +4,7 @@ import { Button } from "design-react-kit";
 import FormContainer from "../../FormContainer";
 import DocumentIcon from "../../../../assets/icons/document.svg";
 import { DASHBOARD } from "../../../../navigation/routes";
-import technicalDocumentation from "../../../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
+import policy from "../../../../templates/Informativa esercenti CGN 1.0.pdf";
 
 const Documentation = ({
   handleNext,
@@ -41,7 +41,7 @@ const Documentation = ({
           <DocumentIcon className="mr-5" />
           <a
             className="font-weight-semibold"
-            href={technicalDocumentation}
+            href="https://pagopa.gitbook.io/documentazione-tecnica-portale-operatori-1.0.0"
             target="_blank"
             onClick={handleClick}
             rel="noreferrer"
@@ -53,7 +53,7 @@ const Documentation = ({
           Cliccando su Continua, dichiari di aver letto e compreso l’
           <a
             className="font-weight-semibold cursor-pointer"
-            href="https://io.italia.it/carta-giovani-nazionale/informativa-operatori"
+            href={policy}
             target="_blank"
             rel="noreferrer"
           >

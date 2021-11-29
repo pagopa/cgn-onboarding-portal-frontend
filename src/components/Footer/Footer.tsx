@@ -1,5 +1,6 @@
 import React from "react";
 import Logo from "../Logo/Logo";
+import policy from "../../templates/Informativa esercenti CGN 1.0.pdf";
 
 const Footer = () => (
   <footer className="p-8 bg-secondary text-white">
@@ -25,7 +26,7 @@ const Footer = () => (
             <li className="mr-8">
               <a
                 className="text-gray no-underline"
-                href="https://io.italia.it/carta-giovani-nazionale/informativa-operatori"
+                href={policy}
                 target="_blank"
                 rel="noreferrer"
               >
