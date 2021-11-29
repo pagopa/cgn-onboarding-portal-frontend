@@ -21,8 +21,6 @@ import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { CreateDiscount, Discount, Discounts } from "../../../../api/generated";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
-import bucketTemplate from "../../../../templates/test-codes.csv";
-import technicalDocumentation from "../../../../templates/Documentazione Tecnica -  Condizioni e istruzioni tecniche v.0.4.pdf";
 import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
 import EnrollToEyca from "./EnrollToEyca";
@@ -311,50 +309,13 @@ const DiscountData = ({
                         </FormField>
                       )}
                       {checkBucket && (
-                        <FormField
-                          htmlFor="lastBucketCodeFileUid"
-                          isTitleHeading
-                          title="Carica la lista di codici sconto"
-                          description={
-                            <>
-                              Caricare un file .CSV con la lista di almeno
-                              1.000.000 di codici sconto statici relativi
-                              all’agevolazione.
-                              <br />
-                              Per maggiori informazioni, consultare la{" "}
-                              <a
-                                className="font-weight-semibold"
-                                href={technicalDocumentation}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                Documentazione tecnica
-                              </a>{" "}
-                              o scaricare il{" "}
-                              <a
-                                href="#"
-                                onClick={() => {
-                                  const blob = new Blob([bucketTemplate], {
-                                    type: "text/csv"
-                                  });
-                                  saveAs(blob, "bucket_list_template");
-                                }}
-                              >
-                                file di esempio
-                              </a>
-                            </>
-                          }
-                          isVisible
-                          required
-                        >
-                          <Bucket
-                            agreementId={agreement.id}
-                            label={"Seleziona un file dal computer"}
-                            index={index}
-                            formValues={values}
-                            setFieldValue={setFieldValue}
-                          />
-                        </FormField>
+                        <Bucket
+                          agreementId={agreement.id}
+                          label={"Seleziona un file dal computer"}
+                          index={index}
+                          formValues={values}
+                          setFieldValue={setFieldValue}
+                        />
                       )}
                       {profile?.salesChannel?.channelType ===
                         "OnlineChannel" && (
