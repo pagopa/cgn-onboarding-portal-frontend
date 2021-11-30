@@ -3,8 +3,7 @@ import { fromNullable } from "fp-ts/lib/Option";
 const getCSPContent = () =>
   `
 Content-Security-Policy-Report-Only: default-src 'self';
-script-src 'self';
-script-src-elem 'self' https://www.google.com https://www.gstatic.com;
+script-src 'self' https://www.google.com https://www.gstatic.com;
 style-src 'self';
 object-src 'none';
 base-uri 'self';
