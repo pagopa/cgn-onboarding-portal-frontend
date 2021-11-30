@@ -19,6 +19,7 @@ import InputFieldMultiple from "../InputFieldMultiple";
 import NotLoggedHelpApi from "../../../api/public";
 import { HelpRequest as NotLoggedHelpRequest } from "../../../api/generated_public";
 import CustomErrorMessage from "../CustomErrorMessage";
+import { Severity, useTooltip } from "../../../context/tooltip";
 import FormButtons from "./HelpFormButtons";
 
 const loggedInitialValues = {
@@ -74,6 +75,7 @@ const HelpForm = () => {
   const token = getCookie();
   const [recaptchaApiKey, setRecaptchaApiKey] = useState<any>("");
   const recaptchaRef = useRef<any>();
+  const { triggerTooltip } = useTooltip();
 
   const createLoggedHelp = async (agreementId: string, help: HelpRequest) =>
     await tryCatch(() => Api.Help.sendHelpRequest(agreementId, help), toError)
@@ -106,21 +108,21 @@ const HelpForm = () => {
     );
   };
 
-  const getRecaptchaApiKey = async () =>
+  const executeNotLoggedForm = async (f: () => Promise<void>) =>
     await tryCatch(() => recaptchaRef.current.executeAsync(), toError)
-      .map((response: any) => response.data)
       .fold(
-        () => void 0,
-        response => setRecaptchaApiKey(response)
+        () =>
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text: "C'è stato un errore durante la sottomissione del form"
+          }),
+        _ => f()
       )
       .run();
 
   useEffect(() => {
     setRecaptchaApiKey(process.env.RECAPTCHA_API_KEY);
-    if (!token) {
-      void getRecaptchaApiKey();
-    }
-  });
+  }, []);
 
   return (
     <Formik
@@ -133,7 +135,7 @@ const HelpForm = () => {
         if (token) {
           void createLoggedHelp(agreement.id, values);
         } else {
-          void createNotLoggedHelp(newValues);
+          void executeNotLoggedForm(() => createNotLoggedHelp(newValues));
         }
       }}
     >
