@@ -12,7 +12,7 @@ connect-src 'self' ${
   } https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self';
 frame-src 'self';
-img-src 'self' https://assets.cdn.io.italia.it https://cgnonboardingportalusa.blob.core.windows.net ${fromNullable(
+img-src 'self' https://assets.cdn.io.italia.it https://cgnonboardingportalpsa.blob.core.windows.net ${fromNullable(
     process.env.BASE_BLOB_PATH
   ).getOrElse("")} ${
     process.env.NODE_ENV !== "production" ? "https://upload.wikimedia.org/" : ""
