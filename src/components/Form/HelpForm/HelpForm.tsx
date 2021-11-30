@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { Field, Form, Formik } from "formik";
 import { useHistory } from "react-router-dom";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { useSelector } from "react-redux";
-import ReCAPTCHA from "react-google-recaptcha";
 import FormSection from "../FormSection";
 import InputField from "../FormField";
 import {
@@ -21,6 +20,7 @@ import { HelpRequest as NotLoggedHelpRequest } from "../../../api/generated_publ
 import CustomErrorMessage from "../CustomErrorMessage";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import FormButtons from "./HelpFormButtons";
+import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
 const loggedInitialValues = {
   category: "",
@@ -73,17 +73,18 @@ const HelpForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const history = useHistory();
   const token = getCookie();
-  const [recaptchaApiKey, setRecaptchaApiKey] = useState<any>("");
-  const recaptchaRef = useRef<any>();
   const { triggerTooltip } = useTooltip();
+
+  const onErrorTooltip = () =>
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text: "C'è stato un errore durante la sottomissione del form"
+    });
 
   const createLoggedHelp = async (agreementId: string, help: HelpRequest) =>
     await tryCatch(() => Api.Help.sendHelpRequest(agreementId, help), toError)
       .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => history.goBack()
-      )
+      .fold(onErrorTooltip, () => history.goBack())
       .run();
 
   const createNotLoggedHelp = async (help: NotLoggedHelpRequest) => {
@@ -92,37 +93,14 @@ const HelpForm = () => {
       toError
     )
       .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => history.goBack()
-      )
+      .fold(onErrorTooltip, () => history.goBack())
       .run();
   };
 
-  const hasTopicDropdown = (category: string): boolean => {
-    const newCategory = category as HelpRequestCategoryEnum;
-    return (
-      category === HelpRequestCategoryEnum.DataFilling ||
-      category === HelpRequestCategoryEnum.Discounts ||
-      category === HelpRequestCategoryEnum.Documents
-    );
-  };
-
-  const executeNotLoggedForm = async (f: () => Promise<void>) =>
-    await tryCatch(() => recaptchaRef.current.executeAsync(), toError)
-      .fold(
-        () =>
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "C'è stato un errore durante la sottomissione del form"
-          }),
-        _ => f()
-      )
-      .run();
-
-  useEffect(() => {
-    setRecaptchaApiKey(process.env.RECAPTCHA_API_KEY);
-  }, []);
+  const hasTopicDropdown = (category: string): boolean =>
+    category === HelpRequestCategoryEnum.DataFilling ||
+    category === HelpRequestCategoryEnum.Discounts ||
+    category === HelpRequestCategoryEnum.Documents;
 
   return (
     <Formik
@@ -135,22 +113,13 @@ const HelpForm = () => {
         if (token) {
           void createLoggedHelp(agreement.id, values);
         } else {
-          void executeNotLoggedForm(() => createNotLoggedHelp(newValues));
+          void createNotLoggedHelp(newValues);
         }
       }}
     >
       {({ values, isValid, dirty, setFieldValue }) => (
         <Form autoComplete="off">
-          {!token && (
-            <div className="mt-10">
-              <ReCAPTCHA
-                ref={recaptchaRef}
-                size="invisible"
-                sitekey={recaptchaApiKey}
-                onChange={event => setFieldValue("recaptchaToken", event)}
-              />
-            </div>
-          )}
+          {!token && <ReCAPTCHAFormComponent setFieldValue={setFieldValue} />}
           <FormSection
             description="Come possiamo aiutarti? Compila il modulo e invialo online, sarai ricontattato al più presto"
             required
@@ -402,18 +371,3 @@ const HelpForm = () => {
   );
 };
 export default HelpForm;
-function createNotLoggedHelp(
-  id: string,
-  values: {
-    category: string;
-    topic: string;
-    message: string;
-    referentFirstName: string;
-    referentLastName: string;
-    legalName: string;
-    emailAddress: string;
-    confirmEmailAddress: string;
-  }
-) {
-  throw new Error("Function not implemented.");
-}
