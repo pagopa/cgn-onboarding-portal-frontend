@@ -4,6 +4,7 @@ const getCSPContent = () =>
   `
 Content-Security-Policy-Report-Only: default-src 'self';
 script-src 'self';
+script-src-elem 'self' https://www.google.com https://www.gstatic.com;
 style-src 'self';
 object-src 'none';
 base-uri 'self';
@@ -11,7 +12,7 @@ connect-src 'self' ${
     process.env.BASE_API_DOMAIN
   } https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self';
-frame-src 'self';
+frame-src 'self' https://www.google.com;
 img-src 'self' https://assets.cdn.io.italia.it https://cgnonboardingportalpsa.blob.core.windows.net ${fromNullable(
     process.env.BASE_BLOB_PATH
   ).getOrElse("")} ${
@@ -23,7 +24,7 @@ worker-src 'none';
 `;
 
 export const renderCSP = () => {
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat") {
     // eslint-disable-next-line functional/immutable-data
     document.getElementsByTagName(
       "head"
