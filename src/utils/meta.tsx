@@ -1,5 +1,16 @@
 import { fromNullable } from "fp-ts/lib/Option";
 
+const getAdminLoginUri = () => {
+  switch (process.env.NODE_ENV) {
+    case "production":
+      return "https://login.microsoftonline.com";
+    case "uat":
+      return "https://cgnonboardingportaluat.b2clogin.com";
+    default:
+      return "";
+  }
+};
+
 const getCSPContent = () =>
   `
 Content-Security-Policy-Report-Only: default-src 'self';
@@ -7,7 +18,7 @@ script-src 'self' https://www.google.com https://www.gstatic.com;
 style-src 'self';
 object-src 'none';
 base-uri 'self';
-connect-src 'self' ${
+connect-src 'self' ${getAdminLoginUri()} ${
     process.env.BASE_API_DOMAIN
   } https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self';
