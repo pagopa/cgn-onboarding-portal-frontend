@@ -3,7 +3,7 @@ import { fromNullable } from "fp-ts/lib/Option";
 const getAdminLoginUri = () => {
   switch (process.env.NODE_ENV) {
     case "production":
-      return "https://login.microsoftonline.com";
+      return "https://login.microsoftonline.com https://cgnonboardingportal.b2clogin.com";
     case "uat":
       return "https://cgnonboardingportaluat.b2clogin.com";
     default:
