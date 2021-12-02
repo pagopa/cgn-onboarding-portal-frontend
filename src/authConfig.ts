@@ -6,7 +6,8 @@ const msalConfig: Msal.Configuration = {
     authority: process.env.MSAL_AUTHORITY as string,
     knownAuthorities: [
       "testcgnportalbitrock.b2clogin.com",
-      "cgnonboardingportaluat.b2clogin.com"
+      "cgnonboardingportaluat.b2clogin.com",
+      "cgnonboardingportal.b2clogin.com"
     ], // You must identify your tenant's domain as a known authority.
     redirectUri: process.env.MSAL_REDIRECT_URI as string,
     postLogoutRedirectUri: "/"
