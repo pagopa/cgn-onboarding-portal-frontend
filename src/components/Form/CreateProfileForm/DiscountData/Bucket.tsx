@@ -3,6 +3,7 @@ import { Button, Progress } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Field } from "formik";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
@@ -16,14 +17,12 @@ type Props = {
   formValues: any;
   setFieldValue: any;
   agreementId: string;
-  uploadedDoc?: { name: string };
   index?: number;
 };
 
 const BucketComponent = ({
   index,
   label,
-  uploadedDoc,
   agreementId,
   formValues,
   setFieldValue
@@ -33,7 +32,9 @@ Props) => {
   const refFile = useRef<any>();
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [currentDoc, setCurrentDoc] = useState(uploadedDoc);
+  const [currentDoc, setCurrentDoc] = useState<{ name: string } | undefined>(
+    undefined
+  );
   const { triggerTooltip } = useTooltip();
 
   const handleClick = () => {
@@ -41,13 +42,13 @@ Props) => {
   };
 
   useEffect(() => {
-    const hasDocument =
-      (index !== undefined
-        ? formValues.discounts[index].lastBucketCodeFileUid
-        : formValues.lastBucketCodeFileUid) !== undefined;
+    const documentName =
+      index !== undefined
+        ? formValues.discounts[index].lastBucketCodeFileName
+        : formValues.lastBucketCodeFileName;
 
-    if (hasDocument) {
-      setCurrentDoc({ name: "File già presente" });
+    if (NonEmptyString.is(documentName)) {
+      setCurrentDoc({ name: documentName });
     }
   }, [formValues, index]);
 
@@ -79,6 +80,12 @@ Props) => {
               ? `discounts[${index}].lastBucketCodeFileUid`
               : "lastBucketCodeFileUid",
             data.uid
+          );
+          setFieldValue(
+            hasIndex
+              ? `discounts[${index}].lastBucketCodeFileName`
+              : "lastBucketCodeFileName",
+            files[0].name
           );
           setCurrentDoc({ name: files[0].name });
           setUploadingDoc(false);
@@ -119,11 +126,13 @@ Props) => {
       <div className="border-bottom py-4">
         <div className="d-flex flex-row justify-content-between align-items-center">
           <div className="d-flex flex-row align-items-center">
-            {currentDoc && <DocumentSuccess className="mr-4" />}
             {currentDoc ? (
-              <div className="d-flex flex-column ">
-                <a href="#">{currentDoc.name}</a>
-              </div>
+              <>
+                <DocumentSuccess className="mr-4" />
+                <div className="d-flex flex-column ">
+                  <a href="#">{currentDoc.name}</a>
+                </div>
+              </>
             ) : (
               <i>{label}</i>
             )}
@@ -142,6 +151,14 @@ Props) => {
                   hasIndex
                     ? `discounts[${index}].lastBucketCodeFileUid`
                     : "lastBucketCodeFileUid"
+                }
+                hidden
+              />
+              <Field
+                name={
+                  hasIndex
+                    ? `discounts[${index}].lastBucketCodeFileName`
+                    : "lastBucketCodeFileName"
                 }
                 hidden
               />
@@ -170,6 +187,13 @@ Props) => {
             hasIndex
               ? `discounts[${index}].lastBucketCodeFileUid`
               : "lastBucketCodeFileUid"
+          }
+        />
+        <CustomErrorMessage
+          name={
+            hasIndex
+              ? `discounts[${index}].lastBucketCodeFileName`
+              : "lastBucketCodeFileName"
           }
         />
       </div>

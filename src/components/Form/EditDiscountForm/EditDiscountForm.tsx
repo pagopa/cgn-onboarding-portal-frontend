@@ -133,7 +133,11 @@ const EditDiscountForm = () => {
             lastBucketCodeFileUid:
               discount.lastBucketCodeFileUid === null
                 ? undefined
-                : discount.lastBucketCodeFileUid
+                : discount.lastBucketCodeFileUid,
+            lastBucketCodeFileName:
+              discount.lastBucketCodeFileName === null
+                ? undefined
+                : discount.lastBucketCodeFileName
           });
           setLoading(false);
         }
