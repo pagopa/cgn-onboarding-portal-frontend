@@ -25,6 +25,7 @@ import {
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
 import PublishModal from "./PublishModal";
+import ImportationStatus from "./ImportationStatus";
 
 const chainAxios = (response: AxiosResponse) =>
   fromPredicate(
@@ -328,6 +329,9 @@ const Discounts = () => {
                 {row.original.suspendedReasonMessage}
               </CalloutText>
             </Callout>
+          )}
+          {row.original.lastBucketCodeFileUid !== null && (
+            <ImportationStatus discountId={row.original.id} />
           )}
           <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
           <table className="table">
