@@ -24,7 +24,9 @@ import {
 } from "../../utils/strings";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
+import { BucketCodeLoadStatus } from "../../api/generated";
 import PublishModal from "./PublishModal";
+import ImportationStatus from "./ImportationStatus";
 
 const chainAxios = (response: AxiosResponse) =>
   fromPredicate(
@@ -58,7 +60,7 @@ const Discounts = () => {
     await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
       .map(response => response.data.items)
       .fold(
-        () => void 0,
+        _ => throwErrorTooltip("Errore nel caricamento delle agevolazioni"),
         discounts => setDiscounts(discounts)
       )
       .run();
@@ -69,7 +71,7 @@ const Discounts = () => {
       toError
     )
       .fold(
-        () => void 0,
+        _ => throwErrorTooltip("Errore nella cancellazione dell'agevolazione"),
         () =>
           setDiscounts(
             discounts.filter(
@@ -210,6 +212,10 @@ const Discounts = () => {
               setSelectedPublish(row.original.id);
               togglePublishModal();
             }}
+            disabled={
+              row.original.lastBucketCodeLoadStatus !==
+              BucketCodeLoadStatus.Finished
+            }
           >
             <Icon
               icon={"it-external-link"}
@@ -328,6 +334,12 @@ const Discounts = () => {
                 {row.original.suspendedReasonMessage}
               </CalloutText>
             </Callout>
+          )}
+          {row.original.lastBucketCodeFileUid !== null && (
+            <ImportationStatus
+              discountId={row.original.id}
+              status={row.original.lastBucketCodeLoadStatus}
+            />
           )}
           <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
           <table className="table">
