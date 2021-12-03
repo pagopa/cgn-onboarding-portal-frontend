@@ -141,7 +141,12 @@ export const discountDataValidationSchema = (
       then: Yup.string().required(REQUIRED_FIELD),
       otherwise: Yup.string()
     }),
-    lastBucketCodeFileUid: Yup.string().when("condition", {
+    lastBucketCodeLoadUid: Yup.string().when("condition", {
+      is: () => bucketCheck,
+      then: Yup.string().required(REQUIRED_FIELD),
+      otherwise: Yup.string()
+    }),
+    lastBucketCodeLoadFileName: Yup.string().when("condition", {
       is: () => bucketCheck,
       then: Yup.string().required(REQUIRED_FIELD),
       otherwise: Yup.string()
@@ -188,7 +193,12 @@ export const discountsListDataValidationSchema = (
           then: Yup.string().required(REQUIRED_FIELD),
           otherwise: Yup.string()
         }),
-        lastBucketCodeFileUid: Yup.string().when("condition", {
+        lastBucketCodeLoadUid: Yup.string().when("condition", {
+          is: () => bucketCheck,
+          then: Yup.string().required(REQUIRED_FIELD),
+          otherwise: Yup.string()
+        }),
+        lastBucketCodeLoadFileName: Yup.string().when("condition", {
           is: () => bucketCheck,
           then: Yup.string().required(REQUIRED_FIELD),
           otherwise: Yup.string()

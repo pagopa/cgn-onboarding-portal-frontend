@@ -3,6 +3,7 @@ import { Button, Progress } from "design-react-kit";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Field } from "formik";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
@@ -10,20 +11,19 @@ import CustomErrorMessage from "../../CustomErrorMessage";
 import chainAxios from "../../../../utils/chainAxios";
 import FormField from "../../FormField";
 import bucketTemplate from "../../../../templates/test-codes.csv";
+import { BucketCodeLoadStatus } from "../../../../api/generated";
 
 type Props = {
   label: string;
   formValues: any;
   setFieldValue: any;
   agreementId: string;
-  uploadedDoc?: { name: string };
   index?: number;
 };
 
 const BucketComponent = ({
   index,
   label,
-  uploadedDoc,
   agreementId,
   formValues,
   setFieldValue
@@ -33,7 +33,10 @@ Props) => {
   const refFile = useRef<any>();
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [currentDoc, setCurrentDoc] = useState(uploadedDoc);
+  const [currentDoc, setCurrentDoc] = useState<{ name: string } | undefined>(
+    undefined
+  );
+  const [canUploadFile, setCanUploadFile] = useState(true);
   const { triggerTooltip } = useTooltip();
 
   const handleClick = () => {
@@ -41,14 +44,24 @@ Props) => {
   };
 
   useEffect(() => {
-    const hasDocument =
-      (index !== undefined
-        ? formValues.discounts[index].lastBucketCodeFileUid
-        : formValues.lastBucketCodeFileUid) !== undefined;
+    const documentName =
+      index !== undefined
+        ? formValues.discounts[index].lastBucketCodeLoadFileName
+        : formValues.lastBucketCodeLoadFileName;
 
-    if (hasDocument) {
-      setCurrentDoc({ name: "File già presente" });
+    const importStatus =
+      index !== undefined
+        ? formValues.discounts[index].lastBucketCodeLoadStatus
+        : formValues.lastBucketCodeLoadStatus;
+
+    if (NonEmptyString.is(documentName)) {
+      setCurrentDoc({ name: documentName });
     }
+
+    setCanUploadFile(
+      importStatus !== BucketCodeLoadStatus.Running &&
+        importStatus !== BucketCodeLoadStatus.Pending
+    );
   }, [formValues, index]);
 
   const addFile = async (files: any) => {
@@ -76,21 +89,32 @@ Props) => {
         data => {
           setFieldValue(
             hasIndex
-              ? `discounts[${index}].lastBucketCodeFileUid`
-              : "lastBucketCodeFileUid",
+              ? `discounts[${index}].lastBucketCodeLoadUid`
+              : "lastBucketCodeLoadUid",
             data.uid
+          );
+          setFieldValue(
+            hasIndex
+              ? `discounts[${index}].lastBucketCodeLoadFileName`
+              : "lastBucketCodeLoadFileName",
+            files[0].name
           );
           setCurrentDoc({ name: files[0].name });
           setUploadingDoc(false);
           setUploadProgress(0);
+          setCanUploadFile(false);
         }
       )
       .run();
   };
 
+  const loadStatus =
+    index !== undefined
+      ? formValues.discounts[index].lastBucketCodeLoadStatus
+      : formValues.lastBucketCodeLoadStatus;
   return (
     <FormField
-      htmlFor="lastBucketCodeFileUid"
+      htmlFor="lastBucketCodeLoadUid"
       isTitleHeading
       title="Carica la lista di codici sconto"
       description={
@@ -119,16 +143,18 @@ Props) => {
       <div className="border-bottom py-4">
         <div className="d-flex flex-row justify-content-between align-items-center">
           <div className="d-flex flex-row align-items-center">
-            {currentDoc && <DocumentSuccess className="mr-4" />}
             {currentDoc ? (
-              <div className="d-flex flex-column ">
-                <a href="#">{currentDoc.name}</a>
-              </div>
+              <>
+                <DocumentSuccess className="mr-4" />
+                <div className="d-flex flex-column ">
+                  <a href="#">{currentDoc.name}</a>
+                </div>
+              </>
             ) : (
               <i>{label}</i>
             )}
           </div>
-          {!uploadingDoc && !currentDoc && (
+          {!uploadingDoc && canUploadFile && (
             <Button
               color="primary"
               icon
@@ -136,12 +162,23 @@ Props) => {
               tag="button"
               onClick={handleClick}
             >
-              Carica file
+              {loadStatus === BucketCodeLoadStatus.Failed ||
+              loadStatus === BucketCodeLoadStatus.Finished
+                ? "Carica un nuovo file"
+                : "Carica file"}
               <Field
                 name={
                   hasIndex
-                    ? `discounts[${index}].lastBucketCodeFileUid`
-                    : "lastBucketCodeFileUid"
+                    ? `discounts[${index}].lastBucketCodeLoadUid`
+                    : "lastBucketCodeLoadUid"
+                }
+                hidden
+              />
+              <Field
+                name={
+                  hasIndex
+                    ? `discounts[${index}].lastBucketCodeLoadFileName`
+                    : "lastBucketCodeLoadFileName"
                 }
                 hidden
               />
@@ -168,8 +205,15 @@ Props) => {
         <CustomErrorMessage
           name={
             hasIndex
-              ? `discounts[${index}].lastBucketCodeFileUid`
-              : "lastBucketCodeFileUid"
+              ? `discounts[${index}].lastBucketCodeLoadUid`
+              : "lastBucketCodeLoadUid"
+          }
+        />
+        <CustomErrorMessage
+          name={
+            hasIndex
+              ? `discounts[${index}].lastBucketCodeLoadFileName`
+              : "lastBucketCodeLoadFileName"
           }
         />
       </div>
@@ -184,12 +228,12 @@ const checkMemoization = (
   if (prev.index === next.index) {
     const previousValue =
       prev.index !== undefined
-        ? prev.formValues.discounts[prev.index].lastBucketCodeFileUid
-        : prev.formValues.lastBucketCodeFileUid;
+        ? prev.formValues.discounts[prev.index].lastBucketCodeLoadUid
+        : prev.formValues.lastBucketCodeLoadUid;
     const nextValue =
       next.index !== undefined
-        ? next.formValues.discounts[next.index].lastBucketCodeFileUid
-        : next.formValues.lastBucketCodeFileUid;
+        ? next.formValues.discounts[next.index].lastBucketCodeLoadUid
+        : next.formValues.lastBucketCodeLoadUid;
     if (previousValue === nextValue) {
       return true;
     }
