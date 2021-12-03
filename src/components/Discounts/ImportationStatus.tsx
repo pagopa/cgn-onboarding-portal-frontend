@@ -1,17 +1,14 @@
-import React, { CSSProperties, useEffect, useMemo, useState } from "react";
+import React, { CSSProperties, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "design-react-kit";
+import { BucketCodeLoadStatus } from "../../api/generated";
 
 type Props = {
   discountId: string;
+  status: BucketCodeLoadStatus;
 };
 
-type ImportationStatusType =
-  | "UNDEFINED"
-  | "COMPLETED"
-  | "ONGOING"
-  | "EXHAUSTED"
-  | "ERROR";
+type ImportationStatusType = "EXHAUSTED" | BucketCodeLoadStatus;
 
 const styles: Record<string, CSSProperties> = {
   container: {
@@ -47,7 +44,8 @@ const getRenderAttributesByState = (
           </>
         )
       };
-    case "ONGOING":
+    case BucketCodeLoadStatus.Running:
+    case BucketCodeLoadStatus.Pending:
       return {
         title: "L’ELABORAZIONE DEI CODICI NON È COMPLETA",
         body: (
@@ -57,7 +55,7 @@ const getRenderAttributesByState = (
           </>
         )
       };
-    case "ERROR":
+    case BucketCodeLoadStatus.Failed:
       return {
         title: "L’ELABORAZIONE DEI CODICI NON È ANDATA A BUON FINE",
         body: (
@@ -83,17 +81,12 @@ const getRenderAttributesByState = (
 };
 
 const ImportationStatus = (props: Props) => {
-  const [status, setStatus] = useState<ImportationStatusType>("UNDEFINED");
-  const shouldBeRendered = status !== "UNDEFINED" && status !== "COMPLETED";
+  const shouldBeRendered = props.status !== BucketCodeLoadStatus.Finished;
 
   const { title, body } = useMemo(
-    () => getRenderAttributesByState(status, props.discountId),
-    [status, props.discountId]
+    () => getRenderAttributesByState(props.status, props.discountId),
+    [props.status, props.discountId]
   );
-
-  useEffect(() => {
-    setTimeout(() => setStatus("EXHAUSTED"), 1000);
-  }, []);
 
   return shouldBeRendered ? (
     <div style={styles.container} className="row bg-white">

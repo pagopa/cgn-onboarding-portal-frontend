@@ -24,6 +24,7 @@ import {
 } from "../../utils/strings";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
+import { BucketCodeLoadStatus } from "../../api/generated";
 import PublishModal from "./PublishModal";
 import ImportationStatus from "./ImportationStatus";
 
@@ -211,6 +212,10 @@ const Discounts = () => {
               setSelectedPublish(row.original.id);
               togglePublishModal();
             }}
+            disabled={
+              row.original.lastBucketCodeLoadStatus !==
+              BucketCodeLoadStatus.Finished
+            }
           >
             <Icon
               icon={"it-external-link"}
@@ -331,7 +336,10 @@ const Discounts = () => {
             </Callout>
           )}
           {row.original.lastBucketCodeFileUid !== null && (
-            <ImportationStatus discountId={row.original.id} />
+            <ImportationStatus
+              discountId={row.original.id}
+              status={row.original.lastBucketCodeLoadStatus}
+            />
           )}
           <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
           <table className="table">
