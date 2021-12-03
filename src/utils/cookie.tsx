@@ -66,7 +66,6 @@ export function logout(userType: string) {
   if (userType === "ADMIN") {
     void AdminAccess.logoutRedirect();
     deleteCookie();
-    window.location.replace("/");
   } else if (userType === "USER") {
     void invalidate();
   }
