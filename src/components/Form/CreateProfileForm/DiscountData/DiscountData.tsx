@@ -164,10 +164,14 @@ const DiscountData = ({
                 discount.discount === null ? undefined : discount.discount,
               staticCode:
                 discount.staticCode === null ? undefined : discount.staticCode,
-              lastBucketCodeFileUid:
-                discount.lastBucketCodeFileUid === null
+              lastBucketCodeLoadUid:
+                discount.lastBucketCodeLoadUid === null
                   ? undefined
-                  : discount.lastBucketCodeFileUid
+                  : discount.lastBucketCodeLoadUid,
+              lastBucketCodeLoadFileName:
+                discount.lastBucketCodeLoadFileName === null
+                  ? undefined
+                  : discount.lastBucketCodeLoadFileName
             }))
           });
           setLoading(false);
