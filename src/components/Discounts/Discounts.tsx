@@ -60,7 +60,7 @@ const Discounts = () => {
     await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
       .map(response => response.data.items)
       .fold(
-        () => void 0,
+        _ => throwErrorTooltip("Errore nel caricamento delle agevolazioni"),
         discounts => setDiscounts(discounts)
       )
       .run();
@@ -71,7 +71,7 @@ const Discounts = () => {
       toError
     )
       .fold(
-        () => void 0,
+        _ => throwErrorTooltip("Errore nella cancellazione dell'agevolazione"),
         () =>
           setDiscounts(
             discounts.filter(
