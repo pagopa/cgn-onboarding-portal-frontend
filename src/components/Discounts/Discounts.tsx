@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { useExpanded, useSortBy, useTable } from "react-table";
+import { Column, useExpanded, useSortBy, useTable } from "react-table";
 import {
   Badge,
   Button,
@@ -15,6 +15,7 @@ import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { compareAsc, format } from "date-fns";
 import { AxiosResponse } from "axios";
+import { fromNullable } from "fp-ts/lib/Option";
 import Api from "../../api/index";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import ProfileItem from "../Profile/ProfileItem";
@@ -24,7 +25,7 @@ import {
 } from "../../utils/strings";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
-import { BucketCodeLoadStatus } from "../../api/generated";
+import { BucketCodeLoadStatus, Discount } from "../../api/generated";
 import PublishModal from "./PublishModal";
 import ImportationStatus from "./ImportationStatus";
 
@@ -39,7 +40,11 @@ const chainAxios = (response: AxiosResponse) =>
 
 const Discounts = () => {
   const history = useHistory();
-  const [discounts, setDiscounts] = useState<any>([]);
+  const mapShouldDisablePublishButton: Map<string, boolean> = new Map<
+    string,
+    boolean
+  >();
+  const [discounts, setDiscounts] = useState<ReadonlyArray<Discount>>([]);
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [selectedDiscount, setSelectedDiscount] = useState<any>();
   const [publishModal, setPublishModal] = useState(false);
@@ -153,6 +158,15 @@ const Discounts = () => {
     }
   };
 
+  useEffect(() => {
+    discounts.forEach(d => {
+      mapShouldDisablePublishButton.set(
+        d.id,
+        d.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
+      );
+    });
+  }, [discounts]);
+
   const getDiscountButtons = (row: any) => (
     <div
       className={
@@ -212,10 +226,9 @@ const Discounts = () => {
               setSelectedPublish(row.original.id);
               togglePublishModal();
             }}
-            disabled={
-              row.original.lastBucketCodeLoadStatus !==
-              BucketCodeLoadStatus.Finished
-            }
+            disabled={fromNullable(
+              mapShouldDisablePublishButton.get(row.original.id)
+            ).getOrElse(false)}
           >
             <Icon
               icon={"it-external-link"}
@@ -262,8 +275,8 @@ const Discounts = () => {
     void getDiscounts();
   }, []);
 
-  const data = useMemo(() => discounts, [discounts]);
-  const columns = useMemo(
+  const data = useMemo(() => [...discounts], [discounts]);
+  const columns: Array<Column<Discount>> = useMemo(
     () => [
       {
         Header: "Nome agevolazione",
