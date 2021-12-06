@@ -5,6 +5,7 @@ import {
   ApiTokenApi,
   BucketApi,
   DiscountApi,
+  DiscountBucketLoadingProgressApi,
   DocumentApi,
   DocumentTemplateApi,
   GeolocationTokenApi,
@@ -51,6 +52,11 @@ export default {
   ApiToken: new ApiTokenApi(undefined, baseApiPath, axiosInstance),
   Help: new HelpApi(undefined, baseApiPath, axiosInstance),
   GeolocationToken: new GeolocationTokenApi(
+    undefined,
+    baseApiPath,
+    axiosInstance
+  ),
+  DiscountBucketLoadingProgress: new DiscountBucketLoadingProgressApi(
     undefined,
     baseApiPath,
     axiosInstance

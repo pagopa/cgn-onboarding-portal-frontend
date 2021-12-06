@@ -338,7 +338,9 @@ const Discounts = () => {
           {row.original.lastBucketCodeFileUid !== null && (
             <ImportationStatus
               discountId={row.original.id}
+              agreementId={agreement.id}
               status={row.original.lastBucketCodeLoadStatus}
+              onPollingComplete={() => void getDiscounts()}
             />
           )}
           <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
