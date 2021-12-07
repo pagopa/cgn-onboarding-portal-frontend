@@ -213,8 +213,9 @@ const Discounts = () => {
               togglePublishModal();
             }}
             disabled={
+              row.original.lastBucketCodeLoadStatus !== null &&
               row.original.lastBucketCodeLoadStatus !==
-              BucketCodeLoadStatus.Finished
+                BucketCodeLoadStatus.Finished
             }
           >
             <Icon
