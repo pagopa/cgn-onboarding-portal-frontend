@@ -88,6 +88,7 @@ const getRenderAttributesByState = (
 
 const ImportationStatus = (props: Props) => {
   const [progress, setProgress] = useState(0);
+  const [pollStarted, setPollStarted] = useState(false);
   const shouldBeRendered = props.status !== BucketCodeLoadStatus.Finished;
 
   const { title, body } = useMemo(
@@ -124,12 +125,13 @@ const ImportationStatus = (props: Props) => {
       .run();
 
   useEffect(() => {
+    void getCodesStatus();
     if (
       props.status === BucketCodeLoadStatus.Pending ||
       props.status === BucketCodeLoadStatus.Running
     ) {
       const timer = setInterval(() => getCodesStatus(), 5000);
-
+      setPollStarted(true);
       if (progress === 100) {
         props.onPollingComplete();
         clearInterval(timer);
@@ -149,18 +151,19 @@ const ImportationStatus = (props: Props) => {
         <p style={{ color: "#5C6F82" }}>{body}</p>
       </div>
       {(props.status === BucketCodeLoadStatus.Pending ||
-        props.status === BucketCodeLoadStatus.Running) && (
-        <div className="col-12">
-          <div className="pt-3">
-            <Progress
-              value={progress}
-              label="progresso"
-              role="progressbar"
-              tag="div"
-            />
+        props.status === BucketCodeLoadStatus.Running) &&
+        pollStarted && (
+          <div className="col-12">
+            <div className="pt-3">
+              <Progress
+                value={progress}
+                label="progresso"
+                role="progressbar"
+                tag="div"
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   ) : null;
 };
