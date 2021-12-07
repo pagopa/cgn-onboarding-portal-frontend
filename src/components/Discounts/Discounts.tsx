@@ -335,7 +335,7 @@ const Discounts = () => {
               </CalloutText>
             </Callout>
           )}
-          {row.original.lastBucketCodeFileUid !== null && (
+          {row.original.lastBucketCodeLoadUid !== null && (
             <ImportationStatus
               discountId={row.original.id}
               status={row.original.lastBucketCodeLoadStatus}
