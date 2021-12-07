@@ -84,12 +84,14 @@ export const getDiscountComponent = (state: string) => {
   }
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
   const history = useHistory();
   const [canBePublished, setCanBePublished] = useState(
     row.original.lastBucketCodeLoadStatus !== null &&
-      row.original.lastBucketCodeLoadStatus !== undefined &&
-      row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
+      row.original.lastBucketCodeLoadStatus !== undefined
+      ? row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
+      : true
   );
   const getDiscountButtons = (row: Row<Discount>) => (
     <div

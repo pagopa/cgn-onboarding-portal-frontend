@@ -120,7 +120,7 @@ const ImportationStatus = (props: Props) => {
           throwErrorTooltip(
             "Errore nel recuperare lo stato di caricamento codici"
           ),
-        discounts => setProgress(discounts)
+        p => setProgress(Math.round(p * 100) / 100)
       )
       .run();
 
