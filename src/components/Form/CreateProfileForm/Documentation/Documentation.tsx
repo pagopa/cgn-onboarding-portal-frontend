@@ -4,7 +4,6 @@ import { Button } from "design-react-kit";
 import FormContainer from "../../FormContainer";
 import DocumentIcon from "../../../../assets/icons/document.svg";
 import { DASHBOARD } from "../../../../navigation/routes";
-import policy from "../../../../templates/Informativa esercenti CGN 1.0.pdf";
 
 const Documentation = ({
   handleNext,
@@ -53,7 +52,7 @@ const Documentation = ({
           Cliccando su Continua, dichiari di aver letto e compreso l’
           <a
             className="font-weight-semibold cursor-pointer"
-            href={policy}
+            href="https://io.italia.it/carta-giovani-nazionale/informativa-operatori"
             target="_blank"
             rel="noreferrer"
           >
