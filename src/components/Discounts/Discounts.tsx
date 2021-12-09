@@ -1,15 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { useExpanded, useSortBy, useTable } from "react-table";
-import {
-  Badge,
-  Button,
-  Callout,
-  CalloutText,
-  CalloutTitle,
-  Icon
-} from "design-react-kit";
-import { Link, useHistory } from "react-router-dom";
+import { Column, useExpanded, useSortBy, useTable } from "react-table";
+import { Button, Icon } from "design-react-kit";
+import { Link } from "react-router-dom";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
@@ -17,16 +10,11 @@ import { compareAsc, format } from "date-fns";
 import { AxiosResponse } from "axios";
 import Api from "../../api/index";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
-import ProfileItem from "../Profile/ProfileItem";
-import {
-  formatPercentage,
-  makeProductCategoriesString
-} from "../../utils/strings";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
-import { BucketCodeLoadStatus } from "../../api/generated";
+import { Discount } from "../../api/generated";
 import PublishModal from "./PublishModal";
-import ImportationStatus from "./ImportationStatus";
+import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
 
 const chainAxios = (response: AxiosResponse) =>
   fromPredicate(
@@ -38,8 +26,7 @@ const chainAxios = (response: AxiosResponse) =>
   )(response);
 
 const Discounts = () => {
-  const history = useHistory();
-  const [discounts, setDiscounts] = useState<any>([]);
+  const [discounts, setDiscounts] = useState<ReadonlyArray<Discount>>([]);
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [selectedDiscount, setSelectedDiscount] = useState<any>();
   const [publishModal, setPublishModal] = useState(false);
@@ -94,142 +81,6 @@ const Discounts = () => {
       )
       .run();
 
-  const getDiscountComponent = (state: string) => {
-    switch (state) {
-      case "draft":
-        return (
-          <Badge
-            className="font-weight-normal"
-            pill
-            tag="span"
-            style={{
-              backgroundColor: "white",
-              color: "#5C6F82",
-              border: "1px solid #5C6F82"
-            }}
-          >
-            Bozza
-          </Badge>
-        );
-
-      case "published":
-        return (
-          <Badge className="font-weight-normal" color="primary" pill tag="span">
-            Pubblicata
-          </Badge>
-        );
-
-      case "suspended":
-        return (
-          <Badge
-            className="font-weight-normal"
-            pill
-            tag="span"
-            style={{
-              backgroundColor: "#EA7614",
-              border: "1px solid #EA7614",
-              color: "white"
-            }}
-          >
-            Sospesa
-          </Badge>
-        );
-
-      case "expired":
-        return (
-          <Badge
-            className="font-weight-normal"
-            pill
-            tag="span"
-            style={{
-              backgroundColor: "white",
-              border: "1px solid #C02927",
-              color: "#C02927"
-            }}
-          >
-            Scaduta
-          </Badge>
-        );
-    }
-  };
-
-  const getDiscountButtons = (row: any) => (
-    <div
-      className={
-        row.original.state !== "suspended" && row.original.state !== "expired"
-          ? "mt-10 d-flex flex-row justify-content-between"
-          : "mt-10"
-      }
-    >
-      <Button
-        className="mr-4"
-        color={row.original.state === "expired" ? "primary" : "secondary"}
-        outline
-        tag="button"
-        onClick={() =>
-          history.push(
-            `/admin/operatori/agevolazioni/modifica/${row.original.id}`
-          )
-        }
-      >
-        <Icon
-          icon={row.original.state !== "expired" ? "it-pencil" : "it-restore"}
-          padding={false}
-          size="sm"
-          color={row.original.state === "expired" ? "primary" : ""}
-        />
-        <span>
-          {row.original.state !== "expired" ? "Modifica" : "Riattiva"}
-        </span>
-      </Button>
-      <Button
-        color={row.original.state !== "expired" ? "primary" : "secondary"}
-        className={row.original.state === "expired" ? "mr-4" : ""}
-        outline
-        icon
-        tag="button"
-        onClick={() => {
-          setSelectedDiscount(row.original.id);
-          toggleDeleteModal();
-        }}
-      >
-        <Icon
-          icon="it-delete"
-          color={row.original.state !== "expired" ? "primary" : "secondary"}
-          padding={false}
-          size="sm"
-        />{" "}
-        Elimina
-      </Button>
-      {row.original.state !== "published" &&
-        row.original.state !== "suspended" &&
-        row.original.state !== "expired" && (
-          <Button
-            className="mr-4"
-            color="primary"
-            tag="button"
-            onClick={() => {
-              setSelectedPublish(row.original.id);
-              togglePublishModal();
-            }}
-            disabled={
-              row.original.lastBucketCodeLoadStatus !== null &&
-              row.original.lastBucketCodeLoadStatus !==
-                BucketCodeLoadStatus.Finished
-            }
-          >
-            <Icon
-              icon={"it-external-link"}
-              color="white"
-              padding={false}
-              size="sm"
-            />{" "}
-            <span>Pubblica</span>
-          </Button>
-        )}
-    </div>
-  );
-
   const isVisible = (state: any, startDate: any, endDate: any) => {
     const today = new Date();
     return (
@@ -263,8 +114,8 @@ const Discounts = () => {
     void getDiscounts();
   }, []);
 
-  const data = useMemo(() => discounts, [discounts]);
-  const columns = useMemo(
+  const data = useMemo(() => [...discounts], [discounts]);
+  const columns: Array<Column<Discount>> = useMemo(
     () => [
       {
         Header: "Nome agevolazione",
@@ -310,96 +161,6 @@ const Discounts = () => {
       }
     ],
     []
-  );
-
-  const renderRowSubComponent = useCallback(
-    ({ row }) => (
-      <>
-        <section className="px-6 py-4 bg-white">
-          {row.original.state === "suspended" && (
-            <Callout
-              highlight
-              tag="div"
-              style={{
-                borderLeftColor: "#ea7614"
-              }}
-            >
-              <CalloutTitle tag="div" className="py-2 text-base text-black">
-                Questa agevolazione è stata sospesa dal Dipartimento
-              </CalloutTitle>
-              <CalloutText
-                bigText={false}
-                tag="p"
-                className="py-2 text-base text-dark-gray"
-              >
-                {row.original.suspendedReasonMessage}
-              </CalloutText>
-            </Callout>
-          )}
-          {row.original.lastBucketCodeLoadUid !== null && (
-            <ImportationStatus
-              discountId={row.original.id}
-              status={row.original.lastBucketCodeLoadStatus}
-            />
-          )}
-          <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
-          <table className="table">
-            <tbody>
-              <ProfileItem
-                label="Nome agevolazione"
-                value={row.original.name}
-              />
-              {row.original.description && (
-                <ProfileItem
-                  label="Descrizione agevolazione"
-                  value={row.original.description}
-                />
-              )}
-              <tr>
-                <td className={`px-0 text-gray border-bottom-0`}>
-                  Stato Agevolazione
-                </td>
-                <td className={`border-bottom-0`}>
-                  {getDiscountComponent(row.values.state)}
-                </td>
-              </tr>
-              <ProfileItem
-                label="Data di inizio dell'agevolazione"
-                value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
-              />
-              <ProfileItem
-                label="Data di fine agevolazione"
-                value={format(new Date(row.original.endDate), "dd/MM/yyyy")}
-              />
-              <ProfileItem
-                label="Entità dello sconto"
-                value={formatPercentage(row.original.discount)}
-              />
-              <tr>
-                <td className={`px-0 text-gray border-bottom-0`}>
-                  Categorie merceologiche
-                </td>
-                <td className={`border-bottom-0`}>
-                  {makeProductCategoriesString(
-                    row.original.productCategories
-                  ).map((productCategory, index) => (
-                    <p key={index}>{productCategory}</p>
-                  ))}
-                </td>
-              </tr>
-              {row.original.conditions && (
-                <ProfileItem
-                  label="Condizioni dell’agevolazione"
-                  value={row.original.conditions}
-                />
-              )}
-            </tbody>
-          </table>
-          {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
-        </section>
-      </>
-    ),
-    [discounts]
   );
 
   const {
@@ -524,7 +285,20 @@ const Discounts = () => {
                 {row.isExpanded ? (
                   <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
                     <td colSpan={visibleColumns.length}>
-                      {renderRowSubComponent({ row })}
+                      {
+                        <DiscountDetailRow
+                          row={row}
+                          agreement={agreement}
+                          onPublish={() => {
+                            setSelectedPublish(row.original.id);
+                            togglePublishModal();
+                          }}
+                          onDelete={() => {
+                            setSelectedDiscount(row.original.id);
+                            toggleDeleteModal();
+                          }}
+                        />
+                      }
                     </td>
                   </tr>
                 ) : null}
