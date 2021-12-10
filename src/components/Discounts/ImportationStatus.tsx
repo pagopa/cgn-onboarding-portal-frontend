@@ -6,6 +6,7 @@ import { toError } from "fp-ts/lib/Either";
 import { BucketCodeLoadStatus } from "../../api/generated";
 import { Severity, useTooltip } from "../../context/tooltip";
 import Api from "../../api";
+import CenteredLoading from "../CenteredLoading";
 
 type Props = {
   discountId: string;
@@ -87,6 +88,10 @@ const getRenderAttributesByState = (
 };
 
 const ImportationStatus = (props: Props) => {
+  const [isLoading, setIsLoading] = useState(
+    props.status === BucketCodeLoadStatus.Running ||
+      props.status === BucketCodeLoadStatus.Pending
+  );
   const [progress, setProgress] = useState(0);
   const [pollStarted, setPollStarted] = useState(false);
   const shouldBeRendered = props.status !== BucketCodeLoadStatus.Finished;
@@ -125,7 +130,9 @@ const ImportationStatus = (props: Props) => {
       .run();
 
   useEffect(() => {
-    void getCodesStatus();
+    getCodesStatus()
+      .then(_ => setIsLoading(false))
+      .catch(_ => setIsLoading(false));
     if (
       props.status === BucketCodeLoadStatus.Pending ||
       props.status === BucketCodeLoadStatus.Running
@@ -142,29 +149,33 @@ const ImportationStatus = (props: Props) => {
   }, [props.status, progress]);
 
   return shouldBeRendered ? (
-    <div style={styles.container} className="row bg-white">
-      <div className="col-1">
-        <Icon icon="it-warning-circle" style={{ fill: "#EA7614" }} />
-      </div>
-      <div className="col">
-        <h6>{title}</h6>
-        <p style={{ color: "#5C6F82" }}>{body}</p>
-      </div>
-      {(props.status === BucketCodeLoadStatus.Pending ||
-        props.status === BucketCodeLoadStatus.Running) &&
-        pollStarted && (
-          <div className="col-12">
-            <div className="pt-3">
-              <Progress
-                value={progress}
-                label="progresso"
-                role="progressbar"
-                tag="div"
-              />
+    isLoading ? (
+      <CenteredLoading />
+    ) : (
+      <div style={styles.container} className="row bg-white">
+        <div className="col-1">
+          <Icon icon="it-warning-circle" style={{ fill: "#EA7614" }} />
+        </div>
+        <div className="col">
+          <h6>{title}</h6>
+          <p style={{ color: "#5C6F82" }}>{body}</p>
+        </div>
+        {(props.status === BucketCodeLoadStatus.Pending ||
+          props.status === BucketCodeLoadStatus.Running) &&
+          pollStarted && (
+            <div className="col-12">
+              <div className="pt-3">
+                <Progress
+                  value={progress}
+                  label="progresso"
+                  role="progressbar"
+                  tag="div"
+                />
+              </div>
             </div>
-          </div>
-        )}
-    </div>
+          )}
+      </div>
+    )
   ) : null;
 };
 
