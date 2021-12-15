@@ -121,23 +121,26 @@ const ImportationStatus = (props: Props) => {
     )
       .map(response => response.data.percent)
       .fold(
-        _ =>
+        _ => {
           throwErrorTooltip(
             "Errore nel recuperare lo stato di caricamento codici"
-          ),
-        p => setProgress(Math.round(p * 100) / 100)
+          );
+          setIsLoading(false);
+        },
+        p => {
+          setIsLoading(false);
+          setProgress(Math.round(p * 100) / 100);
+        }
       )
       .run();
 
   useEffect(() => {
-    getCodesStatus()
-      .then(_ => setIsLoading(false))
-      .catch(_ => setIsLoading(false));
     if (
       props.status === BucketCodeLoadStatus.Pending ||
       props.status === BucketCodeLoadStatus.Running
     ) {
-      const timer = setInterval(() => getCodesStatus(), 5000);
+      void getCodesStatus();
+      const timer = setInterval(getCodesStatus, 5000);
       setPollStarted(true);
       if (progress === 100) {
         props.onPollingComplete();
