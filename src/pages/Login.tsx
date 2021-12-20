@@ -6,6 +6,7 @@ import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import Spid from "../assets/icons/spid.svg";
 import { AdminAccess, loginRequest } from "../authConfig";
+import CgnLogo from "../components/Logo/CgnLogo";
 import SpidSelect from "./SpidSelect";
 import Help from "./Help";
 
@@ -40,15 +41,22 @@ const Login = () => {
         <Container className="mt-20 mb-20">
           <div className="col-10 offset-1">
             <section className="px-20 py-28 bg-white">
-              <h1 className="h2 font-weight-bold text-dark-blue">
-                Benvenuto sul portale operatori di Carta Giovani Nazionale
-              </h1>
-              <p className="text-gray">
-                Il portale è il punto unico di richiesta e gestione delle
-                convenzioni tra gli operatori che intendono aderire
-                all’iniziativa e il Dipartimento per le Politiche Giovanili e il
-                Servizio Civile Universale
-              </p>
+              <div className="row">
+                <div className="col-9">
+                  <h1 className="h2 font-weight-bold text-dark-blue">
+                    Benvenuto sul portale operatori di Carta Giovani Nazionale
+                  </h1>
+                  <p className="text-gray">
+                    Il portale è il punto unico di richiesta e gestione delle
+                    convenzioni tra gli operatori che intendono aderire
+                    all’iniziativa e il Dipartimento per le Politiche Giovanili
+                    e il Servizio Civile Universale
+                  </p>
+                </div>
+                <div className="col-3 d-flex justify-content-end">
+                  <CgnLogo />
+                </div>
+              </div>
               <div className="mt-14 row variable-gutters">
                 <div className="col">
                   <h2 className="h3 text-dark-blue">Sei un operatore?</h2>
