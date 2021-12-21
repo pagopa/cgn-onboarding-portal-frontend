@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Layout from "../components/Layout/Layout";
 import Stepper from "../components/Stepper/Stepper";
@@ -9,6 +9,7 @@ import Documents from "../components/Form/CreateProfileForm/Documents/Documents"
 import { RootState } from "../store/store";
 import { CompletedStep } from "../api/generated";
 import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
+import CgnLogo from "../components/Logo/CgnLogo";
 
 const CreateProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
@@ -89,10 +90,17 @@ const CreateProfile = () => {
     <Layout hasHeaderBorder>
       <div className="bg-white">
         <div className="container p-10">
-          <h1 className="h5 text-gray">Carta Giovani Nazionale</h1>
-          <h2 className="h2 text-dark-blue font-weight-bold">
-            Portale Operatori
-          </h2>
+          <div className="row">
+            <div className="col-9">
+              <h1 className="h5 text-gray">Carta Giovani Nazionale</h1>
+              <h2 className="h2 text-dark-blue font-weight-bold">
+                Portale Operatori
+              </h2>
+            </div>
+            <div className="col-3 d-flex justify-content-end">
+              <CgnLogo />
+            </div>
+          </div>
         </div>
         <Stepper
           activeStep={step}
