@@ -1,6 +1,7 @@
 import React from "react";
 import { Nav } from "design-react-kit";
 import NavItem from "../NavItem";
+import CgnLogo from "../Logo/CgnLogo";
 
 type Props = {
   name: string;
@@ -10,10 +11,19 @@ type Props = {
 
 const Introduction = ({ name, activeTab, handleClick }: Props) => (
   <section className="bg-white text-left">
-    <div className="pl-8 pt-10">
-      <h1 className="h5">Carta Giovani Nazionale</h1>
-      <h2 className="h2 text-dark-blue font-weight-bold">Portale Operatori</h2>
-      <p className="dark-blue text-capitalize">{name}</p>
+    <div className="px-8 pt-10">
+      <div className="row">
+        <div className="col-9">
+          <h1 className="h5">Carta Giovani Nazionale</h1>
+          <h2 className="h2 text-dark-blue font-weight-bold">
+            Portale Operatori
+          </h2>
+          <p className="dark-blue text-capitalize">{name}</p>
+        </div>
+        <div className="col-3 d-flex justify-content-end">
+          <CgnLogo />
+        </div>
+      </div>
     </div>
     <Nav className="auto mt-11" tabs tag="ul" vertical={false}>
       <NavItem active={activeTab === 0} onClick={() => handleClick(0)}>
