@@ -8,6 +8,7 @@ import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import DocumentFail from "../assets/icons/document_fail.svg";
 import { CREATE_PROFILE } from "../navigation/routes";
+import CgnLogo from "../components/Logo/CgnLogo";
 
 const RejectedProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
@@ -16,11 +17,18 @@ const RejectedProfile = () => {
     <Layout>
       <Container className="mt-10 mb-20">
         <section className="col-12 d-flex flex-column">
-          <div className="pl-8 pt-10">
-            <h1 className="h5">Carta Giovani Nazionale</h1>
-            <h2 className="h2 text-dark-blue font-weight-bold">
-              Portale Operatori
-            </h2>
+          <div className="px-8 pt-10">
+            <div className="row">
+              <div className="col-9">
+                <h1 className="h5">Carta Giovani Nazionale</h1>
+                <h2 className="h2 text-dark-blue font-weight-bold">
+                  Portale Operatori
+                </h2>
+              </div>
+              <div className="col-3 d-flex justify-content-end">
+                <CgnLogo />
+              </div>
+            </div>
           </div>
           <div className="p-20 mt-4 bg-white d-flex flex-column align-items-center">
             <h2 className="h2 mb-4 text-dark-blue font-weight-bold">

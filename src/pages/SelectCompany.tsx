@@ -8,6 +8,7 @@ import { logout, setCookie } from "../utils/cookie";
 import { RootState } from "../store/store";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
+import CgnLogo from "../components/Logo/CgnLogo";
 
 const SelectCompany = ({ token }: { token: string }) => {
   const { data } = useSelector((state: RootState) => state.user);
@@ -48,13 +49,20 @@ const SelectCompany = ({ token }: { token: string }) => {
         <Container className="mt-20 mb-20">
           <div className="col-10 offset-1">
             <section className="p-20 bg-white">
-              <h1 className="h2 font-weight-bold text-dark-blue">
-                Società Operante
-              </h1>
-              <p>
-                Per completare l’accesso, seleziona la società per la quale
-                intendi operare
-              </p>
+              <div className="row">
+                <div className="col-9">
+                  <h1 className="h2 font-weight-bold text-dark-blue">
+                    Società Operante
+                  </h1>
+                  <p>
+                    Per completare l’accesso, seleziona la società per la quale
+                    intendi operare
+                  </p>
+                </div>
+                <div className="col-3 d-flex justify-content-end">
+                  <CgnLogo />
+                </div>
+              </div>
               {user.companies.map((company: any, i: number) => (
                 <div
                   key={i}
