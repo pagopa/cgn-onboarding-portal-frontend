@@ -98,8 +98,8 @@ const ProfileInfo = ({ formValues }: Props) => (
       required
     >
       <Field
-        minLength={16}
-        maxLength={16}
+        minLength={4}
+        maxLength={20}
         id="legalRepresentativeTaxCode"
         name="legalRepresentativeTaxCode"
         type="text"
