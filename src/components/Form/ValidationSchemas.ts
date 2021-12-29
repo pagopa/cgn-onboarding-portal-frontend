@@ -29,8 +29,8 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
     .required(REQUIRED_FIELD),
   legalRepresentativeTaxCode: Yup.string()
-    .min(16, "Deve essere di 16 caratteri")
-    .max(16, "Deve essere di 16 caratteri")
+    .min(4, "Deve essere al minimo di 4 caratteri")
+    .max(20, "Deve essere al massimo di 20 caratteri")
     .required(REQUIRED_FIELD),
   referent: Yup.object().shape({
     firstName: Yup.string()
