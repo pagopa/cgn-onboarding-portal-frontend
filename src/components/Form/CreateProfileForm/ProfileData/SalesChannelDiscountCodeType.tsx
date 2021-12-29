@@ -21,7 +21,7 @@ const SalesChannelDiscountCodeType = () => (
         />
         <label className="text-sm font-weight-normal text-black" htmlFor="api">
           <span className="text-sm">
-            <a href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-modello-api">API</a>: implementerò sul mio portale di e-commerce le
+            <a href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-modello-api" target="_blank" rel="noreferrer">API</a>: implementerò sul mio portale di e-commerce le
             integrazioni tecniche necessarie a validare i codici inseriti dai
             beneficiari, chiamando le API messe a disposizione da PagoPA per
             verificare la validità dei codici in tempo reale.
@@ -40,7 +40,7 @@ const SalesChannelDiscountCodeType = () => (
           htmlFor="staticCode"
         >
           <span className="text-sm">
-            <a href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-codice-sconto-statico">Con codice statico</a>: assocerò ad ogni agevolazione un
+            <a href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-codice-sconto-statico" target="_blank" rel="noreferrer">Con codice statico</a>: assocerò ad ogni agevolazione un
             codice statico che verrà letto e accettato dai miei sistemi
           </span>
         </label>
@@ -57,7 +57,7 @@ const SalesChannelDiscountCodeType = () => (
           htmlFor="bucket"
         >
           <span className="text-sm">
-            <a href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-lista-di-codici-statici-bucket">Con lista di codici statici</a>: assocerò ad ogni
+            <a href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-lista-di-codici-statici-bucket" target="_blank" rel="noreferrer">Con lista di codici statici</a>: assocerò ad ogni
             agevolazione una lista di codici statici che verranno letti e
             accettati dai miei sistemi e che mi impegno a caricare
             periodicamente, consapevole del fatto che, se si esaurissero,
@@ -77,7 +77,7 @@ const SalesChannelDiscountCodeType = () => (
           htmlFor="landingPage"
         >
           <span className="text-sm">
-            <a href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-landing-page">Con link a landing page</a>: fornirò per ogni
+            <a href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-landing-page" target="_blank" rel="noreferrer">Con link a landing page</a>: fornirò per ogni
             agevolazione un link con cui il cittadino che accede proveniendo da
             IO potrà usufruire degli sconti
           </span>
