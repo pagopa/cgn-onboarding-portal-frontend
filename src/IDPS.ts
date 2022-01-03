@@ -41,6 +41,13 @@ const IDPS = {
         "https://assets.cdn.io.italia.it/spid/idps/spid-idp-sielteid.png"
     },
     {
+      identifier: "LepidaID",
+      entityId: "lepidaid",
+      name: "Lepida",
+      imageUrl:
+        "https://assets.cdn.io.italia.it/spid/idps/spid-idp-lepidaid.png"
+    },
+    {
       identifier: "Namirial",
       entityId: "namirialid",
       name: "Namirial ID",
