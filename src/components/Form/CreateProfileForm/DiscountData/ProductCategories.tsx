@@ -34,7 +34,7 @@ const ProductCategories = ({ index }: Props) => {
           type="checkbox"
         />
         <Label check for={`${name}.travelling`} tag="label">
-          Viaggi
+          Viaggi, Trasporti e Mobilità
         </Label>
       </FormGroup>
       <FormGroup check tag="div">
