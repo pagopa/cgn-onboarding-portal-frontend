@@ -1,11 +1,12 @@
 import { fromNullable } from "fp-ts/lib/Option";
+import { ProductCategory } from "../api/generated";
 
 type CategoryElement = {
   name: string;
   description: string;
 };
 
-export const categoriesMap: Record<string, CategoryElement> = {
+export const categoriesMap: Record<ProductCategory, CategoryElement> = {
   CultureAndEntertainment: {
     name: "Cultura e tempo libero",
     description:
@@ -51,7 +52,9 @@ export const categoriesMap: Record<string, CategoryElement> = {
   }
 };
 
-export function makeProductCategoriesString(productCategories: Array<string>) {
+export function makeProductCategoriesString(
+  productCategories: Array<ProductCategory>
+) {
   return productCategories.map(pc => categoriesMap[pc].name);
 }
 
