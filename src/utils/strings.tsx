@@ -52,11 +52,12 @@ export const categoriesMap: Record<ProductCategory, CategoryElement> = {
   }
 };
 
-export function makeProductCategoriesString(
+export const makeProductCategoriesString = (
   productCategories: Array<ProductCategory>
-) {
-  return productCategories.map(pc => categoriesMap[pc].name);
-}
+): Array<string | undefined> =>
+  productCategories.map(pc =>
+    categoriesMap[pc] ? categoriesMap[pc].name : undefined
+  );
 
 export const formatPercentage = (discountValue: number | undefined) =>
   fromNullable(discountValue)
