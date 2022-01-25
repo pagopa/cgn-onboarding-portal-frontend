@@ -1,24 +1,61 @@
 import { fromNullable } from "fp-ts/lib/Option";
 
-const PRODUCT_CATEGORIES: any = {
-  Entertainment: "Tempo libero",
-  Travelling: "Viaggi Trasporti e Mobilità",
-  FoodDrink: "Ristoranti e cucina",
-  Services: "Servizi",
-  Learning: "Istruzione e formazione",
-  Hotels: "Hotel",
-  Sports: "Sport",
-  Health: "Salute e benessere",
-  Shopping: "Shopping"
+type CategoryElement = {
+  name: string;
+  description: string;
+};
+
+export const categoriesMap: Record<string, CategoryElement> = {
+  Entertainment: {
+    name: "Cultura e tempo libero",
+    description:
+      "(Libri, teatro, cinema, concerti, CD, dischi, cibo, bevande, ristoranti, shopping)"
+  },
+  Learning: {
+    name: "Istruzione e formazione",
+    description: "(Scuole,Università, Corsi di formazione, ...)"
+  },
+  Health: {
+    name: "Salute e benessere",
+    description: "(Negozi di cosmetici, creme, cliniche, SPA, ...)"
+  },
+  Sports: {
+    name: "Sport",
+    description:
+      "(Negozi di articoli sportivi, strutture sportive, circoli, ...)"
+  },
+  Home: {
+    name: "Casa",
+    description: "(Agevolazioni per la casa, mutui, gestori luce e gas, ...)"
+  },
+  Telephony_and_internet: {
+    name: "Telefonia e internet",
+    description: "(Linea fissa e internet, telefonia mobile, ecc)"
+  },
+  Banking_services: {
+    name: "Servizi finanziari",
+    description: "(Banche, app di investimenti o di risparmio)"
+  },
+  Travelling: {
+    name: "Viaggi e Trasporti",
+    description: "(Agenzie di viaggio, compagnie di trasporti, ...)"
+  },
+  Sustainable_mobility: {
+    name: "Mobilità sostenibile",
+    description:
+      "(Servizi per muoversi in città, car sharing, monopattini, bici, trasporti green, ...)"
+  },
+  Jobs: {
+    name: "Lavoro e tirocini",
+    description: "(Concorsi, offerte di lavoro)"
+  }
 };
 
 export function makeProductCategoriesString(productCategories: Array<string>) {
-  return productCategories.map(
-    (productCategory: any) => PRODUCT_CATEGORIES[productCategory]
-  );
+  return productCategories.map(pc => categoriesMap[pc].name);
 }
 
-export const formatPercentage = (discountValue: number | undefined) => 
-fromNullable(discountValue)
-.map(value => `${value} %`)
-.getOrElse("");
+export const formatPercentage = (discountValue: number | undefined) =>
+  fromNullable(discountValue)
+    .map(value => `${value} %`)
+    .getOrElse("");
