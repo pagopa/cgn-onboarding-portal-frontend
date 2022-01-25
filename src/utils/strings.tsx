@@ -6,7 +6,7 @@ type CategoryElement = {
 };
 
 export const categoriesMap: Record<string, CategoryElement> = {
-  Entertainment: {
+  CultureAndEntertainment: {
     name: "Cultura e tempo libero",
     description:
       "(Libri, teatro, cinema, concerti, CD, dischi, cibo, bevande, ristoranti, shopping)"
@@ -28,11 +28,11 @@ export const categoriesMap: Record<string, CategoryElement> = {
     name: "Casa",
     description: "(Agevolazioni per la casa, mutui, gestori luce e gas, ...)"
   },
-  Telephony_and_internet: {
+  TelephonyAndInternet: {
     name: "Telefonia e internet",
     description: "(Linea fissa e internet, telefonia mobile, ecc)"
   },
-  Banking_services: {
+  BankingServices: {
     name: "Servizi finanziari",
     description: "(Banche, app di investimenti o di risparmio)"
   },
@@ -40,12 +40,12 @@ export const categoriesMap: Record<string, CategoryElement> = {
     name: "Viaggi e Trasporti",
     description: "(Agenzie di viaggio, compagnie di trasporti, ...)"
   },
-  Sustainable_mobility: {
+  SustainableMobility: {
     name: "Mobilità sostenibile",
     description:
       "(Servizi per muoversi in città, car sharing, monopattini, bici, trasporti green, ...)"
   },
-  Jobs: {
+  JobOffers: {
     name: "Lavoro e tirocini",
     description: "(Concorsi, offerte di lavoro)"
   }
