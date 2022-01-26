@@ -16,7 +16,7 @@ import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
 import { RootState } from "../../../store/store";
 import FormSection from "../FormSection";
 import FormField from "../FormField";
-import { Discount } from "../../../api/generated";
+import { Discount, ProductCategory } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import PublishModal from "../../Discounts/PublishModal";
@@ -195,6 +195,9 @@ const EditDiscountForm = () => {
         onSubmit={values => {
           const newValues = {
             ...values,
+            productCategories: values.productCategories.filter((pc: any) =>
+              Object.values(ProductCategory).includes(pc)
+            ),
             startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
             endDate: format(new Date(values.endDate), "yyyy-MM-dd")
           };

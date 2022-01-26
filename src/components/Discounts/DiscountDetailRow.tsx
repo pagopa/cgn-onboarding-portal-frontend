@@ -230,9 +230,9 @@ const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
               <td className={`border-bottom-0`}>
                 {makeProductCategoriesString(
                   row.original.productCategories
-                ).map((productCategory, index) => (
-                  <p key={index}>{productCategory}</p>
-                ))}
+                ).map((productCategory, index) =>
+                  productCategory ? <p key={index}>{productCategory}</p> : null
+                )}
               </td>
             </tr>
             {row.original.condition && (

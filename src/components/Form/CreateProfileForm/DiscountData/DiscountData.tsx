@@ -19,7 +19,12 @@ import { RootState } from "../../../../store/store";
 import FormSection from "../../FormSection";
 import FormField from "../../FormField";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
-import { CreateDiscount, Discount, Discounts } from "../../../../api/generated";
+import {
+  CreateDiscount,
+  Discount,
+  Discounts,
+  ProductCategory
+} from "../../../../api/generated";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
@@ -228,6 +233,9 @@ const DiscountData = ({
         const newValues = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
+            productCategories: discount.productCategories.filter((pc: any) =>
+              Object.values(ProductCategory).includes(pc)
+            ),
             startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
             endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
           }))
