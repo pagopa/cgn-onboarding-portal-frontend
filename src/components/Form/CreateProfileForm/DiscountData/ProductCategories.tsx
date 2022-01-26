@@ -4,6 +4,7 @@ import { FormGroup } from "design-react-kit";
 import { Label } from "reactstrap";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import { categoriesMap } from "../../../../utils/strings";
+import { ProductCategory } from "../../../../api/generated";
 
 type Props = {
   index?: number;
@@ -29,8 +30,10 @@ const ProductCategories = ({ index }: Props) => {
           />
           <Label check for={`${name}.${categoryKey}`} tag="label">
             <div className="row ml-1">
-              <p style={nameLabelStyle}>{categoriesMap[categoryKey].name} </p>{" "}
-              {categoriesMap[categoryKey].description}
+              <p style={nameLabelStyle}>
+                {categoriesMap[categoryKey as ProductCategory].name}{" "}
+              </p>{" "}
+              {categoriesMap[categoryKey as ProductCategory].description}
             </div>
           </Label>
         </FormGroup>
