@@ -106,6 +106,9 @@ const CreateDiscountForm = () => {
       onSubmit={values => {
         const newValues = {
           ...values,
+          description: values.description
+            ? values.description.trim()
+            : undefined,
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
           endDate: format(new Date(values.endDate), "yyyy-MM-dd")
         };

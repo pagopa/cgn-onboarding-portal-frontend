@@ -60,6 +60,21 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           name={hasIndex ? `discounts[${index}].description` : "description"}
         />
       </InputField>
+      <InputField
+        htmlFor="discountUrl"
+        title="Url dell'agevolazione"
+        description="Inserire qui la url dedicata all'agevolazione (per esempio per uno specifico disclaimer o per accedere direttamente alla agevolazione)"
+        isVisible
+      >
+        <Field
+          id="discountUrl"
+          name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}
+          type="text"
+        />
+        <CustomErrorMessage
+          name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}
+        />
+      </InputField>
       <div className="row">
         <div className="col-5">
           <InputField
@@ -148,13 +163,14 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
                 className="form-control"
                 id="input-group-2"
                 name="input-group-2"
-                onChange={e => 
+                onChange={e =>
                   setFieldValue(
                     hasIndex ? `discounts[${index}].discount` : "discount",
                     e.target.value
-                  )} 
-                />
-            </div>  
+                  )
+                }
+              />
+            </div>
           )}
         </Field>
         <CustomErrorMessage

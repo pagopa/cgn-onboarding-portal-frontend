@@ -230,9 +230,12 @@ const DiscountData = ({
         checkBucket
       )}
       onSubmit={values => {
-        const newValues = {
+        const newValues: { discounts: ReadonlyArray<Discount> } = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
+            description: discount.description
+              ? discount.description.trim()
+              : undefined,
             productCategories: discount.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)
             ),

@@ -114,6 +114,7 @@ export const discountDataValidationSchema = (
       .max(100)
       .required(REQUIRED_FIELD),
     description: Yup.string().max(250),
+    discountUrl: Yup.string(),
     startDate: Yup.string().required(REQUIRED_FIELD),
     endDate: Yup.string().required(REQUIRED_FIELD),
     discount: Yup.number()
@@ -166,6 +167,7 @@ export const discountsListDataValidationSchema = (
           .max(100)
           .required(REQUIRED_FIELD),
         description: Yup.string().max(250),
+        discountUrl: Yup.string(),
         startDate: Yup.string().required(REQUIRED_FIELD),
         endDate: Yup.string().required(REQUIRED_FIELD),
         productCategories: Yup.array()
