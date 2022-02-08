@@ -72,6 +72,10 @@ const OperatorConvention = () => {
         accessor: "agreementLastUpdateDate",
         Cell: ({ row }: { row: Row }) =>
           format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
+      },
+      {
+        Header: "Agevolazioni",
+        accessor: "publishedDiscounts"
       }
     ],
     []
