@@ -107,8 +107,11 @@ const CreateDiscountForm = () => {
         const newValues = {
           ...values,
           description: values.description
-            ? values.description.trim()
-            : undefined,
+            ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
+          condition: values.condition
+            ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
           endDate: format(new Date(values.endDate), "yyyy-MM-dd")
         };

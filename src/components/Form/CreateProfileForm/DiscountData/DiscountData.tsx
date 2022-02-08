@@ -234,8 +234,11 @@ const DiscountData = ({
           discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
             description: discount.description
-              ? discount.description.trim()
-              : undefined,
+              ? discount.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            condition: discount.condition
+              ? discount.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
             productCategories: discount.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)
             ),
