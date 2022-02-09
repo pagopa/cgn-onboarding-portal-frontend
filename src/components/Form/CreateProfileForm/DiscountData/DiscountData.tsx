@@ -281,6 +281,7 @@ const DiscountData = ({
                       <DiscountInfo
                         formValues={values}
                         setFieldValue={setFieldValue}
+                        isLanding={checkLanding}
                         index={index}
                       />
                       <FormField

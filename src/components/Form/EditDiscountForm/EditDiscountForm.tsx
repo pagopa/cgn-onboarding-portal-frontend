@@ -207,7 +207,11 @@ const EditDiscountForm = () => {
         {({ values, setFieldValue }) => (
           <Form autoComplete="off">
             <FormSection hasIntroduction>
-              <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
+              <DiscountInfo
+                formValues={values}
+                setFieldValue={setFieldValue}
+                isLanding={checkLanding}
+              />
               <FormField
                 htmlFor="productCategories"
                 isTitleHeading

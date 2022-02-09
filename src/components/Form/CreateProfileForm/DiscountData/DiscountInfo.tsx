@@ -6,13 +6,19 @@ import CustomErrorMessage from "../../CustomErrorMessage";
 import DateInputComponent from "../../DateInputComponent";
 
 type Props = {
+  isLanding: boolean;
   formValues?: any;
   setFieldValue?: any;
   index?: number;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
+const DiscountInfo = ({
+  formValues,
+  setFieldValue,
+  index,
+  isLanding
+}: Props) => {
   const hasIndex = index !== undefined;
 
   const dateFrom = hasIndex
@@ -60,21 +66,23 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
           name={hasIndex ? `discounts[${index}].description` : "description"}
         />
       </InputField>
-      <InputField
-        htmlFor="discountUrl"
-        title="Url dell'agevolazione"
-        description="Inserire qui la url dedicata all'agevolazione (per esempio per uno specifico disclaimer o per accedere direttamente alla agevolazione)"
-        isVisible
-      >
-        <Field
-          id="discountUrl"
-          name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}
-          type="text"
-        />
-        <CustomErrorMessage
-          name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}
-        />
-      </InputField>
+      {!isLanding && (
+        <InputField
+          htmlFor="discountUrl"
+          title="Url dell'agevolazione"
+          description="Inserire qui la url dedicata all'agevolazione (per esempio per uno specifico disclaimer o per accedere direttamente alla agevolazione)"
+          isVisible
+        >
+          <Field
+            id="discountUrl"
+            name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}
+            type="text"
+          />
+          <CustomErrorMessage
+            name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}
+          />
+        </InputField>
+      )}
       <div className="row">
         <div className="col-5">
           <InputField
