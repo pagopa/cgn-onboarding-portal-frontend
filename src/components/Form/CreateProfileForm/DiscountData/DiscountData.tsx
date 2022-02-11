@@ -29,6 +29,7 @@ import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
 import EnrollToEyca from "./EnrollToEyca";
+import DiscountUrl from "./DiscountUrl";
 
 const emptyInitialValues = {
   discounts: [
@@ -230,9 +231,15 @@ const DiscountData = ({
         checkBucket
       )}
       onSubmit={values => {
-        const newValues = {
+        const newValues: { discounts: ReadonlyArray<Discount> } = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
+            description: discount.description
+              ? discount.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            condition: discount.condition
+              ? discount.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
             productCategories: discount.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)
             ),
@@ -296,6 +303,17 @@ const DiscountData = ({
                       >
                         <DiscountConditions index={index} />
                       </FormField>
+                      {!checkLanding && (
+                        <FormField
+                          htmlFor="discountUrl"
+                          title="Link all’agevolazione"
+                          description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione"
+                          isTitleHeading
+                          isVisible
+                        >
+                          <DiscountUrl />
+                        </FormField>
+                      )}
                       {checkStaticCode && (
                         <FormField
                           htmlFor="staticCode"

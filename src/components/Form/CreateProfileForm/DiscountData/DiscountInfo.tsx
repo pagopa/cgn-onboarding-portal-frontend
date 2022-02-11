@@ -148,13 +148,14 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
                 className="form-control"
                 id="input-group-2"
                 name="input-group-2"
-                onChange={e => 
+                onChange={e =>
                   setFieldValue(
                     hasIndex ? `discounts[${index}].discount` : "discount",
                     e.target.value
-                  )} 
-                />
-            </div>  
+                  )
+                }
+              />
+            </div>
           )}
         </Field>
         <CustomErrorMessage

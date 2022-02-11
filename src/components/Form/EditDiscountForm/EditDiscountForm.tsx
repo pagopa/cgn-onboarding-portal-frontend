@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import { Button } from "design-react-kit";
 import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
@@ -24,6 +24,9 @@ import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import InputField from "../FormField";
+import CustomErrorMessage from "../CustomErrorMessage";
+import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
 
 const emptyInitialValues = {
   name: "",
@@ -227,6 +230,17 @@ const EditDiscountForm = () => {
               >
                 <DiscountConditions />
               </FormField>
+              {!checkLanding && (
+                <FormField
+                  htmlFor="discountUrl"
+                  title="Link all’agevolazione"
+                  description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione"
+                  isTitleHeading
+                  isVisible
+                >
+                  <DiscountUrl />
+                </FormField>
+              )}
               {checkStaticCode && (
                 <FormField
                   htmlFor="staticCode"

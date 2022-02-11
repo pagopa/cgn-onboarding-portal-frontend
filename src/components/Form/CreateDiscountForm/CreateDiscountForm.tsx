@@ -22,6 +22,7 @@ import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import chainAxios from "../../../utils/chainAxios";
 import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
 
 const emptyInitialValues = {
   name: "",
@@ -106,6 +107,12 @@ const CreateDiscountForm = () => {
       onSubmit={values => {
         const newValues = {
           ...values,
+          description: values.description
+            ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
+          condition: values.condition
+            ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
           endDate: format(new Date(values.endDate), "yyyy-MM-dd")
         };
@@ -135,6 +142,17 @@ const CreateDiscountForm = () => {
             >
               <DiscountConditions />
             </FormField>
+            {!checkLanding && (
+              <FormField
+                htmlFor="discountUrl"
+                title="Link all’agevolazione"
+                description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione"
+                isTitleHeading
+                isVisible
+              >
+                <DiscountUrl />
+              </FormField>
+            )}
             {checkStaticCode && (
               <FormField
                 htmlFor="staticCode"
