@@ -241,6 +241,12 @@ const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
                 value={row.original.condition}
               />
             )}
+            {row.original.discountUrl && (
+              <ProfileItem
+                label="Link all'agevolazione"
+                value={row.original.discountUrl}
+              />
+            )}
           </tbody>
         </table>
         {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}

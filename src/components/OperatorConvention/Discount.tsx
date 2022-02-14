@@ -93,6 +93,9 @@ const Discount = ({
         </div>
       </div>
       <Item label="Condizioni dell’agevolazione" value={discount.condition} />
+      {discount.discountUrl && (
+        <Item label="Link all’agevolazione" value={discount.discountUrl} />
+      )}
       <Item
         label="Data ultima modifica"
         value={format(new Date(discount.lastUpateDate), "dd/MM/yyyy")}
