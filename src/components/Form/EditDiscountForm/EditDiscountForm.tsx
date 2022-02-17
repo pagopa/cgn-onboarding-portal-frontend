@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { Button } from "design-react-kit";
 import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
 import { useHistory, useParams } from "react-router-dom";
 import { AxiosResponse } from "axios";
+import { fromNullable } from "fp-ts/lib/Option";
 import Api from "../../../api";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -24,8 +25,6 @@ import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
-import InputField from "../FormField";
-import CustomErrorMessage from "../CustomErrorMessage";
 import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
 
 const emptyInitialValues = {
@@ -119,28 +118,21 @@ const EditDiscountForm = () => {
         (discount: Discount) => {
           setInitialValues({
             ...discount,
+            discountUrl: fromNullable(discount.discountUrl).toUndefined(),
             startDate: new Date(discount.startDate),
             endDate: new Date(discount.endDate),
-            landingPageReferrer:
-              discount.landingPageReferrer === null
-                ? undefined
-                : discount.landingPageReferrer,
-            landingPageUrl:
-              discount.landingPageUrl === null
-                ? undefined
-                : discount.landingPageUrl,
-            discount:
-              discount.discount === null ? undefined : discount.discount,
-            staticCode:
-              discount.staticCode === null ? undefined : discount.staticCode,
-            lastBucketCodeLoadUid:
-              discount.lastBucketCodeLoadUid === null
-                ? undefined
-                : discount.lastBucketCodeLoadUid,
-            lastBucketCodeLoadFileName:
-              discount.lastBucketCodeLoadFileName === null
-                ? undefined
-                : discount.lastBucketCodeLoadFileName
+            landingPageReferrer: fromNullable(
+              discount.landingPageReferrer
+            ).toUndefined(),
+            landingPageUrl: fromNullable(discount.landingPageUrl).toUndefined(),
+            discount: fromNullable(discount.discount).toUndefined(),
+            staticCode: fromNullable(discount.staticCode).toUndefined(),
+            lastBucketCodeLoadUid: fromNullable(
+              discount.lastBucketCodeLoadUid
+            ).toUndefined(),
+            lastBucketCodeLoadFileName: fromNullable(
+              discount.lastBucketCodeLoadFileName
+            ).toUndefined()
           });
           setLoading(false);
         }
