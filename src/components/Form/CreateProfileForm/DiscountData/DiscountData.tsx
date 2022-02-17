@@ -156,6 +156,10 @@ const DiscountData = ({
           setInitialValues({
             discounts: discounts.items.map((discount: Discount) => ({
               ...discount,
+              discountUrl:
+                discount.discountUrl === null
+                  ? undefined
+                  : discount.landingPageReferrer,
               startDate: new Date(discount.startDate),
               endDate: new Date(discount.endDate),
               landingPageReferrer:

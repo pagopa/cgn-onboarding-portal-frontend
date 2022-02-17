@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { Button } from "design-react-kit";
 import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
@@ -24,8 +24,6 @@ import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
-import InputField from "../FormField";
-import CustomErrorMessage from "../CustomErrorMessage";
 import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
 
 const emptyInitialValues = {
@@ -119,6 +117,8 @@ const EditDiscountForm = () => {
         (discount: Discount) => {
           setInitialValues({
             ...discount,
+            discountUrl:
+              discount.discountUrl === null ? undefined : discount.discountUrl,
             startDate: new Date(discount.startDate),
             endDate: new Date(discount.endDate),
             landingPageReferrer:
