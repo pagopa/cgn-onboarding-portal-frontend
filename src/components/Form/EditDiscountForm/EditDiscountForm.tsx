@@ -7,6 +7,7 @@ import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
 import { useHistory, useParams } from "react-router-dom";
 import { AxiosResponse } from "axios";
+import { fromNullable } from "fp-ts/lib/Option";
 import Api from "../../../api";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -117,30 +118,21 @@ const EditDiscountForm = () => {
         (discount: Discount) => {
           setInitialValues({
             ...discount,
-            discountUrl:
-              discount.discountUrl === null ? undefined : discount.discountUrl,
+            discountUrl: fromNullable(discount.discountUrl).toUndefined(),
             startDate: new Date(discount.startDate),
             endDate: new Date(discount.endDate),
-            landingPageReferrer:
-              discount.landingPageReferrer === null
-                ? undefined
-                : discount.landingPageReferrer,
-            landingPageUrl:
-              discount.landingPageUrl === null
-                ? undefined
-                : discount.landingPageUrl,
-            discount:
-              discount.discount === null ? undefined : discount.discount,
-            staticCode:
-              discount.staticCode === null ? undefined : discount.staticCode,
-            lastBucketCodeLoadUid:
-              discount.lastBucketCodeLoadUid === null
-                ? undefined
-                : discount.lastBucketCodeLoadUid,
-            lastBucketCodeLoadFileName:
-              discount.lastBucketCodeLoadFileName === null
-                ? undefined
-                : discount.lastBucketCodeLoadFileName
+            landingPageReferrer: fromNullable(
+              discount.landingPageReferrer
+            ).toUndefined(),
+            landingPageUrl: fromNullable(discount.landingPageUrl).toUndefined(),
+            discount: fromNullable(discount.discount).toUndefined(),
+            staticCode: fromNullable(discount.staticCode).toUndefined(),
+            lastBucketCodeLoadUid: fromNullable(
+              discount.lastBucketCodeLoadUid
+            ).toUndefined(),
+            lastBucketCodeLoadFileName: fromNullable(
+              discount.lastBucketCodeLoadFileName
+            ).toUndefined()
           });
           setLoading(false);
         }
