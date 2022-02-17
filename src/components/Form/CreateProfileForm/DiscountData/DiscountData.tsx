@@ -159,7 +159,7 @@ const DiscountData = ({
               discountUrl:
                 discount.discountUrl === null
                   ? undefined
-                  : discount.landingPageReferrer,
+                  : discount.discountUrl,
               startDate: new Date(discount.startDate),
               endDate: new Date(discount.endDate),
               landingPageReferrer:
