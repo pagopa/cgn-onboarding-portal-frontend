@@ -85,8 +85,14 @@ export const getDiscountComponent = (state: string) => {
   }
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
+const DiscountDetailRow = ({
+  row,
+  agreement,
+  onPublish,
+  onSuspend,
+  onDelete
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+Props) => {
   const history = useHistory();
   const [canBePublished, setCanBePublished] = useState(
     row.original.lastBucketCodeLoadStatus !== null &&
@@ -147,6 +153,7 @@ const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
             color="primary"
             tag="button"
             onClick={onPublish}
+            disabled={!canBePublished}
           >
             <Icon
               icon={"it-external-link"}
@@ -154,7 +161,7 @@ const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
               padding={false}
               size="sm"
             />{" "}
-            <span>Sospendi</span>
+            <span>Pubblica</span>
           </Button>
         )}
       {row.original.state === "published" && (
@@ -162,10 +169,9 @@ const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
           className="mr-4"
           color="primary"
           tag="button"
-          onClick={onPublish}
-          disabled={!canBePublished}
+          onClick={onSuspend}
         >
-          <span>Pubblica</span>
+          <span>Sospendi</span>
         </Button>
       )}
     </div>
