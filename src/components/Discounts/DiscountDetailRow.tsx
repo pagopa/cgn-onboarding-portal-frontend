@@ -165,12 +165,6 @@ const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
           onClick={onPublish}
           disabled={!canBePublished}
         >
-          <Icon
-            icon={"it-external-link"}
-            color="white"
-            padding={false}
-            size="sm"
-          />{" "}
           <span>Pubblica</span>
         </Button>
       )}
