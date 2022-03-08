@@ -22,6 +22,7 @@ type Props = {
   row: Row<Discount>;
   agreement: any;
   onPublish: () => void;
+  onSuspend: () => void;
   onDelete: () => void;
 };
 
@@ -84,8 +85,14 @@ export const getDiscountComponent = (state: string) => {
   }
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
+const DiscountDetailRow = ({
+  row,
+  agreement,
+  onPublish,
+  onSuspend,
+  onDelete
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+Props) => {
   const history = useHistory();
   const [canBePublished, setCanBePublished] = useState(
     row.original.lastBucketCodeLoadStatus !== null &&
@@ -157,6 +164,16 @@ const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
             <span>Pubblica</span>
           </Button>
         )}
+      {row.original.state === "published" && (
+        <Button
+          className="mr-4"
+          color="primary"
+          tag="button"
+          onClick={onSuspend}
+        >
+          <span>Sospendi</span>
+        </Button>
+      )}
     </div>
   );
 
