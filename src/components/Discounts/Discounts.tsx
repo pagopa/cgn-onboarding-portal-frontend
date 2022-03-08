@@ -15,6 +15,7 @@ import { Severity, useTooltip } from "../../context/tooltip";
 import { Discount } from "../../api/generated";
 import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
+import SuspendModal from "./SuspendModal";
 
 const chainAxios = (response: AxiosResponse) =>
   fromPredicate(
@@ -30,9 +31,11 @@ const Discounts = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [selectedDiscount, setSelectedDiscount] = useState<any>();
   const [publishModal, setPublishModal] = useState(false);
+  const [suspendModal, setSuspendModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const toggleDeleteModal = () => setDeleteModal(!deleteModal);
   const togglePublishModal = () => setPublishModal(!publishModal);
+  const toggleSuspendModal = () => setSuspendModal(!suspendModal);
   const [selectedPublish, setSelectedPublish] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
@@ -71,6 +74,19 @@ const Discounts = () => {
   const publishDiscount = async (discountId: string) =>
     await tryCatch(
       () => Api.Discount.publishDiscount(agreement.id, discountId),
+      toError
+    )
+      .chain(chainAxios)
+      .map(response => response.data)
+      .fold(
+        e => throwErrorTooltip(e.message),
+        () => void getDiscounts()
+      )
+      .run();
+
+  const suspendDiscount = async (discountId: string) =>
+    await tryCatch(
+      () => Api.Discount.suspendDiscount(agreement.id, discountId),
       toError
     )
       .chain(chainAxios)
@@ -179,6 +195,11 @@ const Discounts = () => {
           isOpen={publishModal}
           toggle={togglePublishModal}
           publish={() => publishDiscount(selectedPublish)}
+        />
+        <SuspendModal
+          isOpen={suspendModal}
+          toggle={toggleSuspendModal}
+          suspend={() => suspendDiscount(selectedDiscount)}
         />
         <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
           <ModalHeader toggle={toggleDeleteModal}>
@@ -292,6 +313,10 @@ const Discounts = () => {
                           onPublish={() => {
                             setSelectedPublish(row.original.id);
                             togglePublishModal();
+                          }}
+                          onSuspend={() => {
+                            setSelectedDiscount(row.original.id);
+                            toggleSuspendModal();
                           }}
                           onDelete={() => {
                             setSelectedDiscount(row.original.id);

@@ -22,6 +22,7 @@ type Props = {
   row: Row<Discount>;
   agreement: any;
   onPublish: () => void;
+  onSuspend: () => void;
   onDelete: () => void;
 };
 
@@ -146,7 +147,6 @@ const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
             color="primary"
             tag="button"
             onClick={onPublish}
-            disabled={!canBePublished}
           >
             <Icon
               icon={"it-external-link"}
@@ -154,9 +154,26 @@ const DiscountDetailRow = ({ row, agreement, onPublish, onDelete }: Props) => {
               padding={false}
               size="sm"
             />{" "}
-            <span>Pubblica</span>
+            <span>Sospendi</span>
           </Button>
         )}
+      {row.original.state === "published" && (
+        <Button
+          className="mr-4"
+          color="primary"
+          tag="button"
+          onClick={onPublish}
+          disabled={!canBePublished}
+        >
+          <Icon
+            icon={"it-external-link"}
+            color="white"
+            padding={false}
+            size="sm"
+          />{" "}
+          <span>Pubblica</span>
+        </Button>
+      )}
     </div>
   );
 
