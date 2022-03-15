@@ -1,7 +1,8 @@
-import ReCAPTCHA from "react-google-recaptcha";
-import React, { useEffect, useRef } from "react";
+/* eslint-disable functional/immutable-data */
+import React, { useEffect, useRef, useState } from "react";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import ReCAPTCHA from "react-google-recaptcha";
 import { Severity, useTooltip } from "../../../context/tooltip";
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
 
 const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
   const recaptchaRef = useRef<any>();
+  const [canRenderRecaptcha, setCanRenderRecaptcha] = useState(false);
   const { triggerTooltip } = useTooltip();
 
   const onErrorTooltip = () =>
@@ -26,18 +28,28 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
       .run();
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.recaptchaOptions = {
+      useRecaptchaNet: true
+    };
+    setCanRenderRecaptcha(true);
     void executeRecaptcha();
   }, [setFieldValue]);
 
   return (
     <div className="mt-10">
-      <ReCAPTCHA
-        ref={recaptchaRef}
-        size="invisible"
-        sitekey={
-          process.env.RECAPTCHA_API_KEY ? process.env.RECAPTCHA_API_KEY : ""
-        }
-      />
+      {canRenderRecaptcha && (
+        <ReCAPTCHA
+          ref={recaptchaRef}
+          size="invisible"
+          sitekey={
+            process.env.RECAPTCHA_API_KEY
+              ? process.env.RECAPTCHA_API_KEY
+              : "6Le93sseAAAAAGXS34PkpfmkTThwMhUdklkNtIM5"
+          }
+        />
+      )}
     </div>
   );
 };
