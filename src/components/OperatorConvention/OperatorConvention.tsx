@@ -118,6 +118,8 @@ const OperatorConvention = () => {
         return "AgreementDate";
       case "agreementLastUpdateDate":
         return "LastModifyDate";
+      case "publishedDiscounts":
+        return "PublishedDiscounts";
     }
   };
 
