@@ -15,7 +15,7 @@ import { Severity, useTooltip } from "../../context/tooltip";
 import { Discount } from "../../api/generated";
 import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
-import SuspendModal from "./SuspendModal";
+import UnpublishModal from "./UnpublishModal";
 
 const chainAxios = (response: AxiosResponse) =>
   fromPredicate(
@@ -31,11 +31,11 @@ const Discounts = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [selectedDiscount, setSelectedDiscount] = useState<any>();
   const [publishModal, setPublishModal] = useState(false);
-  const [suspendModal, setSuspendModal] = useState(false);
+  const [unpublishModal, setUnpublishModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const toggleDeleteModal = () => setDeleteModal(!deleteModal);
   const togglePublishModal = () => setPublishModal(!publishModal);
-  const toggleSuspendModal = () => setSuspendModal(!suspendModal);
+  const toggleUnpublishModal = () => setUnpublishModal(!unpublishModal);
   const [selectedPublish, setSelectedPublish] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
@@ -84,9 +84,9 @@ const Discounts = () => {
       )
       .run();
 
-  const suspendDiscount = async (discountId: string) =>
+  const unpublishDiscount = async (discountId: string) =>
     await tryCatch(
-      () => Api.Discount.suspendDiscount(agreement.id, discountId),
+      () => Api.Discount.unpublishDiscount(agreement.id, discountId),
       toError
     )
       .chain(chainAxios)
@@ -196,10 +196,10 @@ const Discounts = () => {
           toggle={togglePublishModal}
           publish={() => publishDiscount(selectedPublish)}
         />
-        <SuspendModal
-          isOpen={suspendModal}
-          toggle={toggleSuspendModal}
-          suspend={() => suspendDiscount(selectedDiscount)}
+        <UnpublishModal
+          isOpen={unpublishModal}
+          toggle={toggleUnpublishModal}
+          unpublish={() => unpublishDiscount(selectedDiscount)}
         />
         <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
           <ModalHeader toggle={toggleDeleteModal}>
@@ -314,9 +314,9 @@ const Discounts = () => {
                             setSelectedPublish(row.original.id);
                             togglePublishModal();
                           }}
-                          onSuspend={() => {
+                          onUnpublish={() => {
                             setSelectedDiscount(row.original.id);
-                            toggleSuspendModal();
+                            toggleUnpublishModal();
                           }}
                           onDelete={() => {
                             setSelectedDiscount(row.original.id);
