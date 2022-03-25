@@ -12,6 +12,7 @@ import {
   ADMIN_PANEL_CONVENZIONATI,
   ADMIN_PANEL_ACCESSI
 } from "../navigation/routes";
+import OperatorActivations from "../components/OperatorActivations/OperatorActivations";
 
 const AdminPanel = () => {
   const { data } = useSelector((state: RootState) => state.user);
@@ -30,7 +31,7 @@ const AdminPanel = () => {
       case ADMIN_PANEL_CONVENZIONATI:
         return <OperatorConvention />;
       case ADMIN_PANEL_ACCESSI:
-        return <OperatorConvention />;
+        return <OperatorActivations />;
       default:
         return <div>error</div>;
     }

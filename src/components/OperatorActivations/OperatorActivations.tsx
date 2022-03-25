@@ -22,7 +22,7 @@ type GetOrgsParams = {
   sortDirection?: "ASC" | "DESC";
 };
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const OperatorConvention = () => {
+const OperatorActivations = () => {
   const [operators, setOperators] = useState<
     ReadonlyArray<OrganizationWithReferents>
   >([]);
@@ -80,6 +80,19 @@ const OperatorConvention = () => {
         accessor: "insertedAt",
         Cell: ({ row }: { row: Row }) =>
           format(new Date(row.values.insertedAt), "dd/MM/yyyy")
+      },
+      {
+        Header: () => null,
+        id: "expander",
+        Cell: ({ row }: any) => (
+          <span {...row.getToggleRowExpandedProps()}>
+            {row.isExpanded ? (
+              <Icon icon="it-expand" color="primary" />
+            ) : (
+              <Icon icon="it-collapse" color="primary" />
+            )}
+          </span>
+        )
       }
     ],
     []
@@ -97,7 +110,8 @@ const OperatorConvention = () => {
     gotoPage,
     nextPage,
     previousPage,
-    state: { pageIndex, sortBy }
+    state: { pageIndex, sortBy },
+    visibleColumns
   } = useTable<OrganizationWithReferents>(
     {
       columns: [...columns],
@@ -288,6 +302,13 @@ const OperatorConvention = () => {
                         </td>
                       ))}
                     </tr>
+                    {row.isExpanded && (
+                      <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
+                        <td colSpan={visibleColumns.length}>
+                          <></>
+                        </td>
+                      </tr>
+                    )}
                   </React.Fragment>
                 );
               })}
@@ -321,4 +342,4 @@ const OperatorConvention = () => {
   );
 };
 
-export default OperatorConvention;
+export default OperatorActivations;
