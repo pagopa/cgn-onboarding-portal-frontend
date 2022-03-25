@@ -9,7 +9,8 @@ import OperatorConvention from "../components/OperatorConvention/OperatorConvent
 import { RootState } from "../store/store";
 import {
   ADMIN_PANEL_RICHIESTE,
-  ADMIN_PANEL_CONVENZIONATI
+  ADMIN_PANEL_CONVENZIONATI,
+  ADMIN_PANEL_ACCESSI
 } from "../navigation/routes";
 
 const AdminPanel = () => {
@@ -27,6 +28,8 @@ const AdminPanel = () => {
       case ADMIN_PANEL_RICHIESTE:
         return <Requests />;
       case ADMIN_PANEL_CONVENZIONATI:
+        return <OperatorConvention />;
+      case ADMIN_PANEL_ACCESSI:
         return <OperatorConvention />;
       default:
         return <div>error</div>;
