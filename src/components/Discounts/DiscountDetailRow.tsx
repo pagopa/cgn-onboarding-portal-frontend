@@ -22,7 +22,7 @@ type Props = {
   row: Row<Discount>;
   agreement: any;
   onPublish: () => void;
-  onSuspend: () => void;
+  onUnpublish: () => void;
   onDelete: () => void;
 };
 
@@ -89,7 +89,7 @@ const DiscountDetailRow = ({
   row,
   agreement,
   onPublish,
-  onSuspend,
+  onUnpublish,
   onDelete
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
 Props) => {
@@ -169,9 +169,9 @@ Props) => {
           className="mr-4"
           color="primary"
           tag="button"
-          onClick={onSuspend}
+          onClick={onUnpublish}
         >
-          <span>Sospendi</span>
+          <span>Torna in bozza</span>
         </Button>
       )}
     </div>
