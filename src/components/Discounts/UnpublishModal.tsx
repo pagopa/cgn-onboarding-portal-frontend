@@ -5,27 +5,27 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 type Props = {
   isOpen: any;
   toggle: any;
-  suspend: any;
+  unpublish: any;
 };
 
-const SuspendModal = ({ isOpen, toggle, suspend }: Props) => (
+const UnpublishModal = ({ isOpen, toggle, unpublish }: Props) => (
   <Modal isOpen={isOpen} toggle={toggle} size="md">
     <ModalHeader toggle={toggle}>Sospendi agevolazione</ModalHeader>
     <ModalBody>
-      Sei sicuro di voler sospendere questa agevolazione? Se non hai altre
-      agevolazioni pubblicate in questo momento, non sarai più visibile nella
-      lista degli operatori aderenti all&lsquo;iniziativa.
+      Sei sicuro di voler riportare in bozza questa agevolazione? Se non hai
+      altre agevolazioni pubblicate in questo momento, non sarai più visibile
+      nella lista degli operatori aderenti all&lsquo;iniziativa.
     </ModalBody>
     <ModalFooter className="d-flex flex-column">
       <Button
         color="danger"
         onClick={() => {
           toggle();
-          suspend();
+          unpublish();
         }}
         style={{ width: "100%" }}
       >
-        Sospendi
+        Torna in bozza
       </Button>{" "}
       <Button
         color="primary"
@@ -39,4 +39,4 @@ const SuspendModal = ({ isOpen, toggle, suspend }: Props) => (
   </Modal>
 );
 
-export default SuspendModal;
+export default UnpublishModal;
