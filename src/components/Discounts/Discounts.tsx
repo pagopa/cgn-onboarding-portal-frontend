@@ -92,7 +92,10 @@ const Discounts = () => {
       .chain(chainAxios)
       .map(response => response.data)
       .fold(
-        e => throwErrorTooltip(e.message),
+        e =>
+          throwErrorTooltip(
+            "Errore durante la richiesta di cambio di stato dell'agevolazione"
+          ),
         () => void getDiscounts()
       )
       .run();
