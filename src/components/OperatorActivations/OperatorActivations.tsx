@@ -1,21 +1,31 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useTable, usePagination, Row, useSortBy, Column } from "react-table";
+import {
+  useTable,
+  usePagination,
+  Row,
+  useSortBy,
+  Column,
+  UseExpandedRowProps,
+  useExpanded
+} from "react-table";
 import cx from "classnames";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
+import { constNull } from "fp-ts/lib/function";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
-import ConventionFilter from "../OperatorConvention/ConventionFilter";
-import ConventionDetails from "../OperatorConvention/ConventionDetails";
+import ActivationsFilter from "./ActivationsFilter";
+import { mockActivations } from "./mockActivations";
+import OperatorActivationDetail from "./OperatorActivationDetail";
 
 const PAGE_SIZE = 20;
 
 type OrderType = "fiscalCode" | "name" | "pec" | "insertedAt";
 
-type GetOrgsParams = {
+export type GetOrgsParams = {
   searchQuery?: string;
   page?: number;
   sortColumn?: OrderType;
@@ -55,12 +65,13 @@ const OperatorActivations = () => {
       )
       .run();
 
-  const getConventions = (params?: GetOrgsParams) => {
-    setLoading(true);
-    void getActivationsApi(params);
+  const getActivations = (params?: GetOrgsParams) => {
+    // setLoading(true);
+    setOperators(mockActivations.items);
+    // void getActivationsApi(params);
   };
 
-  const columns: ReadonlyArray<Column<OrganizationWithReferents>> = useMemo(
+  const columns: Array<Column<OrganizationWithReferents>> = useMemo(
     () => [
       {
         Header: "RAGIONE SOCIALE",
@@ -73,7 +84,23 @@ const OperatorActivations = () => {
       {
         Header: "UTENTI ABILITATI",
         accessor: "referents",
-        Cell: ({ row }: { row: Row }) => row.values.referents
+        Cell: ({ row }: { row: Row }) => {
+          if (Array.isArray(row.values.referents)) {
+            return row.values.referents.reduce(
+              (acc: string, curr: string, i: number) => {
+                if (i > 1) {
+                  return `${acc} +1`;
+                }
+                if (i > 2) {
+                  return acc;
+                }
+                return `${curr}, ${acc}`;
+              },
+              ""
+            );
+          }
+          return row.values.referents;
+        }
       },
       {
         Header: "AGGIUNTO IL",
@@ -84,7 +111,7 @@ const OperatorActivations = () => {
       {
         Header: () => null,
         id: "expander",
-        Cell: ({ row }: any) => (
+        Cell: ({ row }: { row: UseExpandedRowProps<Row> }) => (
           <span {...row.getToggleRowExpandedProps()}>
             {row.isExpanded ? (
               <Icon icon="it-expand" color="primary" />
@@ -95,9 +122,10 @@ const OperatorActivations = () => {
         )
       }
     ],
-    []
+    [operators]
   );
 
+  const data = useMemo(() => [...operators], [operators]);
   const {
     getTableProps,
     getTableBodyProps,
@@ -114,15 +142,18 @@ const OperatorActivations = () => {
     visibleColumns
   } = useTable<OrganizationWithReferents>(
     {
-      columns: [...columns],
-      data: [...operators],
+      columns,
+      data,
       initialState: { pageIndex: 0, pageSize: PAGE_SIZE },
       manualPagination: true,
       manualSortBy: true,
       disableMultiSort: true,
-      pageCount: operators.length ? Math.ceil(operators.length / PAGE_SIZE) : 0
+      pageCount: mockActivations.count
+        ? Math.ceil(mockActivations.count / PAGE_SIZE)
+        : 0
     },
     useSortBy,
+    useExpanded,
     usePagination
   );
 
@@ -138,55 +169,47 @@ const OperatorActivations = () => {
     }
   };
 
-  useEffect(() => {
-    const sortField = sortBy[0];
-    if (sortField) {
-      refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
-      refForm.current?.setFieldValue(
-        "sortDirection",
-        sortField.desc ? "DESC" : "ASC"
-      );
-    } else {
-      refForm.current?.setFieldValue("sortColumn", undefined);
-      refForm.current?.setFieldValue("sortDirection", undefined);
-    }
-    refForm.current?.setFieldValue("page", pageIndex);
-    refForm.current?.submitForm();
-  }, [pageIndex, sortBy]);
+  // useEffect(() => {
+  //   const sortField = sortBy[0];
+  //   if (sortField) {
+  //     refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
+  //     refForm.current?.setFieldValue(
+  //       "sortDirection",
+  //       sortField.desc ? "DESC" : "ASC"
+  //     );
+  //   } else {
+  //     refForm.current?.setFieldValue("sortColumn", undefined);
+  //     refForm.current?.setFieldValue("sortDirection", undefined);
+  //   }
+  //   refForm.current?.setFieldValue("page", pageIndex);
+  //   refForm.current?.submitForm();
+  // }, [pageIndex, sortBy]);
 
-  if (showDetails && selectedOperator) {
-    return (
-      <ConventionDetails
-        agreement={selectedOperator}
-        onClose={() => {
-          setShowDetails(false);
-          setSelectedOperator(undefined);
-        }}
-      />
-    );
-  }
+  useEffect(() => {
+    getActivations();
+  }, []);
 
   const startRowIndex: number = pageIndex * PAGE_SIZE + 1;
   // eslint-disable-next-line functional/no-let
   let endRowIndex: number = startRowIndex - 1 + PAGE_SIZE;
 
-  if (endRowIndex > operators.length) {
-    endRowIndex = operators.length;
+  if (endRowIndex > mockActivations.count) {
+    endRowIndex = mockActivations.count;
   }
 
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <ConventionFilter refForm={refForm} getConventions={getConventions} />
+      <ActivationsFilter refForm={refForm} getActivations={getActivations} />
       {loading ? (
         <CenteredLoading />
       ) : (
         <>
           <div className="mb-2 mt-4 d-flex justify-content-between">
-            {!!operators.length && (
+            {!!mockActivations.count && (
               <strong>
-                {startRowIndex}-{endRowIndex} di {operators.length}
+                {startRowIndex}-{endRowIndex} di {mockActivations.count}
               </strong>
             )}
             <div className="d-flex align-items-center">
@@ -287,10 +310,7 @@ const OperatorActivations = () => {
                   <React.Fragment key={row.getRowProps().key}>
                     <tr
                       className="cursor-pointer"
-                      onClick={() => {
-                        setShowDetails(true);
-                        setSelectedOperator(row.original);
-                      }}
+                      onClick={() => row.toggleRowExpanded()}
                     >
                       {row.cells.map((cell, i) => (
                         <td
@@ -305,7 +325,10 @@ const OperatorActivations = () => {
                     {row.isExpanded && (
                       <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
                         <td colSpan={visibleColumns.length}>
-                          <></>
+                          <OperatorActivationDetail
+                            operator={row.original}
+                            getActivations={getActivations}
+                          />
                         </td>
                       </tr>
                     )}
@@ -314,7 +337,7 @@ const OperatorActivations = () => {
               })}
             </tbody>
           </table>
-          {!operators.length &&
+          {!mockActivations.count &&
             (refForm.current?.dirty ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
@@ -325,7 +348,7 @@ const OperatorActivations = () => {
                   className="mt-3"
                   onClick={() => {
                     refForm.current?.resetForm();
-                    getConventions({});
+                    getActivations({});
                   }}
                 >
                   Reimposta Tutto

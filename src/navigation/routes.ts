@@ -11,4 +11,5 @@ export const REJECT_PROFILE = "/admin/operatori/profilo/rifiutato";
 export const ADMIN_PANEL_RICHIESTE = "/admin/operatori/richieste";
 export const ADMIN_PANEL_CONVENZIONATI =
   "/admin/operatori/operatori-convenzionati";
-export const ADMIN_PANEL_ACCESSI = "/admin/operatori/operatori-abilitati";
+export const ADMIN_PANEL_ACCESSI = "/admin/operatori/accessi";
+export const ADMIN_PANEL_ACCESSI_EDIT = "/admin/operatori/accessi/modifica";

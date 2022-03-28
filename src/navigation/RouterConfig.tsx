@@ -24,7 +24,9 @@ import {
   EDIT_OPERATOR_DATA,
   ADMIN_PANEL_RICHIESTE,
   ADMIN_PANEL_CONVENZIONATI,
-  REJECT_PROFILE
+  REJECT_PROFILE,
+  ADMIN_PANEL_ACCESSI,
+  ADMIN_PANEL_ACCESSI_EDIT
 } from "./routes";
 
 export const RouterConfig = ({
@@ -42,7 +44,11 @@ export const RouterConfig = ({
   const dispatch = useDispatch();
   const isAdmin = userType === "ADMIN";
 
-  const adminRoutes = [ADMIN_PANEL_RICHIESTE, ADMIN_PANEL_CONVENZIONATI];
+  const adminRoutes = [
+    ADMIN_PANEL_RICHIESTE,
+    ADMIN_PANEL_CONVENZIONATI,
+    ADMIN_PANEL_ACCESSI
+  ];
 
   useEffect(() => {
     if (!isAdmin) {
@@ -78,6 +84,8 @@ export const RouterConfig = ({
       <Switch>
         <Route exact path={ADMIN_PANEL_RICHIESTE} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
+        <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
+        <Route exact path={ADMIN_PANEL_ACCESSI_EDIT} component={AdminPanel} />
       </Switch>
     );
   }

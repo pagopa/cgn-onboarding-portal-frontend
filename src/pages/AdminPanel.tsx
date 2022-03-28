@@ -10,7 +10,8 @@ import { RootState } from "../store/store";
 import {
   ADMIN_PANEL_RICHIESTE,
   ADMIN_PANEL_CONVENZIONATI,
-  ADMIN_PANEL_ACCESSI
+  ADMIN_PANEL_ACCESSI,
+  ADMIN_PANEL_ACCESSI_EDIT
 } from "../navigation/routes";
 import OperatorActivations from "../components/OperatorActivations/OperatorActivations";
 
