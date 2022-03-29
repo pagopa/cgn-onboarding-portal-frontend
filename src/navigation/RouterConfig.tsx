@@ -26,7 +26,8 @@ import {
   ADMIN_PANEL_CONVENZIONATI,
   REJECT_PROFILE,
   ADMIN_PANEL_ACCESSI,
-  ADMIN_PANEL_ACCESSI_EDIT
+  ADMIN_PANEL_ACCESSI_EDIT,
+  ADMIN_PANEL_ACCESSI_CREA
 } from "./routes";
 
 export const RouterConfig = ({
@@ -86,6 +87,7 @@ export const RouterConfig = ({
         <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_ACCESSI_EDIT} component={AdminPanel} />
+        <Route exact path={ADMIN_PANEL_ACCESSI_CREA} component={AdminPanel} />
       </Switch>
     );
   }

@@ -16,7 +16,10 @@ import { format } from "date-fns";
 import { constNull } from "fp-ts/lib/function";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
-import { OrganizationWithReferents } from "../../api/generated_backoffice";
+import {
+  Organizations,
+  OrganizationWithReferents
+} from "../../api/generated_backoffice";
 import ActivationsFilter from "./ActivationsFilter";
 import { mockActivations } from "./mockActivations";
 import OperatorActivationDetail from "./OperatorActivationDetail";
@@ -33,9 +36,7 @@ export type GetOrgsParams = {
 };
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorActivations = () => {
-  const [operators, setOperators] = useState<
-    ReadonlyArray<OrganizationWithReferents>
-  >([]);
+  const [operators, setOperators] = useState<Organizations>();
   const [loading, setLoading] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [selectedOperator, setSelectedOperator] = useState<
@@ -67,7 +68,7 @@ const OperatorActivations = () => {
 
   const getActivations = (params?: GetOrgsParams) => {
     // setLoading(true);
-    setOperators(mockActivations.items);
+    setOperators(mockActivations);
     // void getActivationsApi(params);
   };
 
@@ -125,7 +126,10 @@ const OperatorActivations = () => {
     [operators]
   );
 
-  const data = useMemo(() => [...operators], [operators]);
+  const data: Array<OrganizationWithReferents> = useMemo(
+    () => (operators?.items ? [...operators?.items] : []),
+    [operators]
+  );
   const {
     getTableProps,
     getTableBodyProps,
@@ -169,32 +173,28 @@ const OperatorActivations = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const sortField = sortBy[0];
-  //   if (sortField) {
-  //     refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
-  //     refForm.current?.setFieldValue(
-  //       "sortDirection",
-  //       sortField.desc ? "DESC" : "ASC"
-  //     );
-  //   } else {
-  //     refForm.current?.setFieldValue("sortColumn", undefined);
-  //     refForm.current?.setFieldValue("sortDirection", undefined);
-  //   }
-  //   refForm.current?.setFieldValue("page", pageIndex);
-  //   refForm.current?.submitForm();
-  // }, [pageIndex, sortBy]);
-
   useEffect(() => {
-    getActivations();
-  }, []);
+    const sortField = sortBy[0];
+    if (sortField) {
+      refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
+      refForm.current?.setFieldValue(
+        "sortDirection",
+        sortField.desc ? "DESC" : "ASC"
+      );
+    } else {
+      refForm.current?.setFieldValue("sortColumn", undefined);
+      refForm.current?.setFieldValue("sortDirection", undefined);
+    }
+    refForm.current?.setFieldValue("page", pageIndex);
+    refForm.current?.submitForm();
+  }, [pageIndex, sortBy]);
 
   const startRowIndex: number = pageIndex * PAGE_SIZE + 1;
   // eslint-disable-next-line functional/no-let
   let endRowIndex: number = startRowIndex - 1 + PAGE_SIZE;
 
-  if (endRowIndex > mockActivations.count) {
-    endRowIndex = mockActivations.count;
+  if (operators?.count && endRowIndex > operators?.count) {
+    endRowIndex = operators.count;
   }
 
   const pageArray = Array.from(Array(pageCount).keys());
@@ -207,9 +207,9 @@ const OperatorActivations = () => {
       ) : (
         <>
           <div className="mb-2 mt-4 d-flex justify-content-between">
-            {!!mockActivations.count && (
+            {!!operators?.count && (
               <strong>
-                {startRowIndex}-{endRowIndex} di {mockActivations.count}
+                {startRowIndex}-{endRowIndex} di {operators.count}
               </strong>
             )}
             <div className="d-flex align-items-center">
@@ -337,7 +337,7 @@ const OperatorActivations = () => {
               })}
             </tbody>
           </table>
-          {!mockActivations.count &&
+          {!operators?.items?.length &&
             (refForm.current?.dirty ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
@@ -356,7 +356,7 @@ const OperatorActivations = () => {
               </div>
             ) : (
               <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessuna convenzione trovata</p>
+                <p>Nessun operatore trovato</p>
               </div>
             ))}
         </>

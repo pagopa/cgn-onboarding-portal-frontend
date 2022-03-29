@@ -1,5 +1,7 @@
 import React from "react";
 import { Form, Formik, Field } from "formik";
+import { Button } from "design-react-kit";
+import { useHistory } from "react-router-dom";
 import { GetOrgsParams } from "./OperatorActivations";
 
 type FilterFormValues = {
@@ -14,6 +16,8 @@ const ActivationsFilter = ({
   refForm: any;
   getActivations: (params: GetOrgsParams) => void;
 }) => {
+  const history = useHistory();
+
   // eslint-disable-next-line functional/no-let
   let timeout: any = null;
 
@@ -74,6 +78,14 @@ const ActivationsFilter = ({
                 }}
                 style={{ maxWidth: "275px" }}
               />
+              <Button
+                className="ml-5 btn-sm"
+                color="primary"
+                tag="button"
+                onClick={() => history.push(`/admin/operatori/accessi/crea`)}
+              >
+                <span>Aggiungi operatore</span>
+              </Button>
             </div>
           </div>
         </Form>

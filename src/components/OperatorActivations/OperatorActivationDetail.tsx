@@ -1,19 +1,51 @@
 import { format } from "date-fns";
-import React from "react";
+import React, { useState } from "react";
 import { Button, Icon } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import { constNull } from "fp-ts/lib/function";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
-import { ADMIN_PANEL_ACCESSI_EDIT } from "../../navigation/routes";
+import Api from "../../api/backoffice";
+import { Severity, useTooltip } from "../../context/tooltip";
+import CenteredLoading from "../CenteredLoading";
 
 type Props = {
   operator: OrganizationWithReferents;
   getActivations: () => void;
 };
 
-const OperatorActivationDetail = ({ operator }: Props) => {
+const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
   const history = useHistory();
+  const [isLoading, setLoading] = useState(false);
+  const { triggerTooltip } = useTooltip();
+
+  const deleteActivation = async (keyOrganizationFiscalCode: string) =>
+    await tryCatch(
+      () => Api.Activations.deleteOrganization(keyOrganizationFiscalCode),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => {
+          setLoading(false);
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text: "Cancellazione dell'operatore fallito"
+          });
+        },
+        response => {
+          setLoading(false);
+          getActivations();
+        }
+      )
+      .run();
+
+  const askDeleteOrganization = () => {
+    setLoading(true);
+    void deleteActivation(operator.keyOrganizationFiscalCode);
+  };
 
   return (
     <section className="px-6 py-4 bg-white">
@@ -39,20 +71,19 @@ const OperatorActivationDetail = ({ operator }: Props) => {
             <td className={`border-bottom-0`}>
               {operator.referents.map((referent, index) => (
                 <div className="d-flex flex-row mb-3" key={index}>
-                  <p className="m-0 mr-4">{referent}</p>{" "}
-                  <Button
-                    color="link"
-                    onClick={constNull}
-                    icon={true}
-                    className={"p-0 align-self-center"}
-                  >
-                    <Icon
-                      icon="it-delete"
-                      color="primary"
-                      padding={false}
-                      size="sm"
-                    />
-                  </Button>
+                  <p className="m-0 mr-4">{referent}</p> {/* <Button */}
+                  {/*  color="link" */}
+                  {/*  onClick={constNull} */}
+                  {/*  icon={true} */}
+                  {/*  className={"p-0 align-self-center"} */}
+                  {/* > */}
+                  {/*  <Icon */}
+                  {/*    icon="it-delete" */}
+                  {/*    color="primary" */}
+                  {/*    padding={false} */}
+                  {/*    size="sm" */}
+                  {/*  /> */}
+                  {/* </Button> */}
                 </div>
               ))}
             </td>
@@ -65,9 +96,9 @@ const OperatorActivationDetail = ({ operator }: Props) => {
           color="danger"
           outline
           tag="button"
-          onClick={constNull}
+          onClick={askDeleteOrganization}
         >
-          <span>Rimuovi</span>
+          {isLoading ? <CenteredLoading /> : <span> Rimuovi </span>}
         </Button>
         <Button
           className="mr-4 btn-sm"

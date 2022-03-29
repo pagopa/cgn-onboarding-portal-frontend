@@ -1,9 +1,9 @@
-import { OrganizationWithReferents } from "../../api/generated_backoffice";
+import {
+  Organizations,
+  OrganizationWithReferents
+} from "../../api/generated_backoffice";
 
-export const mockActivations: {
-  items: ReadonlyArray<OrganizationWithReferents>;
-  count: number;
-} = {
+export const mockActivations: Organizations = {
   items: [
     {
       keyOrganizationFiscalCode: "1234567892",
