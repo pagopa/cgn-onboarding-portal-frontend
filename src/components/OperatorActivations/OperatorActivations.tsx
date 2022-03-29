@@ -38,10 +38,6 @@ export type GetOrgsParams = {
 const OperatorActivations = () => {
   const [operators, setOperators] = useState<Organizations>();
   const [loading, setLoading] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [selectedOperator, setSelectedOperator] = useState<
-    OrganizationWithReferents
-  >();
   const refForm = useRef<any>(null);
 
   const getActivationsApi = async (params?: GetOrgsParams) =>

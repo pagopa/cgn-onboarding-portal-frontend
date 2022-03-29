@@ -82,7 +82,7 @@ const ActivationsFilter = ({
                 className="ml-5 btn-sm"
                 color="primary"
                 tag="button"
-                onClick={() => history.push(`/admin/operatori/accessi/crea`)}
+                onClick={() => history.push(`/accessi/crea`)}
               >
                 <span>Aggiungi operatore</span>
               </Button>

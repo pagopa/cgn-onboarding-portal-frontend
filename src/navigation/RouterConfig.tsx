@@ -14,6 +14,7 @@ import EditOperatorData from "../pages/EditOperatorData";
 import RejectedProfile from "../pages/RejectedProfile";
 import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
+import CreateActivation from "../pages/CreateActivation";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -48,7 +49,9 @@ export const RouterConfig = ({
   const adminRoutes = [
     ADMIN_PANEL_RICHIESTE,
     ADMIN_PANEL_CONVENZIONATI,
-    ADMIN_PANEL_ACCESSI
+    ADMIN_PANEL_ACCESSI,
+    ADMIN_PANEL_ACCESSI_EDIT,
+    ADMIN_PANEL_ACCESSI_CREA
   ];
 
   useEffect(() => {
@@ -87,7 +90,11 @@ export const RouterConfig = ({
         <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_ACCESSI_EDIT} component={AdminPanel} />
-        <Route exact path={ADMIN_PANEL_ACCESSI_CREA} component={AdminPanel} />
+        <Route
+          exact
+          path={ADMIN_PANEL_ACCESSI_CREA}
+          component={CreateActivation}
+        />
       </Switch>
     );
   }
