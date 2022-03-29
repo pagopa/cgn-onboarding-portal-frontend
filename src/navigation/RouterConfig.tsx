@@ -30,14 +30,9 @@ import {
   ADMIN_PANEL_ACCESSI_EDIT,
   ADMIN_PANEL_ACCESSI_CREA
 } from "./routes";
+import EditActivation from "../pages/EditActivation";
 
-export const RouterConfig = ({
-  user,
-  userType
-}: {
-  user: any;
-  userType: string;
-}) => {
+export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
   );
@@ -89,7 +84,11 @@ export const RouterConfig = ({
         <Route exact path={ADMIN_PANEL_RICHIESTE} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
-        <Route exact path={ADMIN_PANEL_ACCESSI_EDIT} component={AdminPanel} />
+        <Route
+          exact
+          path={ADMIN_PANEL_ACCESSI_EDIT}
+          component={EditActivation}
+        />
         <Route
           exact
           path={ADMIN_PANEL_ACCESSI_CREA}

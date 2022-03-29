@@ -12,5 +12,6 @@ export const ADMIN_PANEL_RICHIESTE = "/admin/operatori/richieste";
 export const ADMIN_PANEL_CONVENZIONATI =
   "/admin/operatori/operatori-convenzionati";
 export const ADMIN_PANEL_ACCESSI = "/admin/operatori/accessi";
-export const ADMIN_PANEL_ACCESSI_EDIT = "/admin/operatori/accessi/modifica";
-export const ADMIN_PANEL_ACCESSI_CREA = "/accessi/crea";
+export const ADMIN_PANEL_ACCESSI_EDIT =
+  "/admin/operatori/accessi/modifica/:operatorFiscalCode";
+export const ADMIN_PANEL_ACCESSI_CREA = "/admin/operatori/accessi/crea";

@@ -1,5 +1,5 @@
-import { useHistory } from "react-router-dom";
-import React, { useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Field, FieldArray, FieldArrayRenderProps, Form, Formik } from "formik";
@@ -25,8 +25,12 @@ const emptyInitialValues: OrganizationWithReferents = {
 };
 
 const CreateActivationForm = () => {
+  const { operatorFiscalCode } = useParams<{ operatorFiscalCode: string }>();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const [initialValues, setInitialValues] = useState<OrganizationWithReferents>(
+    emptyInitialValues
+  );
   const { triggerTooltip } = useTooltip();
 
   const throwErrorTooltip = () => {
@@ -56,9 +60,37 @@ const CreateActivationForm = () => {
       )
       .run();
 
+  const getActivation = async () =>
+    await tryCatch(
+      () => Api.Activations.getOrganization(operatorFiscalCode),
+      toError
+    )
+      .chain(chainAxios)
+      .map(response => response.data)
+      .fold(
+        () => {
+          setLoading(false);
+          throwErrorTooltip();
+        },
+        (data: OrganizationWithReferents) => {
+          setLoading(false);
+          setInitialValues(data);
+        }
+      )
+      .run();
+
+  useEffect(() => {
+    setLoading(true);
+    void getActivation();
+  }, []);
+
+  if (loading) {
+    return <CenteredLoading />;
+  }
+
   return (
     <Formik
-      initialValues={emptyInitialValues}
+      initialValues={initialValues}
       onSubmit={values => {
         const newValues: OrganizationWithReferents = {
           ...values,

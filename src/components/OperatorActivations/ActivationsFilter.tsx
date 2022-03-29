@@ -3,6 +3,7 @@ import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import { GetOrgsParams } from "./OperatorActivations";
+import { ADMIN_PANEL_ACCESSI_CREA } from "../../navigation/routes";
 
 type FilterFormValues = {
   searchQuery: string | undefined;
@@ -38,7 +39,7 @@ const ActivationsFilter = ({
         getActivations(params);
       }}
     >
-      {({ values, submitForm, setFieldValue, resetForm, dirty }) => (
+      {({ submitForm, setFieldValue, resetForm, dirty }) => (
         <Form>
           <div className="d-flex justify-content-between">
             {dirty ? (
@@ -82,7 +83,7 @@ const ActivationsFilter = ({
                 className="ml-5 btn-sm"
                 color="primary"
                 tag="button"
-                onClick={() => history.push(`/accessi/crea`)}
+                onClick={() => history.push(ADMIN_PANEL_ACCESSI_CREA)}
               >
                 <span>Aggiungi operatore</span>
               </Button>
