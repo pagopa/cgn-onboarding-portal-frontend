@@ -13,6 +13,7 @@ import {
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
 import Pager from "../Table/Pager";
+import TableHeader from "../Table/TableHeader";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorConvention = () => {
@@ -185,55 +186,7 @@ const OperatorConvention = () => {
             style={{ width: "100%" }}
             className="mt-2 bg-white"
           >
-            <thead>
-              {headerGroups.map((headerGroup, i) => (
-                <tr
-                  {...headerGroup.getHeaderGroupProps()}
-                  key={i}
-                  style={{
-                    backgroundColor: "#F8F9F9",
-                    borderBottom: "1px solid #5A6772"
-                  }}
-                >
-                  {headerGroup.headers.map((column, i) => (
-                    <th
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                      key={i}
-                      className="px-6 py-2 text-sm font-weight-bold text-gray
-                    text-uppercase"
-                    >
-                      {column.render("Header")}
-                      <span>
-                        {column.canSort && (
-                          <>
-                            {column.isSorted ? (
-                              <>
-                                {column.isSortedDesc ? (
-                                  <Icon
-                                    icon="it-arrow-up-triangle"
-                                    style={{ color: "#5C6F82" }}
-                                  />
-                                ) : (
-                                  <Icon
-                                    icon="it-arrow-down-triangle"
-                                    style={{ color: "#5C6F82" }}
-                                  />
-                                )}
-                              </>
-                            ) : (
-                              <Icon
-                                icon="it-arrow-up-triangle"
-                                style={{ color: "#5C6F82" }}
-                              />
-                            )}
-                          </>
-                        )}
-                      </span>
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
+            <TableHeader headerGroups={headerGroups} />
             <tbody {...getTableBodyProps()}>
               {page.map(row => {
                 prepareRow(row);
