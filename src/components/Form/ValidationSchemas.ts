@@ -288,7 +288,7 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
 };
  */
 export const activationValidationSchema = Yup.object().shape({
-  keyOrganizationFiscalCode: Yup.string().required(REQUIRED_FIELD),
+  keyOrganizationFiscalCode: Yup.string(),
   organizationFiscalCode: Yup.string().required(REQUIRED_FIELD),
   organizationName: Yup.string().required(REQUIRED_FIELD),
   pec: Yup.string()

@@ -58,7 +58,7 @@ const CreateActivationForm = () => {
         const newValues: OrganizationWithReferents = {
           ...values,
           keyOrganizationFiscalCode: values.organizationFiscalCode,
-          insertedAt: null
+          insertedAt: new Date(Date.now()).toISOString()
         };
         setLoading(true);
         void createActivation(newValues);
