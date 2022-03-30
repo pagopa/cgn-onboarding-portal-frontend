@@ -1,13 +1,13 @@
 import { Field, FieldArray, FieldArrayRenderProps, Form, Formik } from "formik";
-import FormSection from "./FormSection";
-import InputField from "./FormField";
-import CustomErrorMessage from "./CustomErrorMessage";
 import { Button, Icon } from "design-react-kit";
+import React from "react";
+import { useHistory } from "react-router-dom";
 import PlusCircleIcon from "../../assets/icons/plus-circle.svg";
 import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
 import CenteredLoading from "../CenteredLoading";
-import React from "react";
-import { useHistory } from "react-router-dom";
+import FormSection from "./FormSection";
+import InputField from "./FormField";
+import CustomErrorMessage from "./CustomErrorMessage";
 
 type Props = {
   initialValues: any;
