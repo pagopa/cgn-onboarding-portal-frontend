@@ -2,7 +2,6 @@ import { format } from "date-fns";
 import React, { useState } from "react";
 import { Button, Icon } from "design-react-kit";
 import { useHistory } from "react-router-dom";
-import { constNull } from "fp-ts/lib/function";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
@@ -10,6 +9,7 @@ import ProfileItem from "../Profile/ProfileItem";
 import Api from "../../api/backoffice";
 import { Severity, useTooltip } from "../../context/tooltip";
 import CenteredLoading from "../CenteredLoading";
+import DeleteModal from "./DeleteModal";
 
 type Props = {
   operator: OrganizationWithReferents;
@@ -19,7 +19,10 @@ type Props = {
 const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { triggerTooltip } = useTooltip();
+
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   const deleteActivation = async (keyOrganizationFiscalCode: string) =>
     await tryCatch(
@@ -32,10 +35,10 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           setLoading(false);
           triggerTooltip({
             severity: Severity.DANGER,
-            text: "Cancellazione dell'operatore fallito"
+            text: "Rimozione dell'operatore fallita"
           });
         },
-        response => {
+        () => {
           setLoading(false);
           getActivations();
         }
@@ -71,7 +74,8 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
             <td className={`border-bottom-0`}>
               {operator.referents.map((referent, index) => (
                 <div className="d-flex flex-row mb-3" key={index}>
-                  <p className="m-0 mr-4">{referent}</p> {/* <Button */}
+                  <p className="m-0 mr-4">{referent}</p>
+                  {/* <Button */}
                   {/*  color="link" */}
                   {/*  onClick={constNull} */}
                   {/*  icon={true} */}
@@ -96,7 +100,7 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           color="danger"
           outline
           tag="button"
-          onClick={askDeleteOrganization}
+          onClick={toggleModal}
         >
           {isLoading ? <CenteredLoading /> : <span> Rimuovi </span>}
         </Button>
@@ -114,6 +118,11 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           <span>Modifica</span>
         </Button>
       </div>
+      <DeleteModal
+        isOpen={isModalOpen}
+        toggle={toggleModal}
+        onDelete={askDeleteOrganization}
+      />
     </section>
   );
 };
