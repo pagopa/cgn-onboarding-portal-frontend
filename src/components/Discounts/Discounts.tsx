@@ -13,10 +13,10 @@ import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { Discount } from "../../api/generated";
+import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
 import UnpublishModal from "./UnpublishModal";
-import TableHeader from "../Table/TableHeader";
 
 const chainAxios = (response: AxiosResponse) =>
   fromPredicate(

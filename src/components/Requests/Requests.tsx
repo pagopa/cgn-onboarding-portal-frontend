@@ -20,11 +20,11 @@ import { format } from "date-fns";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import { Agreements } from "../../api/generated_backoffice";
+import Pager from "../Table/Pager";
+import TableHeader from "../Table/TableHeader";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
-import Pager from "../Table/Pager";
-import TableHeader from "../Table/TableHeader";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const Requests = () => {

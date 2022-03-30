@@ -12,9 +12,10 @@ const DeleteModal = ({ isOpen, toggle, onDelete }: Props) => (
   <Modal isOpen={isOpen} toggle={toggle} size="md">
     <ModalHeader toggle={toggle}>Rimuovi operatore</ModalHeader>
     <ModalBody>
-      Sei sicuro di voler rimuovere questo operatore? In questo modo l'operatore
-      non potrà più accedere al portale operatori e se ha agevolazioni
-      pubblicate in questo momento non sarà più in grado di modificarle.
+      Sei sicuro di voler rimuovere questo operatore? In questo modo
+      l&lsquo;operatore non potrà più accedere al portale operatori e se ha
+      agevolazioni pubblicate in questo momento non sarà più in grado di
+      modificarle.
     </ModalBody>
     <ModalFooter className="d-flex flex-column">
       <Button

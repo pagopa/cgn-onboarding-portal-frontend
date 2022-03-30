@@ -18,11 +18,11 @@ import {
   Organizations,
   OrganizationWithReferents
 } from "../../api/generated_backoffice";
+import Pager from "../Table/Pager";
+import TableHeader from "../Table/TableHeader";
 import ActivationsFilter from "./ActivationsFilter";
 import { mockActivations } from "./mockActivations";
 import OperatorActivationDetail from "./OperatorActivationDetail";
-import Pager from "../Table/Pager";
-import TableHeader from "../Table/TableHeader";
 
 const PAGE_SIZE = 20;
 

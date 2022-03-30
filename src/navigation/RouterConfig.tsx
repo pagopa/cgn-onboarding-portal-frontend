@@ -15,6 +15,7 @@ import RejectedProfile from "../pages/RejectedProfile";
 import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
 import CreateActivation from "../pages/CreateActivation";
+import EditActivation from "../pages/EditActivation";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -30,7 +31,6 @@ import {
   ADMIN_PANEL_ACCESSI_EDIT,
   ADMIN_PANEL_ACCESSI_CREA
 } from "./routes";
-import EditActivation from "../pages/EditActivation";
 
 export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
   const { value: agreement, loading } = useSelector(

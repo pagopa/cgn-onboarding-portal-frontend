@@ -10,10 +10,10 @@ import {
   ApprovedAgreements,
   ApprovedAgreement
 } from "../../api/generated_backoffice";
-import ConventionFilter from "./ConventionFilter";
-import ConventionDetails from "./ConventionDetails";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import ConventionFilter from "./ConventionFilter";
+import ConventionDetails from "./ConventionDetails";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorConvention = () => {

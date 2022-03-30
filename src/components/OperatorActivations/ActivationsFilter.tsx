@@ -2,8 +2,8 @@ import React from "react";
 import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
-import { GetOrgsParams } from "./OperatorActivations";
 import { ADMIN_PANEL_ACCESSI_CREA } from "../../navigation/routes";
+import { GetOrgsParams } from "./OperatorActivations";
 
 type FilterFormValues = {
   searchQuery: string | undefined;
