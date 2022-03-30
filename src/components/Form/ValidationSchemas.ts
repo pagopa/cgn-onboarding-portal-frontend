@@ -276,3 +276,31 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
     }),
   recaptchaToken: Yup.string().required(REQUIRED_FIELD)
 });
+
+/**
+ * const emptyInitialValues: OrganizationWithReferents = {
+  keyOrganizationFiscalCode: "",
+  organizationFiscalCode: "",
+  organizationName: "",
+  insertedAt: "",
+  pec: "",
+  referents: [""]
+};
+ */
+export const activationValidationSchema = Yup.object().shape({
+  keyOrganizationFiscalCode: Yup.string().required(REQUIRED_FIELD),
+  organizationFiscalCode: Yup.string().required(REQUIRED_FIELD),
+  organizationName: Yup.string().required(REQUIRED_FIELD),
+  pec: Yup.string()
+    .email("Inserire un indirizzo valido")
+    .required(REQUIRED_FIELD),
+  referents: Yup.array()
+    .of(
+      Yup.string()
+        .min(4, "Deve essere al minimo di 4 caratteri")
+        .max(20, "Deve essere al massimo di 20 caratteri")
+        .required(REQUIRED_FIELD)
+    )
+    .required(REQUIRED_FIELD),
+  insertedAt: Yup.string()
+});
