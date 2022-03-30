@@ -52,11 +52,13 @@ const CreateActivationForm = () => {
 
   return (
     <ActivationForm
+      enableReinitialize={false}
       initialValues={emptyInitialValues}
       onSubmit={values => {
         const newValues: OrganizationWithReferents = {
           ...values,
-          keyOrganizationFiscalCode: values.organizationFiscalCode
+          keyOrganizationFiscalCode: values.organizationFiscalCode,
+          insertedAt: undefined
         };
         setLoading(true);
         void createActivation(newValues);

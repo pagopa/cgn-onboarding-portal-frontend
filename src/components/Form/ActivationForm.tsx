@@ -14,12 +14,14 @@ type Props = {
   initialValues: any;
   onSubmit: (values: any) => void;
   isSubmitting: boolean;
+  enableReinitialize: boolean;
 };
 
 const ActivationForm = (props: Props) => {
   const history = useHistory();
   return (
     <Formik
+      enableReinitialize={props.enableReinitialize}
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       validationSchema={activationValidationSchema}

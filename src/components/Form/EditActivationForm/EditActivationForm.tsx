@@ -89,6 +89,7 @@ const CreateActivationForm = () => {
 
   return (
     <ActivationForm
+      enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={values => {
         const newValues: OrganizationWithReferents = {
