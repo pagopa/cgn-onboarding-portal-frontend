@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useTable, usePagination, Row, useSortBy } from "react-table";
-import cx from "classnames";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Button, Icon } from "design-react-kit";
@@ -13,6 +12,7 @@ import {
 } from "../../api/generated_backoffice";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
+import Pager from "../Table/Pager";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorConvention = () => {
@@ -168,49 +168,18 @@ const OperatorConvention = () => {
         <CenteredLoading />
       ) : (
         <>
-          <div className="mb-2 mt-4 d-flex justify-content-between">
-            {!!conventions?.total && (
-              <strong>
-                {startRowIndex}-{endRowIndex} di {conventions?.total}
-              </strong>
-            )}
-            <div className="d-flex align-items-center">
-              {canPreviousPage && (
-                <Icon
-                  icon="it-arrow-left"
-                  size="sm"
-                  color="primary"
-                  className="cursor-pointer mx-1"
-                  onClick={() => previousPage()}
-                />
-              )}
-              {pageArray.map(page => (
-                <div
-                  className={cx(
-                    "font-weight-bold mx-1",
-                    page !== pageIndex ? "cursor-pointer primary-color" : false
-                  )}
-                  key={page}
-                  onClick={() => {
-                    if (page !== pageIndex) {
-                      gotoPage(page);
-                    }
-                  }}
-                >
-                  {page + 1}
-                </div>
-              ))}
-              {canNextPage && (
-                <Icon
-                  icon="it-arrow-right"
-                  size="sm"
-                  color="primary"
-                  className="cursor-pointer mx-1"
-                  onClick={() => nextPage()}
-                />
-              )}
-            </div>
-          </div>
+          <Pager
+            canPreviousPage={canPreviousPage}
+            canNextPage={canNextPage}
+            startRowIndex={startRowIndex}
+            endRowIndex={endRowIndex}
+            pageIndex={pageIndex}
+            onPreviousPage={previousPage}
+            onNextPage={nextPage}
+            onGotoPage={gotoPage}
+            pageArray={pageArray}
+            total={conventions?.total}
+          />
           <table
             {...getTableProps()}
             style={{ width: "100%" }}

@@ -10,11 +10,9 @@ import { RootState } from "../store/store";
 import {
   ADMIN_PANEL_RICHIESTE,
   ADMIN_PANEL_CONVENZIONATI,
-  ADMIN_PANEL_ACCESSI,
-  ADMIN_PANEL_ACCESSI_CREA
+  ADMIN_PANEL_ACCESSI
 } from "../navigation/routes";
 import OperatorActivations from "../components/OperatorActivations/OperatorActivations";
-import CreateActivationForm from "../components/Form/CreateActivationForm/CreateActivationForm";
 
 const AdminPanel = () => {
   const { data } = useSelector((state: RootState) => state.user);
@@ -34,8 +32,6 @@ const AdminPanel = () => {
         return <OperatorConvention />;
       case ADMIN_PANEL_ACCESSI:
         return <OperatorActivations />;
-      case ADMIN_PANEL_ACCESSI_CREA:
-        return <CreateActivationForm />;
       default:
         return <div>error</div>;
     }

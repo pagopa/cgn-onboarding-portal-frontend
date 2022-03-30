@@ -15,7 +15,6 @@ import {
 } from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import cx from "classnames";
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import Api from "../../api/backoffice";
@@ -24,6 +23,7 @@ import { Agreements } from "../../api/generated_backoffice";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
+import Pager from "../Table/Pager";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const Requests = () => {
@@ -188,49 +188,18 @@ const Requests = () => {
         <CenteredLoading />
       ) : (
         <>
-          <div className="mb-2 mt-4 d-flex justify-content-between">
-            {!!agreements?.total && (
-              <strong>
-                {startRowIndex}-{endRowIndex} di {agreements?.total}
-              </strong>
-            )}
-            <div className="d-flex align-items-center">
-              {canPreviousPage && (
-                <Icon
-                  icon="it-arrow-left"
-                  size="sm"
-                  color="primary"
-                  className="cursor-pointer mx-1"
-                  onClick={() => previousPage()}
-                />
-              )}
-              {pageArray.map(page => (
-                <div
-                  className={cx(
-                    "font-weight-bold mx-1",
-                    page !== pageIndex ? "cursor-pointer primary-color" : false
-                  )}
-                  key={page}
-                  onClick={() => {
-                    if (page !== pageIndex) {
-                      gotoPage(page);
-                    }
-                  }}
-                >
-                  {page + 1}
-                </div>
-              ))}
-              {canNextPage && (
-                <Icon
-                  icon="it-arrow-right"
-                  size="sm"
-                  color="primary"
-                  className="cursor-pointer mx-1"
-                  onClick={() => nextPage()}
-                />
-              )}
-            </div>
-          </div>
+          <Pager
+            canPreviousPage={canPreviousPage}
+            canNextPage={canNextPage}
+            startRowIndex={startRowIndex}
+            endRowIndex={endRowIndex}
+            pageIndex={pageIndex}
+            onPreviousPage={previousPage}
+            onNextPage={nextPage}
+            onGotoPage={gotoPage}
+            pageArray={pageArray}
+            total={agreements?.total}
+          />
           <table
             {...getTableProps()}
             style={{ width: "100%" }}
