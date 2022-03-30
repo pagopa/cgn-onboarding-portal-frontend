@@ -13,6 +13,7 @@ import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { Discount } from "../../api/generated";
+import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
 import UnpublishModal from "./UnpublishModal";
@@ -92,7 +93,7 @@ const Discounts = () => {
       .chain(chainAxios)
       .map(response => response.data)
       .fold(
-        e =>
+        _ =>
           throwErrorTooltip(
             "Errore durante la richiesta di cambio di stato dell'agevolazione"
           ),
@@ -238,58 +239,7 @@ const Discounts = () => {
         style={{ width: "100%" }}
         className="mt-2 bg-white"
       >
-        <thead>
-          {headerGroups.map(headerGroup => (
-            // eslint-disable-next-line react/jsx-key
-            <tr
-              {...headerGroup.getHeaderGroupProps()}
-              style={{
-                backgroundColor: "#F8F9F9",
-                borderBottom: "1px solid #5A6772"
-              }}
-            >
-              {headerGroup.headers.map(column => (
-                // eslint-disable-next-line react/jsx-key
-                <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className="px-6 py-2 text-sm font-weight-bold text-gray text-uppercase"
-                >
-                  <span className="d-flex flex-row align-items-center justify-items-between">
-                    {column.render("Header")}
-                    {
-                      <span>
-                        {column.canSort && (
-                          <>
-                            {column.isSorted ? (
-                              <>
-                                {column.isSortedDesc ? (
-                                  <Icon
-                                    icon="it-arrow-up-triangle"
-                                    style={{ color: "#5C6F82" }}
-                                  />
-                                ) : (
-                                  <Icon
-                                    icon="it-arrow-down-triangle"
-                                    style={{ color: "#5C6F82" }}
-                                  />
-                                )}
-                              </>
-                            ) : (
-                              <Icon
-                                icon="it-arrow-up-triangle"
-                                style={{ color: "#5C6F82" }}
-                              />
-                            )}
-                          </>
-                        )}
-                      </span>
-                    }
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+        <TableHeader headerGroups={headerGroups} />
         <tbody {...getTableBodyProps()}>
           {rows.map(row => {
             prepareRow(row);

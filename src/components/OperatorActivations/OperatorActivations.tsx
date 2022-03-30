@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useTable, usePagination, Row, useSortBy } from "react-table";
+import {
+  useTable,
+  usePagination,
+  Row,
+  useSortBy,
+  Column,
+  UseExpandedRowProps,
+  useExpanded
+} from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Button, Icon } from "design-react-kit";
@@ -7,36 +15,40 @@ import { format } from "date-fns";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
-  ApprovedAgreements,
-  ApprovedAgreement
+  Organizations,
+  OrganizationWithReferents
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
-import ConventionFilter from "./ConventionFilter";
-import ConventionDetails from "./ConventionDetails";
+import ActivationsFilter from "./ActivationsFilter";
+import { mockActivations } from "./mockActivations";
+import OperatorActivationDetail from "./OperatorActivationDetail";
 
+const PAGE_SIZE = 20;
+
+type OrderType = "fiscalCode" | "name" | "pec" | "insertedAt";
+
+export type GetOrgsParams = {
+  searchQuery?: string;
+  page?: number;
+  sortColumn?: OrderType;
+  sortDirection?: "ASC" | "DESC";
+};
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const OperatorConvention = () => {
-  const pageSize = 20;
-  const [conventions, setConventions] = useState<ApprovedAgreements>();
+const OperatorActivations = () => {
+  const [operators, setOperators] = useState<Organizations>();
   const [loading, setLoading] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [selectedConvention, setSelectedConvention] = useState<
-    ApprovedAgreement | undefined
-  >();
   const refForm = useRef<any>(null);
 
-  const getConventionsApi = async (params?: any) =>
+  const getActivationsApi = async (params?: GetOrgsParams) =>
     await tryCatch(
       () =>
-        Api.Agreement.getApprovedAgreements(
-          params.profileFullName,
-          params.lastUpdateDateFrom,
-          params.lastUpdateDateTo,
-          pageSize,
-          params.page,
-          params.sortColumn,
-          params.sortDirection
+        Api.Activations.getOrganizations(
+          params?.searchQuery,
+          params?.page,
+          PAGE_SIZE,
+          params?.sortColumn,
+          params?.sortDirection
         ),
       toError
     )
@@ -45,43 +57,74 @@ const OperatorConvention = () => {
         () => setLoading(false),
         response => {
           setLoading(false);
-          setConventions(response);
+          setOperators(response);
         }
       )
       .run();
 
-  const getConventions = (params?: any) => {
+  const getActivations = (params?: GetOrgsParams) => {
     setLoading(true);
-    void getConventionsApi(params);
+    void getActivationsApi(params);
   };
 
-  const data = useMemo(() => conventions?.items || [], [conventions]);
-  const columns = useMemo(
+  const columns: Array<Column<OrganizationWithReferents>> = useMemo(
     () => [
       {
-        Header: "Operatore",
-        accessor: "fullName"
+        Header: "RAGIONE SOCIALE",
+        accessor: "organizationName"
       },
       {
-        Header: "Data Convenzionamento",
-        accessor: "agreementStartDate",
+        Header: "CF/P.IVA",
+        accessor: "organizationFiscalCode"
+      },
+      {
+        Header: "UTENTI ABILITATI",
+        accessor: "referents",
+        Cell: ({ row }: { row: Row }) => {
+          if (Array.isArray(row.values.referents)) {
+            return row.values.referents.reduce(
+              (acc: string, curr: string, i: number) => {
+                if (i > 1) {
+                  return `${acc} +1`;
+                }
+                if (i > 2) {
+                  return acc;
+                }
+                return `${curr}, ${acc}`;
+              },
+              ""
+            );
+          }
+          return row.values.referents;
+        }
+      },
+      {
+        Header: "AGGIUNTO IL",
+        accessor: "insertedAt",
         Cell: ({ row }: { row: Row }) =>
-          format(new Date(row.values.agreementStartDate), "dd/MM/yyyy")
+          format(new Date(row.values.insertedAt), "dd/MM/yyyy")
       },
       {
-        Header: "Data Ultima Modifica",
-        accessor: "agreementLastUpdateDate",
-        Cell: ({ row }: { row: Row }) =>
-          format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
-      },
-      {
-        Header: "Agevolazioni",
-        accessor: "publishedDiscounts"
+        Header: () => null,
+        id: "expander",
+        Cell: ({ row }: { row: UseExpandedRowProps<Row> }) => (
+          <span {...row.getToggleRowExpandedProps()}>
+            {row.isExpanded ? (
+              <Icon icon="it-expand" color="primary" />
+            ) : (
+              <Icon icon="it-collapse" color="primary" />
+            )}
+          </span>
+        )
       }
     ],
-    []
+    [operators]
   );
 
+  const data: Array<OrganizationWithReferents> = useMemo(
+    () => (operators?.items ? [...operators?.items] : []),
+    [operators]
+  );
   const {
     getTableProps,
     getTableBodyProps,
@@ -94,33 +137,34 @@ const OperatorConvention = () => {
     gotoPage,
     nextPage,
     previousPage,
-    state: { pageIndex, sortBy }
-  } = useTable<any>(
+    state: { pageIndex, sortBy },
+    visibleColumns
+  } = useTable<OrganizationWithReferents>(
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize },
+      initialState: { pageIndex: 0, pageSize: PAGE_SIZE },
       manualPagination: true,
       manualSortBy: true,
       disableMultiSort: true,
-      pageCount: conventions?.total
-        ? Math.ceil(conventions?.total / pageSize)
+      pageCount: mockActivations.count
+        ? Math.ceil(mockActivations.count / PAGE_SIZE)
         : 0
     },
     useSortBy,
+    useExpanded,
     usePagination
   );
 
-  const getSortColumn = (id: string) => {
+  const getSortColumn = (id: string): OrderType => {
     switch (id) {
-      case "fullName":
-        return "Operator";
-      case "agreementStartDate":
-        return "AgreementDate";
-      case "agreementLastUpdateDate":
-        return "LastModifyDate";
-      case "publishedDiscounts":
-        return "PublishedDiscounts";
+      case "organizationFiscalCode":
+        return "fiscalCode";
+      case "insertedAt":
+        return "insertedAt";
+      case "organizationName":
+      default:
+        return "name";
     }
   };
 
@@ -140,31 +184,19 @@ const OperatorConvention = () => {
     refForm.current?.submitForm();
   }, [pageIndex, sortBy]);
 
-  if (showDetails && selectedConvention) {
-    return (
-      <ConventionDetails
-        agreement={selectedConvention}
-        onClose={() => {
-          setShowDetails(false);
-          setSelectedConvention(undefined);
-        }}
-      />
-    );
-  }
-
-  const startRowIndex: number = pageIndex * pageSize + 1;
+  const startRowIndex: number = pageIndex * PAGE_SIZE + 1;
   // eslint-disable-next-line functional/no-let
-  let endRowIndex: number = startRowIndex - 1 + pageSize;
+  let endRowIndex: number = startRowIndex - 1 + PAGE_SIZE;
 
-  if (endRowIndex > (conventions?.total || 0)) {
-    endRowIndex = conventions?.total || 0;
+  if (operators?.count && endRowIndex > operators?.count) {
+    endRowIndex = operators.count;
   }
 
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <ConventionFilter refForm={refForm} getConventions={getConventions} />
+      <ActivationsFilter refForm={refForm} getActivations={getActivations} />
       {loading ? (
         <CenteredLoading />
       ) : (
@@ -179,7 +211,7 @@ const OperatorConvention = () => {
             onNextPage={nextPage}
             onGotoPage={gotoPage}
             pageArray={pageArray}
-            total={conventions?.total}
+            total={operators?.count}
           />
           <table
             {...getTableProps()}
@@ -194,10 +226,7 @@ const OperatorConvention = () => {
                   <React.Fragment key={row.getRowProps().key}>
                     <tr
                       className="cursor-pointer"
-                      onClick={() => {
-                        setShowDetails(true);
-                        setSelectedConvention(row.original);
-                      }}
+                      onClick={() => row.toggleRowExpanded()}
                     >
                       {row.cells.map((cell, i) => (
                         <td
@@ -209,12 +238,22 @@ const OperatorConvention = () => {
                         </td>
                       ))}
                     </tr>
+                    {row.isExpanded && (
+                      <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
+                        <td colSpan={visibleColumns.length}>
+                          <OperatorActivationDetail
+                            operator={row.original}
+                            getActivations={getActivations}
+                          />
+                        </td>
+                      </tr>
+                    )}
                   </React.Fragment>
                 );
               })}
             </tbody>
           </table>
-          {!conventions?.items.length &&
+          {!operators?.items?.length &&
             (refForm.current?.dirty ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
@@ -225,7 +264,7 @@ const OperatorConvention = () => {
                   className="mt-3"
                   onClick={() => {
                     refForm.current?.resetForm();
-                    getConventions({});
+                    getActivations({});
                   }}
                 >
                   Reimposta Tutto
@@ -233,7 +272,7 @@ const OperatorConvention = () => {
               </div>
             ) : (
               <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessuna convenzione trovata</p>
+                <p>Nessun operatore trovato</p>
               </div>
             ))}
         </>
@@ -242,4 +281,4 @@ const OperatorConvention = () => {
   );
 };
 
-export default OperatorConvention;
+export default OperatorActivations;
