@@ -58,7 +58,7 @@ const CreateActivationForm = () => {
         const newValues: OrganizationWithReferents = {
           ...values,
           keyOrganizationFiscalCode: values.organizationFiscalCode,
-          insertedAt: undefined
+          insertedAt: null
         };
         setLoading(true);
         void createActivation(newValues);
