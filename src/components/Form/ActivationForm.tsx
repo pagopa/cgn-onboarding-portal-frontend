@@ -8,17 +8,24 @@ import CenteredLoading from "../CenteredLoading";
 import FormSection from "./FormSection";
 import InputField from "./FormField";
 import CustomErrorMessage from "./CustomErrorMessage";
+import { activationValidationSchema } from "./ValidationSchemas";
 
 type Props = {
   initialValues: any;
   onSubmit: (values: any) => void;
   isSubmitting: boolean;
+  enableReinitialize: boolean;
 };
 
 const ActivationForm = (props: Props) => {
   const history = useHistory();
   return (
-    <Formik initialValues={props.initialValues} onSubmit={props.onSubmit}>
+    <Formik
+      enableReinitialize={props.enableReinitialize}
+      initialValues={props.initialValues}
+      onSubmit={props.onSubmit}
+      validationSchema={activationValidationSchema}
+    >
       {({ values }) => (
         <Form autoComplete="off">
           <FormSection
