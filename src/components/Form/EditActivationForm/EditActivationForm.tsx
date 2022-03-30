@@ -150,7 +150,7 @@ const CreateActivationForm = () => {
               name="referents"
               render={({ push, remove }: FieldArrayRenderProps) => (
                 <>
-                  {values.referents.map((ref, i) => (
+                  {values.referents.map((_: string, i: number) => (
                     <div key={i}>
                       <InputField
                         htmlFor={`referents[${i}]`}
