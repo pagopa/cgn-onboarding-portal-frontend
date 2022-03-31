@@ -12,7 +12,7 @@ const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
 
-const URL_REGEXP = /^([a-z]*?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(:\d+)?(\/[-a-z\\d%_.~+]*)*(\?[;&a-z\\d%_.~+=-]*)?(#[-a-z\\d_]*)?/;
+const URL_REGEXP = /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/g;
 
 export const ProfileDataValidationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
