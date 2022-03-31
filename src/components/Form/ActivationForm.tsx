@@ -94,7 +94,6 @@ const ActivationForm = (props: Props) => {
                           {i !== 0 && (
                             <Button
                               className="mr-4"
-                              sm
                               color="link"
                               tag="button"
                               onClick={() => remove(i)}
