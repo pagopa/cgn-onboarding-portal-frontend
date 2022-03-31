@@ -12,6 +12,8 @@ const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
 
+const URL_REGEXP = /^([a-z]*?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(:\d+)?(\/[-a-z\\d%_.~+]*)*(\?[;&a-z\\d%_.~+=-]*)?(#[-a-z\\d_]*)?/;
+
 export const ProfileDataValidationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
   name: Yup.string().when(["hasDifferentName"], {
@@ -63,10 +65,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
       .when("channelType", {
         is: (val: string) => val === "OnlineChannel" || val === "BothChannels",
         then: Yup.string()
-          .matches(
-            /^([a-z]*?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(:\d+)?(\/[-a-z\\d%_.~+]*)*(\?[;&a-z\\d%_.~+=-]*)?(#[-a-z\\d_]*)?/,
-            INCORRECT_WEBSITE_URL
-          )
+          .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
           .required(REQUIRED_FIELD)
       }),
     discountCodeType: Yup.string().when("channelType", {
@@ -115,10 +114,7 @@ export const discountDataValidationSchema = (
       .max(100)
       .required(REQUIRED_FIELD),
     description: Yup.string().max(250),
-    discountUrl: Yup.string().matches(
-      /^([a-z]*?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(:\d+)?(\/[-a-z\\d%_.~+]*)*(\?[;&a-z\\d%_.~+=-]*)?(#[-a-z\\d_]*)?/,
-      INCORRECT_WEBSITE_URL
-    ),
+    discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
     startDate: Yup.string().required(REQUIRED_FIELD),
     endDate: Yup.string().required(REQUIRED_FIELD),
     discount: Yup.number()
@@ -171,10 +167,7 @@ export const discountsListDataValidationSchema = (
           .max(100)
           .required(REQUIRED_FIELD),
         description: Yup.string().max(250),
-        discountUrl: Yup.string().matches(
-          /^([a-z]*?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(:\d+)?(\/[-a-z\\d%_.~+]*)*(\?[;&a-z\\d%_.~+=-]*)?(#[-a-z\\d_]*)?/,
-          INCORRECT_WEBSITE_URL
-        ),
+        discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
         startDate: Yup.string().required(REQUIRED_FIELD),
         endDate: Yup.string().required(REQUIRED_FIELD),
         productCategories: Yup.array()
