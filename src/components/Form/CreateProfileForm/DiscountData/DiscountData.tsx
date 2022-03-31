@@ -40,6 +40,7 @@ const emptyInitialValues = {
       startDate: "",
       endDate: "",
       discount: "",
+      discountUrl: "",
       productCategories: [],
       condition: "",
       staticCode: "",
@@ -307,7 +308,7 @@ const DiscountData = ({
                           isTitleHeading
                           isVisible
                         >
-                          <DiscountUrl />
+                          <DiscountUrl index={index} />
                         </FormField>
                       )}
                       {checkStaticCode && (
