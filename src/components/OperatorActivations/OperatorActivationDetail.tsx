@@ -26,7 +26,8 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
 
   const deleteActivation = async (keyOrganizationFiscalCode: string) =>
     await tryCatch(
-      () => Api.Activations.deleteOrganization(keyOrganizationFiscalCode),
+      () =>
+        Api.AttributeAuthority.deleteOrganization(keyOrganizationFiscalCode),
       toError
     )
       .map(response => response.data)
@@ -63,10 +64,12 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
             value={operator.keyOrganizationFiscalCode}
           />
           <ProfileItem label="Indirizzo PEC" value={operator.pec} />
-          <ProfileItem
-            label="Aggiunto il"
-            value={format(new Date(operator.insertedAt), "dd/MM/yyyy")}
-          />
+          {operator.insertedAt && (
+            <ProfileItem
+              label="Aggiunto il"
+              value={format(new Date(operator.insertedAt), "dd/MM/yyyy")}
+            />
+          )}
           <tr>
             <td className={`px-0 text-gray border-bottom-0`}>
               Utenti Abilitati

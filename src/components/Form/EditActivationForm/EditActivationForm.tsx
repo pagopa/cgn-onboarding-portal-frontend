@@ -38,7 +38,7 @@ const CreateActivationForm = () => {
 
   const createActivation = async (organization: OrganizationWithReferents) =>
     await tryCatch(
-      () => Api.Activations.upsertOrganization(organization),
+      () => Api.AttributeAuthority.upsertOrganization(organization),
       toError
     )
       .chain(chainAxios)
@@ -59,7 +59,7 @@ const CreateActivationForm = () => {
 
   const getActivation = async () =>
     await tryCatch(
-      () => Api.Activations.getOrganization(operatorFiscalCode),
+      () => Api.AttributeAuthority.getOrganization(operatorFiscalCode),
       toError
     )
       .chain(chainAxios)

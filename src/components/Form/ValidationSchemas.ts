@@ -9,8 +9,10 @@ const ONLY_STRING = "Solo lettere";
 const DISCOUNT_RANGE =
   "Lo sconto deve essere un numero intero compreso tra 1 e 100";
 const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
-const INCORRECT_WEBSITE_URL = "L’indirizzo inserito non è corretto";
+const INCORRECT_WEBSITE_URL =
+  "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
 
+const URL_REGEXP = /^(([a-z]*):)?\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)|\/|\?)*)?$/;
 export const ProfileDataValidationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
   name: Yup.string().when(["hasDifferentName"], {
@@ -62,10 +64,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
       .when("channelType", {
         is: (val: string) => val === "OnlineChannel" || val === "BothChannels",
         then: Yup.string()
-          .matches(
-            /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-            INCORRECT_WEBSITE_URL
-          )
+          .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
           .required(REQUIRED_FIELD)
       }),
     discountCodeType: Yup.string().when("channelType", {
@@ -114,7 +113,7 @@ export const discountDataValidationSchema = (
       .max(100)
       .required(REQUIRED_FIELD),
     description: Yup.string().max(250),
-    discountUrl: Yup.string(),
+    discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
     startDate: Yup.string().required(REQUIRED_FIELD),
     endDate: Yup.string().required(REQUIRED_FIELD),
     discount: Yup.number()
@@ -167,7 +166,7 @@ export const discountsListDataValidationSchema = (
           .max(100)
           .required(REQUIRED_FIELD),
         description: Yup.string().max(250),
-        discountUrl: Yup.string().url(),
+        discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
         startDate: Yup.string().required(REQUIRED_FIELD),
         endDate: Yup.string().required(REQUIRED_FIELD),
         productCategories: Yup.array()
@@ -269,7 +268,7 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
   confirmEmailAddress: Yup.string()
     .email(INCORRECT_EMAIL_ADDRESS)
     .when("emailAddress", {
-      is: (email: any) => (email && email.length > 0 ? true : false),
+      is: (email: string) => email.length > 0,
       then: Yup.string()
         .oneOf([Yup.ref("emailAddress")], INCORRECT_CONFIRM_EMAIL_ADDRESS)
         .required(REQUIRED_FIELD)
@@ -277,22 +276,12 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
   recaptchaToken: Yup.string().required(REQUIRED_FIELD)
 });
 
-/**
- * const emptyInitialValues: OrganizationWithReferents = {
-  keyOrganizationFiscalCode: "",
-  organizationFiscalCode: "",
-  organizationName: "",
-  insertedAt: "",
-  pec: "",
-  referents: [""]
-};
- */
 export const activationValidationSchema = Yup.object().shape({
   keyOrganizationFiscalCode: Yup.string(),
   organizationFiscalCode: Yup.string().required(REQUIRED_FIELD),
   organizationName: Yup.string().required(REQUIRED_FIELD),
   pec: Yup.string()
-    .email("Inserire un indirizzo valido")
+    .email(INCORRECT_EMAIL_ADDRESS)
     .required(REQUIRED_FIELD),
   referents: Yup.array()
     .of(

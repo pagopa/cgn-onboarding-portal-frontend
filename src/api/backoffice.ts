@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { getCookie, logout } from "../utils/cookie";
 import {
-  ActivationsApi,
+  AttributeauthorityApi,
   AgreementApi,
   DiscountApi,
   DocumentApi
@@ -43,7 +43,7 @@ export default {
     process.env.BASE_BACKOFFICE_PATH,
     axiosInstance
   ),
-  Activations: new ActivationsApi(
+  AttributeAuthority: new AttributeauthorityApi(
     undefined,
     process.env.BASE_BACKOFFICE_PATH,
     axiosInstance

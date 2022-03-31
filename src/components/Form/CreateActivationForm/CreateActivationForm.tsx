@@ -13,7 +13,6 @@ const emptyInitialValues: OrganizationWithReferents = {
   keyOrganizationFiscalCode: "",
   organizationFiscalCode: "",
   organizationName: "",
-  insertedAt: "",
   pec: "",
   referents: [""]
 };
@@ -33,7 +32,7 @@ const CreateActivationForm = () => {
 
   const createActivation = async (organization: OrganizationWithReferents) =>
     await tryCatch(
-      () => Api.Activations.upsertOrganization(organization),
+      () => Api.AttributeAuthority.upsertOrganization(organization),
       toError
     )
       .chain(chainAxios)
@@ -57,8 +56,7 @@ const CreateActivationForm = () => {
       onSubmit={values => {
         const newValues: OrganizationWithReferents = {
           ...values,
-          keyOrganizationFiscalCode: values.organizationFiscalCode,
-          insertedAt: new Date(Date.now()).toISOString()
+          keyOrganizationFiscalCode: values.organizationFiscalCode
         };
         setLoading(true);
         void createActivation(newValues);

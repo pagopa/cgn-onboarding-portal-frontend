@@ -43,7 +43,7 @@ const OperatorActivations = () => {
   const getActivationsApi = async (params?: GetOrgsParams) =>
     await tryCatch(
       () =>
-        Api.Activations.getOrganizations(
+        Api.AttributeAuthority.getOrganizations(
           params?.searchQuery,
           params?.page,
           PAGE_SIZE,
