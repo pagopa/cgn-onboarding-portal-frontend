@@ -21,7 +21,6 @@ import {
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import ActivationsFilter from "./ActivationsFilter";
-import { mockActivations } from "./mockActivations";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
 const PAGE_SIZE = 20;
@@ -147,9 +146,7 @@ const OperatorActivations = () => {
       manualPagination: true,
       manualSortBy: true,
       disableMultiSort: true,
-      pageCount: mockActivations.count
-        ? Math.ceil(mockActivations.count / PAGE_SIZE)
-        : 0
+      pageCount: operators?.count ? Math.ceil(operators?.count / PAGE_SIZE) : 0
     },
     useSortBy,
     useExpanded,
