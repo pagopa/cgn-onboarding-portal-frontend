@@ -1,5 +1,6 @@
 import { fromNullable } from "fp-ts/lib/Option";
 import { ProductCategory } from "../api/generated";
+import { OrganizationStatus } from "../api/generated_backoffice";
 
 type CategoryElement = {
   name: string;
@@ -51,6 +52,16 @@ export const categoriesMap: Record<ProductCategory, CategoryElement> = {
     description: "(Concorsi, offerte di lavoro)"
   }
 };
+
+const organizationStatusMap: Record<OrganizationStatus, string> = {
+  [OrganizationStatus.Draft]: "In Bozza",
+  [OrganizationStatus.Enabled]: "Abilitato",
+  [OrganizationStatus.Active]: "Convenzionato",
+  [OrganizationStatus.Pending]: "Da valutare"
+};
+
+export const makeOrganizationStatusReadable = (status: OrganizationStatus) =>
+  fromNullable(organizationStatusMap[status]).fold("", s => s);
 
 export const makeProductCategoriesString = (
   productCategories: Array<ProductCategory>
