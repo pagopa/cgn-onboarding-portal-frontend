@@ -80,6 +80,7 @@ const OperatorActivations = () => {
       },
       {
         Header: "UTENTI ABILITATI",
+        disableSortBy: true,
         accessor: "referents",
         Cell: ({ row }: { row: Row }) => {
           if (Array.isArray(row.values.referents)) {
@@ -113,6 +114,7 @@ const OperatorActivations = () => {
       {
         Header: "STATO",
         accessor: "status",
+        disableSortBy: true,
         Cell: ({ row }: { row: Row }) => (
           <Badge
             className="font-weight-semibold"
