@@ -10,16 +10,18 @@ import {
 } from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { Button, Icon } from "design-react-kit";
+import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
   Organizations,
-  OrganizationWithReferents
+  OrganizationStatus,
+  OrganizationWithReferentsAndStatus
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import { makeOrganizationStatusReadable } from "../../utils/strings";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
@@ -66,7 +68,7 @@ const OperatorActivations = () => {
     void getActivationsApi(params);
   };
 
-  const columns: Array<Column<OrganizationWithReferents>> = useMemo(
+  const columns: Array<Column<OrganizationWithReferentsAndStatus>> = useMemo(
     () => [
       {
         Header: "RAGIONE SOCIALE",
@@ -78,30 +80,53 @@ const OperatorActivations = () => {
       },
       {
         Header: "UTENTI ABILITATI",
+        disableSortBy: true,
         accessor: "referents",
         Cell: ({ row }: { row: Row }) => {
           if (Array.isArray(row.values.referents)) {
-            return row.values.referents.reduce(
-              (acc: string, curr: string, i: number) => {
-                if (i > 1) {
-                  return `${acc} +1`;
-                }
-                if (i > 2) {
-                  return acc;
-                }
-                return `${curr}, ${acc}`;
-              },
-              ""
+            return (
+              <span>
+                {row.values.referents.reduce(
+                  (acc: string, curr: string, i: number) => {
+                    if (i > 1) {
+                      return `${acc} +1`;
+                    }
+                    if (i > 2) {
+                      return acc;
+                    }
+                    return `${curr}, ${acc}`;
+                  },
+                  ""
+                )}
+              </span>
             );
           }
-          return row.values.referents;
+          return <span>row.values.referents</span>;
         }
       },
       {
         Header: "AGGIUNTO IL",
         accessor: "insertedAt",
-        Cell: ({ row }: { row: Row }) =>
-          format(new Date(row.values.insertedAt), "dd/MM/yyyy")
+        Cell: ({ row }: { row: Row }) => (
+          <span>{format(new Date(row.values.insertedAt), "dd/MM/yyyy")}</span>
+        )
+      },
+      {
+        Header: "STATO",
+        accessor: "status",
+        disableSortBy: true,
+        Cell: ({ row }: { row: Row }) => (
+          <Badge
+            className="font-weight-semibold"
+            color="outline-primary"
+            pill
+            tag="span"
+          >
+            {makeOrganizationStatusReadable(
+              row.values.status as OrganizationStatus
+            )}
+          </Badge>
+        )
       },
       {
         Header: () => null,
@@ -120,7 +145,7 @@ const OperatorActivations = () => {
     [operators]
   );
 
-  const data: Array<OrganizationWithReferents> = useMemo(
+  const data: Array<OrganizationWithReferentsAndStatus> = useMemo(
     () => (operators?.items ? [...operators?.items] : []),
     [operators]
   );
@@ -138,7 +163,7 @@ const OperatorActivations = () => {
     previousPage,
     state: { pageIndex, sortBy },
     visibleColumns
-  } = useTable<OrganizationWithReferents>(
+  } = useTable<OrganizationWithReferentsAndStatus>(
     {
       columns,
       data,

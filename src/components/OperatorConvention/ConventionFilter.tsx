@@ -1,5 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Formik, Field } from "formik";
+import { Button } from "design-react-kit";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { toError } from "fp-ts/lib/Either";
+import { saveAs } from "file-saver";
+import Api from "../../api/backoffice";
+import CenteredLoading from "../CenteredLoading";
 import DateModal from "./DateModal";
 
 interface FilterFormValues {
@@ -16,6 +22,7 @@ const ConventionFilter = ({
   refForm: any;
   getConventions: (params: any) => void;
 }) => {
+  const [downloading, setDownolading] = useState(false);
   // eslint-disable-next-line functional/no-let
   let timeout: any = null;
 
@@ -24,6 +31,39 @@ const ConventionFilter = ({
     lastUpdateDateFrom: undefined,
     lastUpdateDateTo: undefined,
     page: 0
+  };
+
+  const getExport = async () => {
+    setDownolading(true);
+    await tryCatch(
+      () =>
+        Api.Exports.exportAgreements({
+          headers: {
+            "Content-Type": "text/csv"
+          },
+          responseType: "arraybuffer"
+        }),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => {
+          setDownolading(false);
+        },
+        response => {
+          if (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const today = new Date();
+            saveAs(
+              blob,
+              `Esercenti CGN - ${today.getDate()}/${today.getMonth() +
+                1}/${today.getFullYear()}`
+            );
+          }
+          setDownolading(false);
+        }
+      )
+      .run();
   };
 
   return (
@@ -84,6 +124,19 @@ const ConventionFilter = ({
                 }}
                 style={{ maxWidth: "275px" }}
               />
+              <Button
+                className="ml-5 btn-sm"
+                color="primary"
+                tag="button"
+                onClick={getExport}
+                disabled={downloading}
+              >
+                {downloading ? (
+                  <CenteredLoading />
+                ) : (
+                  <span>Esporta le convenzioni</span>
+                )}
+              </Button>
             </div>
           </div>
         </Form>

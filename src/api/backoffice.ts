@@ -4,7 +4,8 @@ import {
   AttributeauthorityApi,
   AgreementApi,
   DiscountApi,
-  DocumentApi
+  DocumentApi,
+  ExportsApi
 } from "./generated_backoffice/";
 
 const token = getCookie();
@@ -39,6 +40,11 @@ export default {
     axiosInstance
   ),
   Document: new DocumentApi(
+    undefined,
+    process.env.BASE_BACKOFFICE_PATH,
+    axiosInstance
+  ),
+  Exports: new ExportsApi(
     undefined,
     process.env.BASE_BACKOFFICE_PATH,
     axiosInstance
