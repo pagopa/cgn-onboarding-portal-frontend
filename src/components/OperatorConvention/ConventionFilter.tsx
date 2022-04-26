@@ -52,7 +52,7 @@ const ConventionFilter = ({
         },
         response => {
           if (response) {
-            const blob = new Blob([response], { type: "application/pdf" });
+            const blob = new Blob([response], { type: "text/csv" });
             const today = new Date();
             saveAs(
               blob,
