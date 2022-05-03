@@ -13,11 +13,16 @@ import ToggleField from "../../ToggleField";
 import InputFieldMultiple from "../../InputFieldMultiple";
 import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 
-const hasOfflineOrBothChannels = (channelType: string) =>
-  channelType === "OfflineChannel" || channelType === "BothChannels";
+const hasOfflineOrBothChannels = (channelType: string) => {
+  console.log("hasOfflineOrBothChannels", channelType);
+  return channelType === "OfflineChannel" || channelType === "BothChannels";
+};
 
-const hasOnlineOrBothChannels = (channelType: string) =>
-  channelType === "OnlineChannel" || channelType === "BothChannels";
+const hasOnlineOrBothChannels = (channelType: string) => {
+  console.log("hasOnlineOrBothChannels", channelType);
+
+  return channelType === "OnlineChannel" || channelType === "BothChannels";
+};
 
 const hasBothChannels = (channelType: string) => channelType === "BothChannels";
 

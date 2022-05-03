@@ -16,6 +16,7 @@ import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { DASHBOARD } from "../../../navigation/routes";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 import { EmptyAddresses } from "../../../utils/form_types";
+import { Profile } from "../../../api/generated";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -85,21 +86,30 @@ const EditOperatorDataForm = () => {
               profile.salesChannel.channelType === "BothChannels"
                 ? {
                     ...profile.salesChannel,
-                    addresses: profile.salesChannel.addresses.map(
-                      (address: any) => {
-                        const addressSplit = address.fullAddress
-                          .split(",")
-                          .map((item: string) => item.trim());
-                        return {
-                          street: addressSplit[0],
-                          city: addressSplit[1],
-                          district: addressSplit[2],
-                          zipCode: addressSplit[3],
-                          value: address.fullAddress,
-                          label: address.fullAddress
-                        };
-                      }
-                    )
+                    addresses: profile.salesChannel.allNationalAddresses
+                      ? [
+                          {
+                            street: "",
+                            city: "",
+                            district: "",
+                            zipCode: "",
+                            value: "",
+                            label: ""
+                          }
+                        ]
+                      : profile.salesChannel.addresses.map((address: any) => {
+                          const addressSplit = address.fullAddress
+                            .split(",")
+                            .map((item: string) => item.trim());
+                          return {
+                            street: addressSplit[0],
+                            city: addressSplit[1],
+                            district: addressSplit[2],
+                            zipCode: addressSplit[3],
+                            value: address.fullAddress,
+                            label: address.fullAddress
+                          };
+                        })
                   }
                 : profile.salesChannel,
             hasDifferentFullName: !!profile.name
