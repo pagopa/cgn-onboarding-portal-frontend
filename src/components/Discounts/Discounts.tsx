@@ -8,11 +8,12 @@ import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { compareAsc, format } from "date-fns";
 import { AxiosResponse } from "axios";
+import { constNull } from "fp-ts/lib/function";
 import Api from "../../api/index";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
-import { Discount } from "../../api/generated";
+import { Discount, Profile } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
@@ -28,6 +29,7 @@ const chainAxios = (response: AxiosResponse) =>
   )(response);
 
 const Discounts = () => {
+  const [profile, setProfile] = useState<Profile>();
   const [discounts, setDiscounts] = useState<ReadonlyArray<Discount>>([]);
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [selectedDiscount, setSelectedDiscount] = useState<any>();
@@ -101,6 +103,19 @@ const Discounts = () => {
       )
       .run();
 
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => {
+          constNull();
+        },
+        profile => {
+          setProfile(profile);
+        }
+      )
+      .run();
+
   const isVisible = (state: any, startDate: any, endDate: any) => {
     const today = new Date();
     return (
@@ -132,6 +147,7 @@ const Discounts = () => {
 
   useEffect(() => {
     void getDiscounts();
+    void getProfile(agreement.id);
   }, []);
 
   const data = useMemo(() => [...discounts], [discounts]);
@@ -263,6 +279,7 @@ const Discounts = () => {
                         <DiscountDetailRow
                           row={row}
                           agreement={agreement}
+                          profile={profile}
                           onPublish={() => {
                             setSelectedPublish(row.original.id);
                             togglePublishModal();

@@ -10,23 +10,30 @@ import {
 } from "design-react-kit";
 import { format } from "date-fns";
 import { useHistory } from "react-router-dom";
+import { constNull } from "fp-ts/lib/function";
 import ProfileItem from "../Profile/ProfileItem";
 import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
-import { BucketCodeLoadStatus, Discount } from "../../api/generated";
+import {
+  BucketCodeLoadStatus,
+  Discount,
+  DiscountState,
+  Profile
+} from "../../api/generated";
 import ImportationStatus from "./ImportationStatus";
 
 type Props = {
   row: Row<Discount>;
   agreement: any;
+  profile?: Profile;
   onPublish: () => void;
   onUnpublish: () => void;
   onDelete: () => void;
 };
 
-export const getDiscountComponent = (state: string) => {
+export const getDiscountComponent = (state: DiscountState) => {
   switch (state) {
     case "draft":
       return (
@@ -82,12 +89,59 @@ export const getDiscountComponent = (state: string) => {
           Scaduta
         </Badge>
       );
+
+    case "test_pending":
+      return (
+        <Badge
+          className="font-weight-normal"
+          pill
+          tag="span"
+          style={{
+            backgroundColor: "white",
+            border: "1px solid #EA7614",
+            color: "#EA7614"
+          }}
+        >
+          In test
+        </Badge>
+      );
+    case "test_failed":
+      return (
+        <Badge
+          className="font-weight-normal"
+          pill
+          tag="span"
+          style={{
+            backgroundColor: "white",
+            border: "1px solid #C02927",
+            color: "#C02927"
+          }}
+        >
+          Test fallito
+        </Badge>
+      );
+    case "test_passed":
+      return (
+        <Badge
+          className="font-weight-normal"
+          pill
+          tag="span"
+          style={{
+            backgroundColor: "white",
+            border: "1px solid #008255",
+            color: "#008255"
+          }}
+        >
+          Test superato
+        </Badge>
+      );
   }
 };
 
 const DiscountDetailRow = ({
   row,
   agreement,
+  profile,
   onPublish,
   onUnpublish,
   onDelete
@@ -100,6 +154,11 @@ Props) => {
       ? row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
       : true
   );
+
+  const canPublishAfterTest =
+    (profile && profile.salesChannel.channelType === "OfflineChannel") ||
+    row.original.state === "test_passed";
+
   const getDiscountButtons = (row: Row<Discount>) => (
     <div
       className={
@@ -145,6 +204,20 @@ Props) => {
         />{" "}
         Elimina
       </Button>
+      {(row.original.state === "draft" ||
+        row.original.state === "test_failed") &&
+        profile?.salesChannel.channelType !== "OfflineChannel" && (
+          <Button
+            className="mr-4"
+            color="primary"
+            tag="button"
+            outline
+            disabled={!canBePublished}
+            onClick={constNull}
+          >
+            <span>Richiedi test</span>
+          </Button>
+        )}
       {row.original.state !== "published" &&
         row.original.state !== "suspended" &&
         row.original.state !== "expired" && (
@@ -153,7 +226,7 @@ Props) => {
             color="primary"
             tag="button"
             onClick={onPublish}
-            disabled={!canBePublished}
+            disabled={!canPublishAfterTest}
           >
             <Icon
               icon={"it-external-link"}
