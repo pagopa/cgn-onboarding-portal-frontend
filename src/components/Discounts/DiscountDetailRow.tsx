@@ -21,6 +21,9 @@ import {
   DiscountState,
   Profile
 } from "../../api/generated";
+import EditIcon from "../../assets/icons/edit.svg";
+import TrashIcon from "../../assets/icons/trashcan.svg";
+import TestIcon from "../../assets/icons/magic-wand.svg";
 import ImportationStatus from "./ImportationStatus";
 
 type Props = {
@@ -165,16 +168,21 @@ Props) => {
   );
 
   const getDiscountButtons = (row: Row<Discount>) => (
-    <div
-      className={
-        row.original.state !== "suspended" && row.original.state !== "expired"
-          ? "mt-10 d-flex flex-row justify-content-between"
-          : "mt-10"
-      }
-    >
+    <div className={"mt-10 d-flex flex-row justify-content-end"}>
       <Button
-        className="mr-4"
-        color={row.original.state === "expired" ? "primary" : "secondary"}
+        color={"secondary"}
+        className={"mr-2 d-flex align-items-center"}
+        outline
+        icon
+        tag="button"
+        onClick={onDelete}
+      >
+        <TrashIcon fill={"#5C6F82"} />
+        Elimina
+      </Button>
+      <Button
+        className="mr-2 d-flex align-items-center"
+        color={"primary"}
         outline
         tag="button"
         onClick={() =>
@@ -183,43 +191,33 @@ Props) => {
           )
         }
       >
-        <Icon
-          icon={row.original.state !== "expired" ? "it-pencil" : "it-restore"}
-          padding={false}
-          size="sm"
-          color={row.original.state === "expired" ? "primary" : ""}
-        />
+        {row.original.state !== "expired" ? (
+          <EditIcon fill={"#0273E6"} />
+        ) : (
+          <Icon
+            icon={"it-restore"}
+            padding={false}
+            size="sm"
+            color={"primary"}
+          />
+        )}
         <span>
           {row.original.state !== "expired" ? "Modifica" : "Riattiva"}
         </span>
       </Button>
-      <Button
-        color={row.original.state !== "expired" ? "primary" : "secondary"}
-        className={row.original.state === "expired" ? "mr-4" : ""}
-        outline
-        icon
-        tag="button"
-        onClick={onDelete}
-      >
-        <Icon
-          icon="it-delete"
-          color={row.original.state !== "expired" ? "primary" : "secondary"}
-          padding={false}
-          size="sm"
-        />{" "}
-        Elimina
-      </Button>
       {profile?.salesChannel.channelType !== "OfflineChannel" &&
         row.original.state !== "test_passed" &&
-        row.original.state !== "published" && (
+        row.original.state !== "published" &&
+        row.original.state !== "suspended" && (
           <Button
-            className="mr-4"
+            className="mr-2 d-flex align-items-center"
             color="primary"
             tag="button"
             outline
             disabled={row.original.state === "test_pending"}
             onClick={onTest}
           >
+            <TestIcon fill="#0273E6" />
             <span>Richiedi test</span>
           </Button>
         )}
@@ -227,24 +225,18 @@ Props) => {
         row.original.state !== "suspended" &&
         row.original.state !== "expired" && (
           <Button
-            className="mr-4"
+            className="mr-2"
             color="primary"
             tag="button"
             onClick={onPublish}
             disabled={!canPublishAfterTest}
           >
-            <Icon
-              icon={"it-external-link"}
-              color="white"
-              padding={false}
-              size="sm"
-            />{" "}
             <span>Pubblica</span>
           </Button>
         )}
       {row.original.state === "published" && (
         <Button
-          className="mr-4"
+          className="mr-2"
           color="primary"
           tag="button"
           onClick={onUnpublish}
