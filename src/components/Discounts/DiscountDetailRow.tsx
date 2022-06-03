@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Row } from "react-table";
 import {
   Badge,
@@ -10,7 +10,6 @@ import {
 } from "design-react-kit";
 import { format } from "date-fns";
 import { useHistory } from "react-router-dom";
-import { constNull } from "fp-ts/lib/function";
 import ProfileItem from "../Profile/ProfileItem";
 import {
   formatPercentage,
@@ -27,10 +26,11 @@ import ImportationStatus from "./ImportationStatus";
 type Props = {
   row: Row<Discount>;
   agreement: any;
-  profile?: Profile;
   onPublish: () => void;
   onUnpublish: () => void;
   onDelete: () => void;
+  onTest: () => void;
+  profile?: Profile;
 };
 
 export const getDiscountComponent = (state: DiscountState) => {
@@ -144,7 +144,8 @@ const DiscountDetailRow = ({
   profile,
   onPublish,
   onUnpublish,
-  onDelete
+  onDelete,
+  onTest
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
 Props) => {
   const history = useHistory();
@@ -155,9 +156,13 @@ Props) => {
       : true
   );
 
-  const canPublishAfterTest =
-    (profile && profile.salesChannel.channelType === "OfflineChannel") ||
-    row.original.state === "test_passed";
+  const canPublishAfterTest = useMemo(
+    () =>
+      ((profile && profile.salesChannel.channelType === "OfflineChannel") ||
+        row.original.state === "test_passed") &&
+      canBePublished,
+    [profile, canBePublished, row]
+  );
 
   const getDiscountButtons = (row: Row<Discount>) => (
     <div
@@ -204,16 +209,16 @@ Props) => {
         />{" "}
         Elimina
       </Button>
-      {(row.original.state === "draft" ||
-        row.original.state === "test_failed") &&
-        profile?.salesChannel.channelType !== "OfflineChannel" && (
+      {profile?.salesChannel.channelType !== "OfflineChannel" &&
+        row.original.state !== "test_passed" &&
+        row.original.state !== "published" && (
           <Button
             className="mr-4"
             color="primary"
             tag="button"
             outline
-            disabled={!canBePublished}
-            onClick={constNull}
+            disabled={row.original.state === "test_pending"}
+            onClick={onTest}
           >
             <span>Richiedi test</span>
           </Button>
