@@ -1,6 +1,6 @@
 {
   "name": "cgn-onboarding-portal-frontend",
-  "version": "3.9.0",
+  "version": "3.9.1",
   "license": "MIT",
   "scripts": {
     "start:prod": "NODE_ENV=production parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
