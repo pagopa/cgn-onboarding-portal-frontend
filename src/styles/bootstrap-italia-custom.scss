@@ -140,12 +140,12 @@ textarea {
 
 $link-hover-decoration: none;
 
-/* Select */ 
+/* Select */
 .select {
     border: 0;
     border-bottom: 1px solid #000000;
     padding: 1em;
-    background-color: #ffffff;  
+    background-color: #ffffff;
 }
 
 /* Request approval */
@@ -156,6 +156,10 @@ $link-hover-decoration: none;
     top: 0;
     left: 0;
     z-index: 1000;
+}
+
+.btn-outline-primary.disabled, .btn-outline-primary:disabled {
+  box-shadow: inset 0 0 0 1px #0273e6 !important;
 }
 
 @import "../../node_modules/bootstrap-italia/src/scss/bootstrap-italia.scss";

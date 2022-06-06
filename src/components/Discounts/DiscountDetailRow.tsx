@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Row } from "react-table";
 import {
   Badge,
@@ -15,7 +15,15 @@ import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
-import { BucketCodeLoadStatus, Discount } from "../../api/generated";
+import {
+  BucketCodeLoadStatus,
+  Discount,
+  DiscountState,
+  Profile
+} from "../../api/generated";
+import EditIcon from "../../assets/icons/edit.svg";
+import TrashIcon from "../../assets/icons/trashcan.svg";
+import TestIcon from "../../assets/icons/magic-wand.svg";
 import ImportationStatus from "./ImportationStatus";
 
 type Props = {
@@ -24,9 +32,11 @@ type Props = {
   onPublish: () => void;
   onUnpublish: () => void;
   onDelete: () => void;
+  onTest: () => void;
+  profile?: Profile;
 };
 
-export const getDiscountComponent = (state: string) => {
+export const getDiscountComponent = (state: DiscountState) => {
   switch (state) {
     case "draft":
       return (
@@ -82,15 +92,63 @@ export const getDiscountComponent = (state: string) => {
           Scaduta
         </Badge>
       );
+
+    case "test_pending":
+      return (
+        <Badge
+          className="font-weight-normal"
+          pill
+          tag="span"
+          style={{
+            backgroundColor: "white",
+            border: "1px solid #EA7614",
+            color: "#EA7614"
+          }}
+        >
+          In test
+        </Badge>
+      );
+    case "test_failed":
+      return (
+        <Badge
+          className="font-weight-normal"
+          pill
+          tag="span"
+          style={{
+            backgroundColor: "white",
+            border: "1px solid #C02927",
+            color: "#C02927"
+          }}
+        >
+          Test fallito
+        </Badge>
+      );
+    case "test_passed":
+      return (
+        <Badge
+          className="font-weight-normal"
+          pill
+          tag="span"
+          style={{
+            backgroundColor: "white",
+            border: "1px solid #008255",
+            color: "#008255"
+          }}
+        >
+          Test superato
+        </Badge>
+      );
   }
 };
 
 const DiscountDetailRow = ({
   row,
   agreement,
+  profile,
   onPublish,
   onUnpublish,
-  onDelete
+  onDelete,
+  onTest
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
 Props) => {
   const history = useHistory();
@@ -100,17 +158,31 @@ Props) => {
       ? row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
       : true
   );
+
+  const canPublishAfterTest = useMemo(
+    () =>
+      ((profile && profile.salesChannel.channelType === "OfflineChannel") ||
+        row.original.state === "test_passed") &&
+      canBePublished,
+    [profile, canBePublished, row]
+  );
+
   const getDiscountButtons = (row: Row<Discount>) => (
-    <div
-      className={
-        row.original.state !== "suspended" && row.original.state !== "expired"
-          ? "mt-10 d-flex flex-row justify-content-between"
-          : "mt-10"
-      }
-    >
+    <div className={"mt-10 d-flex flex-row justify-content-end"}>
       <Button
-        className="mr-4"
-        color={row.original.state === "expired" ? "primary" : "secondary"}
+        color={"secondary"}
+        className={"mr-2 d-flex align-items-center"}
+        outline
+        icon
+        tag="button"
+        onClick={onDelete}
+      >
+        <TrashIcon fill={"#5C6F82"} />
+        Elimina
+      </Button>
+      <Button
+        className="mr-2 d-flex align-items-center"
+        color={"primary"}
         outline
         tag="button"
         onClick={() =>
@@ -119,54 +191,52 @@ Props) => {
           )
         }
       >
-        <Icon
-          icon={row.original.state !== "expired" ? "it-pencil" : "it-restore"}
-          padding={false}
-          size="sm"
-          color={row.original.state === "expired" ? "primary" : ""}
-        />
+        {row.original.state !== "expired" ? (
+          <EditIcon fill={"#0273E6"} />
+        ) : (
+          <Icon
+            icon={"it-restore"}
+            padding={false}
+            size="sm"
+            color={"primary"}
+          />
+        )}
         <span>
           {row.original.state !== "expired" ? "Modifica" : "Riattiva"}
         </span>
       </Button>
-      <Button
-        color={row.original.state !== "expired" ? "primary" : "secondary"}
-        className={row.original.state === "expired" ? "mr-4" : ""}
-        outline
-        icon
-        tag="button"
-        onClick={onDelete}
-      >
-        <Icon
-          icon="it-delete"
-          color={row.original.state !== "expired" ? "primary" : "secondary"}
-          padding={false}
-          size="sm"
-        />{" "}
-        Elimina
-      </Button>
+      {profile?.salesChannel.channelType !== "OfflineChannel" &&
+        row.original.state !== "test_passed" &&
+        row.original.state !== "published" &&
+        row.original.state !== "suspended" && (
+          <Button
+            className="mr-2 d-flex align-items-center"
+            color="primary"
+            tag="button"
+            outline
+            disabled={row.original.state === "test_pending"}
+            onClick={onTest}
+          >
+            <TestIcon fill="#0273E6" />
+            <span>Richiedi test</span>
+          </Button>
+        )}
       {row.original.state !== "published" &&
         row.original.state !== "suspended" &&
         row.original.state !== "expired" && (
           <Button
-            className="mr-4"
+            className="mr-2"
             color="primary"
             tag="button"
             onClick={onPublish}
-            disabled={!canBePublished}
+            disabled={!canPublishAfterTest}
           >
-            <Icon
-              icon={"it-external-link"}
-              color="white"
-              padding={false}
-              size="sm"
-            />{" "}
             <span>Pubblica</span>
           </Button>
         )}
       {row.original.state === "published" && (
         <Button
-          className="mr-4"
+          className="mr-2"
           color="primary"
           tag="button"
           onClick={onUnpublish}
