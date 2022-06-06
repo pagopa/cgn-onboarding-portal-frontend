@@ -8,15 +8,17 @@ import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { compareAsc, format } from "date-fns";
 import { AxiosResponse } from "axios";
+import { constNull } from "fp-ts/lib/function";
 import Api from "../../api/index";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
-import { Discount } from "../../api/generated";
+import { Discount, Profile } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
 import UnpublishModal from "./UnpublishModal";
+import TestModal from "./TestModal";
 
 const chainAxios = (response: AxiosResponse) =>
   fromPredicate(
@@ -28,15 +30,18 @@ const chainAxios = (response: AxiosResponse) =>
   )(response);
 
 const Discounts = () => {
+  const [profile, setProfile] = useState<Profile>();
   const [discounts, setDiscounts] = useState<ReadonlyArray<Discount>>([]);
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [selectedDiscount, setSelectedDiscount] = useState<any>();
   const [publishModal, setPublishModal] = useState(false);
   const [unpublishModal, setUnpublishModal] = useState(false);
+  const [testModal, setTestModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const toggleDeleteModal = () => setDeleteModal(!deleteModal);
   const togglePublishModal = () => setPublishModal(!publishModal);
   const toggleUnpublishModal = () => setUnpublishModal(!unpublishModal);
+  const toggleTestModal = () => setTestModal(!testModal);
   const [selectedPublish, setSelectedPublish] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
@@ -101,6 +106,35 @@ const Discounts = () => {
       )
       .run();
 
+  const testDiscount = async (discountId: string) =>
+    await tryCatch(
+      () => Api.Discount.testDiscount(agreement.id, discountId),
+      toError
+    )
+      .chain(chainAxios)
+      .map(response => response.data)
+      .fold(
+        _ =>
+          throwErrorTooltip(
+            "Errore durante la richiesta di test dell'agevolazione"
+          ),
+        () => void getDiscounts()
+      )
+      .run();
+
+  const getProfile = async (agreementId: string) =>
+    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
+      .map(response => response.data)
+      .fold(
+        () => {
+          constNull();
+        },
+        profile => {
+          setProfile(profile);
+        }
+      )
+      .run();
+
   const isVisible = (state: any, startDate: any, endDate: any) => {
     const today = new Date();
     return (
@@ -132,6 +166,7 @@ const Discounts = () => {
 
   useEffect(() => {
     void getDiscounts();
+    void getProfile(agreement.id);
   }, []);
 
   const data = useMemo(() => [...discounts], [discounts]);
@@ -205,6 +240,11 @@ const Discounts = () => {
           toggle={toggleUnpublishModal}
           unpublish={() => unpublishDiscount(selectedDiscount)}
         />
+        <TestModal
+          isOpen={testModal}
+          toggle={toggleTestModal}
+          testRequest={() => testDiscount(selectedDiscount)}
+        />
         <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
           <ModalHeader toggle={toggleDeleteModal}>
             Elimina agevolazione
@@ -263,6 +303,7 @@ const Discounts = () => {
                         <DiscountDetailRow
                           row={row}
                           agreement={agreement}
+                          profile={profile}
                           onPublish={() => {
                             setSelectedPublish(row.original.id);
                             togglePublishModal();
@@ -274,6 +315,10 @@ const Discounts = () => {
                           onDelete={() => {
                             setSelectedDiscount(row.original.id);
                             toggleDeleteModal();
+                          }}
+                          onTest={() => {
+                            setSelectedDiscount(row.original.id);
+                            toggleTestModal();
                           }}
                         />
                       }
