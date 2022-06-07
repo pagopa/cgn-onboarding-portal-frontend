@@ -236,7 +236,7 @@ const Discount = ({
         </div>
       ) : (
         !isSuspended &&
-        discount.state !== "published" && (
+        discount.state === "published" && (
           <div className="mt-5">
             <Button color="primary" onClick={() => setSuspendMode(true)}>
               Sospendi agevolazione
