@@ -1,13 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Row } from "react-table";
-import {
-  Badge,
-  Button,
-  Callout,
-  CalloutText,
-  CalloutTitle,
-  Icon
-} from "design-react-kit";
+import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
 import { useHistory } from "react-router-dom";
 import ProfileItem from "../Profile/ProfileItem";
@@ -24,6 +17,7 @@ import {
 import EditIcon from "../../assets/icons/edit.svg";
 import TrashIcon from "../../assets/icons/trashcan.svg";
 import TestIcon from "../../assets/icons/magic-wand.svg";
+import Callout from "../Callout/Callout";
 import ImportationStatus from "./ImportationStatus";
 
 type Props = {
@@ -250,25 +244,19 @@ Props) => {
   return (
     <>
       <section className="px-6 py-4 bg-white">
+        {row.original.state === "test_failed" && (
+          <Callout
+            type={"danger"}
+            title={"IL TEST PER QUESTA AGEVOLAZIONE È FALLITO"}
+            body={row.original.testFailureReason}
+          />
+        )}
         {row.original.state === "suspended" && (
           <Callout
-            highlight
-            tag="div"
-            style={{
-              borderLeftColor: "#ea7614"
-            }}
-          >
-            <CalloutTitle tag="div" className="py-2 text-base text-black">
-              Questa agevolazione è stata sospesa dal Dipartimento
-            </CalloutTitle>
-            <CalloutText
-              bigText={false}
-              tag="p"
-              className="py-2 text-base text-dark-gray"
-            >
-              {row.original.suspendedReasonMessage}
-            </CalloutText>
-          </Callout>
+            type={"danger"}
+            title={"Questa agevolazione è stata sospesa dal Dipartimento"}
+            body={row.original.suspendedReasonMessage}
+          />
         )}
         {row.original.lastBucketCodeLoadUid !== null &&
           row.original.lastBucketCodeLoadStatus &&
