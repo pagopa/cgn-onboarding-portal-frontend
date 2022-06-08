@@ -168,7 +168,7 @@ const Discount = ({
       )}
       {discount.landingPageReferrer && (
         <Item
-          label="Codice sconto statico"
+          label="Landing page referer"
           value={discount.landingPageReferrer}
         />
       )}

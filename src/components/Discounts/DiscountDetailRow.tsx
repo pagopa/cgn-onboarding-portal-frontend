@@ -254,7 +254,7 @@ Props) => {
         {row.original.state === "suspended" && (
           <Callout
             type={"danger"}
-            title={"Questa agevolazione è stata sospesa dal Dipartimento"}
+            title={"Questa agevolazione è stata sospesa"}
             body={row.original.suspendedReasonMessage}
           />
         )}
@@ -322,6 +322,29 @@ Props) => {
                 value={row.original.discountUrl}
               />
             )}
+            {row.original.staticCode && (
+              <ProfileItem
+                label="Codice sconto statico"
+                value={row.original.staticCode}
+              />
+            )}
+            {row.original.landingPageUrl && (
+              <ProfileItem
+                label="Link alla landing page"
+                value={row.original.landingPageUrl}
+              />
+            )}
+            {row.original.landingPageReferrer && (
+              <ProfileItem
+                label="Landing Page referer"
+                value={row.original.landingPageUrl}
+              />
+            )}
+
+            <ProfileItem
+              label="EYCA"
+              value={row.original.visibleOnEyca ? "Sì" : "No"}
+            />
           </tbody>
         </table>
         {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
