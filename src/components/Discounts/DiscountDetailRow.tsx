@@ -319,7 +319,15 @@ Props) => {
             {row.original.discountUrl && (
               <ProfileItem
                 label="Link all'agevolazione"
-                value={row.original.discountUrl}
+                value={
+                  <a
+                    href={row.original.discountUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {row.original.discountUrl}
+                  </a>
+                }
               />
             )}
             {row.original.staticCode && (
@@ -340,7 +348,6 @@ Props) => {
                 value={row.original.landingPageUrl}
               />
             )}
-
             <ProfileItem
               label="EYCA"
               value={row.original.visibleOnEyca ? "Sì" : "No"}

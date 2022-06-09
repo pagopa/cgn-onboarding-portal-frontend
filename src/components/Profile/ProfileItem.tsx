@@ -3,7 +3,7 @@ import React from "react";
 type Props = {
   className?: string;
   label: string;
-  value: any;
+  value: string | React.ReactNode;
 };
 
 const ProfileItem = ({ className = "", label, value }: Props) => (

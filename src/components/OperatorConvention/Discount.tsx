@@ -158,7 +158,33 @@ const Discount = ({
       </div>
       <Item label="Condizioni dell’agevolazione" value={discount.condition} />
       {discount.discountUrl && (
-        <Item label="Link all’agevolazione" value={discount.discountUrl} />
+        <Item
+          label="Link all’agevolazione"
+          value={
+            <a href={discount.discountUrl} target="_blank" rel="noreferrer">
+              {discount.discountUrl}
+            </a>
+          }
+        />
+      )}
+      {// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      profile.salesChannel?.discountCodeType === "API" && (
+        <div className="row mb-5">
+          <div className="col-4 text-gray">
+            Per testare questa agevolazione, contatta PagoPA
+          </div>
+        </div>
+      )}
+      {// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      profile.salesChannel?.discountCodeType === "LandingPage" && (
+        <div className="row mb-5">
+          <div className="col-4 text-gray">
+            Per testare questa agevolazione, usa il Playground CGN presente in
+            app IO
+          </div>
+        </div>
       )}
       {discount.staticCode && (
         <Item label="Codice sconto statico" value={discount.staticCode} />
