@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
 import { Button, Icon } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import DocumentIcon from "../../assets/icons/document.svg";
-import DocumentSuccess from "../../assets/icons/document-success.svg";
-import CenteredLoading from "../CenteredLoading";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useEffect, useRef, useState } from "react";
 import Api from "../../api/backoffice";
 import {
   Agreement,
   Document,
   DocumentType
 } from "../../api/generated_backoffice";
+import DocumentSuccess from "../../assets/icons/document-success.svg";
+import DocumentIcon from "../../assets/icons/document.svg";
+import CenteredLoading from "../CenteredLoading";
 
 const CheckedDocument = ({
   doc,
@@ -133,17 +134,16 @@ const RequestDocuments = ({
   const [documents, setDocuments] = useState<Array<Document>>();
   const [loading, setLoading] = useState(false);
 
-  const getDocumentsApi = async () =>
-    await tryCatch(() => Api.Document.getDocuments(original.id), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setLoading(false);
-          setDocuments(response);
-        }
-      )
-      .run();
+  const getDocumentsApi = () =>
+    pipe(
+      TE.tryCatch(() => Api.Document.getDocuments(original.id), toError),
+      TE.map(response => response.data),
+      TE.map(response => {
+        setLoading(false);
+        setDocuments(response);
+      }),
+      TE.mapLeft(_ => setLoading(false))
+    )();
 
   const getDocuments = () => {
     if (!loading) {
@@ -153,20 +153,19 @@ const RequestDocuments = ({
   };
 
   const uploadDocumentApi = async (documentType: DocumentType, file: File) =>
-    await tryCatch(
-      () => Api.Document.uploadDocument(original.id, documentType, file),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        () => {
-          getDocuments();
-          setLoading(false);
-          setCheckAllDocs(true);
-        }
-      )
-      .run();
+    pipe(
+      TE.tryCatch(
+        () => Api.Document.uploadDocument(original.id, documentType, file),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.map(_ => {
+        getDocuments();
+        setLoading(false);
+        setCheckAllDocs(true);
+      }),
+      TE.mapLeft(_ => setLoading(false))
+    )();
 
   const uploadDocument = (documentType: DocumentType, file: File) => {
     setLoading(true);
@@ -174,19 +173,18 @@ const RequestDocuments = ({
   };
 
   const deleteDocumentApi = async (documentType: DocumentType) =>
-    await tryCatch(
-      () => Api.Document.deleteDocument(original.id, documentType),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        () => {
-          setLoading(false);
-          getDocuments();
-        }
-      )
-      .run();
+    pipe(
+      TE.tryCatch(
+        () => Api.Document.deleteDocument(original.id, documentType),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.map(_ => {
+        setLoading(false);
+        getDocuments();
+      }),
+      TE.mapLeft(_ => setLoading(false))
+    )();
 
   const deleteDocument = async (documentType: DocumentType) => {
     setLoading(true);

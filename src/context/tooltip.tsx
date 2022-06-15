@@ -1,11 +1,11 @@
-import { fromNullable } from "fp-ts/lib/Option";
-import { fromOption } from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as O from "fp-ts/Option";
 import React, {
-  useContext,
   createContext,
-  useState,
+  ReactChildren,
   ReactElement,
-  ReactChildren
+  useContext,
+  useState
 } from "react";
 
 export interface TooltipContextProps {
@@ -94,9 +94,12 @@ function TooltipProvider({ children }: ProviderProps): ReactElement {
 }
 
 function useTooltip(): TooltipContextProps {
-  return fromNullable(useContext(TooltipContext)).getOrElseL(() => {
-    throw new Error("useTooltip must be used within a TooltipProvider");
-  });
+  return pipe(
+    O.fromNullable(useContext(TooltipContext)),
+    O.getOrElseW(() => {
+      throw new Error("useTooltip must be used within a TooltipProvider");
+    })
+  );
 }
 
 export { TooltipProvider, useTooltip };

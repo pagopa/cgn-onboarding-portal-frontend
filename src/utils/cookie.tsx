@@ -1,7 +1,8 @@
-import Cookies from "universal-cookie";
 import Axios from "axios";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import Cookies from "universal-cookie";
 import { AdminAccess } from "../authConfig";
 import chainAxios from "./chainAxios";
 
@@ -39,27 +40,26 @@ export function deleteCookie() {
   cookies.remove(cookieKey, cookieOptions);
 }
 
-const invalidate = async () => {
+const invalidate = () => {
   const token = getCookie();
-  await tryCatch(
-    () =>
-      Axios.post(`${process.env.BASE_SPID_LOGIN_PATH}/invalidate`, {
-        token
-      }),
-    toError
-  )
-    .chain(chainAxios)
-    .fold(
-      () => {
-        deleteCookie();
-        window.location.replace("/");
-      },
-      () => {
-        deleteCookie();
-        window.location.replace("/");
-      }
-    )
-    .run();
+  void pipe(
+    TE.tryCatch(
+      () =>
+        Axios.post(`${process.env.BASE_SPID_LOGIN_PATH}/invalidate`, {
+          token
+        }),
+      toError
+    ),
+    TE.map(chainAxios),
+    TE.map(_ => {
+      deleteCookie();
+      window.location.replace("/");
+    }),
+    TE.mapLeft(_ => {
+      deleteCookie();
+      window.location.replace("/");
+    })
+  )();
 };
 
 export function logout(userType: string) {
@@ -67,6 +67,6 @@ export function logout(userType: string) {
     void AdminAccess.logoutRedirect();
     deleteCookie();
   } else if (userType === "USER") {
-    void invalidate();
+    invalidate();
   }
 }
