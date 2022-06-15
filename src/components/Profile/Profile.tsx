@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
+import { toError } from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import Api from "../../api/index";
 import { EDIT_PROFILE } from "../../navigation/routes";
 import { RootState } from "../../store/store";
-import ProfileItem from "./ProfileItem";
-import ProfileDocuments from "./ProfileDocuments";
 import ProfileApiToken from "./ProfileApiToken";
+import ProfileDocuments from "./ProfileDocuments";
+import ProfileItem from "./ProfileItem";
 
 const Profile = () => {
   const [profile, setProfile] = useState<any>(null);
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        profile => setProfile(profile)
-      )
-      .run();
+  const getProfile = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.Profile.getProfile(agreementId), toError),
+      TE.map(response => response.data),
+      TE.map(profile => setProfile(profile)),
+      TE.mapLeft(_ => void 0)
+    )();
 
   const hasProfileApiToken = () =>
     agreement.state === "ApprovedAgreement" &&

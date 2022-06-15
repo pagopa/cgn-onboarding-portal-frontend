@@ -1,30 +1,31 @@
+import { format } from "date-fns";
+import { Button, Icon } from "design-react-kit";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, {
-  useState,
+  useCallback,
   useEffect,
   useMemo,
-  useCallback,
-  useRef
+  useRef,
+  useState
 } from "react";
 import {
-  useTable,
-  useExpanded,
   Row,
+  useExpanded,
   UseExpandedRowProps,
   usePagination,
-  useSortBy
+  useSortBy,
+  useTable
 } from "react-table";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { Icon, Button } from "design-react-kit";
-import { format } from "date-fns";
 import Api from "../../api/backoffice";
-import CenteredLoading from "../CenteredLoading";
 import { Agreements } from "../../api/generated_backoffice";
+import CenteredLoading from "../CenteredLoading";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import RequestsDetails from "./RequestsDetails";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
-import RequestsDetails from "./RequestsDetails";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const Requests = () => {
@@ -33,31 +34,30 @@ const Requests = () => {
   const [loading, setLoading] = useState(false);
   const refForm = useRef<any>(null);
 
-  const getAgreementsApi = async (params?: any) =>
-    await tryCatch(
-      () =>
-        Api.Agreement.getAgreements(
-          params.states,
-          params.assignee,
-          params.profileFullName,
-          params.requestDateFrom,
-          params.requestDateTo,
-          pageSize,
-          params.page,
-          params.sortColumn,
-          params.sortDirection
-        ),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setAgreements(response);
-          setLoading(false);
-        }
-      )
-      .run();
+  const getAgreementsApi = (params?: any) =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          Api.Agreement.getAgreements(
+            params.states,
+            params.assignee,
+            params.profileFullName,
+            params.requestDateFrom,
+            params.requestDateTo,
+            pageSize,
+            params.page,
+            params.sortColumn,
+            params.sortDirection
+          ),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.map(response => {
+        setAgreements(response);
+        setLoading(false);
+      }),
+      TE.mapLeft(_ => setLoading(false))
+    )();
 
   const getAgreements = (params?: any) => {
     setLoading(true);

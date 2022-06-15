@@ -1,6 +1,6 @@
 /* eslint-disable functional/immutable-data */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { toError } from "fp-ts/lib/Either";
+import { toError } from "fp-ts/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/TaskEither";
 import { Agreement } from "../../api/generated";
@@ -8,9 +8,10 @@ import Api from "../../api/index";
 
 export const createAgreement = createAsyncThunk("agreement/createStatus", () =>
   pipe(
-    TE.tryCatch(() => Api.Agreement.createAgreement(), toError),
+    TE.tryCatch(Api.Agreement.createAgreement, toError),
     TE.map(response => response.data),
-    TE.mapLeft(_ => void 0)
+    TE.mapLeft(_ => void 0),
+    TE.toUnion
   )()
 );
 

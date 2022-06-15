@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Api from "../../api/index";
-import { RootState } from "../../store/store";
 import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
+import { RootState } from "../../store/store";
 import ProfileDataItem from "./ProfileDataItem";
 
 const ProfileData = () => {
   const [profile, setProfile] = useState<any>(null);
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        newProfile => setProfile(newProfile)
-      )
-      .run();
+  const getProfile = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.Profile.getProfile(agreementId), toError),
+      TE.map(response => response.data),
+      TE.map(newProfile => setProfile(newProfile)),
+      TE.mapLeft(_ => void 0)
+    )();
 
   const getImage = () =>
     agreement &&
