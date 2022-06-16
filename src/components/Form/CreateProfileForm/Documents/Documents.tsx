@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
 import { Button } from "design-react-kit";
-import { useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import Api from "../../../../api";
+import { Documents } from "../../../../api/generated";
+import { Severity, useTooltip } from "../../../../context/tooltip";
+import { RootState } from "../../../../store/store";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
-import Api from "../../../../api";
-import { RootState } from "../../../../store/store";
-import { Documents } from "../../../../api/generated";
-import { useTooltip, Severity } from "../../../../context/tooltip";
 import FileRow from "./FileRow";
 
 type Props = {
@@ -31,28 +32,29 @@ const Documents = ({
     window.scrollTo(0, 0);
   }, []);
 
-  const getFiles = async () =>
-    await tryCatch(() => Api.Document.getDocuments(agreement.id), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setDocuments(response);
-          setLoading(false);
-        }
-      )
-      .run();
+  const getFiles = () =>
+    pipe(
+      TE.tryCatch(() => Api.Document.getDocuments(agreement.id), toError),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map(response => {
+        setDocuments(response);
+        setLoading(false);
+      })
+    )();
 
   const requireApproval = () => {
-    void Api.Agreement.requestApproval(agreement.id)
-      .then(() => setShowRequireApproval(true))
-      .catch(() =>
+    void pipe(
+      TE.tryCatch(() => Api.Agreement.requestApproval(agreement.id), toError),
+      TE.mapLeft(() =>
         triggerTooltip({
           severity: Severity.DANGER,
           text:
             "Errore durante l'invio della richiesta di approvazione, riprovare in seguito"
         })
-      );
+      ),
+      TE.map(() => setShowRequireApproval(true))
+    )();
   };
 
   const getUploadedDoc = (type: string) =>

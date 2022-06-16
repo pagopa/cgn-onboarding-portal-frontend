@@ -1,36 +1,37 @@
 /* eslint-disable sonarjs/cognitive-complexity */
+import { AxiosResponse } from "axios";
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { FieldArray, Form, Formik } from "formik";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as O from "fp-ts/Option";
+import * as TE from "fp-ts/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { FieldArray, Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { format } from "date-fns";
-import { AxiosResponse } from "axios";
-import { fromNullable } from "fp-ts/lib/Option";
-import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
-import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
-import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
-import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
-import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
-import StaticCode from "../../CreateProfileForm/DiscountData/StaticCode";
-import FormContainer from "../../FormContainer";
-import { RootState } from "../../../../store/store";
-import FormSection from "../../FormSection";
-import FormField from "../../FormField";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import {
   CreateDiscount,
   Discount,
   Discounts,
   ProductCategory
 } from "../../../../api/generated";
+import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import { Severity, useTooltip } from "../../../../context/tooltip";
+import { RootState } from "../../../../store/store";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
+import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
+import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
+import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
+import StaticCode from "../../CreateProfileForm/DiscountData/StaticCode";
+import FormContainer from "../../FormContainer";
+import FormField from "../../FormField";
+import FormSection from "../../FormSection";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
-import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
-import EnrollToEyca from "./EnrollToEyca";
 import DiscountUrl from "./DiscountUrl";
+import EnrollToEyca from "./EnrollToEyca";
+import LandingPage from "./LandingPage";
 
 const emptyInitialValues = {
   discounts: [
@@ -57,7 +58,7 @@ type Props = {
 };
 
 const chainAxios = (response: AxiosResponse) =>
-  fromPredicate(
+  TE.fromPredicate(
     (_: AxiosResponse) => _.status === 200 || _.status === 204,
     (r: AxiosResponse) =>
       r.status === 409
@@ -113,18 +114,17 @@ const DiscountData = ({
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "Bucket";
 
-  const createDiscount = async (
-    agreementId: string,
-    discount: CreateDiscount
-  ) =>
-    await tryCatch(
-      () => Api.Discount.createDiscount(agreementId, discount),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(throwErrorTooltip, () => handleNext())
-      .run();
+  const createDiscount = (agreementId: string, discount: CreateDiscount) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Discount.createDiscount(agreementId, discount),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(throwErrorTooltip),
+      TE.map(() => handleNext())
+    )();
 
   const updateDiscount = async (agreementId: string, discount: Discount) => {
     const {
@@ -134,75 +134,86 @@ const DiscountData = ({
       creationDate,
       ...updatedDiscount
     } = discount;
-    await tryCatch(
-      () =>
-        Api.Discount.updateDiscount(agreementId, discount.id, updatedDiscount),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        e => editThrowErrorTooltip(e.message),
-        () => handleNext()
-      )
-      .run();
+    await pipe(
+      TE.tryCatch(
+        () =>
+          Api.Discount.updateDiscount(
+            agreementId,
+            discount.id,
+            updatedDiscount
+          ),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(e => editThrowErrorTooltip(e.message)),
+      TE.map(() => handleNext())
+    )();
   };
 
-  const getDiscounts = async (agreementId: string) =>
-    await tryCatch(() => Api.Discount.getDiscounts(agreementId), toError)
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        (discounts: Discounts) => {
-          setInitialValues({
-            discounts: discounts.items.map((discount: Discount) => ({
-              ...discount,
-              discountUrl: fromNullable(discount.discountUrl).toUndefined(),
-              startDate: new Date(discount.startDate),
-              endDate: new Date(discount.endDate),
-              landingPageReferrer: fromNullable(
-                discount.landingPageReferrer
-              ).toUndefined(),
-              landingPageUrl: fromNullable(
-                discount.landingPageUrl
-              ).toUndefined(),
-              discount: fromNullable(discount.discount).toUndefined(),
-              staticCode: fromNullable(discount.staticCode).toUndefined(),
-              lastBucketCodeLoadUid: fromNullable(
-                discount.lastBucketCodeLoadUid
-              ).toUndefined(),
-              lastBucketCodeLoadFileName: fromNullable(
-                discount.lastBucketCodeLoadFileName
-              ).toUndefined()
-            }))
-          });
-          setLoading(false);
-        }
-      )
-      .run();
+  const getDiscounts = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.Discount.getDiscounts(agreementId), toError),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map((discounts: Discounts) => {
+        setInitialValues({
+          discounts: discounts.items.map((discount: Discount) => ({
+            ...discount,
+            discountUrl: pipe(
+              O.fromNullable(discount.discountUrl),
+              O.toUndefined
+            ),
+            startDate: new Date(discount.startDate),
+            endDate: new Date(discount.endDate),
+            landingPageReferrer: pipe(
+              O.fromNullable(discount.landingPageReferrer),
+              O.toUndefined
+            ),
+            landingPageUrl: pipe(
+              O.fromNullable(discount.landingPageUrl),
+              O.toUndefined
+            ),
+            discount: pipe(O.fromNullable(discount.discount), O.toUndefined),
+            staticCode: pipe(
+              O.fromNullable(discount.staticCode),
+              O.toUndefined
+            ),
+            lastBucketCodeLoadUid: pipe(
+              O.fromNullable(discount.lastBucketCodeLoadUid),
+              O.toUndefined
+            ),
+            lastBucketCodeLoadFileName: pipe(
+              O.fromNullable(discount.lastBucketCodeLoadFileName),
+              O.toUndefined
+            )
+          }))
+        });
+        setLoading(false);
+      })
+    )();
 
-  const deleteDiscount = async (agreementId: string, discountId: string) =>
-    await tryCatch(
+  const deleteDiscount = (agreementId: string, discountId: string) =>
+    TE.tryCatch(
       () => Api.Discount.deleteDiscount(agreementId, discountId),
       toError
-    ).run();
+    )();
 
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        profile => {
-          setProfile({
-            ...profile,
-            hasDifferentFullName: !!profile.name
-          });
-          setLoading(false);
-        }
-      )
-      .run();
+  const getProfile = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.Profile.getProfile(agreementId), toError),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map(profile => {
+        setProfile({
+          ...profile,
+          hasDifferentFullName: !!profile.name
+        });
+        setLoading(false);
+      })
+    )();
 
   useEffect(() => {
     if (isCompleted) {

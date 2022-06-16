@@ -1,17 +1,18 @@
-import React, { ComponentProps, useEffect, useRef, useState } from "react";
-import { Button, Progress } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { Field } from "formik";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { Severity, useTooltip } from "../../../../context/tooltip";
+import { Button, Progress } from "design-react-kit";
+import { Field } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import Api from "../../../../api";
-import DocumentSuccess from "../../../../assets/icons/document-success.svg";
-import CustomErrorMessage from "../../CustomErrorMessage";
-import chainAxios from "../../../../utils/chainAxios";
-import FormField from "../../FormField";
-import bucketTemplate from "../../../../templates/test-codes.csv";
 import { BucketCodeLoadStatus } from "../../../../api/generated";
+import DocumentSuccess from "../../../../assets/icons/document-success.svg";
+import { Severity, useTooltip } from "../../../../context/tooltip";
+import bucketTemplate from "../../../../templates/test-codes.csv";
+import chainAxios from "../../../../utils/chainAxios";
+import CustomErrorMessage from "../../CustomErrorMessage";
+import FormField from "../../FormField";
 
 type Props = {
   label: string;
@@ -64,48 +65,47 @@ Props) => {
     );
   }, [formValues, index]);
 
-  const addFile = async (files: any) => {
+  const addFile = (files: any) => {
     setUploadingDoc(true);
-    await tryCatch(
-      () =>
-        Api.Bucket.uploadBucket(agreementId, files[0], {
-          onUploadProgress: (event: any) => {
-            setUploadProgress(Math.round((100 * event.loaded) / event.total));
-          }
-        }),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => {
-          setUploadingDoc(false);
-          setUploadProgress(0);
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Caricamento del file fallito"
-          });
-        },
-        data => {
-          setFieldValue(
-            hasIndex
-              ? `discounts[${index}].lastBucketCodeLoadUid`
-              : "lastBucketCodeLoadUid",
-            data.uid
-          );
-          setFieldValue(
-            hasIndex
-              ? `discounts[${index}].lastBucketCodeLoadFileName`
-              : "lastBucketCodeLoadFileName",
-            files[0].name
-          );
-          setCurrentDoc({ name: files[0].name });
-          setUploadingDoc(false);
-          setUploadProgress(0);
-          setCanUploadFile(false);
-        }
-      )
-      .run();
+    void pipe(
+      TE.tryCatch(
+        () =>
+          Api.Bucket.uploadBucket(agreementId, files[0], {
+            onUploadProgress: (event: any) => {
+              setUploadProgress(Math.round((100 * event.loaded) / event.total));
+            }
+          }),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(() => {
+        setUploadingDoc(false);
+        setUploadProgress(0);
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "Caricamento del file fallito"
+        });
+      }),
+      TE.map(data => {
+        setFieldValue(
+          hasIndex
+            ? `discounts[${index}].lastBucketCodeLoadUid`
+            : "lastBucketCodeLoadUid",
+          data.uid
+        );
+        setFieldValue(
+          hasIndex
+            ? `discounts[${index}].lastBucketCodeLoadFileName`
+            : "lastBucketCodeLoadFileName",
+          files[0].name
+        );
+        setCurrentDoc({ name: files[0].name });
+        setUploadingDoc(false);
+        setUploadProgress(0);
+        setCanUploadFile(false);
+      })
+    )();
   };
 
   const loadStatus =
