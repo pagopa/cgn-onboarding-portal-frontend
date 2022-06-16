@@ -1,12 +1,13 @@
-import { useHistory, useParams } from "react-router-dom";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useEffect, useState } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { Severity, useTooltip } from "../../../context/tooltip";
+import { useHistory, useParams } from "react-router-dom";
 import Api from "../../../api/backoffice";
-import chainAxios from "../../../utils/chainAxios";
-import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
 import { OrganizationWithReferents } from "../../../api/generated_backoffice";
+import { Severity, useTooltip } from "../../../context/tooltip";
+import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
+import chainAxios from "../../../utils/chainAxios";
 import CenteredLoading from "../../CenteredLoading";
 import ActivationForm from "../ActivationForm";
 
@@ -36,47 +37,45 @@ const CreateActivationForm = () => {
     });
   };
 
-  const createActivation = async (organization: OrganizationWithReferents) =>
-    await tryCatch(
-      () => Api.AttributeAuthority.upsertOrganization(organization),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => {
-          setSubmitting(false);
-          throwErrorTooltip(
-            "Errore durante la creazione dell'operatore, controllare i dati e riprovare"
-          );
-        },
-        () => {
-          setSubmitting(false);
-          history.push(ADMIN_PANEL_ACCESSI);
-        }
-      )
-      .run();
+  const createActivation = (organization: OrganizationWithReferents) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.AttributeAuthority.upsertOrganization(organization),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(() => {
+        setSubmitting(false);
+        throwErrorTooltip(
+          "Errore durante la creazione dell'operatore, controllare i dati e riprovare"
+        );
+      }),
+      TE.map(() => {
+        setSubmitting(false);
+        history.push(ADMIN_PANEL_ACCESSI);
+      })
+    )();
 
-  const getActivation = async () =>
-    await tryCatch(
-      () => Api.AttributeAuthority.getOrganization(operatorFiscalCode),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => {
-          setLoading(false);
-          throwErrorTooltip(
-            "Errore durante la richiesta di dettaglio dell'operatore, riprovare"
-          );
-        },
-        (data: OrganizationWithReferents) => {
-          setLoading(false);
-          setInitialValues(data);
-        }
-      )
-      .run();
+  const getActivation = () =>
+    pipe(
+      TE.tryCatch(
+        () => Api.AttributeAuthority.getOrganization(operatorFiscalCode),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(() => {
+        setLoading(false);
+        throwErrorTooltip(
+          "Errore durante la richiesta di dettaglio dell'operatore, riprovare"
+        );
+      }),
+      TE.map((data: OrganizationWithReferents) => {
+        setLoading(false);
+        setInitialValues(data);
+      })
+    )();
 
   useEffect(() => {
     setLoading(true);

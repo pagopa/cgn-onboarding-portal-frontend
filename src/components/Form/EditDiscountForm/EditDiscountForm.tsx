@@ -1,31 +1,31 @@
+import { AxiosResponse } from "axios";
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as O from "fp-ts/Option";
+import * as TE from "fp-ts/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { format } from "date-fns";
 import { useHistory, useParams } from "react-router-dom";
-import { AxiosResponse } from "axios";
-import { fromNullable } from "fp-ts/lib/Option";
 import Api from "../../../api";
-import CenteredLoading from "../../CenteredLoading/CenteredLoading";
-import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
-import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
-import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
-import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
-import { RootState } from "../../../store/store";
-import FormSection from "../FormSection";
-import FormField from "../FormField";
 import { Discount, ProductCategory } from "../../../api/generated";
-import { DASHBOARD } from "../../../navigation/routes";
-import { discountDataValidationSchema } from "../ValidationSchemas";
-import PublishModal from "../../Discounts/PublishModal";
-import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
-import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
-import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import { DASHBOARD } from "../../../navigation/routes";
+import { RootState } from "../../../store/store";
+import CenteredLoading from "../../CenteredLoading/CenteredLoading";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
+import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
 import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
+import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
+import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
+import FormField from "../FormField";
+import FormSection from "../FormSection";
+import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
@@ -40,7 +40,7 @@ const emptyInitialValues = {
 };
 
 const chainAxios = (response: AxiosResponse) =>
-  fromPredicate(
+  TE.fromPredicate(
     (_: AxiosResponse) => _.status === 200 || _.status === 204,
     (r: AxiosResponse) =>
       r.status === 409
@@ -58,9 +58,6 @@ const EditDiscountForm = () => {
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
-  const [publishModal, setPublishModal] = useState(false);
-  const togglePublishModal = () => setPublishModal(!publishModal);
-  const [selectedPublish, setSelectedPublish] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
   const throwErrorTooltip = (e: string) => {
@@ -93,77 +90,72 @@ const EditDiscountForm = () => {
       creationDate,
       ...updatedDiscount
     } = discount;
-    await tryCatch(
-      () =>
-        Api.Discount.updateDiscount(agreementId, discountId, updatedDiscount),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        e => throwErrorTooltip(e.message),
-        () => history.push(DASHBOARD)
-      )
-      .run();
+    void pipe(
+      TE.tryCatch(
+        () =>
+          Api.Discount.updateDiscount(agreementId, discountId, updatedDiscount),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(e => throwErrorTooltip(e.message)),
+      TE.map(() => history.push(DASHBOARD))
+    )();
   };
 
-  const getDiscount = async (agreementId: string) =>
-    await tryCatch(
-      () => Api.Discount.getDiscountById(agreementId, discountId),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        (discount: Discount) => {
-          setInitialValues({
-            ...discount,
-            discountUrl: fromNullable(discount.discountUrl).toUndefined(),
-            startDate: new Date(discount.startDate),
-            endDate: new Date(discount.endDate),
-            landingPageReferrer: fromNullable(
-              discount.landingPageReferrer
-            ).toUndefined(),
-            landingPageUrl: fromNullable(discount.landingPageUrl).toUndefined(),
-            discount: fromNullable(discount.discount).toUndefined(),
-            staticCode: fromNullable(discount.staticCode).toUndefined(),
-            lastBucketCodeLoadUid: fromNullable(
-              discount.lastBucketCodeLoadUid
-            ).toUndefined(),
-            lastBucketCodeLoadFileName: fromNullable(
-              discount.lastBucketCodeLoadFileName
-            ).toUndefined()
-          });
-          setLoading(false);
-        }
-      )
-      .run();
+  const getDiscount = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Discount.getDiscountById(agreementId, discountId),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map((discount: Discount) => {
+        setInitialValues({
+          ...discount,
+          discountUrl: pipe(
+            O.fromNullable(discount.discountUrl),
+            O.toUndefined
+          ),
+          startDate: new Date(discount.startDate),
+          endDate: new Date(discount.endDate),
+          landingPageReferrer: pipe(
+            O.fromNullable(discount.landingPageReferrer),
+            O.toUndefined
+          ),
+          landingPageUrl: pipe(
+            O.fromNullable(discount.landingPageUrl),
+            O.toUndefined
+          ),
+          discount: pipe(O.fromNullable(discount.discount), O.toUndefined),
+          staticCode: pipe(O.fromNullable(discount.staticCode), O.toUndefined),
+          lastBucketCodeLoadUid: pipe(
+            O.fromNullable(discount.lastBucketCodeLoadUid),
+            O.toUndefined
+          ),
+          lastBucketCodeLoadFileName: pipe(
+            O.fromNullable(discount.lastBucketCodeLoadFileName),
+            O.toUndefined
+          )
+        });
+        setLoading(false);
+      })
+    )();
 
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        profile => {
-          setProfile({
-            ...profile,
-            hasDifferentFullName: !!profile.name
-          });
-          setLoading(false);
-        }
-      )
-      .run();
-
-  const publishDiscount = async (discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.publishDiscount(agreement.id, discountId),
-      toError
-    )
-      .fold(
-        () => void 0,
-        () => void 0
-      )
-      .run();
+  const getProfile = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.Profile.getProfile(agreementId), toError),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map(profile => {
+        setProfile({
+          ...profile,
+          hasDifferentFullName: !!profile.name
+        });
+        setLoading(false);
+      })
+    )();
 
   useEffect(() => {
     setLoading(true);
@@ -325,11 +317,6 @@ const EditDiscountForm = () => {
           </Form>
         )}
       </Formik>
-      <PublishModal
-        isOpen={publishModal}
-        toggle={togglePublishModal}
-        publish={() => publishDiscount(selectedPublish)}
-      />
     </>
   );
 };

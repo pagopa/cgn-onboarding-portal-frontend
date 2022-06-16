@@ -50,7 +50,7 @@ const invalidate = () => {
         }),
       toError
     ),
-    TE.map(chainAxios),
+    TE.chain(chainAxios),
     TE.map(_ => {
       deleteCookie();
       window.location.replace("/");
