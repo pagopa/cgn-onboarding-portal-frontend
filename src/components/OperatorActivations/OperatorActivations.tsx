@@ -1,27 +1,28 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import {
-  useTable,
-  usePagination,
-  Row,
-  useSortBy,
-  Column,
-  UseExpandedRowProps,
-  useExpanded
-} from "react-table";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
+import { Badge, Button, Icon } from "design-react-kit";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Column,
+  Row,
+  useExpanded,
+  UseExpandedRowProps,
+  usePagination,
+  useSortBy,
+  useTable
+} from "react-table";
 import Api from "../../api/backoffice";
-import CenteredLoading from "../CenteredLoading";
 import {
   Organizations,
   OrganizationStatus,
   OrganizationWithReferentsAndStatus
 } from "../../api/generated_backoffice";
+import { makeOrganizationStatusReadable } from "../../utils/strings";
+import CenteredLoading from "../CenteredLoading";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
-import { makeOrganizationStatusReadable } from "../../utils/strings";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
@@ -41,27 +42,26 @@ const OperatorActivations = () => {
   const [loading, setLoading] = useState(false);
   const refForm = useRef<any>(null);
 
-  const getActivationsApi = async (params?: GetOrgsParams) =>
-    await tryCatch(
-      () =>
-        Api.AttributeAuthority.getOrganizations(
-          params?.searchQuery,
-          params?.page,
-          PAGE_SIZE,
-          params?.sortColumn,
-          params?.sortDirection
-        ),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setLoading(false);
-          setOperators(response);
-        }
-      )
-      .run();
+  const getActivationsApi = (params?: GetOrgsParams) =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          Api.AttributeAuthority.getOrganizations(
+            params?.searchQuery,
+            params?.page,
+            PAGE_SIZE,
+            params?.sortColumn,
+            params?.sortDirection
+          ),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map(response => {
+        setLoading(false);
+        setOperators(response);
+      })
+    )();
 
   const getActivations = (params?: GetOrgsParams) => {
     setLoading(true);

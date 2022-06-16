@@ -1,24 +1,25 @@
-import React from "react";
 import { Field, Form, Formik } from "formik";
-import { useHistory } from "react-router-dom";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React from "react";
 import { useSelector } from "react-redux";
-import FormSection from "../FormSection";
+import { useHistory } from "react-router-dom";
+import Api from "../../../api";
+import { HelpRequest, HelpRequestCategoryEnum } from "../../../api/generated";
+import { HelpRequest as NotLoggedHelpRequest } from "../../../api/generated_public";
+import NotLoggedHelpApi from "../../../api/public";
+import { Severity, useTooltip } from "../../../context/tooltip";
+import { RootState } from "../../../store/store";
+import { getCookie } from "../../../utils/cookie";
+import CustomErrorMessage from "../CustomErrorMessage";
 import InputField from "../FormField";
+import FormSection from "../FormSection";
+import InputFieldMultiple from "../InputFieldMultiple";
 import {
   loggedHelpValidationSchema,
   notLoggedHelpValidationSchema
 } from "../ValidationSchemas";
-import { RootState } from "../../../store/store";
-import { HelpRequest, HelpRequestCategoryEnum } from "../../../api/generated";
-import Api from "../../../api";
-import { getCookie } from "../../../utils/cookie";
-import InputFieldMultiple from "../InputFieldMultiple";
-import NotLoggedHelpApi from "../../../api/public";
-import { HelpRequest as NotLoggedHelpRequest } from "../../../api/generated_public";
-import CustomErrorMessage from "../CustomErrorMessage";
-import { Severity, useTooltip } from "../../../context/tooltip";
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
@@ -81,21 +82,24 @@ const HelpForm = () => {
       text: "C'è stato un errore durante la sottomissione del form"
     });
 
-  const createLoggedHelp = async (agreementId: string, help: HelpRequest) =>
-    await tryCatch(() => Api.Help.sendHelpRequest(agreementId, help), toError)
-      .map(response => response.data)
-      .fold(onErrorTooltip, () => history.goBack())
-      .run();
+  const createLoggedHelp = (agreementId: string, help: HelpRequest) =>
+    pipe(
+      TE.tryCatch(() => Api.Help.sendHelpRequest(agreementId, help), toError),
+      TE.map(response => response.data),
+      TE.mapLeft(onErrorTooltip),
+      TE.map(() => history.goBack())
+    )();
 
-  const createNotLoggedHelp = async (help: NotLoggedHelpRequest) => {
-    await tryCatch(
-      () => NotLoggedHelpApi.NotLoggedHelp.sendHelpRequest(help),
-      toError
-    )
-      .map(response => response.data)
-      .fold(onErrorTooltip, () => history.goBack())
-      .run();
-  };
+  const createNotLoggedHelp = (help: NotLoggedHelpRequest) =>
+    pipe(
+      TE.tryCatch(
+        () => NotLoggedHelpApi.NotLoggedHelp.sendHelpRequest(help),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.mapLeft(onErrorTooltip),
+      TE.map(() => history.goBack())
+    )();
 
   const hasTopicDropdown = (category: string): boolean =>
     category === HelpRequestCategoryEnum.DataFilling ||

@@ -1,14 +1,15 @@
 import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useState } from "react";
-import { Button, Icon } from "design-react-kit";
 import { useHistory } from "react-router-dom";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { OrganizationWithReferents } from "../../api/generated_backoffice";
-import ProfileItem from "../Profile/ProfileItem";
 import Api from "../../api/backoffice";
+import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import { Severity, useTooltip } from "../../context/tooltip";
 import CenteredLoading from "../CenteredLoading";
+import ProfileItem from "../Profile/ProfileItem";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
@@ -24,27 +25,26 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const deleteActivation = async (keyOrganizationFiscalCode: string) =>
-    await tryCatch(
-      () =>
-        Api.AttributeAuthority.deleteOrganization(keyOrganizationFiscalCode),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => {
-          setLoading(false);
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Rimozione dell'operatore fallita"
-          });
-        },
-        () => {
-          setLoading(false);
-          getActivations();
-        }
-      )
-      .run();
+  const deleteActivation = (keyOrganizationFiscalCode: string) =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          Api.AttributeAuthority.deleteOrganization(keyOrganizationFiscalCode),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.mapLeft(() => {
+        setLoading(false);
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "Rimozione dell'operatore fallita"
+        });
+      }),
+      TE.map(() => {
+        setLoading(false);
+        getActivations();
+      })
+    )();
 
   const askDeleteOrganization = () => {
     setLoading(true);

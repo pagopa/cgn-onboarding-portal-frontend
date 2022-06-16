@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { saveAs } from "file-saver";
+import { Field, Form, Formik } from "formik";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useState } from "react";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import DateModal from "./DateModal";
@@ -33,37 +34,36 @@ const ConventionFilter = ({
     page: 0
   };
 
-  const getExport = async () => {
+  const getExport = () => {
     setDownolading(true);
-    await tryCatch(
-      () =>
-        Api.Exports.exportAgreements({
-          headers: {
-            "Content-Type": "text/csv"
-          },
-          responseType: "arraybuffer"
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => {
-          setDownolading(false);
-        },
-        response => {
-          if (response) {
-            const blob = new Blob([response], { type: "text/csv" });
-            const today = new Date();
-            saveAs(
-              blob,
-              `Esercenti CGN - ${today.getDate()}/${today.getMonth() +
-                1}/${today.getFullYear()}`
-            );
-          }
-          setDownolading(false);
+    void pipe(
+      TE.tryCatch(
+        () =>
+          Api.Exports.exportAgreements({
+            headers: {
+              "Content-Type": "text/csv"
+            },
+            responseType: "arraybuffer"
+          }),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.map(response => {
+        if (response) {
+          const blob = new Blob([response], { type: "text/csv" });
+          const today = new Date();
+          saveAs(
+            blob,
+            `Esercenti CGN - ${today.getDate()}/${today.getMonth() +
+              1}/${today.getFullYear()}`
+          );
         }
-      )
-      .run();
+        setDownolading(false);
+      }),
+      TE.mapLeft(() => {
+        setDownolading(false);
+      })
+    )();
   };
 
   return (

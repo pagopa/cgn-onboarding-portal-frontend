@@ -1,20 +1,21 @@
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Row, usePagination, useSortBy, useTable } from "react-table";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { Button } from "design-react-kit";
-import { format } from "date-fns";
 import Api from "../../api/backoffice";
-import CenteredLoading from "../CenteredLoading";
+import { DiscountState } from "../../api/generated";
 import {
   ApprovedAgreement,
   ApprovedAgreements
 } from "../../api/generated_backoffice";
+import CenteredLoading from "../CenteredLoading";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
-import { DiscountState } from "../../api/generated";
-import ConventionFilter from "./ConventionFilter";
 import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
+import ConventionFilter from "./ConventionFilter";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorConvention = () => {
@@ -27,29 +28,28 @@ const OperatorConvention = () => {
   >();
   const refForm = useRef<any>(null);
 
-  const getConventionsApi = async (params?: any) =>
-    await tryCatch(
-      () =>
-        Api.Agreement.getApprovedAgreements(
-          params.profileFullName,
-          params.lastUpdateDateFrom,
-          params.lastUpdateDateTo,
-          pageSize,
-          params.page,
-          params.sortColumn,
-          params.sortDirection
-        ),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setLoading(false);
-          setConventions(response);
-        }
-      )
-      .run();
+  const getConventionsApi = (params?: any) =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          Api.Agreement.getApprovedAgreements(
+            params.profileFullName,
+            params.lastUpdateDateFrom,
+            params.lastUpdateDateTo,
+            pageSize,
+            params.page,
+            params.sortColumn,
+            params.sortDirection
+          ),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map(response => {
+        setLoading(false);
+        setConventions(response);
+      })
+    )();
 
   const getConventions = (params?: any) => {
     setLoading(true);
