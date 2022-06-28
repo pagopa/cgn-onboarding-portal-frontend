@@ -1,19 +1,20 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useTable, usePagination, Row, useSortBy } from "react-table";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Row, usePagination, useSortBy, useTable } from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { Button, Icon } from "design-react-kit";
+import { Button } from "design-react-kit";
 import { format } from "date-fns";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
-  ApprovedAgreements,
-  ApprovedAgreement
+  ApprovedAgreement,
+  ApprovedAgreements
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import { DiscountState } from "../../api/generated";
 import ConventionFilter from "./ConventionFilter";
-import ConventionDetails from "./ConventionDetails";
+import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorConvention = () => {
@@ -77,6 +78,12 @@ const OperatorConvention = () => {
       {
         Header: "Agevolazioni",
         accessor: "publishedDiscounts"
+      },
+      {
+        Header: "TEST",
+        accessor: "testPending",
+        Cell: ({ row }: { row: Row }) =>
+          row.values.testPending && getBadgeStatus(DiscountState.TestPending)
       }
     ],
     []
@@ -147,6 +154,7 @@ const OperatorConvention = () => {
         onClose={() => {
           setShowDetails(false);
           setSelectedConvention(undefined);
+          getConventions({});
         }}
       />
     );

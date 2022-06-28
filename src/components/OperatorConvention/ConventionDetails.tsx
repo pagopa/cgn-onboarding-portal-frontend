@@ -10,6 +10,7 @@ import {
   ApprovedAgreementDetail,
   ApprovedAgreement
 } from "../../api/generated_backoffice";
+import { DiscountState } from "../../api/generated";
 import Documents from "./Documents";
 import Profile from "./Profile";
 import Referent from "./Referent";
@@ -41,6 +42,58 @@ const menuLink = (
   </li>
 );
 
+export const getBadgeStatus = (state: DiscountState) => {
+  switch (state) {
+    case "suspended":
+      return (
+        <span
+          className="badge badge-pill badge-outline-warning"
+          style={{ fontSize: "12px" }}
+        >
+          Sospesa
+        </span>
+      );
+    case "test_pending":
+      return (
+        <span
+          className="badge badge-pill badge-outline-warning"
+          style={{ fontSize: "12px" }}
+        >
+          Test
+        </span>
+      );
+    case "test_passed":
+      return (
+        <span
+          className="badge badge-pill badge-outline-success"
+          style={{ fontSize: "12px" }}
+        >
+          Test superato
+        </span>
+      );
+    case "test_failed":
+      return (
+        <span
+          className="badge badge-pill badge-outline-danger"
+          style={{ fontSize: "12px" }}
+        >
+          Test fallito
+        </span>
+      );
+    case "published":
+      return (
+        <span
+          className="badge badge-pill badge-outline-primary"
+          style={{ fontSize: "12px" }}
+        >
+          Pubblicata
+        </span>
+      );
+    default:
+      return null;
+  }
+};
+
 const getView = (
   details: ApprovedAgreementDetail | undefined,
   view: string,
@@ -57,6 +110,7 @@ const getView = (
             reloadDetails={getConventionDetails}
             agreementId={agreement?.agreementId || ""}
             discount={discount}
+            profile={details.profile}
           />
         );
       } else {
@@ -158,7 +212,10 @@ const ConventionDetails = ({
                       details?.discounts?.length ? (
                         <ul className="link-list">
                           {details?.discounts?.map((d, i: number) => (
-                            <li className="nav-link" key={i}>
+                            <li
+                              className="nav-link d-flex flex-row align-items-center flex-nowrap"
+                              key={i}
+                            >
                               <a
                                 className={cx(
                                   "nav-link primary-color cursor-pointer",
@@ -170,13 +227,9 @@ const ConventionDetails = ({
                                 )}
                                 onClick={() => setView(`agevolazione${i + 1}`)}
                               >
-                                <span className="d-flex align-items-center">
-                                  Agevolazione #{i + 1}
-                                  {d.state === "suspended" && (
-                                    <span className="dot ml-2 bg-warning" />
-                                  )}
-                                </span>
+                                {d.name}
                               </a>
+                              {getBadgeStatus(d.state)}
                             </li>
                           ))}
                         </ul>
