@@ -234,6 +234,7 @@ const Discounts = () => {
           isOpen={publishModal}
           toggle={togglePublishModal}
           publish={() => publishDiscount(selectedPublish)}
+          profile={profile}
         />
         <UnpublishModal
           isOpen={unpublishModal}

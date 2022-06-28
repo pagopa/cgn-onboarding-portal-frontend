@@ -20,7 +20,6 @@ import FormField from "../FormField";
 import { Discount, ProductCategory } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { discountDataValidationSchema } from "../ValidationSchemas";
-import PublishModal from "../../Discounts/PublishModal";
 import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
@@ -58,9 +57,6 @@ const EditDiscountForm = () => {
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
-  const [publishModal, setPublishModal] = useState(false);
-  const togglePublishModal = () => setPublishModal(!publishModal);
-  const [selectedPublish, setSelectedPublish] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
   const throwErrorTooltip = (e: string) => {
@@ -151,17 +147,6 @@ const EditDiscountForm = () => {
           });
           setLoading(false);
         }
-      )
-      .run();
-
-  const publishDiscount = async (discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.publishDiscount(agreement.id, discountId),
-      toError
-    )
-      .fold(
-        () => void 0,
-        () => void 0
       )
       .run();
 
@@ -325,11 +310,6 @@ const EditDiscountForm = () => {
           </Form>
         )}
       </Formik>
-      <PublishModal
-        isOpen={publishModal}
-        toggle={togglePublishModal}
-        publish={() => publishDiscount(selectedPublish)}
-      />
     </>
   );
 };
