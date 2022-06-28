@@ -26,6 +26,11 @@ import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
 import FormField from "../FormField";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
+import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import { Severity, useTooltip } from "../../../context/tooltip";
+import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
 
 const emptyInitialValues = {
   name: "",
