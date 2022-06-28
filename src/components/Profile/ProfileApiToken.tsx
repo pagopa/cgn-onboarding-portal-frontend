@@ -1,38 +1,38 @@
-import React, { useEffect, useState } from "react";
 import { Button, Icon } from "design-react-kit";
-import { useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Api from "../../api";
+
 const ProfileApiToken = () => {
   const agreement = useSelector((state: any) => state.agreement.value);
   const [tokens, setTokens] = useState<any>();
   const [isPrimaryTokenShown, setIsPrimaryTokenShown] = useState(false);
   const [isSecondaryTokenShown, setIsSecondaryTokenShown] = useState(false);
 
-  const getToken = async (agreementId: string) =>
-    await tryCatch(() => Api.ApiToken.getTokens(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        tokens => setTokens(tokens)
-      )
-      .run();
+  const getToken = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.ApiToken.getTokens(agreementId), toError),
+      TE.map(response => response.data),
+      TE.map(tokens => setTokens(tokens)),
+      TE.mapLeft(_ => void 0)
+    )();
 
-  const regenerateToken = async (
+  const regenerateToken = (
     agreementId: string,
     tokenType: "primary" | "secondary"
   ) =>
-    await tryCatch(
-      () => Api.ApiToken.regenerateToken(agreementId, tokenType),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        tokens => setTokens(tokens)
-      )
-      .run();
+    pipe(
+      TE.tryCatch(
+        () => Api.ApiToken.regenerateToken(agreementId, tokenType),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.map(tokens => setTokens(tokens)),
+      TE.mapLeft(_ => void 0)
+    )();
 
   const getHiddenToken = (token: string) => "X".repeat(token.length);
 

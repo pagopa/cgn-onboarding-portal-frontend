@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
 import { Button } from "design-react-kit";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useEffect, useState } from "react";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 
@@ -22,20 +23,19 @@ const BucketCodeModal = ({
   const [bucketCode, setBucketCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const getBucketCode = async () =>
-    await tryCatch(
-      () => Api.Discount.getDiscountBucketCode(agreementId, discountId),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setIsLoading(false),
-        bucket => {
-          setIsLoading(false);
-          setBucketCode(bucket.code);
-        }
-      )
-      .run();
+  const getBucketCode = () =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Discount.getDiscountBucketCode(agreementId, discountId),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setIsLoading(false)),
+      TE.map(bucket => {
+        setIsLoading(false);
+        setBucketCode(bucket.code);
+      })
+    )();
 
   useEffect(() => {
     setIsLoading(true);

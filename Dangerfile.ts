@@ -1,7 +1,11 @@
-// import custom DangerJS rules
-// see http://danger.systems/js
-// see https://github.com/teamdigitale/danger-plugin-digitalcitizenship/
-// tslint:disable-next-line:prettier
-import checkDangers from "danger-plugin-digitalcitizenship";
+import customRules from "@pagopa/danger-plugin";
+import { RecordScope } from "@pagopa/danger-plugin/dist/types";
 
-checkDangers();
+const recordScope: RecordScope = {
+  projectToScope: {
+    PE: "Portale Esercenti"
+  },
+  tagToScope: {}
+};
+
+customRules(recordScope);

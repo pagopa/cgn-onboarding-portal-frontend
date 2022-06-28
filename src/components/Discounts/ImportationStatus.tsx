@@ -1,11 +1,12 @@
+import { Icon, Progress } from "design-react-kit";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { CSSProperties, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Icon, Progress } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import Api from "../../api";
 import { BucketCodeLoadStatus } from "../../api/generated";
 import { Severity, useTooltip } from "../../context/tooltip";
-import Api from "../../api";
 import CenteredLoading from "../CenteredLoading";
 
 type Props = {
@@ -111,28 +112,27 @@ const ImportationStatus = (props: Props) => {
   };
 
   const getCodesStatus = async () =>
-    await tryCatch(
-      () =>
-        Api.DiscountBucketLoadingProgress.getDiscountBucketCodeLoadingProgess(
-          props.agreementId,
-          props.discountId
-        ),
-      toError
-    )
-      .map(response => response.data.percent)
-      .fold(
-        _ => {
-          throwErrorTooltip(
-            "Errore nel recuperare lo stato di caricamento codici"
-          );
-          setIsLoading(false);
-        },
-        p => {
-          setIsLoading(false);
-          setProgress(Math.round(p * 100) / 100);
-        }
-      )
-      .run();
+    pipe(
+      TE.tryCatch(
+        () =>
+          Api.DiscountBucketLoadingProgress.getDiscountBucketCodeLoadingProgess(
+            props.agreementId,
+            props.discountId
+          ),
+        toError
+      ),
+      TE.map(response => response.data.percent),
+      TE.mapLeft(_ => {
+        throwErrorTooltip(
+          "Errore nel recuperare lo stato di caricamento codici"
+        );
+        setIsLoading(false);
+      }),
+      TE.map(p => {
+        setIsLoading(false);
+        setProgress(Math.round(p * 100) / 100);
+      })
+    )();
 
   useEffect(() => {
     if (

@@ -1,28 +1,29 @@
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { format } from "date-fns";
 import { useHistory } from "react-router-dom";
 import Api from "../../../api";
-import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
-import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
-import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
-import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
-import { RootState } from "../../../store/store";
-import FormSection from "../FormSection";
-import FormField from "../FormField";
 import { CreateDiscount } from "../../../api/generated";
-import { DASHBOARD } from "../../../navigation/routes";
-import { discountDataValidationSchema } from "../ValidationSchemas";
-import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
-import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
+import { DASHBOARD } from "../../../navigation/routes";
+import { RootState } from "../../../store/store";
 import chainAxios from "../../../utils/chainAxios";
-import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
+import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
 import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
+import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
+import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
+import FormField from "../FormField";
+import FormSection from "../FormSection";
+import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
@@ -65,33 +66,31 @@ const CreateDiscountForm = () => {
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "Bucket";
 
-  const createDiscount = async (
-    agreementId: string,
-    discount: CreateDiscount
-  ) =>
-    await tryCatch(
-      () => Api.Discount.createDiscount(agreementId, discount),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(throwErrorTooltip, () => history.push(DASHBOARD))
-      .run();
+  const createDiscount = (agreementId: string, discount: CreateDiscount) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Discount.createDiscount(agreementId, discount),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(throwErrorTooltip),
+      TE.map(() => history.push(DASHBOARD))
+    )();
 
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        profile => {
-          setProfile({
-            ...profile,
-            hasDifferentFullName: !!profile.name
-          });
-          setLoading(false);
-        }
-      )
-      .run();
+  const getProfile = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.Profile.getProfile(agreementId), toError),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map(profile => {
+        setProfile({
+          ...profile,
+          hasDifferentFullName: !!profile.name
+        });
+        setLoading(false);
+      })
+    )();
 
   useEffect(() => {
     setLoading(true);

@@ -1,4 +1,5 @@
-import { fromNullable } from "fp-ts/lib/Option";
+import * as O from "fp-ts/Option";
+import { pipe } from "fp-ts/function";
 
 const getAdminLoginUri = () => {
   switch (process.env.NODE_ENV) {
@@ -23,9 +24,10 @@ connect-src 'self' ${getAdminLoginUri()} ${
   } https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self';
 frame-src 'self' https://www.google.com;
-img-src 'self' https://assets.cdn.io.italia.it https://cgnonboardingportalpsa.blob.core.windows.net ${fromNullable(
-    process.env.BASE_BLOB_PATH
-  ).getOrElse("")} ${
+img-src 'self' https://assets.cdn.io.italia.it https://cgnonboardingportalpsa.blob.core.windows.net ${pipe(
+    O.fromNullable(process.env.BASE_BLOB_PATH),
+    O.getOrElse(() => "")
+  )} ${
     process.env.NODE_ENV !== "production" ? "https://upload.wikimedia.org/" : ""
   };
 manifest-src 'self';

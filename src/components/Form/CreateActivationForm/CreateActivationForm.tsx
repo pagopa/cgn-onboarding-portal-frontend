@@ -1,12 +1,13 @@
-import { useHistory } from "react-router-dom";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useState } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { Severity, useTooltip } from "../../../context/tooltip";
+import { useHistory } from "react-router-dom";
 import Api from "../../../api/backoffice";
-import chainAxios from "../../../utils/chainAxios";
-import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
 import { OrganizationWithReferents } from "../../../api/generated_backoffice";
+import { Severity, useTooltip } from "../../../context/tooltip";
+import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
+import chainAxios from "../../../utils/chainAxios";
 import ActivationForm from "../ActivationForm";
 
 const emptyInitialValues: OrganizationWithReferents = {
@@ -30,24 +31,23 @@ const CreateActivationForm = () => {
     });
   };
 
-  const createActivation = async (organization: OrganizationWithReferents) =>
-    await tryCatch(
-      () => Api.AttributeAuthority.upsertOrganization(organization),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => {
-          setLoading(false);
-          throwErrorTooltip();
-        },
-        () => {
-          setLoading(false);
-          history.push(ADMIN_PANEL_ACCESSI);
-        }
-      )
-      .run();
+  const createActivation = (organization: OrganizationWithReferents) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.AttributeAuthority.upsertOrganization(organization),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(() => {
+        setLoading(false);
+        throwErrorTooltip();
+      }),
+      TE.map(() => {
+        setLoading(false);
+        history.push(ADMIN_PANEL_ACCESSI);
+      })
+    )();
 
   return (
     <ActivationForm

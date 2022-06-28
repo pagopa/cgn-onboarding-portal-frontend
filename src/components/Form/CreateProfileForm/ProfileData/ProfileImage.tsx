@@ -1,15 +1,16 @@
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import Api from "../../../../api/index";
+import PlusIcon from "../../../../assets/icons/plus.svg";
 import { Severity, useTooltip } from "../../../../context/tooltip";
+import { setImage } from "../../../../store/agreement/agreementSlice";
+import { RootState } from "../../../../store/store";
+import chainAxios from "../../../../utils/chainAxios";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormSection from "../../FormSection";
-import { setImage } from "../../../../store/agreement/agreementSlice";
-import PlusIcon from "../../../../assets/icons/plus.svg";
-import { RootState } from "../../../../store/store";
-import Api from "../../../../api/index";
-import chainAxios from "../../../../utils/chainAxios";
 
 const FooterDescription = (
   <p className="text-base font-weight-normal text-gray">
@@ -54,31 +55,30 @@ const ProfileImage = () => {
     }
   };
 
-  const uploadImage = async (image: any) =>
-    await tryCatch(
-      () => Api.Agreement.uploadImage(agreement.id, image[0]),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        (error: any) => {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: getImageErrorCodeDescription(error?.response?.data)
-          });
-          setLoading(false);
-        },
-        response => {
-          if (response?.imageUrl) {
-            dispatch(
-              setImage(`${process.env.BASE_IMAGE_PATH}/${response.imageUrl}`)
-            );
-          }
-          setLoading(false);
+  const uploadImage = (image: any) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Agreement.uploadImage(agreement.id, image[0]),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft((error: any) => {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: getImageErrorCodeDescription(error?.response?.data)
+        });
+        setLoading(false);
+      }),
+      TE.map(response => {
+        if (response?.imageUrl) {
+          dispatch(
+            setImage(`${process.env.BASE_IMAGE_PATH}/${response.imageUrl}`)
+          );
         }
-      )
-      .run();
+        setLoading(false);
+      })
+    )();
 
   return (
     <FormSection

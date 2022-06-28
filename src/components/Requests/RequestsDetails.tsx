@@ -1,14 +1,15 @@
+import { Button } from "design-react-kit";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import Api from "../../api/backoffice";
+import { Severity, useTooltip } from "../../context/tooltip";
 import { RootState } from "../../store/store";
-import { useTooltip, Severity } from "../../context/tooltip";
+import AssignRequest from "./AssignRequest";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
-import AssignRequest from "./AssignRequest";
 
 const RequestsDetails = ({
   original,
@@ -30,29 +31,27 @@ const RequestsDetails = ({
   const assignedToMe =
     `${user.given_name} ${user.family_name}` === original.assignee?.fullName;
 
-  const approveAgreementApi = async () =>
-    await tryCatch(() => Api.Agreement.approveAgreement(original.id), toError)
-      .fold(
-        () => setLoading(false),
-        response => {
-          if (response.status === 204) {
-            updateList();
-            triggerTooltip({
-              severity: Severity.SUCCESS,
-              text:
-                "La richiesta di convenzione è stata validata con successo.",
-              title: "Validazione Effettuata"
-            });
-          } else {
-            triggerTooltip({
-              severity: Severity.DANGER,
-              text: "Errore durante la validazione"
-            });
-          }
-          setLoading(false);
+  const approveAgreementApi = () =>
+    pipe(
+      TE.tryCatch(() => Api.Agreement.approveAgreement(original.id), toError),
+      TE.map(response => {
+        if (response.status === 204) {
+          updateList();
+          triggerTooltip({
+            severity: Severity.SUCCESS,
+            text: "La richiesta di convenzione è stata validata con successo.",
+            title: "Validazione Effettuata"
+          });
+        } else {
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text: "Errore durante la validazione"
+          });
         }
-      )
-      .run();
+        setLoading(false);
+      }),
+      TE.mapLeft(_ => setLoading(false))
+    )();
 
   const approveAgreement = () => {
     setLoading(true);
@@ -60,27 +59,25 @@ const RequestsDetails = ({
   };
 
   const rejectAgreementApi = async () =>
-    await tryCatch(
-      () =>
-        Api.Agreement.rejectAgreement(original.id, {
-          reasonMessage: rejectMessage
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        () => {
-          setLoading(false);
-          updateList();
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text: "La richiesta di convenzione è stata rifiutata con successo.",
-            title: "Rifiuto inviato"
-          });
-        }
-      )
-      .run();
+    pipe(
+      TE.tryCatch(
+        () =>
+          Api.Agreement.rejectAgreement(original.id, {
+            reasonMessage: rejectMessage
+          }),
+        toError
+      ),
+      TE.map(_ => {
+        setLoading(false);
+        updateList();
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text: "La richiesta di convenzione è stata rifiutata con successo.",
+          title: "Rifiuto inviato"
+        });
+      }),
+      TE.mapLeft(_ => setLoading(false))
+    )();
 
   const rejectAgreement = () => {
     setLoading(true);

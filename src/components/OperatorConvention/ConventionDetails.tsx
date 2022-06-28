@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import cx from "classnames";
-import { Icon } from "design-react-kit";
 import { format } from "date-fns";
+import { Icon } from "design-react-kit";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useEffect, useState } from "react";
 import Api from "../../api/backoffice";
-import CenteredLoading from "../CenteredLoading";
-import {
-  ApprovedAgreementDetail,
-  ApprovedAgreement
-} from "../../api/generated_backoffice";
 import { DiscountState } from "../../api/generated";
+import {
+  ApprovedAgreement,
+  ApprovedAgreementDetail
+} from "../../api/generated_backoffice";
+import CenteredLoading from "../CenteredLoading";
+import Discount from "./Discount";
 import Documents from "./Documents";
+import OperatorData from "./OperatorData";
 import Profile from "./Profile";
 import Referent from "./Referent";
-import OperatorData from "./OperatorData";
-import Discount from "./Discount";
 
 const menuLink = (
   view: string,
@@ -141,20 +142,19 @@ const ConventionDetails = ({
   const [details, setDetails] = useState<ApprovedAgreementDetail>();
   const [view, setView] = useState("dati_operatore");
 
-  const getConventionDetailsApi = async () =>
-    await tryCatch(
-      () => Api.Agreement.getApprovedAgreement(agreement?.agreementId || ""),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setDetails(response);
-          setLoading(false);
-        }
-      )
-      .run();
+  const getConventionDetailsApi = () =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Agreement.getApprovedAgreement(agreement?.agreementId || ""),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map(response => {
+        setDetails(response);
+        setLoading(false);
+      })
+    )();
 
   const getConventionDetails = () => {
     if (!loading) {

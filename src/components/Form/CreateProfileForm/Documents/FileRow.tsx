@@ -1,13 +1,14 @@
-import React, { useRef, useState } from "react";
 import { Button, Icon, Progress } from "design-react-kit";
 import { saveAs } from "file-saver";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { Severity, useTooltip } from "../../../../context/tooltip";
-import DocumentIcon from "../../../../assets/icons/document.svg";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useRef, useState } from "react";
 import Api from "../../../../api";
-import DocumentSuccess from "../../../../assets/icons/document-success.svg";
 import { Document } from "../../../../api/generated";
+import DocumentSuccess from "../../../../assets/icons/document-success.svg";
+import DocumentIcon from "../../../../assets/icons/document.svg";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import { formatDate } from "../../../../utils/dates";
 import DeleteDocument from "./DeleteDocument";
 
@@ -36,80 +37,76 @@ const FileRow = ({
     refFile.current.click();
   };
 
-  const getTemplates = async () => {
+  const getTemplates = () => {
     setLoadingTemplate(true);
-    await tryCatch(
-      () =>
-        Api.DocumentTemplate.downloadDocumentTemplate(agreementId, type, {
-          headers: {
-            "Content-Type": "application/pdf"
-          },
-          responseType: "arraybuffer",
-          onDownloadProgress: (event: any) => {
-            setUploadProgress(Math.round((100 * event.loaded) / event.total));
-          }
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => {
-          setLoadingTemplate(false);
-          setUploadProgress(0);
-        },
-        response => {
-          if (response) {
-            const blob = new Blob([response], { type: "application/pdf" });
-            saveAs(blob, label);
-          }
-          setLoadingTemplate(false);
-          setUploadProgress(0);
+    void pipe(
+      TE.tryCatch(
+        () =>
+          Api.DocumentTemplate.downloadDocumentTemplate(agreementId, type, {
+            headers: {
+              "Content-Type": "application/pdf"
+            },
+            responseType: "arraybuffer",
+            onDownloadProgress: (event: any) => {
+              setUploadProgress(Math.round((100 * event.loaded) / event.total));
+            }
+          }),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.mapLeft(() => {
+        setLoadingTemplate(false);
+        setUploadProgress(0);
+      }),
+      TE.map(response => {
+        if (response) {
+          const blob = new Blob([response], { type: "application/pdf" });
+          saveAs(blob, label);
         }
-      )
-      .run();
+        setLoadingTemplate(false);
+        setUploadProgress(0);
+      })
+    )();
   };
 
-  const addFile = async (files: any) => {
+  const addFile = (files: any) => {
     setLoadingDoc(true);
-    await tryCatch(
-      () =>
-        Api.Document.uploadDocument(agreementId, type, files[0], {
-          onUploadProgress: (event: any) => {
-            setUploadProgress(Math.round((100 * event.loaded) / event.total));
-          }
-        }),
-      toError
-    )
-      .fold(
-        () => {
-          setLoadingDoc(false);
-          setUploadProgress(0);
-        },
-        response => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          response.status
-            ? getFiles()
-            : triggerTooltip({
-                severity: Severity.DANGER,
-                text: "Caricamento del file fallito"
-              });
-          setLoadingDoc(false);
-          setUploadProgress(0);
-        }
-      )
-      .run();
+    void pipe(
+      TE.tryCatch(
+        () =>
+          Api.Document.uploadDocument(agreementId, type, files[0], {
+            onUploadProgress: (event: any) => {
+              setUploadProgress(Math.round((100 * event.loaded) / event.total));
+            }
+          }),
+        toError
+      ),
+      TE.mapLeft(() => {
+        setLoadingDoc(false);
+        setUploadProgress(0);
+      }),
+      TE.map(response => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        response.status
+          ? getFiles()
+          : triggerTooltip({
+              severity: Severity.DANGER,
+              text: "Caricamento del file fallito"
+            });
+        setLoadingDoc(false);
+        setUploadProgress(0);
+      })
+    )();
   };
 
-  const deleteFile = async () =>
-    await tryCatch(
-      () => Api.Document.deleteDocument(agreementId, type),
-      toError
-    )
-      .fold(
-        () => void 0,
-        () => getFiles()
-      )
-      .run();
+  const deleteFile = () =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Document.deleteDocument(agreementId, type),
+        toError
+      ),
+      TE.map(() => getFiles())
+    )();
 
   return (
     <div className="border-bottom py-8">

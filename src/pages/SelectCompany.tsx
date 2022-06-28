@@ -1,47 +1,47 @@
-import React, { useState } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { logout, setCookie } from "../utils/cookie";
-import { RootState } from "../store/store";
-import Layout from "../components/Layout/Layout";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import Container from "../components/Container/Container";
+import Layout from "../components/Layout/Layout";
 import CgnLogo from "../components/Logo/CgnLogo";
+import { RootState } from "../store/store";
+import { logout, setCookie } from "../utils/cookie";
 
 const SelectCompany = ({ token }: { token: string }) => {
   const { data } = useSelector((state: RootState) => state.user);
   const [selectedCompany, setCompany] = useState("");
   const user = data as any;
 
-  const saveSelectedCompany = async () =>
-    await tryCatch(
-      () =>
-        axios.post(
-          `${process.env.BASE_SPID_LOGIN_PATH}/upgradeToken`,
-          {
-            organization_fiscal_code: selectedCompany
-          },
-          {
-            headers: {
-              "X-CGN-TOKEN": token,
-              Accept: "application/json",
-              "Content-Type": "application/json"
+  const saveSelectedCompany = () =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          axios.post(
+            `${process.env.BASE_SPID_LOGIN_PATH}/upgradeToken`,
+            {
+              organization_fiscal_code: selectedCompany
+            },
+            {
+              headers: {
+                "X-CGN-TOKEN": token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              }
             }
-          }
-        ),
-      toError
-    )
-      .map(response => response.data.token)
-      .fold(
-        () => logout("USER"),
-        response => {
-          setCookie(response);
-          window.location.replace("/");
-        }
-      )
-      .run();
+          ),
+        toError
+      ),
+      TE.map(response => response.data.token),
+      TE.map(response => {
+        setCookie(response);
+        window.location.replace("/");
+      }),
+      TE.mapLeft(_ => logout("USER"))
+    )();
 
   return (
     <Layout>

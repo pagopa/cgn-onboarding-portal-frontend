@@ -1,7 +1,8 @@
 /* eslint-disable functional/immutable-data */
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useEffect, useRef, useState } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Severity, useTooltip } from "../../../context/tooltip";
 
@@ -20,12 +21,12 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
       text: "C'è stato un errore durante la verifica del recaptcha"
     });
 
-  const executeRecaptcha = async () =>
-    await tryCatch(() => recaptchaRef.current.executeAsync(), toError)
-      .fold(onErrorTooltip, response =>
-        setFieldValue("recaptchaToken", response)
-      )
-      .run();
+  const executeRecaptcha = () =>
+    pipe(
+      TE.tryCatch(() => recaptchaRef.current.executeAsync(), toError),
+      TE.map(response => setFieldValue("recaptchaToken", response)),
+      TE.mapLeft(onErrorTooltip)
+    )();
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -1,22 +1,23 @@
 /* eslint-disable sonarjs/cognitive-complexity */
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/Either";
+import * as array from "fp-ts/lib/Array";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import * as array from "fp-ts/lib/Array";
-import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
-import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
-import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { Severity, useTooltip } from "../../../../context/tooltip";
 import { EmptyAddresses } from "../../../../utils/form_types";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
+import FormContainer from "../../FormContainer";
+import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import ProfileDescription from "./ProfileDescription";
+import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
-import ProfileImage from "./ProfileImage";
-import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
 const defaultSalesChannel = {
@@ -87,79 +88,79 @@ const ProfileData = ({
     });
   };
 
-  const createProfile = async (discount: any) =>
-    await tryCatch(
-      () => Api.Profile.createProfile(agreement.id, discount),
-      toError
-    )
-      .chain(chainAxios)
-      .fold(throwErrorTooltip, () => handleNext())
-      .run();
+  const createProfile = (discount: any) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Profile.createProfile(agreement.id, discount),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.mapLeft(throwErrorTooltip),
+      TE.map(() => handleNext())
+    )();
 
-  const updateProfile = async (discount: any) => {
-    await tryCatch(
-      () => Api.Profile.updateProfile(agreement.id, discount),
-      toError
-    )
-      .chain(chainAxios)
-      .fold(throwErrorTooltip, () => {
+  const updateProfile = (discount: any) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Profile.updateProfile(agreement.id, discount),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.mapLeft(throwErrorTooltip),
+      TE.map(() => {
         onUpdate();
         handleNext();
       })
-      .run();
-  };
+    )();
 
   const submitProfile = () => (isCompleted ? updateProfile : createProfile);
 
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        (profile: any) => {
-          setInitialValues({
-            ...profile,
-            salesChannel:
-              profile.salesChannel.channelType === "OfflineChannel" ||
-              profile.salesChannel.channelType === "BothChannels"
-                ? {
-                    ...profile.salesChannel,
-                    addresses: !array.isEmpty(profile.salesChannel.addresses)
-                      ? profile.salesChannel.addresses.map((address: any) => {
-                          const addressSplit = address.fullAddress
-                            .split(",")
-                            .map((item: string) => item.trim());
-                          return {
-                            street: addressSplit[0],
-                            city: addressSplit[1],
-                            district: addressSplit[2],
-                            zipCode: addressSplit[3],
-                            value: address.fullAddress,
-                            label: address.fullAddress
-                          };
-                        })
-                      : [
-                          {
-                            fullAddress: ""
-                          }
-                        ]
-                  }
-                : profile.salesChannel,
-            hasDifferentFullName: !!profile.name
-          });
-          setLoading(false);
-        }
-      )
-      .run();
+  const getProfile = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.Profile.getProfile(agreementId), toError),
+      TE.map(response => response.data),
+      TE.mapLeft(() => setLoading(false)),
+      TE.map((profile: any) => {
+        setInitialValues({
+          ...profile,
+          salesChannel:
+            profile.salesChannel.channelType === "OfflineChannel" ||
+            profile.salesChannel.channelType === "BothChannels"
+              ? {
+                  ...profile.salesChannel,
+                  addresses: !array.isEmpty(profile.salesChannel.addresses)
+                    ? profile.salesChannel.addresses.map((address: any) => {
+                        const addressSplit = address.fullAddress
+                          .split(",")
+                          .map((item: string) => item.trim());
+                        return {
+                          street: addressSplit[0],
+                          city: addressSplit[1],
+                          district: addressSplit[2],
+                          zipCode: addressSplit[3],
+                          value: address.fullAddress,
+                          label: address.fullAddress
+                        };
+                      })
+                    : [
+                        {
+                          fullAddress: ""
+                        }
+                      ]
+                }
+              : profile.salesChannel,
+          hasDifferentFullName: !!profile.name
+        });
+        setLoading(false);
+      })
+    )();
 
-  const getGeolocationToken = async () =>
-    await tryCatch(() => Api.GeolocationToken.getGeolocationToken(), toError)
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        token => setGeolocationToken(token.token)
-      )
-      .run();
+  const getGeolocationToken = () =>
+    pipe(
+      TE.tryCatch(() => Api.GeolocationToken.getGeolocationToken(), toError),
+      TE.map(response => response.data),
+      TE.map(token => setGeolocationToken(token.token))
+    )();
 
   useEffect(() => {
     if (isCompleted) {

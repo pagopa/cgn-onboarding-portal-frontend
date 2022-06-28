@@ -1,8 +1,9 @@
-import React, { useState } from "react";
 import { Button } from "design-react-kit";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useState } from "react";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import Api from "../../api/backoffice";
 
 const AssignRequest = ({
@@ -18,16 +19,15 @@ const AssignRequest = ({
 }) => {
   const [isOpen, toggleAssign] = useState(false);
 
-  const assignAgreementsApi = async () =>
-    await tryCatch(() => Api.Agreement.assignAgreement(original.id), toError)
-      .fold(
-        () => setLoading(false),
-        () => {
-          updateList();
-          setLoading(false);
-        }
-      )
-      .run();
+  const assignAgreementsApi = () =>
+    pipe(
+      TE.tryCatch(() => Api.Agreement.assignAgreement(original.id), toError),
+      TE.map(_ => {
+        updateList();
+        setLoading(false);
+      }),
+      TE.mapLeft(_ => setLoading(false))
+    )();
 
   const assignAgreements = () => {
     setLoading(true);

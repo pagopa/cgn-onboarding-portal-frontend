@@ -1,27 +1,27 @@
+import { AxiosResponse } from "axios";
+import { compareAsc, format } from "date-fns";
+import { Button, Icon } from "design-react-kit";
+import { toError } from "fp-ts/Either";
+import { constNull, pipe } from "fp-ts/function";
+import * as TE from "fp-ts/TaskEither";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { Column, useExpanded, useSortBy, useTable } from "react-table";
-import { Button, Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
+import { Column, useExpanded, useSortBy, useTable } from "react-table";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { compareAsc, format } from "date-fns";
-import { AxiosResponse } from "axios";
-import { constNull } from "fp-ts/lib/function";
+import { Discount, Profile } from "../../api/generated";
 import Api from "../../api/index";
+import { Severity, useTooltip } from "../../context/tooltip";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
-import { Severity, useTooltip } from "../../context/tooltip";
-import { Discount, Profile } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
-import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
-import UnpublishModal from "./UnpublishModal";
+import PublishModal from "./PublishModal";
 import TestModal from "./TestModal";
+import UnpublishModal from "./UnpublishModal";
 
 const chainAxios = (response: AxiosResponse) =>
-  fromPredicate(
+  TE.fromPredicate(
     (_: AxiosResponse) => _.status === 200 || _.status === 204,
     (r: AxiosResponse) =>
       r.status === 409
@@ -52,88 +52,87 @@ const Discounts = () => {
     });
   };
 
-  const getDiscounts = async () =>
-    await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
-      .map(response => response.data.items)
-      .fold(
-        _ => throwErrorTooltip("Errore nel caricamento delle agevolazioni"),
-        discounts => setDiscounts(discounts)
+  const getDiscounts = () =>
+    pipe(
+      TE.tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError),
+      TE.map(resp => resp.data.items),
+      TE.map(discounts => setDiscounts(discounts)),
+      TE.mapLeft(_ =>
+        throwErrorTooltip("Errore nel caricamento delle agevolazioni")
       )
-      .run();
+    )();
 
-  const deleteDiscount = async () =>
-    await tryCatch(
-      () => Api.Discount.deleteDiscount(agreement.id, selectedDiscount),
-      toError
-    )
-      .fold(
-        _ => throwErrorTooltip("Errore nella cancellazione dell'agevolazione"),
-        () =>
-          setDiscounts(
-            discounts.filter(
-              (discount: any) => discount.id !== selectedDiscount
-            )
-          )
+  const deleteDiscount = () =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Discount.deleteDiscount(agreement.id, selectedDiscount),
+        toError
+      ),
+      TE.map(() =>
+        setDiscounts(
+          discounts.filter((discount: any) => discount.id !== selectedDiscount)
+        )
+      ),
+      TE.mapLeft(_ =>
+        throwErrorTooltip("Errore nella cancellazione dell'agevolazione")
       )
-      .run();
+    )();
 
-  const publishDiscount = async (discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.publishDiscount(agreement.id, discountId),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        e => throwErrorTooltip(e.message),
-        () => void getDiscounts()
-      )
-      .run();
+  const publishDiscount = (discountId: string) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Discount.publishDiscount(agreement.id, discountId),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(e => throwErrorTooltip(e.message)),
+      TE.map(() => void getDiscounts())
+    )();
 
-  const unpublishDiscount = async (discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.unpublishDiscount(agreement.id, discountId),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        _ =>
-          throwErrorTooltip(
-            "Errore durante la richiesta di cambio di stato dell'agevolazione"
-          ),
-        () => void getDiscounts()
-      )
-      .run();
+  const unpublishDiscount = (discountId: string) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Discount.unpublishDiscount(agreement.id, discountId),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(_ =>
+        throwErrorTooltip(
+          "Errore durante la richiesta di cambio di stato dell'agevolazione"
+        )
+      ),
+      TE.map(() => void getDiscounts())
+    )();
 
-  const testDiscount = async (discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.testDiscount(agreement.id, discountId),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        _ =>
-          throwErrorTooltip(
-            "Errore durante la richiesta di test dell'agevolazione"
-          ),
-        () => void getDiscounts()
-      )
-      .run();
+  const testDiscount = (discountId: string) =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Discount.testDiscount(agreement.id, discountId),
+        toError
+      ),
+      TE.chain(chainAxios),
+      TE.map(response => response.data),
+      TE.mapLeft(_ =>
+        throwErrorTooltip(
+          "Errore durante la richiesta di test dell'agevolazione"
+        )
+      ),
+      TE.map(() => void getDiscounts())
+    )();
 
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => {
-          constNull();
-        },
-        profile => {
-          setProfile(profile);
-        }
-      )
-      .run();
+  const getProfile = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.Profile.getProfile(agreementId), toError),
+      TE.map(response => response.data),
+      TE.mapLeft(() => {
+        constNull();
+      }),
+      TE.map(profile => {
+        setProfile(profile);
+      })
+    )();
 
   const isVisible = (state: any, startDate: any, endDate: any) => {
     const today = new Date();

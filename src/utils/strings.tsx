@@ -1,4 +1,5 @@
-import { fromNullable } from "fp-ts/lib/Option";
+import * as O from "fp-ts/Option";
+import { pipe } from "fp-ts/function";
 import { ProductCategory } from "../api/generated";
 import { OrganizationStatus } from "../api/generated_backoffice";
 
@@ -61,7 +62,13 @@ const organizationStatusMap: Record<OrganizationStatus, string> = {
 };
 
 export const makeOrganizationStatusReadable = (status: OrganizationStatus) =>
-  fromNullable(organizationStatusMap[status]).fold("", s => s);
+  pipe(
+    O.fromNullable(organizationStatusMap[status]),
+    O.fold(
+      () => "",
+      s => s
+    )
+  );
 
 export const makeProductCategoriesString = (
   productCategories: Array<ProductCategory>
@@ -71,6 +78,10 @@ export const makeProductCategoriesString = (
   );
 
 export const formatPercentage = (discountValue: number | undefined) =>
-  fromNullable(discountValue)
-    .map(value => `${value} %`)
-    .getOrElse("");
+  pipe(
+    O.fromNullable(discountValue),
+    O.fold(
+      () => "",
+      v => `${v} %`
+    )
+  );

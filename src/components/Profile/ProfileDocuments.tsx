@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
 import { Icon, LinkList, LinkListItem } from "design-react-kit";
-import { useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Api from "../../api";
 import { formatDate } from "../../utils/dates";
 
@@ -11,29 +12,28 @@ const ProfileDocuments = () => {
   const [manifestationDocument, setManifestationDocument] = useState<any>();
   const agreement = useSelector((state: any) => state.agreement.value);
 
-  const getDocuments = async (agreementId: string) =>
-    await tryCatch(() => Api.Document.getDocuments(agreementId), toError)
-      .map(response => response.data.items)
-      .fold(
-        () => void 0,
-        documents => {
-          setAgreementDocument(
-            documents.find(
-              document =>
-                document.documentType === "backoffice_agreement" ||
-                document.documentType === "agreeement"
-            )
-          );
-          setManifestationDocument(
-            documents.find(
-              document =>
-                document.documentType === "backoffice_adhesion_request" ||
-                document.documentType === "adhesion_request"
-            )
-          );
-        }
-      )
-      .run();
+  const getDocuments = (agreementId: string) =>
+    pipe(
+      TE.tryCatch(() => Api.Document.getDocuments(agreementId), toError),
+      TE.map(response => response.data.items),
+      TE.map(documents => {
+        setAgreementDocument(
+          documents.find(
+            document =>
+              document.documentType === "backoffice_agreement" ||
+              document.documentType === "agreeement"
+          )
+        );
+        setManifestationDocument(
+          documents.find(
+            document =>
+              document.documentType === "backoffice_adhesion_request" ||
+              document.documentType === "adhesion_request"
+          )
+        );
+      }),
+      TE.mapLeft(_ => void 0)
+    )();
 
   useEffect(() => {
     void getDocuments(agreement.id);

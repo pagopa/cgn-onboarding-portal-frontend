@@ -1,21 +1,22 @@
-import React, { useMemo, useState } from "react";
-import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
-import { useTooltip, Severity } from "../../context/tooltip";
+import { Button } from "design-react-kit";
+import { toError } from "fp-ts/Either";
+import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/TaskEither";
+import React, { useMemo, useState } from "react";
 import Api from "../../api/backoffice";
 import {
   ApprovedAgreementDiscount,
   ApprovedAgreementProfile
 } from "../../api/generated_backoffice";
+import { Severity, useTooltip } from "../../context/tooltip";
 import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
-import Item from "./Item";
-import { getBadgeStatus } from "./ConventionDetails";
 import BucketCodeModal from "./BucketCodeModal";
+import { getBadgeStatus } from "./ConventionDetails";
+import Item from "./Item";
 
 const Discount = ({
   discount,
@@ -37,80 +38,84 @@ const Discount = ({
   const { triggerTooltip } = useTooltip();
 
   const toggleBucketModal = () => setIsBucketModalOpen(!isBucketModalOpen);
+  const mapLeftAPIError = TE.mapLeft(() =>
+    triggerTooltip({
+      severity: Severity.DANGER,
+      text: "Non è stato possibile aggiornare l'agevolazione, riprova.",
+      title: "Errore"
+    })
+  );
 
-  const postSuspendDiscount = async () =>
-    await tryCatch(
-      () =>
-        Api.Discount.suspendDiscount(agreementId, discount.id, {
-          reasonMessage: suspendMessage
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => {
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text:
-              "La sospensione dell'agevolazione è stata effettuata con successo.",
-            title: "sospensione effettuata"
-          });
-          reloadDetails();
-        }
-      )
-      .run();
+  const postSuspendDiscount = () =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          Api.Discount.suspendDiscount(agreementId, discount.id, {
+            reasonMessage: suspendMessage
+          }),
+        toError
+      ),
+      TE.map(response => response.data),
+      TE.map(() => {
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text:
+            "La sospensione dell'agevolazione è stata effettuata con successo.",
+          title: "sospensione effettuata"
+        });
+        reloadDetails();
+      }),
+      mapLeftAPIError
+    )();
 
   const suspendDiscount = () => {
     void postSuspendDiscount();
   };
 
-  const postRejectTestDiscount = async () =>
-    await tryCatch(
-      () =>
-        Api.Discount.setDiscountTestFailed(agreementId, discount.id, {
-          reasonMessage: rejectMessage
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => {
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text:
-              "La motivazione del fallimento del test dell'agevolazione è stata inviata con successo.",
-            title: "Test respinto"
-          });
-          reloadDetails();
-        }
-      )
-      .run();
+  const postRejectTestDiscount = () =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          Api.Discount.setDiscountTestFailed(agreementId, discount.id, {
+            reasonMessage: rejectMessage
+          }),
+        toError
+      ),
+      TE.map(response => response.data),
+      mapLeftAPIError,
+      TE.map(() => {
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text:
+            "La motivazione del fallimento del test dell'agevolazione è stata inviata con successo.",
+          title: "Test respinto"
+        });
+        reloadDetails();
+      })
+    )();
 
   const rejectTest = () => {
     void postRejectTestDiscount();
   };
 
-  const postApproveTestDiscount = async () =>
-    await tryCatch(
-      () => Api.Discount.setDiscountTestPassed(agreementId, discount.id),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => {
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text:
-              "L'agevolazione ha superato il test ed è pronta per essere pubblicata dall'operatore",
-            title: "Test superato"
-          });
-          reloadDetails();
-        }
-      )
-      .run();
+  const postApproveTestDiscount = () =>
+    pipe(
+      TE.tryCatch(
+        () => Api.Discount.setDiscountTestPassed(agreementId, discount.id),
+        toError
+      ),
+      TE.map(response => response.data),
+      mapLeftAPIError,
+      TE.map(() => {
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text:
+            "L'agevolazione ha superato il test ed è pronta per essere pubblicata dall'operatore",
+          title: "Test superato"
+        });
+        reloadDetails();
+      })
+    )();
 
   const approveTest = () => {
     void postApproveTestDiscount();
