@@ -1,13 +1,8 @@
-import React, { useMemo, useState } from "react";
-import { Row } from "react-table";
-import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
+import { Badge, Button, Icon } from "design-react-kit";
+import React, { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
-import ProfileItem from "../Profile/ProfileItem";
-import {
-  formatPercentage,
-  makeProductCategoriesString
-} from "../../utils/strings";
+import { Row } from "react-table";
 import {
   BucketCodeLoadStatus,
   Discount,
@@ -15,9 +10,14 @@ import {
   Profile
 } from "../../api/generated";
 import EditIcon from "../../assets/icons/edit.svg";
-import TrashIcon from "../../assets/icons/trashcan.svg";
 import TestIcon from "../../assets/icons/magic-wand.svg";
+import TrashIcon from "../../assets/icons/trashcan.svg";
+import {
+  formatPercentage,
+  makeProductCategoriesString
+} from "../../utils/strings";
 import Callout from "../Callout/Callout";
+import ProfileItem from "../Profile/ProfileItem";
 import ImportationStatus from "./ImportationStatus";
 
 type Props = {
@@ -200,9 +200,9 @@ Props) => {
         </span>
       </Button>
       {profile?.salesChannel.channelType !== "OfflineChannel" &&
-        row.original.state !== "test_passed" &&
-        row.original.state !== "published" &&
-        row.original.state !== "suspended" && (
+        (row.original.state === "test_pending" ||
+          row.original.state === "test_failed" ||
+          row.original.state === "draft") && (
           <Button
             className="mr-2 d-flex align-items-center"
             color="primary"
