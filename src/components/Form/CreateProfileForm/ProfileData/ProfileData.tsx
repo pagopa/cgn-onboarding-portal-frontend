@@ -1,22 +1,22 @@
 /* eslint-disable sonarjs/cognitive-complexity */
+import { Form, Formik } from "formik";
+import * as array from "fp-ts/lib/Array";
+import { toError } from "fp-ts/lib/Either";
+import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import * as array from "fp-ts/lib/Array";
-import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
-import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
-import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { Severity, useTooltip } from "../../../../context/tooltip";
 import { EmptyAddresses } from "../../../../utils/form_types";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
+import FormContainer from "../../FormContainer";
+import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import ProfileDescription from "./ProfileDescription";
+import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
-import ProfileImage from "./ProfileImage";
-import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
 const defaultSalesChannel = {
@@ -226,7 +226,8 @@ const ProfileData = ({
         },
         fullName: user.company?.organization_name || "",
         taxCodeOrVat:
-          user.company?.organization_fiscal_code || user.fiscal_number || ""
+          user.company?.organization_fiscal_code || user.fiscal_number || "",
+        description_de: "-"
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
