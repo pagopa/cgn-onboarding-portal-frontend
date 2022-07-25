@@ -1,36 +1,39 @@
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { format } from "date-fns";
 import { useHistory } from "react-router-dom";
 import Api from "../../../api";
-import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
-import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
-import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
-import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
-import { RootState } from "../../../store/store";
-import FormSection from "../FormSection";
-import FormField from "../FormField";
 import { CreateDiscount } from "../../../api/generated";
-import { DASHBOARD } from "../../../navigation/routes";
-import { discountDataValidationSchema } from "../ValidationSchemas";
-import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
-import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
+import { DASHBOARD } from "../../../navigation/routes";
+import { RootState } from "../../../store/store";
 import chainAxios from "../../../utils/chainAxios";
-import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
+import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
 import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
+import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
+import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
+import FormField from "../FormField";
+import FormSection from "../FormSection";
+import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
+  name_en: "",
   description: "",
+  description_en: "",
   startDate: "",
   endDate: "",
   productCategories: [],
   condition: "",
+  condition_en: "",
   staticCode: "",
   enrollToEyca: false
 };
@@ -107,10 +110,23 @@ const CreateDiscountForm = () => {
       onSubmit={values => {
         const newValues = {
           ...values,
+          name_de: "-",
           description: values.description
             ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
             : "",
+          description_en: values.description
+            ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
+          description_de: values.description
+            ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
           condition: values.condition
+            ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
+          condition_en: values.condition
+            ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
+          condition_de: values.condition
             ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
             : "",
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
