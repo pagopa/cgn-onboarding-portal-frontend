@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Api from "../../api/index";
-import { RootState } from "../../store/store";
 import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
+import { RootState } from "../../store/store";
+import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileDataItem from "./ProfileDataItem";
 
 const ProfileData = () => {
@@ -47,9 +48,10 @@ const ProfileData = () => {
                     value={profile.name}
                   />
                 )}
-                <ProfileDataItem
+                <MultilanguageProfileItem
                   label="Descrizione dell'operatore"
                   value={profile.description}
+                  value_en={profile.description_en}
                 />
                 {profile.salesChannel.websiteUrl && (
                   <ProfileDataItem
