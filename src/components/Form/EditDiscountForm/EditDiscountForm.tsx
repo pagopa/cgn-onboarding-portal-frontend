@@ -1,30 +1,30 @@
+import { AxiosResponse } from "axios";
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { fromNullable } from "fp-ts/lib/Option";
+import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { format } from "date-fns";
 import { useHistory, useParams } from "react-router-dom";
-import { AxiosResponse } from "axios";
-import { fromNullable } from "fp-ts/lib/Option";
 import Api from "../../../api";
-import CenteredLoading from "../../CenteredLoading/CenteredLoading";
-import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
-import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
-import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
-import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
-import { RootState } from "../../../store/store";
-import FormSection from "../FormSection";
-import FormField from "../FormField";
 import { Discount, ProductCategory } from "../../../api/generated";
-import { DASHBOARD } from "../../../navigation/routes";
-import { discountDataValidationSchema } from "../ValidationSchemas";
-import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
-import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import { Severity, useTooltip } from "../../../context/tooltip";
-import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import { DASHBOARD } from "../../../navigation/routes";
+import { RootState } from "../../../store/store";
+import CenteredLoading from "../../CenteredLoading/CenteredLoading";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
+import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
 import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
+import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
+import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
+import FormField from "../FormField";
+import FormSection from "../FormSection";
+import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
@@ -250,7 +250,8 @@ const EditDiscountForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
-              {profile?.salesChannel?.channelType === "OnlineChannel" && (
+              {(profile?.salesChannel?.channelType === "OnlineChannel" ||
+                profile?.salesChannel?.channelType === "BothChannels") && (
                 <EnrollToEyca
                   isEycaSupported={checkStaticCode}
                   discountOption={

@@ -1,36 +1,36 @@
 /* eslint-disable sonarjs/cognitive-complexity */
+import { AxiosResponse } from "axios";
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { FieldArray, Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { fromNullable } from "fp-ts/lib/Option";
+import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { FieldArray, Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { format } from "date-fns";
-import { AxiosResponse } from "axios";
-import { fromNullable } from "fp-ts/lib/Option";
-import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
-import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
-import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
-import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
-import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
-import StaticCode from "../../CreateProfileForm/DiscountData/StaticCode";
-import FormContainer from "../../FormContainer";
-import { RootState } from "../../../../store/store";
-import FormSection from "../../FormSection";
-import FormField from "../../FormField";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import {
   CreateDiscount,
   Discount,
   Discounts,
   ProductCategory
 } from "../../../../api/generated";
+import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import { Severity, useTooltip } from "../../../../context/tooltip";
+import { RootState } from "../../../../store/store";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
+import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
+import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
+import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
+import StaticCode from "../../CreateProfileForm/DiscountData/StaticCode";
+import FormContainer from "../../FormContainer";
+import FormField from "../../FormField";
+import FormSection from "../../FormSection";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
-import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
-import EnrollToEyca from "./EnrollToEyca";
 import DiscountUrl from "./DiscountUrl";
+import EnrollToEyca from "./EnrollToEyca";
+import LandingPage from "./LandingPage";
 
 const emptyInitialValues = {
   discounts: [
@@ -344,8 +344,10 @@ const DiscountData = ({
                           setFieldValue={setFieldValue}
                         />
                       )}
-                      {profile?.salesChannel?.channelType ===
-                        "OnlineChannel" && (
+                      {(profile?.salesChannel?.channelType ===
+                        "OnlineChannel" ||
+                        profile?.salesChannel?.channelType ===
+                          "BothChannels") && (
                         <EnrollToEyca
                           isEycaSupported={checkStaticCode}
                           discountOption={
