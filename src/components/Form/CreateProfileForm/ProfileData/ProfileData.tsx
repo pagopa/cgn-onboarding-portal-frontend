@@ -6,6 +6,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Api from "../../../../api";
+import { SupportType } from "../../../../api/generated";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
@@ -227,7 +228,9 @@ const ProfileData = ({
         fullName: user.company?.organization_name || "",
         taxCodeOrVat:
           user.company?.organization_fiscal_code || user.fiscal_number || "",
-        description_de: "-"
+        description_de: "-",
+        supportType: SupportType.EmailAddress,
+        supportValue: "-----"
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {

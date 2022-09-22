@@ -1,15 +1,16 @@
+import { Button } from "design-react-kit";
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { Button } from "design-react-kit";
 import { Link, useHistory } from "react-router-dom";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
-import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import Api from "../../../api";
+import { SupportType } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
+import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
+import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 
 const EditProfileForm = () => {
@@ -46,7 +47,11 @@ const EditProfileForm = () => {
     <>
       {currentProfile && (
         <Formik
-          initialValues={currentProfile}
+          initialValues={{
+            ...currentProfile,
+            supportType: SupportType.EmailAddress,
+            supportValue: "-----"
+          }}
           validationSchema={ProfileDataValidationSchema}
           onSubmit={values => {
             const { hasDifferentFullName, ...profile } = values;
