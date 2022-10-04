@@ -39,6 +39,8 @@ const defaultInitialValues = {
   fullName: "",
   hasDifferentFullName: false,
   name: "",
+  name_en: "",
+  name_de: "---",
   pecAddress: "",
   taxCodeOrVat: "",
   legalOffice: "",
@@ -53,6 +55,8 @@ const defaultInitialValues = {
     telephoneNumber: ""
   },
   description: "",
+  description_en: "",
+  description_de: "---",
   salesChannel: defaultSalesChannel
 };
 

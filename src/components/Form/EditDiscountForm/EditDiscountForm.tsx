@@ -30,11 +30,15 @@ const emptyInitialValues = {
   name: "",
   name_en: "",
   description: "",
+  description_en: "",
+  description_de: "---",
   startDate: "",
   endDate: "",
   discount: "",
   productCategories: [],
   condition: "",
+  condition_en: "",
+  condition_de: "---",
   staticCode: "",
   enrollToEyca: false
 };

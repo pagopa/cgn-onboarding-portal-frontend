@@ -1,9 +1,9 @@
-import React from "react";
 import { Field } from "formik";
-import FormSection from "../../FormSection";
-import InputField from "../../FormField";
-import ToggleField from "../../ToggleField";
+import React from "react";
 import CustomErrorMessage from "../../CustomErrorMessage";
+import InputField from "../../FormField";
+import FormSection from "../../FormSection";
+import ToggleField from "../../ToggleField";
 
 type Props = {
   formValues: any;
@@ -39,8 +39,22 @@ const ProfileInfo = ({ formValues }: Props) => (
         isVisible
         required
       >
-        <Field id="name" name="name" type="text" />
-        <CustomErrorMessage name="name" />
+        <div className="row">
+          <div className="col-6">
+            <p className="text-sm font-weight-normal text-black mb-0">
+              Italiano 🇮🇹
+            </p>
+            <Field id="name" name="name" type="text" />
+            <CustomErrorMessage name="name" />
+          </div>
+          <div className="col-6">
+            <p className="text-sm font-weight-normal text-black mb-0">
+              Inglese 🇬🇧
+            </p>
+            <Field id="name_en" name="name_en" type="text" />
+            <CustomErrorMessage name="name_en" />
+          </div>
+        </div>
       </InputField>
     )}
     <InputField
@@ -69,7 +83,11 @@ const ProfileInfo = ({ formValues }: Props) => (
       />
       <CustomErrorMessage name="legalOffice" />
     </InputField>
-    <InputField htmlFor="telephoneNumber" title="Numero di telefono Operatore" required>
+    <InputField
+      htmlFor="telephoneNumber"
+      title="Numero di telefono Operatore"
+      required
+    >
       <Field
         maxLength={15}
         id="telephoneNumber"
