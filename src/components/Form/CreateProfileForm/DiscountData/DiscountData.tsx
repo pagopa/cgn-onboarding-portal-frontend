@@ -360,8 +360,10 @@ const DiscountData = ({
                           setFieldValue={setFieldValue}
                         />
                       )}
-                      {profile?.salesChannel?.channelType ===
-                        "OnlineChannel" && (
+                      {(profile?.salesChannel?.channelType ===
+                        "OnlineChannel" ||
+                        profile?.salesChannel?.channelType ===
+                          "BothChannels") && (
                         <EnrollToEyca
                           isEycaSupported={checkStaticCode}
                           discountOption={
