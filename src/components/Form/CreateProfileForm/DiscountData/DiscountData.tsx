@@ -37,8 +37,10 @@ const emptyInitialValues = {
     {
       name: "",
       name_en: "",
+      name_de: "----",
       description: "",
       description_en: "",
+      description_de: "----",
       startDate: "",
       endDate: "",
       discount: "",
@@ -46,6 +48,7 @@ const emptyInitialValues = {
       productCategories: [],
       condition: "",
       condition_en: "",
+      condition_de: "----",
       staticCode: "",
       enrollToEyca: false
     }
@@ -247,11 +250,11 @@ const DiscountData = ({
             condition: values.condition
               ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
-            condition_en: values.condition
-              ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            condition_en: values.condition_en
+              ? values.condition_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
-            condition_de: values.condition
-              ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            condition_de: values.condition_de
+              ? values.condition_de.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
             productCategories: discount.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)

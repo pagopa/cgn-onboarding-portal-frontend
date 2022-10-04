@@ -34,6 +34,7 @@ const emptyInitialValues = {
   productCategories: [],
   condition: "",
   condition_en: "",
+  condition_de: "---",
   staticCode: "",
   enrollToEyca: false
 };
@@ -123,11 +124,11 @@ const CreateDiscountForm = () => {
           condition: values.condition
             ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
             : "",
-          condition_en: values.condition
-            ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+          condition_en: values.condition_en
+            ? values.condition_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
             : "",
-          condition_de: values.condition
-            ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+          condition_de: values.condition_de
+            ? values.condition_de.replace(/(\r\n|\n|\r)/gm, " ").trim()
             : "",
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
           endDate: format(new Date(values.endDate), "yyyy-MM-dd")
