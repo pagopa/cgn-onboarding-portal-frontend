@@ -17,6 +17,7 @@ import {
   makeProductCategoriesString
 } from "../../utils/strings";
 import Callout from "../Callout/Callout";
+import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
 import ImportationStatus from "./ImportationStatus";
 
@@ -271,11 +272,16 @@ Props) => {
         <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
         <table className="table">
           <tbody>
-            <ProfileItem label="Nome agevolazione" value={row.original.name} />
-            {row.original.description && (
-              <ProfileItem
+            <MultilanguageProfileItem
+              label="Nome agevolazione"
+              value={row.original.name}
+              value_en={row.original.name_en}
+            />
+            {row.original.description && row.original.description_en && (
+              <MultilanguageProfileItem
                 label="Descrizione agevolazione"
                 value={row.original.description}
+                value_en={row.original.description_en}
               />
             )}
             <tr>
@@ -310,10 +316,11 @@ Props) => {
                 )}
               </td>
             </tr>
-            {row.original.condition && (
-              <ProfileItem
+            {row.original.condition && row.original.condition_en && (
+              <MultilanguageProfileItem
                 label="Condizioni dell’agevolazione"
                 value={row.original.condition}
+                value_en={row.original.condition_en}
               />
             )}
             {row.original.discountUrl && (

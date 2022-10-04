@@ -1,48 +1,51 @@
 /* eslint-disable sonarjs/cognitive-complexity */
+import { AxiosResponse } from "axios";
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { FieldArray, Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { fromNullable } from "fp-ts/lib/Option";
+import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { FieldArray, Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { format } from "date-fns";
-import { AxiosResponse } from "axios";
-import { fromNullable } from "fp-ts/lib/Option";
-import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
-import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
-import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
-import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
-import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
-import StaticCode from "../../CreateProfileForm/DiscountData/StaticCode";
-import FormContainer from "../../FormContainer";
-import { RootState } from "../../../../store/store";
-import FormSection from "../../FormSection";
-import FormField from "../../FormField";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import {
   CreateDiscount,
   Discount,
   Discounts,
   ProductCategory
 } from "../../../../api/generated";
+import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import { Severity, useTooltip } from "../../../../context/tooltip";
+import { RootState } from "../../../../store/store";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
+import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
+import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
+import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
+import StaticCode from "../../CreateProfileForm/DiscountData/StaticCode";
+import FormContainer from "../../FormContainer";
+import FormField from "../../FormField";
+import FormSection from "../../FormSection";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
-import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
-import EnrollToEyca from "./EnrollToEyca";
 import DiscountUrl from "./DiscountUrl";
+import EnrollToEyca from "./EnrollToEyca";
+import LandingPage from "./LandingPage";
 
 const emptyInitialValues = {
   discounts: [
     {
       name: "",
+      name_en: "",
       description: "",
+      description_en: "",
       startDate: "",
       endDate: "",
       discount: "",
       discountUrl: "",
       productCategories: [],
       condition: "",
+      condition_en: "",
       staticCode: "",
       enrollToEyca: false
     }
@@ -231,11 +234,24 @@ const DiscountData = ({
         const newValues: { discounts: ReadonlyArray<Discount> } = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
-            description: discount.description
-              ? discount.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            name_de: "-",
+            description: values.description
+              ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
-            condition: discount.condition
-              ? discount.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            description_en: values.description
+              ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            description_de: values.description
+              ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            condition: values.condition
+              ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            condition_en: values.condition
+              ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            condition_de: values.condition
+              ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
             productCategories: discount.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)
