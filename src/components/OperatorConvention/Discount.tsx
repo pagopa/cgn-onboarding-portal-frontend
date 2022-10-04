@@ -1,21 +1,21 @@
-import React, { useMemo, useState } from "react";
-import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { format } from "date-fns";
-import { useTooltip, Severity } from "../../context/tooltip";
+import { Button } from "design-react-kit";
+import { toError } from "fp-ts/lib/Either";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import React, { useMemo, useState } from "react";
 import Api from "../../api/backoffice";
 import {
   ApprovedAgreementDiscount,
   ApprovedAgreementProfile
 } from "../../api/generated_backoffice";
+import { Severity, useTooltip } from "../../context/tooltip";
 import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
-import Item from "./Item";
-import { getBadgeStatus } from "./ConventionDetails";
 import BucketCodeModal from "./BucketCodeModal";
+import { getBadgeStatus } from "./ConventionDetails";
+import Item from "./Item";
 
 const Discount = ({
   discount,
@@ -180,7 +180,7 @@ const Discount = ({
       // @ts-ignore
       profile.salesChannel?.discountCodeType === "LandingPage" && (
         <div className="row mb-5">
-          <div className="col-4 text-gray">
+          <div className="text-gray">
             Per testare questa agevolazione, usa il Playground CGN presente in
             app IO
           </div>

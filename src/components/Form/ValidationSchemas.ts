@@ -54,6 +54,8 @@ export const ProfileDataValidationSchema = Yup.object().shape({
       .required(REQUIRED_FIELD)
   }),
   description: Yup.string().required(REQUIRED_FIELD),
+  description_en: Yup.string().required(REQUIRED_FIELD),
+  description_de: Yup.string().required(REQUIRED_FIELD),
   salesChannel: Yup.object().shape({
     channelType: Yup.mixed().oneOf([
       "OnlineChannel",

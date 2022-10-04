@@ -26,11 +26,14 @@ import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
+  name_en: "",
   description: "",
+  description_en: "",
   startDate: "",
   endDate: "",
   productCategories: [],
   condition: "",
+  condition_en: "",
   staticCode: "",
   enrollToEyca: false
 };
@@ -107,10 +110,23 @@ const CreateDiscountForm = () => {
       onSubmit={values => {
         const newValues = {
           ...values,
+          name_de: "-",
           description: values.description
             ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
             : "",
+          description_en: values.description
+            ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
+          description_de: values.description
+            ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
           condition: values.condition
+            ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
+          condition_en: values.condition
+            ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            : "",
+          condition_de: values.condition
             ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
             : "",
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),

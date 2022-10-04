@@ -28,6 +28,7 @@ import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
+  name_en: "",
   description: "",
   startDate: "",
   endDate: "",

@@ -36,13 +36,16 @@ const emptyInitialValues = {
   discounts: [
     {
       name: "",
+      name_en: "",
       description: "",
+      description_en: "",
       startDate: "",
       endDate: "",
       discount: "",
       discountUrl: "",
       productCategories: [],
       condition: "",
+      condition_en: "",
       staticCode: "",
       enrollToEyca: false
     }
@@ -231,11 +234,24 @@ const DiscountData = ({
         const newValues: { discounts: ReadonlyArray<Discount> } = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
-            description: discount.description
-              ? discount.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            name_de: "-",
+            description: values.description
+              ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
-            condition: discount.condition
-              ? discount.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            description_en: values.description
+              ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            description_de: values.description
+              ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            condition: values.condition
+              ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            condition_en: values.condition
+              ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+              : "",
+            condition_de: values.condition
+              ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
             productCategories: discount.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)
