@@ -183,7 +183,11 @@ const EditDiscountForm = () => {
               Object.values(ProductCategory).includes(pc)
             ),
             startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-            endDate: format(new Date(values.endDate), "yyyy-MM-dd")
+            endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
+            // override _de values with a default value
+            name_de: "-",
+            description_de: "-",
+            condition_de: "-",
           };
           void updateDiscount(agreement.id, newValues);
         }}

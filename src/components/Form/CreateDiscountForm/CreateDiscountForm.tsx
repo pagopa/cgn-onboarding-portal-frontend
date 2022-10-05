@@ -112,27 +112,23 @@ const CreateDiscountForm = () => {
       onSubmit={values => {
         const newValues = {
           ...values,
-          name_de: "-",
           description: values.description
-            ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
-            : "",
+          ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+          : "",
           description_en: values.description_en
-            ? values.description_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
-            : "",
-          description_de: values.description_de
-            ? values.description_de.replace(/(\r\n|\n|\r)/gm, " ").trim()
-            : "",
+          ? values.description_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
+          : "",
           condition: values.condition
-            ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
-            : "",
+          ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
+          : "",
           condition_en: values.condition_en
-            ? values.condition_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
-            : "",
-          condition_de: values.condition_de
-            ? values.condition_de.replace(/(\r\n|\n|\r)/gm, " ").trim()
-            : "",
+          ? values.condition_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
+          : "",
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-          endDate: format(new Date(values.endDate), "yyyy-MM-dd")
+          endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
+          name_de: "-",
+          description_de: "-",
+          condition_de: "-",
         };
         void createDiscount(agreement.id, newValues);
       }}
