@@ -54,11 +54,11 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
             <Field
               maxLength={100}
               id="name"
-              name={hasIndex ? `discounts[${index}].name_en` : "name"}
+              name={hasIndex ? `discounts[${index}].name_en` : "name_en"}
               type="text"
             />
             <CustomErrorMessage
-              name={hasIndex ? `discounts[${index}].name_en` : "name"}
+              name={hasIndex ? `discounts[${index}].name_en` : "name_en"}
             />
           </div>
         </div>

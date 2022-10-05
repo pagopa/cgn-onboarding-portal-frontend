@@ -40,7 +40,7 @@ const defaultInitialValues = {
   hasDifferentFullName: false,
   name: "",
   name_en: "",
-  name_de: "---",
+  name_de: "-",
   pecAddress: "",
   taxCodeOrVat: "",
   legalOffice: "",
@@ -56,7 +56,7 @@ const defaultInitialValues = {
   },
   description: "",
   description_en: "",
-  description_de: "---",
+  description_de: "-",
   salesChannel: defaultSalesChannel
 };
 
@@ -230,11 +230,12 @@ const ProfileData = ({
           ...initialValues.salesChannel
         },
         fullName: user.company?.organization_name || "",
+        name_de: "-",
         taxCodeOrVat:
           user.company?.organization_fiscal_code || user.fiscal_number || "",
         description_de: "-",
         supportType: SupportType.EmailAddress,
-        supportValue: "-----"
+        supportValue: "-"
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {

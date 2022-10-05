@@ -31,16 +31,15 @@ const emptyInitialValues = {
   name_en: "",
   description: "",
   description_en: "",
-  description_de: "---",
+  description_de: "-",
   startDate: "",
   endDate: "",
   discount: "",
   productCategories: [],
   condition: "",
   condition_en: "",
-  condition_de: "---",
-  staticCode: "",
-  enrollToEyca: false
+  condition_de: "-",
+  staticCode: ""
 };
 
 const chainAxios = (response: AxiosResponse) =>

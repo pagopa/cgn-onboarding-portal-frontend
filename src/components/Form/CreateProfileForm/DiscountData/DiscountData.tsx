@@ -37,10 +37,10 @@ const emptyInitialValues = {
     {
       name: "",
       name_en: "",
-      name_de: "----",
+      name_de: "-",
       description: "",
       description_en: "",
-      description_de: "----",
+      description_de: "-",
       startDate: "",
       endDate: "",
       discount: "",
@@ -48,9 +48,8 @@ const emptyInitialValues = {
       productCategories: [],
       condition: "",
       condition_en: "",
-      condition_de: "----",
-      staticCode: "",
-      enrollToEyca: false
+      condition_de: "-",
+      staticCode: ""
     }
   ]
 };
@@ -241,11 +240,11 @@ const DiscountData = ({
             description: values.description
               ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
-            description_en: values.description
-              ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            description_en: values.description_en
+              ? values.description_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
-            description_de: values.description
-              ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
+            description_de: values.description_de
+              ? values.description_de.replace(/(\r\n|\n|\r)/gm, " ").trim()
               : "",
             condition: values.condition
               ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()

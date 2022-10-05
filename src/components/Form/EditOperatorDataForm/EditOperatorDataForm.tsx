@@ -1,22 +1,21 @@
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import * as H from "history";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { useHistory } from "react-router-dom";
-import * as H from "history";
-import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import Api from "../../../api";
+import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
+import { EmptyAddresses } from "../../../utils/form_types";
+import CenteredLoading from "../../CenteredLoading/CenteredLoading";
+import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
+import ProfileImage from "../CreateProfileForm/ProfileData/ProfileImage";
 import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
 import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
-import ProfileImage from "../CreateProfileForm/ProfileData/ProfileImage";
-import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
-import { DASHBOARD } from "../../../navigation/routes";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
-import { EmptyAddresses } from "../../../utils/form_types";
-import { Profile } from "../../../api/generated";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -30,6 +29,8 @@ const defaultInitialValues = {
   fullName: "",
   hasDifferentFullName: false,
   name: "",
+  name_en: "",
+  name_de: "-",
   pecAddress: "",
   taxCodeOrVat: "",
   legalOffice: "",
@@ -44,15 +45,17 @@ const defaultInitialValues = {
     telephoneNumber: ""
   },
   description: "",
+  description_en: "",
+  description_de: "-",
   salesChannel: defaultSalesChannel
 };
 
 const updateProfile = (agreement: any, history: H.History) => async (
-  discount: any
+  profile: any
 ) => {
   if (agreement) {
     await tryCatch(
-      () => Api.Profile.updateProfile(agreement.id, discount),
+      () => Api.Profile.updateProfile(agreement.id, profile),
       toError
     )
       .fold(
@@ -189,10 +192,12 @@ const EditOperatorDataForm = () => {
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
-        const { hasDifferentFullName, ...discount } = values;
+        const { hasDifferentFullName, ...profile } = values;
         void updateProfileHandler({
-          ...discount,
-          salesChannel: { ...getSalesChannel(discount.salesChannel) }
+          ...profile,
+          description_en: profile.description_en || "-",
+          description_de: profile.description_de || "-",
+          salesChannel: { ...getSalesChannel(profile.salesChannel) }
         });
       }}
     >
