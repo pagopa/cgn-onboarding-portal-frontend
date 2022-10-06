@@ -66,6 +66,39 @@ const ConventionFilter = ({
       .run();
   };
 
+  const getExportEyca = async () => {
+    setDownolading(true);
+    await tryCatch(
+      () =>
+        Api.Exports.exportEycaDiscounts({
+          headers: {
+            "Content-Type": "text/csv"
+          },
+          responseType: "arraybuffer"
+        }),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => {
+          setDownolading(false);
+        },
+        response => {
+          if (response) {
+            const blob = new Blob([response], { type: "text/csv" });
+            const today = new Date();
+            saveAs(
+              blob,
+              `Agevolazioni Eyca - ${today.getDate()}/${today.getMonth() +
+                1}/${today.getFullYear()}`
+            );
+          }
+          setDownolading(false);
+        }
+      )
+      .run();
+  };
+
   return (
     <Formik
       innerRef={refForm}
@@ -135,6 +168,19 @@ const ConventionFilter = ({
                   <CenteredLoading />
                 ) : (
                   <span>Esporta le convenzioni</span>
+                )}
+              </Button>
+              <Button
+                className="ml-5 btn-sm"
+                color="primary"
+                tag="button"
+                onClick={getExportEyca}
+                disabled={downloading}
+              >
+                {downloading ? (
+                  <CenteredLoading />
+                ) : (
+                  <span>Esporta agevolazioni EYCA</span>
                 )}
               </Button>
             </div>
