@@ -128,6 +128,12 @@ const ProfileData = ({
         (profile: any) => {
           setInitialValues({
             ...profile,
+            name: blankIfReferenceIsBlank(profile.name)(profile.name),
+            name_en: blankIfReferenceIsBlank(profile.name)(profile.name_en),
+            name_de: blankIfReferenceIsBlank(profile.name)(profile.name_de),
+            description: normalizeSpaces(profile.description),
+            description_en: normalizeSpaces(profile.description_en),
+            description_de: normalizeSpaces(profile.description_de),
             salesChannel:
               profile.salesChannel.channelType === "OfflineChannel" ||
               profile.salesChannel.channelType === "BothChannels"
