@@ -11,6 +11,7 @@ import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
 import { EmptyAddresses } from "../../../../utils/form_types";
+import { normalizeSpaces, withDefault } from "../../../../utils/strings";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
@@ -40,7 +41,7 @@ const defaultInitialValues = {
   hasDifferentFullName: false,
   name: "",
   name_en: "",
-  name_de: "-",
+  name_de: "",
   pecAddress: "",
   taxCodeOrVat: "",
   legalOffice: "",
@@ -56,7 +57,7 @@ const defaultInitialValues = {
   },
   description: "",
   description_en: "",
-  description_de: "-",
+  description_de: "",
   salesChannel: defaultSalesChannel
 };
 
@@ -230,10 +231,18 @@ const ProfileData = ({
           ...initialValues.salesChannel
         },
         fullName: user.company?.organization_name || "",
-        name_de: "-",
+        name: normalizeSpaces(withDefault("")(initialValues.name)),
+        name_en: normalizeSpaces(
+          withDefault(initialValues.name)(initialValues.name_en)
+        ),
+        name_de: normalizeSpaces(
+          withDefault(initialValues.name)(initialValues.name_de)
+        ),
+        description: normalizeSpaces(initialValues.description),
+        description_en: normalizeSpaces(initialValues.description_en),
+        description_de: normalizeSpaces(initialValues.description_de),
         taxCodeOrVat:
           user.company?.organization_fiscal_code || user.fiscal_number || "",
-        description_de: "-",
         supportType: SupportType.EmailAddress,
         supportValue: "-----"
       }}

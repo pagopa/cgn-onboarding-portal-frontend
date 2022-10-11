@@ -12,6 +12,7 @@ import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
 import chainAxios from "../../../utils/chainAxios";
+import { normalizeSpaces, withDefault } from "../../../utils/strings";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -30,13 +31,13 @@ const emptyInitialValues = {
   name_de: "-",
   description: "",
   description_en: "",
-  description_de: "-",
+  description_de: "",
   startDate: "",
   endDate: "",
   productCategories: [],
   condition: "",
   condition_en: "",
-  condition_de: "-",
+  condition_de: "",
   staticCode: ""
 };
 
@@ -112,23 +113,27 @@ const CreateDiscountForm = () => {
       onSubmit={values => {
         const newValues = {
           ...values,
-          description: values.description
-          ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
-          : "",
-          description_en: values.description_en
-          ? values.description_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
-          : "",
-          condition: values.condition
-          ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
-          : "",
-          condition_en: values.condition_en
-          ? values.condition_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
-          : "",
-          startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-          endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
+          name: normalizeSpaces(values.name),
+          name_en: normalizeSpaces(values.name_en),
           name_de: "-",
-          description_de: "-",
-          condition_de: "-",
+          description: normalizeSpaces(
+            withDefault("")(values.description)
+          ),
+          description_en: normalizeSpaces(
+            withDefault(values.description)(values.description_en)
+          ),
+          description_de: normalizeSpaces(
+            withDefault(values.description)(values.description_de)
+          ),
+          condition: normalizeSpaces(withDefault("")(values.condition)),
+          condition_en: normalizeSpaces(
+            withDefault(values.condition)(values.condition_en)
+          ),
+          condition_de: normalizeSpaces(
+            withDefault(values.condition)(values.condition_de)
+          ),
+          startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
+          endDate: format(new Date(values.endDate), "yyyy-MM-dd")
         };
         void createDiscount(agreement.id, newValues);
       }}

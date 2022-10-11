@@ -74,3 +74,9 @@ export const formatPercentage = (discountValue: number | undefined) =>
   fromNullable(discountValue)
     .map(value => `${value} %`)
     .getOrElse("");
+
+export const normalizeSpaces = (value: string) =>
+  value.replace(/(\r\n|\n|\r)/gm, " ").trim();
+
+export const withDefault = (defaultValue: string) => (value: string) =>
+  value ? value : defaultValue ? defaultValue : "";

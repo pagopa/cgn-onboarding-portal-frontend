@@ -13,6 +13,7 @@ import { Discount, ProductCategory } from "../../../api/generated";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
+import { normalizeSpaces, withDefault } from "../../../utils/strings";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
@@ -31,14 +32,14 @@ const emptyInitialValues = {
   name_en: "",
   description: "",
   description_en: "",
-  description_de: "-",
+  description_de: "",
   startDate: "",
   endDate: "",
   discount: "",
   productCategories: [],
   condition: "",
   condition_en: "",
-  condition_de: "-",
+  condition_de: "",
   staticCode: ""
 };
 
@@ -179,15 +180,28 @@ const EditDiscountForm = () => {
         onSubmit={values => {
           const newValues = {
             ...values,
+            name: normalizeSpaces(values.name),
+            name_en: normalizeSpaces(values.name_en),
+            name_de: "-",
+            description: normalizeSpaces(withDefault("")(values.description)),
+            description_en: normalizeSpaces(
+              withDefault(values.description)(values.description_en)
+            ),
+            description_de: normalizeSpaces(
+              withDefault(values.description)(values.description_de)
+            ),
+            condition: normalizeSpaces(withDefault("")(values.condition)),
+            condition_en: normalizeSpaces(
+              withDefault(values.condition)(values.condition_en)
+            ),
+            condition_de: normalizeSpaces(
+              withDefault(values.condition)(values.condition_de)
+            ),
             productCategories: values.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)
             ),
             startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-            endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
-            // override _de values with a default value
-            name_de: "-",
-            description_de: "-",
-            condition_de: "-",
+            endDate: format(new Date(values.endDate), "yyyy-MM-dd")
           };
           void updateDiscount(agreement.id, newValues);
         }}
