@@ -12,7 +12,10 @@ import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
 import chainAxios from "../../../utils/chainAxios";
-import { normalizeSpaces, withDefault } from "../../../utils/strings";
+import {
+  normalizeSpaces,
+  blankIfReferenceIsBlank
+} from "../../../utils/strings";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -116,21 +119,23 @@ const CreateDiscountForm = () => {
           name: normalizeSpaces(values.name),
           name_en: normalizeSpaces(values.name_en),
           name_de: "-",
-          description: normalizeSpaces(
-            withDefault("")(values.description)
+          description: blankIfReferenceIsBlank(values.description)(
+            values.description
           ),
-          description_en: normalizeSpaces(
-            withDefault(values.description)(values.description_en)
+          description_en: blankIfReferenceIsBlank(values.description)(
+            values.description_en
           ),
-          description_de: normalizeSpaces(
-            withDefault(values.description)(values.description_de)
+          description_de: blankIfReferenceIsBlank(values.description)(
+            values.description_de
           ),
-          condition: normalizeSpaces(withDefault("")(values.condition)),
-          condition_en: normalizeSpaces(
-            withDefault(values.condition)(values.condition_en)
+          condition: blankIfReferenceIsBlank(values.condition)(
+            values.condition
           ),
-          condition_de: normalizeSpaces(
-            withDefault(values.condition)(values.condition_de)
+          condition_en: blankIfReferenceIsBlank(values.condition)(
+            values.condition_en
+          ),
+          condition_de: blankIfReferenceIsBlank(values.condition)(
+            values.condition_de
           ),
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
           endDate: format(new Date(values.endDate), "yyyy-MM-dd")

@@ -11,7 +11,10 @@ import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
 import { EmptyAddresses } from "../../../../utils/form_types";
-import { normalizeSpaces, withDefault } from "../../../../utils/strings";
+import {
+  normalizeSpaces,
+  blankIfReferenceIsBlank
+} from "../../../../utils/strings";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
@@ -231,12 +234,12 @@ const ProfileData = ({
           ...initialValues.salesChannel
         },
         fullName: user.company?.organization_name || "",
-        name: normalizeSpaces(withDefault("")(initialValues.name)),
-        name_en: normalizeSpaces(
-          withDefault(initialValues.name)(initialValues.name_en)
+        name: blankIfReferenceIsBlank(initialValues.name)(initialValues.name),
+        name_en: blankIfReferenceIsBlank(initialValues.name)(
+          initialValues.name_en
         ),
-        name_de: normalizeSpaces(
-          withDefault(initialValues.name)(initialValues.name_de)
+        name_de: blankIfReferenceIsBlank(initialValues.name)(
+          initialValues.name_de
         ),
         description: normalizeSpaces(initialValues.description),
         description_en: normalizeSpaces(initialValues.description_en),
@@ -248,10 +251,16 @@ const ProfileData = ({
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
-        const { hasDifferentFullName, ...discount } = values;
+        const { hasDifferentFullName, ...profile } = values;
         void submitProfile()({
-          ...discount,
-          ...getSalesChannel(discount.salesChannel)
+          ...profile,
+          name: blankIfReferenceIsBlank(profile.name)(profile.name),
+          name_en: blankIfReferenceIsBlank(profile.name)(profile.name_en),
+          name_de: blankIfReferenceIsBlank(profile.name)(profile.name_de),
+          description: normalizeSpaces(profile.description),
+          description_en: normalizeSpaces(profile.description_en),
+          description_de: normalizeSpaces(profile.description_de),
+          ...getSalesChannel(profile.salesChannel)
         });
       }}
     >

@@ -13,7 +13,10 @@ import { Discount, ProductCategory } from "../../../api/generated";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
-import { normalizeSpaces, withDefault } from "../../../utils/strings";
+import {
+  normalizeSpaces,
+  blankIfReferenceIsBlank
+} from "../../../utils/strings";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
@@ -184,19 +187,23 @@ const EditDiscountForm = () => {
             name: normalizeSpaces(values.name),
             name_en: normalizeSpaces(values.name_en),
             name_de: "-",
-            description: normalizeSpaces(withDefault("")(values.description)),
-            description_en: normalizeSpaces(
-              withDefault(values.description)(values.description_en)
+            description: blankIfReferenceIsBlank(values.description)(
+              values.description
             ),
-            description_de: normalizeSpaces(
-              withDefault(values.description)(values.description_de)
+            description_en: blankIfReferenceIsBlank(values.description)(
+              values.description_en
             ),
-            condition: normalizeSpaces(withDefault("")(values.condition)),
-            condition_en: normalizeSpaces(
-              withDefault(values.condition)(values.condition_en)
+            description_de: blankIfReferenceIsBlank(values.description)(
+              values.description_de
             ),
-            condition_de: normalizeSpaces(
-              withDefault(values.condition)(values.condition_de)
+            condition: blankIfReferenceIsBlank(values.condition)(
+              values.condition
+            ),
+            condition_en: blankIfReferenceIsBlank(values.condition)(
+              values.condition_en
+            ),
+            condition_de: blankIfReferenceIsBlank(values.condition)(
+              values.condition_de
             ),
             productCategories: values.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)

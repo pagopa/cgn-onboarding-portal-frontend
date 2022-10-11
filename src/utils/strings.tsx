@@ -78,5 +78,5 @@ export const formatPercentage = (discountValue: number | undefined) =>
 export const normalizeSpaces = (value: string) =>
   value.replace(/(\r\n|\n|\r)/gm, " ").trim();
 
-export const withDefault = (defaultValue: string) => (value: string) =>
-  value ? value : defaultValue ? defaultValue : "";
+export const blankIfReferenceIsBlank = (reference: string) => (value: string) =>
+  !reference || normalizeSpaces(reference).length <= 0 ? "" : normalizeSpaces(value);
