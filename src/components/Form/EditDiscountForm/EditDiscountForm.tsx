@@ -123,6 +123,27 @@ const EditDiscountForm = () => {
         (discount: Discount) => {
           setInitialValues({
             ...discount,
+            name: normalizeSpaces(discount.name),
+            name_en: normalizeSpaces(discount.name_en),
+            name_de: "-",
+            description: blankIfReferenceIsBlank(discount.description)(
+              discount.description
+            ),
+            description_en: blankIfReferenceIsBlank(discount.description)(
+              discount.description_en
+            ),
+            description_de: blankIfReferenceIsBlank(discount.description)(
+              discount.description_de
+            ),
+            condition: blankIfReferenceIsBlank(discount.condition)(
+              discount.condition
+            ),
+            condition_en: blankIfReferenceIsBlank(discount.condition)(
+              discount.condition_en
+            ),
+            condition_de: blankIfReferenceIsBlank(discount.condition)(
+              discount.condition_de
+            ),
             discountUrl: fromNullable(discount.discountUrl).toUndefined(),
             startDate: new Date(discount.startDate),
             endDate: new Date(discount.endDate),
@@ -152,6 +173,12 @@ const EditDiscountForm = () => {
         profile => {
           setProfile({
             ...profile,
+            name: blankIfReferenceIsBlank(profile.name)(profile.name),
+            name_en: blankIfReferenceIsBlank(profile.name)(profile.name_en),
+            name_de: blankIfReferenceIsBlank(profile.name)(profile.name_de),
+            description: normalizeSpaces(profile.description),
+            description_en: normalizeSpaces(profile.description_en),
+            description_de: normalizeSpaces(profile.description_de),
             hasDifferentFullName: !!profile.name
           });
           setLoading(false);
