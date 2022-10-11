@@ -22,7 +22,8 @@ const ConventionFilter = ({
   refForm: any;
   getConventions: (params: any) => void;
 }) => {
-  const [downloading, setDownolading] = useState(false);
+  const [downloadingAgreements, setDownloadingAgreements] = useState(false);
+  const [downloadingEyca, setDownloadingEyca] = useState(false);
   // eslint-disable-next-line functional/no-let
   let timeout: any = null;
 
@@ -34,7 +35,7 @@ const ConventionFilter = ({
   };
 
   const getExport = async () => {
-    setDownolading(true);
+    setDownloadingAgreements(true);
     await tryCatch(
       () =>
         Api.Exports.exportAgreements({
@@ -48,7 +49,7 @@ const ConventionFilter = ({
       .map(response => response.data)
       .fold(
         () => {
-          setDownolading(false);
+          setDownloadingAgreements(false);
         },
         response => {
           if (response) {
@@ -60,14 +61,14 @@ const ConventionFilter = ({
                 1}/${today.getFullYear()}`
             );
           }
-          setDownolading(false);
+          setDownloadingAgreements(false);
         }
       )
       .run();
   };
 
   const getExportEyca = async () => {
-    setDownolading(true);
+    setDownloadingEyca(true);
     await tryCatch(
       () =>
         Api.Exports.exportEycaDiscounts({
@@ -81,7 +82,7 @@ const ConventionFilter = ({
       .map(response => response.data)
       .fold(
         () => {
-          setDownolading(false);
+          setDownloadingEyca(false);
         },
         response => {
           if (response) {
@@ -93,7 +94,7 @@ const ConventionFilter = ({
                 1}/${today.getFullYear()}`
             );
           }
-          setDownolading(false);
+          setDownloadingEyca(false);
         }
       )
       .run();
@@ -162,12 +163,12 @@ const ConventionFilter = ({
                 color="primary"
                 tag="button"
                 onClick={getExport}
-                disabled={downloading}
+                disabled={downloadingAgreements}
               >
-                {downloading ? (
+                {downloadingAgreements ? (
                   <CenteredLoading />
                 ) : (
-                  <span>Esporta le convenzioni</span>
+                  <span>Export convenzioni</span>
                 )}
               </Button>
               <Button
@@ -175,12 +176,12 @@ const ConventionFilter = ({
                 color="primary"
                 tag="button"
                 onClick={getExportEyca}
-                disabled={downloading}
+                disabled={downloadingEyca}
               >
-                {downloading ? (
+                {downloadingEyca ? (
                   <CenteredLoading />
                 ) : (
-                  <span>Esporta agevolazioni EYCA</span>
+                  <span>Export EYCA</span>
                 )}
               </Button>
             </div>

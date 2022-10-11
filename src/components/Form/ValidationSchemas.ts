@@ -20,6 +20,14 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     is: true,
     then: Yup.string().required(REQUIRED_FIELD)
   }),
+  name_en: Yup.string().when(["name"], {
+    is: (_: string) => _.length > 0,
+    then: Yup.string().required(REQUIRED_FIELD)
+  }),
+  name_de: Yup.string().when(["name"], {
+    is: (_: string) => _.length > 0,
+    then: Yup.string().required(REQUIRED_FIELD)
+  }),
   pecAddress: Yup.string()
     .email(INCORRECT_EMAIL_ADDRESS)
     .required(REQUIRED_FIELD),
@@ -115,7 +123,25 @@ export const discountDataValidationSchema = (
     name: Yup.string()
       .max(100)
       .required(REQUIRED_FIELD),
+    name_en: Yup.string()
+      .max(100)
+      .required(REQUIRED_FIELD),
+    name_de: Yup.string()
+      .max(100)
+      .required(REQUIRED_FIELD),
     description: Yup.string().max(250),
+    description_en: Yup.string().when(["description"], {
+      is: (_: string) => _.length > 0,
+      then: Yup.string()
+        .required(REQUIRED_FIELD)
+        .max(250)
+    }),
+    description_de: Yup.string().when(["description"], {
+      is: (_: string) => _.length > 0,
+      then: Yup.string()
+        .required(REQUIRED_FIELD)
+        .max(250)
+    }),
     discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
     startDate: Yup.string().required(REQUIRED_FIELD),
     endDate: Yup.string().required(REQUIRED_FIELD),
@@ -129,6 +155,14 @@ export const discountDataValidationSchema = (
       .min(1, PRODUCT_CATEGORIES_ONE)
       .required(),
     condition: Yup.string(),
+    condition_en: Yup.string().when(["condition"], {
+      is: (_: string) => _.length > 0,
+      then: Yup.string().required(REQUIRED_FIELD)
+    }),
+    condition_de: Yup.string().when(["condition"], {
+      is: (_: string) => _.length > 0,
+      then: Yup.string().required(REQUIRED_FIELD)
+    }),
     staticCode: Yup.string().when("condition", {
       is: () => staticCheck,
       then: Yup.string().required(REQUIRED_FIELD),
