@@ -21,11 +21,11 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     then: Yup.string().required(REQUIRED_FIELD)
   }),
   name_en: Yup.string().when(["name"], {
-    is: (_: string) => _.length > 0,
+    is: (_: string) => _ && _.length > 0,
     then: Yup.string().required(REQUIRED_FIELD)
   }),
   name_de: Yup.string().when(["name"], {
-    is: (_: string) => _.length > 0,
+    is: (_: string) => _ && _.length > 0,
     then: Yup.string().required(REQUIRED_FIELD)
   }),
   pecAddress: Yup.string()
@@ -131,13 +131,13 @@ export const discountDataValidationSchema = (
       .required(REQUIRED_FIELD),
     description: Yup.string().max(250),
     description_en: Yup.string().when(["description"], {
-      is: (_: string) => _.length > 0,
+      is: (_: string) => _ && _.length > 0,
       then: Yup.string()
         .required(REQUIRED_FIELD)
         .max(250)
     }),
     description_de: Yup.string().when(["description"], {
-      is: (_: string) => _.length > 0,
+      is: (_: string) => _ && _.length > 0,
       then: Yup.string()
         .required(REQUIRED_FIELD)
         .max(250)
@@ -156,11 +156,11 @@ export const discountDataValidationSchema = (
       .required(),
     condition: Yup.string(),
     condition_en: Yup.string().when(["condition"], {
-      is: (_: string) => _.length > 0,
+      is: (_: string) => _ && _.length > 0,
       then: Yup.string().required(REQUIRED_FIELD)
     }),
     condition_de: Yup.string().when(["condition"], {
-      is: (_: string) => _.length > 0,
+      is: (_: string) => _ && _.length > 0,
       then: Yup.string().required(REQUIRED_FIELD)
     }),
     staticCode: Yup.string().when("condition", {

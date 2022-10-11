@@ -30,6 +30,7 @@ import { discountDataValidationSchema } from "../ValidationSchemas";
 const emptyInitialValues = {
   name: "",
   name_en: "",
+  name_de: "-",
   description: "",
   description_en: "",
   description_de: "",

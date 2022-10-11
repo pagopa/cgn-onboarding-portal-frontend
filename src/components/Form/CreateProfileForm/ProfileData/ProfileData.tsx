@@ -57,7 +57,7 @@ const defaultInitialValues = {
   },
   description: "",
   description_en: "",
-  description_de: "",
+  description_de: "-",
   salesChannel: defaultSalesChannel
 };
 
