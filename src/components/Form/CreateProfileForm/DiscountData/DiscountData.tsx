@@ -237,24 +237,30 @@ const DiscountData = ({
         checkBucket
       )}
       onSubmit={values => {
-        const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
-          values.description
-        );
-        const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
-          values.condition
-        );
         const newValues: { discounts: ReadonlyArray<Discount> } = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
-            name: withNormalizedSpaces(values.name),
-            name_en: withNormalizedSpaces(values.name_en),
+            name: withNormalizedSpaces(discount.name),
+            name_en: withNormalizedSpaces(discount.name_en),
             name_de: "-",
-            description: cleanedIfDescriptionIsBlank(values.description),
-            description_en: cleanedIfDescriptionIsBlank(values.description_en),
-            description_de: cleanedIfDescriptionIsBlank(values.description_de),
-            condition: cleanedIfConditionIsBlank(values.condition),
-            condition_en: cleanedIfConditionIsBlank(values.condition_en),
-            condition_de: cleanedIfConditionIsBlank(values.condition_de),
+            description: clearIfReferenceIsBlank(discount.description)(
+              discount.description
+            ),
+            description_en: clearIfReferenceIsBlank(discount.description)(
+              discount.description_en
+            ),
+            description_de: clearIfReferenceIsBlank(discount.description)(
+              discount.description_de
+            ),
+            condition: clearIfReferenceIsBlank(discount.condition)(
+              discount.condition
+            ),
+            condition_en: clearIfReferenceIsBlank(discount.condition)(
+              discount.condition_en
+            ),
+            condition_de: clearIfReferenceIsBlank(discount.condition)(
+              discount.condition_de
+            ),
             productCategories: discount.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)
             ),
