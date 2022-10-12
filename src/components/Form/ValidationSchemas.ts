@@ -294,13 +294,13 @@ export const discountsListDataValidationSchema = (
             otherwise: Yup.string()
           }),
           visibleOnEyca: Yup.boolean()
-        })
+        },
+        [
+          ["description", "description_en"],
+          ["condition", "condition_en"]
+        ])
       )
-    },
-    [
-      ["description", "description_en"],
-      ["condition", "condition_en"]
-    ]
+    }
   );
 
 export const loggedHelpValidationSchema = Yup.object().shape({
