@@ -395,6 +395,7 @@ const DiscountData = ({
                                 startDate: "",
                                 endDate: "",
                                 discount: "",
+                                discountUrl: "",
                                 productCategories: [],
                                 condition: "",
                                 condition_en: "",
