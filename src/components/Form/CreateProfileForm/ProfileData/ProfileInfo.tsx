@@ -33,7 +33,7 @@ const ProfileInfo = ({ formValues }: Props) => (
     </ToggleField>
     {formValues.hasDifferentFullName && (
       <InputField
-        htmlFor="name"
+        htmlFor="profileName"
         title="Nome Operatore visualizzato"
         description="Può essere una semplificazione del nome dell'Operatore più riconoscibile dall'utente (es. PagoPA vs PagoPA SPA)"
         isVisible

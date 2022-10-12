@@ -9,6 +9,10 @@ import Api from "../../../api";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
 import { EmptyAddresses } from "../../../utils/form_types";
+import {
+  clearIfReferenceIsBlank,
+  withNormalizedSpaces
+} from "../../../utils/strings";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
 import ProfileImage from "../CreateProfileForm/ProfileData/ProfileImage";
@@ -82,8 +86,15 @@ const EditOperatorDataForm = () => {
       .fold(
         () => setLoading(false),
         (profile: any) => {
+          const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
           setInitialValues({
             ...profile,
+            name: cleanedIfNameIsBlank(profile.name),
+            name_en: cleanedIfNameIsBlank(profile.name_en),
+            name_de: "-",
+            description: withNormalizedSpaces(profile.description),
+            description_en: withNormalizedSpaces(profile.description_en),
+            description_de: "-",
             salesChannel:
               profile.salesChannel.channelType === "OfflineChannel" ||
               profile.salesChannel.channelType === "BothChannels"
@@ -193,10 +204,19 @@ const EditOperatorDataForm = () => {
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...profile } = values;
+        const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
         void updateProfileHandler({
           ...profile,
-          description_en: profile.description_en || "-",
-          description_de: profile.description_de || "-",
+          name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
+          name_en: !hasDifferentFullName
+            ? ""
+            : cleanedIfNameIsBlank(profile.name_en),
+          name_de: !hasDifferentFullName
+            ? ""
+            : cleanedIfNameIsBlank(profile.name_de),
+          description: withNormalizedSpaces(profile.description),
+          description_en: withNormalizedSpaces(profile.description_en),
+          description_de: withNormalizedSpaces(profile.description_de),
           salesChannel: { ...getSalesChannel(profile.salesChannel) }
         });
       }}

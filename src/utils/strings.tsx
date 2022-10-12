@@ -75,8 +75,9 @@ export const formatPercentage = (discountValue: number | undefined) =>
     .map(value => `${value} %`)
     .getOrElse("");
 
-export const normalizeSpaces = (value: string) =>
-  value.replace(/(\r\n|\n|\r)/gm, " ").trim();
+export const withNormalizedSpaces = (value?: string) =>
+  value ? value.replace(/(\r\n|\n|\r)/gm, " ").trim() : "";
 
-export const blankIfReferenceIsBlank = (reference?: string) => (value?: string) =>
-  !reference || normalizeSpaces(reference).length <= 0 ? "" : normalizeSpaces(value ? value : "");
+export const clearIfReferenceIsBlank = (reference?: string) => (
+  value?: string
+) => (withNormalizedSpaces(reference).length <= 0 ? "" : withNormalizedSpaces(value));

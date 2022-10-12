@@ -14,8 +14,8 @@ import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
 import {
-  normalizeSpaces,
-  blankIfReferenceIsBlank
+  withNormalizedSpaces,
+  clearIfReferenceIsBlank
 } from "../../../utils/strings";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
@@ -36,14 +36,14 @@ const emptyInitialValues = {
   name_de: "-",
   description: "",
   description_en: "",
-  description_de: "",
+  description_de: "-",
   startDate: "",
   endDate: "",
   discount: "",
   productCategories: [],
   condition: "",
   condition_en: "",
-  condition_de: "",
+  condition_de: "-",
   staticCode: ""
 };
 
@@ -121,29 +121,25 @@ const EditDiscountForm = () => {
       .fold(
         () => setLoading(false),
         (discount: Discount) => {
+          const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
+            discount.description
+          );
+          const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
+            discount.condition
+          );
           setInitialValues({
             ...discount,
-            name: normalizeSpaces(discount.name),
-            name_en: normalizeSpaces(discount.name_en),
+            name: withNormalizedSpaces(discount.name),
+            name_en: withNormalizedSpaces(discount.name_en),
             name_de: "-",
-            description: blankIfReferenceIsBlank(discount.description)(
-              discount.description
-            ),
-            description_en: blankIfReferenceIsBlank(discount.description)(
+            description: cleanedIfDescriptionIsBlank(discount.description),
+            description_en: cleanedIfDescriptionIsBlank(
               discount.description_en
             ),
-            description_de: blankIfReferenceIsBlank(discount.description)(
-              discount.description_de
-            ),
-            condition: blankIfReferenceIsBlank(discount.condition)(
-              discount.condition
-            ),
-            condition_en: blankIfReferenceIsBlank(discount.condition)(
-              discount.condition_en
-            ),
-            condition_de: blankIfReferenceIsBlank(discount.condition)(
-              discount.condition_de
-            ),
+            description_de: "-",
+            condition: cleanedIfConditionIsBlank(discount.condition),
+            condition_en: cleanedIfConditionIsBlank(discount.condition_en),
+            condition_de: "-",
             discountUrl: fromNullable(discount.discountUrl).toUndefined(),
             startDate: new Date(discount.startDate),
             endDate: new Date(discount.endDate),
@@ -173,12 +169,6 @@ const EditDiscountForm = () => {
         profile => {
           setProfile({
             ...profile,
-            name: blankIfReferenceIsBlank(profile.name)(profile.name),
-            name_en: blankIfReferenceIsBlank(profile.name)(profile.name_en),
-            name_de: blankIfReferenceIsBlank(profile.name)(profile.name_de),
-            description: normalizeSpaces(profile.description),
-            description_en: normalizeSpaces(profile.description_en),
-            description_de: normalizeSpaces(profile.description_de),
             hasDifferentFullName: !!profile.name
           });
           setLoading(false);
@@ -209,29 +199,23 @@ const EditDiscountForm = () => {
           )
         }
         onSubmit={values => {
+          const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
+            values.description
+          );
+          const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
+            values.condition
+          );
           const newValues = {
             ...values,
-            name: normalizeSpaces(values.name),
-            name_en: normalizeSpaces(values.name_en),
+            name: withNormalizedSpaces(values.name),
+            name_en: withNormalizedSpaces(values.name_en),
             name_de: "-",
-            description: blankIfReferenceIsBlank(values.description)(
-              values.description
-            ),
-            description_en: blankIfReferenceIsBlank(values.description)(
-              values.description_en
-            ),
-            description_de: blankIfReferenceIsBlank(values.description)(
-              values.description_de
-            ),
-            condition: blankIfReferenceIsBlank(values.condition)(
-              values.condition
-            ),
-            condition_en: blankIfReferenceIsBlank(values.condition)(
-              values.condition_en
-            ),
-            condition_de: blankIfReferenceIsBlank(values.condition)(
-              values.condition_de
-            ),
+            description: cleanedIfDescriptionIsBlank(values.description),
+            description_en: cleanedIfDescriptionIsBlank(values.description_en),
+            description_de: cleanedIfDescriptionIsBlank(values.description_de),
+            condition: cleanedIfConditionIsBlank(values.condition),
+            condition_en: cleanedIfConditionIsBlank(values.condition_en),
+            condition_de: cleanedIfConditionIsBlank(values.condition_de),
             productCategories: values.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)
             ),

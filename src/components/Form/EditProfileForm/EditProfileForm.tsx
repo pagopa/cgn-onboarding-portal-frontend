@@ -9,6 +9,10 @@ import Api from "../../../api";
 import { SupportType } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
+import {
+  clearIfReferenceIsBlank,
+  withNormalizedSpaces
+} from "../../../utils/strings";
 import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
 import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
@@ -23,7 +27,19 @@ const EditProfileForm = () => {
       .map(response => response.data)
       .fold(
         () => void 0,
-        profile => setCurrentProfile(profile)
+        profile => {
+          const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
+          setCurrentProfile({
+            ...profile,
+            name: cleanedIfNameIsBlank(profile.name),
+            name_en: cleanedIfNameIsBlank(profile.name_en),
+            name_de: "-",
+            description: withNormalizedSpaces(profile.description),
+            description_en: withNormalizedSpaces(profile.description_en),
+            description_de: "-",
+            hasDifferentFullName: !!profile.name
+          });
+        }
       )
       .run();
 
@@ -55,7 +71,22 @@ const EditProfileForm = () => {
           validationSchema={ProfileDataValidationSchema}
           onSubmit={values => {
             const { hasDifferentFullName, ...profile } = values;
-            void editProfile(profile);
+            const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
+            void editProfile({
+              ...profile,
+              name: !hasDifferentFullName
+                ? ""
+                : cleanedIfNameIsBlank(profile.name),
+              name_en: !hasDifferentFullName
+                ? ""
+                : cleanedIfNameIsBlank(profile.name_en),
+              name_de: !hasDifferentFullName
+                ? ""
+                : cleanedIfNameIsBlank(profile.name_de),
+              description: withNormalizedSpaces(profile.description),
+              description_en: withNormalizedSpaces(profile.description_en),
+              description_de: withNormalizedSpaces(profile.description_de)
+            });
           }}
         >
           {({ values }) => (

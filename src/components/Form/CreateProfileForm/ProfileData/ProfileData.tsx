@@ -12,8 +12,8 @@ import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
 import { EmptyAddresses } from "../../../../utils/form_types";
 import {
-  normalizeSpaces,
-  blankIfReferenceIsBlank
+  withNormalizedSpaces,
+  clearIfReferenceIsBlank
 } from "../../../../utils/strings";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
@@ -44,7 +44,7 @@ const defaultInitialValues = {
   hasDifferentFullName: false,
   name: "",
   name_en: "",
-  name_de: "",
+  name_de: "-",
   pecAddress: "",
   taxCodeOrVat: "",
   legalOffice: "",
@@ -126,14 +126,15 @@ const ProfileData = ({
       .fold(
         () => setLoading(false),
         (profile: any) => {
+          const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
           setInitialValues({
             ...profile,
-            name: blankIfReferenceIsBlank(profile.name)(profile.name),
-            name_en: blankIfReferenceIsBlank(profile.name)(profile.name_en),
-            name_de: blankIfReferenceIsBlank(profile.name)(profile.name_de),
-            description: normalizeSpaces(profile.description),
-            description_en: normalizeSpaces(profile.description_en),
-            description_de: normalizeSpaces(profile.description_de),
+            name: cleanedIfNameIsBlank(profile.name),
+            name_en: cleanedIfNameIsBlank(profile.name_en),
+            name_de: "-",
+            description: withNormalizedSpaces(profile.description),
+            description_en: withNormalizedSpaces(profile.description_en),
+            description_de: "-",
             salesChannel:
               profile.salesChannel.channelType === "OfflineChannel" ||
               profile.salesChannel.channelType === "BothChannels"
@@ -240,16 +241,6 @@ const ProfileData = ({
           ...initialValues.salesChannel
         },
         fullName: user.company?.organization_name || "",
-        name: blankIfReferenceIsBlank(initialValues.name)(initialValues.name),
-        name_en: blankIfReferenceIsBlank(initialValues.name)(
-          initialValues.name_en
-        ),
-        name_de: blankIfReferenceIsBlank(initialValues.name)(
-          initialValues.name_de
-        ),
-        description: normalizeSpaces(initialValues.description),
-        description_en: normalizeSpaces(initialValues.description_en),
-        description_de: normalizeSpaces(initialValues.description_de),
         taxCodeOrVat:
           user.company?.organization_fiscal_code || user.fiscal_number || "",
         supportType: SupportType.EmailAddress,
@@ -258,14 +249,19 @@ const ProfileData = ({
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
         const { hasDifferentFullName, ...profile } = values;
+        const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
         void submitProfile()({
           ...profile,
-          name: blankIfReferenceIsBlank(profile.name)(profile.name),
-          name_en: blankIfReferenceIsBlank(profile.name)(profile.name_en),
-          name_de: blankIfReferenceIsBlank(profile.name)(profile.name_de),
-          description: normalizeSpaces(profile.description),
-          description_en: normalizeSpaces(profile.description_en),
-          description_de: normalizeSpaces(profile.description_de),
+          name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
+          name_en: !hasDifferentFullName
+            ? ""
+            : cleanedIfNameIsBlank(profile.name_en),
+          name_de: !hasDifferentFullName
+            ? ""
+            : cleanedIfNameIsBlank(profile.name_de),
+          description: withNormalizedSpaces(profile.description),
+          description_en: withNormalizedSpaces(profile.description_en),
+          description_de: withNormalizedSpaces(profile.description_de),
           ...getSalesChannel(profile.salesChannel)
         });
       }}

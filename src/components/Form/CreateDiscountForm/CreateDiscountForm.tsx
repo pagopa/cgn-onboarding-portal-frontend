@@ -13,8 +13,8 @@ import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
 import chainAxios from "../../../utils/chainAxios";
 import {
-  normalizeSpaces,
-  blankIfReferenceIsBlank
+  withNormalizedSpaces,
+  clearIfReferenceIsBlank
 } from "../../../utils/strings";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
@@ -34,13 +34,13 @@ const emptyInitialValues = {
   name_de: "-",
   description: "",
   description_en: "",
-  description_de: "",
+  description_de: "-",
   startDate: "",
   endDate: "",
   productCategories: [],
   condition: "",
   condition_en: "",
-  condition_de: "",
+  condition_de: "-",
   staticCode: ""
 };
 
@@ -114,29 +114,23 @@ const CreateDiscountForm = () => {
         discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
       }
       onSubmit={values => {
+        const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
+          values.description
+        );
+        const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
+          values.condition
+        );
         const newValues = {
           ...values,
-          name: normalizeSpaces(values.name),
-          name_en: normalizeSpaces(values.name_en),
+          name: withNormalizedSpaces(values.name),
+          name_en: withNormalizedSpaces(values.name_en),
           name_de: "-",
-          description: blankIfReferenceIsBlank(values.description)(
-            values.description
-          ),
-          description_en: blankIfReferenceIsBlank(values.description)(
-            values.description_en
-          ),
-          description_de: blankIfReferenceIsBlank(values.description)(
-            values.description_de
-          ),
-          condition: blankIfReferenceIsBlank(values.condition)(
-            values.condition
-          ),
-          condition_en: blankIfReferenceIsBlank(values.condition)(
-            values.condition_en
-          ),
-          condition_de: blankIfReferenceIsBlank(values.condition)(
-            values.condition_de
-          ),
+          description: cleanedIfDescriptionIsBlank(values.description),
+          description_en: cleanedIfDescriptionIsBlank(values.description_en),
+          description_de: cleanedIfDescriptionIsBlank(values.description_de),
+          condition: cleanedIfConditionIsBlank(values.condition),
+          condition_en: cleanedIfConditionIsBlank(values.condition_en),
+          condition_de: cleanedIfConditionIsBlank(values.condition_de),
           startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
           endDate: format(new Date(values.endDate), "yyyy-MM-dd")
         };
