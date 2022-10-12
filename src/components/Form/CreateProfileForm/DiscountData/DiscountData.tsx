@@ -18,6 +18,10 @@ import {
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
+import {
+  clearIfReferenceIsBlank,
+  withNormalizedSpaces
+} from "../../../../utils/strings";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
@@ -233,28 +237,24 @@ const DiscountData = ({
         checkBucket
       )}
       onSubmit={values => {
+        const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
+          values.description
+        );
+        const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
+          values.condition
+        );
         const newValues: { discounts: ReadonlyArray<Discount> } = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
+            name: withNormalizedSpaces(values.name),
+            name_en: withNormalizedSpaces(values.name_en),
             name_de: "-",
-            description: values.description
-              ? values.description.replace(/(\r\n|\n|\r)/gm, " ").trim()
-              : "",
-            description_en: values.description_en
-              ? values.description_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
-              : "",
-            description_de: values.description_de
-              ? values.description_de.replace(/(\r\n|\n|\r)/gm, " ").trim()
-              : "",
-            condition: values.condition
-              ? values.condition.replace(/(\r\n|\n|\r)/gm, " ").trim()
-              : "",
-            condition_en: values.condition_en
-              ? values.condition_en.replace(/(\r\n|\n|\r)/gm, " ").trim()
-              : "",
-            condition_de: values.condition_de
-              ? values.condition_de.replace(/(\r\n|\n|\r)/gm, " ").trim()
-              : "",
+            description: cleanedIfDescriptionIsBlank(values.description),
+            description_en: cleanedIfDescriptionIsBlank(values.description_en),
+            description_de: cleanedIfDescriptionIsBlank(values.description_de),
+            condition: cleanedIfConditionIsBlank(values.condition),
+            condition_en: cleanedIfConditionIsBlank(values.condition_en),
+            condition_de: cleanedIfConditionIsBlank(values.condition_de),
             productCategories: discount.productCategories.filter((pc: any) =>
               Object.values(ProductCategory).includes(pc)
             ),
@@ -387,12 +387,18 @@ const DiscountData = ({
                             onClick={() =>
                               arrayHelpers.push({
                                 name: "",
+                                name_en: "",
+                                name_de: "-",
                                 description: "",
+                                description_en: "",
+                                description_de: "-",
                                 startDate: "",
                                 endDate: "",
                                 discount: "",
                                 productCategories: [],
                                 condition: "",
+                                condition_en: "",
+                                condition_de: "-",
                                 staticCode: ""
                               })
                             }
