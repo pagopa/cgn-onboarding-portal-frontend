@@ -167,6 +167,17 @@ const DiscountData = ({
           setInitialValues({
             discounts: discounts.items.map((discount: Discount) => ({
               ...discount,
+              name: withNormalizedSpaces(discount.name),
+              name_en: withNormalizedSpaces(discount.name_en),
+              name_de: "-",
+              description: clearIfReferenceIsBlank(discount.description)(discount.description),
+              description_en: clearIfReferenceIsBlank(discount.description)(
+                discount.description_en
+              ),
+              description_de: "-",
+              condition: clearIfReferenceIsBlank(discount.condition)(discount.condition),
+              condition_en: clearIfReferenceIsBlank(discount.condition)(discount.condition_en),
+              condition_de: "-",
               discountUrl: fromNullable(discount.discountUrl).toUndefined(),
               startDate: new Date(discount.startDate),
               endDate: new Date(discount.endDate),
