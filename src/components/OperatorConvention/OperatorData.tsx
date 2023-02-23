@@ -11,7 +11,9 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
   return (
     <div>
       <h5 className="mb-7 font-weight-bold">Descrizione operatore</h5>
-      <Item label="Nome Operatore visualizzato" value={profile.fullName} />
+      {profile.name && (
+        <Item label="Nome Operatore visualizzato" value={profile.name} />
+      )}
       <Item label="Descrizione dell'operatore" value={profile.description} />
       <Item label="Sito web" value={salesChannel.websiteUrl || "-"} />
       {salesChannel.addresses?.map((address, i: number) => {
