@@ -352,7 +352,7 @@ Props) => {
             {row.original.landingPageReferrer && (
               <ProfileItem
                 label="Landing Page referer"
-                value={row.original.landingPageUrl}
+                value={row.original.landingPageReferrer}
               />
             )}
             <ProfileItem
