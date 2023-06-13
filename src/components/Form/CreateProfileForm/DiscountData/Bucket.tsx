@@ -119,7 +119,7 @@ Props) => {
       title="Carica la lista di codici sconto"
       description={
         <>
-          Caricare un file .CSV con la lista di almeno 1.000.000 di codici
+          Caricare un file .CSV con la lista di almeno 10.000 di codici
           sconto statici relativi all’agevolazione.
           <br />
           Per maggiori informazioni, consultare la{" "}
