@@ -1,15 +1,20 @@
+import { Button } from "design-react-kit";
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { Button } from "design-react-kit";
 import { Link, useHistory } from "react-router-dom";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
-import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import Api from "../../../api";
+import { SupportType } from "../../../api/generated";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
+import {
+  clearIfReferenceIsBlank,
+  withNormalizedSpaces
+} from "../../../utils/strings";
+import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
+import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 
 const EditProfileForm = () => {
@@ -22,7 +27,19 @@ const EditProfileForm = () => {
       .map(response => response.data)
       .fold(
         () => void 0,
-        profile => setCurrentProfile(profile)
+        profile => {
+          const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
+          setCurrentProfile({
+            ...profile,
+            name: cleanedIfNameIsBlank(profile.name),
+            name_en: cleanedIfNameIsBlank(profile.name_en),
+            name_de: "-",
+            description: withNormalizedSpaces(profile.description),
+            description_en: withNormalizedSpaces(profile.description_en),
+            description_de: "-",
+            hasDifferentFullName: !!profile.name
+          });
+        }
       )
       .run();
 
@@ -46,11 +63,30 @@ const EditProfileForm = () => {
     <>
       {currentProfile && (
         <Formik
-          initialValues={currentProfile}
+          initialValues={{
+            ...currentProfile,
+            supportType: SupportType.EmailAddress,
+            supportValue: "-----"
+          }}
           validationSchema={ProfileDataValidationSchema}
           onSubmit={values => {
             const { hasDifferentFullName, ...profile } = values;
-            void editProfile(profile);
+            const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
+            void editProfile({
+              ...profile,
+              name: !hasDifferentFullName
+                ? ""
+                : cleanedIfNameIsBlank(profile.name),
+              name_en: !hasDifferentFullName
+                ? ""
+                : cleanedIfNameIsBlank(profile.name_en),
+              name_de: !hasDifferentFullName
+                ? ""
+                : cleanedIfNameIsBlank(profile.name_de),
+              description: withNormalizedSpaces(profile.description),
+              description_en: withNormalizedSpaces(profile.description_en),
+              description_de: withNormalizedSpaces(profile.description_de)
+            });
           }}
         >
           {({ values }) => (

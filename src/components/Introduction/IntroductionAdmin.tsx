@@ -2,6 +2,7 @@ import React from "react";
 import { Nav } from "design-react-kit";
 import NavItem from "../NavItem";
 import {
+  ADMIN_PANEL_ACCESSI,
   ADMIN_PANEL_CONVENZIONATI,
   ADMIN_PANEL_RICHIESTE
 } from "../../navigation/routes";
@@ -41,6 +42,12 @@ const IntroductionAdmin = ({ name, activeTab, handleClick }: Props) => (
         onClick={() => handleClick(ADMIN_PANEL_CONVENZIONATI)}
       >
         Operatori Convenzionati
+      </NavItem>
+      <NavItem
+        active={activeTab === ADMIN_PANEL_ACCESSI}
+        onClick={() => handleClick(ADMIN_PANEL_ACCESSI)}
+      >
+        Impostazioni di accesso
       </NavItem>
     </Nav>
   </section>

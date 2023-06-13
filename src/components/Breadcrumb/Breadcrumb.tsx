@@ -4,13 +4,14 @@ import { DASHBOARD } from "../../navigation/routes";
 
 type Props = {
   children: string;
+  breadcrumbLink?: string;
 };
 
-const Breadcrumb = ({ children }: Props) => (
+const Breadcrumb = ({ children, breadcrumbLink }: Props) => (
   <nav className="breadcrumb-container" aria-label="breadcrumb">
     <ol className="breadcrumb">
       <li className="breadcrumb-item no-underline">
-        <NavLink to={DASHBOARD}>Home</NavLink>
+        <NavLink to={breadcrumbLink ?? DASHBOARD}>Home</NavLink>
         <span className="separator">/</span>
       </li>
       <li className="breadcrumb-item active" aria-current="page">

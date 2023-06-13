@@ -570,8 +570,8 @@ definitions:
         type: string
       legalRepresentativeTaxCode:
         type: string
-        minLength: 16
-        maxLength: 16
+        maxLength: 4
+        minLength: 20
       referent:
         $ref: '#/definitions/CreateReferent'
       description:
@@ -608,8 +608,8 @@ definitions:
         type: string
       legalRepresentativeTaxCode:
         type: string
-        minLength: 16
-        maxLength: 16
+        maxLength: 4
+        minLength: 20
       referent:
         $ref: '#/definitions/UpdateReferent'
       description:
@@ -658,8 +658,8 @@ definitions:
         type: string
       legalRepresentativeTaxCode:
         type: string
-        minLength: 16
-        maxLength: 16
+        maxLength: 4
+        minLength: 20
       referent:
         $ref: '#/definitions/Referent'
       description:
@@ -969,14 +969,16 @@ definitions:
   ProductCategory:
     type: string
     enum:
-      - Entertainments
-      - Travels
-      - Transportation
-      - Connectivity
-      - Books
-      - Arts
-      - Sports
+      - BankingServices
+      - CultureAndEntertainment
       - Health
+      - Home
+      - JobOffers
+      - Learning
+      - Sports
+      - SustainableMobility
+      - TelephonyAndInternet
+      - Travelling
   Address:
     type: object
     required:

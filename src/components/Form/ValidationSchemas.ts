@@ -9,14 +9,28 @@ const ONLY_STRING = "Solo lettere";
 const DISCOUNT_RANGE =
   "Lo sconto deve essere un numero intero compreso tra 1 e 100";
 const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
-const INCORRECT_WEBSITE_URL = "L’indirizzo inserito non è corretto";
+const INCORRECT_WEBSITE_URL =
+  "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
+
+const URL_REGEXP = /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/g;
 
 export const ProfileDataValidationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
-  name: Yup.string().when(["hasDifferentName"], {
-    is: true,
-    then: Yup.string().required(REQUIRED_FIELD)
-  }),
+  name: Yup.string()
+    .when(["hasDifferentName"], {
+      is: true,
+      then: Yup.string().required(REQUIRED_FIELD)
+    }),
+  name_en: Yup.string()
+    .when(["hasDifferentName"], {
+      is: true,
+      then: Yup.string().required(REQUIRED_FIELD)
+    }),
+  name_de: Yup.string()
+    .when(["hasDifferentName"], {
+      is: true,
+      then: Yup.string().required(REQUIRED_FIELD)
+    }),
   pecAddress: Yup.string()
     .email(INCORRECT_EMAIL_ADDRESS)
     .required(REQUIRED_FIELD),
@@ -29,8 +43,8 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
     .required(REQUIRED_FIELD),
   legalRepresentativeTaxCode: Yup.string()
-    .min(16, "Deve essere di 16 caratteri")
-    .max(16, "Deve essere di 16 caratteri")
+    .min(4, "Deve essere al minimo di 4 caratteri")
+    .max(20, "Deve essere al massimo di 20 caratteri")
     .required(REQUIRED_FIELD),
   referent: Yup.object().shape({
     firstName: Yup.string()
@@ -51,6 +65,8 @@ export const ProfileDataValidationSchema = Yup.object().shape({
       .required(REQUIRED_FIELD)
   }),
   description: Yup.string().required(REQUIRED_FIELD),
+  description_en: Yup.string().required(REQUIRED_FIELD),
+  description_de: Yup.string().required(REQUIRED_FIELD),
   salesChannel: Yup.object().shape({
     channelType: Yup.mixed().oneOf([
       "OnlineChannel",
@@ -62,10 +78,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
       .when("channelType", {
         is: (val: string) => val === "OnlineChannel" || val === "BothChannels",
         then: Yup.string()
-          .matches(
-            /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-            INCORRECT_WEBSITE_URL
-          )
+          .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
           .required(REQUIRED_FIELD)
       }),
     discountCodeType: Yup.string().when("channelType", {
@@ -109,104 +122,186 @@ export const discountDataValidationSchema = (
   landingCheck?: boolean,
   bucketCheck?: boolean
 ) =>
-  Yup.object().shape({
-    name: Yup.string()
-      .max(100)
-      .required(REQUIRED_FIELD),
-    description: Yup.string().max(250),
-    startDate: Yup.string().required(REQUIRED_FIELD),
-    endDate: Yup.string().required(REQUIRED_FIELD),
-    discount: Yup.number()
-      .typeError(DISCOUNT_RANGE)
-      .integer(DISCOUNT_RANGE)
-      .min(1, DISCOUNT_RANGE)
-      .max(100, DISCOUNT_RANGE)
-      .notRequired(),
-    productCategories: Yup.array()
-      .min(1, PRODUCT_CATEGORIES_ONE)
-      .required(),
-    condition: Yup.string(),
-    staticCode: Yup.string().when("condition", {
-      is: () => staticCheck,
-      then: Yup.string().required(REQUIRED_FIELD),
-      otherwise: Yup.string()
-    }),
-    landingPageUrl: Yup.string().when("condition", {
-      is: () => landingCheck,
-      then: Yup.string().required(REQUIRED_FIELD),
-      otherwise: Yup.string()
-    }),
-    landingPageReferrer: Yup.string().when("condition", {
-      is: () => landingCheck,
-      then: Yup.string().required(REQUIRED_FIELD),
-      otherwise: Yup.string()
-    }),
-    lastBucketCodeLoadUid: Yup.string().when("condition", {
-      is: () => bucketCheck,
-      then: Yup.string().required(REQUIRED_FIELD),
-      otherwise: Yup.string()
-    }),
-    lastBucketCodeLoadFileName: Yup.string().when("condition", {
-      is: () => bucketCheck,
-      then: Yup.string().required(REQUIRED_FIELD),
-      otherwise: Yup.string()
-    }),
-    enrollToEyca: Yup.boolean()
-  });
+  Yup.object().shape(
+    {
+      name: Yup.string()
+        .max(100)
+        .required(REQUIRED_FIELD),
+      name_en: Yup.string()
+        .max(100)
+        .required(REQUIRED_FIELD),
+      name_de: Yup.string()
+        .max(100)
+        .required(REQUIRED_FIELD),
+      description: Yup.string().when(["description_en"], {
+        is: (_?: string) => _ && _.length > 0,
+        then: Yup.string()
+          .required(REQUIRED_FIELD)
+          .max(250)
+      }),
+      description_en: Yup.string().when(["description"], {
+        is: (_?: string) => _ && _.length > 0,
+        then: Yup.string()
+          .required(REQUIRED_FIELD)
+          .max(250)
+      }),
+      description_de: Yup.string().when(["description"], {
+        is: (_?: string) => _ && _.length > 0,
+        then: Yup.string()
+          .required(REQUIRED_FIELD)
+          .max(250)
+      }),
+      discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
+      startDate: Yup.string().required(REQUIRED_FIELD),
+      endDate: Yup.string().required(REQUIRED_FIELD),
+      discount: Yup.number()
+        .typeError(DISCOUNT_RANGE)
+        .integer(DISCOUNT_RANGE)
+        .min(1, DISCOUNT_RANGE)
+        .max(100, DISCOUNT_RANGE)
+        .notRequired(),
+      productCategories: Yup.array()
+        .min(1, PRODUCT_CATEGORIES_ONE)
+        .required(),
+      condition: Yup.string().when(["condition_en"], {
+        is: (_?: string) => _ && _.length > 0,
+        then: Yup.string().required(REQUIRED_FIELD)
+      }),
+      condition_en: Yup.string().when(["condition"], {
+        is: (_?: string) => _ && _.length > 0,
+        then: Yup.string().required(REQUIRED_FIELD)
+      }),
+      condition_de: Yup.string().when(["condition"], {
+        is: (_?: string) => _ && _.length > 0,
+        then: Yup.string().required(REQUIRED_FIELD)
+      }),
+      staticCode: Yup.string().when("condition", {
+        is: () => staticCheck,
+        then: Yup.string().required(REQUIRED_FIELD),
+        otherwise: Yup.string()
+      }),
+      landingPageUrl: Yup.string().when("condition", {
+        is: () => landingCheck,
+        then: Yup.string().required(REQUIRED_FIELD),
+        otherwise: Yup.string()
+      }),
+      landingPageReferrer: Yup.string().when("condition", {
+        is: () => landingCheck,
+        then: Yup.string().required(REQUIRED_FIELD),
+        otherwise: Yup.string()
+      }),
+      lastBucketCodeLoadUid: Yup.string().when("condition", {
+        is: () => bucketCheck,
+        then: Yup.string().required(REQUIRED_FIELD),
+        otherwise: Yup.string()
+      }),
+      lastBucketCodeLoadFileName: Yup.string().when("condition", {
+        is: () => bucketCheck,
+        then: Yup.string().required(REQUIRED_FIELD),
+        otherwise: Yup.string()
+      }),
+      visibleOnEyca: Yup.boolean()
+    },
+    [
+      ["description", "description_en"],
+      ["condition", "condition_en"]
+    ]
+  );
 
 export const discountsListDataValidationSchema = (
   staticCheck: boolean,
   landingCheck?: boolean,
   bucketCheck?: boolean
 ) =>
-  Yup.object().shape({
-    discounts: Yup.array().of(
-      Yup.object().shape({
-        name: Yup.string()
-          .max(100)
-          .required(REQUIRED_FIELD),
-        description: Yup.string().max(250),
-        startDate: Yup.string().required(REQUIRED_FIELD),
-        endDate: Yup.string().required(REQUIRED_FIELD),
-        productCategories: Yup.array()
-          .min(1, PRODUCT_CATEGORIES_ONE)
-          .required(REQUIRED_FIELD),
-        discount: Yup.number()
-          .typeError(DISCOUNT_RANGE)
-          .integer(DISCOUNT_RANGE)
-          .min(1, DISCOUNT_RANGE)
-          .max(100, DISCOUNT_RANGE)
-          .notRequired(),
-        condition: Yup.string(),
-        staticCode: Yup.string().when("condition", {
-          is: () => staticCheck,
-          then: Yup.string().required(REQUIRED_FIELD),
-          otherwise: Yup.string()
-        }),
-        landingPageUrl: Yup.string().when("condition", {
-          is: () => landingCheck,
-          then: Yup.string().required(REQUIRED_FIELD),
-          otherwise: Yup.string()
-        }),
-        landingPageReferrer: Yup.string().when("condition", {
-          is: () => landingCheck,
-          then: Yup.string().required(REQUIRED_FIELD),
-          otherwise: Yup.string()
-        }),
-        lastBucketCodeLoadUid: Yup.string().when("condition", {
-          is: () => bucketCheck,
-          then: Yup.string().required(REQUIRED_FIELD),
-          otherwise: Yup.string()
-        }),
-        lastBucketCodeLoadFileName: Yup.string().when("condition", {
-          is: () => bucketCheck,
-          then: Yup.string().required(REQUIRED_FIELD),
-          otherwise: Yup.string()
-        }),
-        enrollToEyca: Yup.boolean()
-      })
-    )
-  });
+  Yup.object().shape(
+    {
+      discounts: Yup.array().of(
+        Yup.object().shape({
+          name: Yup.string()
+            .max(100)
+            .required(REQUIRED_FIELD),
+          name_en: Yup.string()
+            .max(100)
+            .required(REQUIRED_FIELD),
+          name_de: Yup.string()
+            .max(100)
+            .required(REQUIRED_FIELD),
+          description: Yup.string().when(["description_en"], {
+            is: (_?: string) => _ && _.length > 0,
+            then: Yup.string()
+              .required(REQUIRED_FIELD)
+              .max(250)
+          }),
+          description_en: Yup.string().when(["description"], {
+            is: (_?: string) => _ && _.length > 0,
+            then: Yup.string()
+              .required(REQUIRED_FIELD)
+              .max(250)
+          }),
+          description_de: Yup.string().when(["description"], {
+            is: (_?: string) => _ && _.length > 0,
+            then: Yup.string()
+              .required(REQUIRED_FIELD)
+              .max(250)
+          }),
+          discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
+          startDate: Yup.string().required(REQUIRED_FIELD),
+          endDate: Yup.string().required(REQUIRED_FIELD),
+          productCategories: Yup.array()
+            .min(1, PRODUCT_CATEGORIES_ONE)
+            .required(REQUIRED_FIELD),
+          discount: Yup.number()
+            .typeError(DISCOUNT_RANGE)
+            .integer(DISCOUNT_RANGE)
+            .min(1, DISCOUNT_RANGE)
+            .max(100, DISCOUNT_RANGE)
+            .notRequired(),
+          condition: Yup.string().when(["condition_en"], {
+            is: (_?: string) => _ && _.length > 0,
+            then: Yup.string().required(REQUIRED_FIELD)
+          }),
+          condition_en: Yup.string().when(["condition"], {
+            is: (_?: string) => _ && _.length > 0,
+            then: Yup.string().required(REQUIRED_FIELD)
+          }),
+          condition_de: Yup.string().when(["condition"], {
+            is: (_?: string) => _ && _.length > 0,
+            then: Yup.string().required(REQUIRED_FIELD)
+          }),
+          staticCode: Yup.string().when("condition", {
+            is: () => staticCheck,
+            then: Yup.string().required(REQUIRED_FIELD),
+            otherwise: Yup.string()
+          }),
+          landingPageUrl: Yup.string().when("condition", {
+            is: () => landingCheck,
+            then: Yup.string().required(REQUIRED_FIELD),
+            otherwise: Yup.string()
+          }),
+          landingPageReferrer: Yup.string().when("condition", {
+            is: () => landingCheck,
+            then: Yup.string().required(REQUIRED_FIELD),
+            otherwise: Yup.string()
+          }),
+          lastBucketCodeLoadUid: Yup.string().when("condition", {
+            is: () => bucketCheck,
+            then: Yup.string().required(REQUIRED_FIELD),
+            otherwise: Yup.string()
+          }),
+          lastBucketCodeLoadFileName: Yup.string().when("condition", {
+            is: () => bucketCheck,
+            then: Yup.string().required(REQUIRED_FIELD),
+            otherwise: Yup.string()
+          }),
+          visibleOnEyca: Yup.boolean()
+        },
+        [
+          ["description", "description_en"],
+          ["condition", "condition_en"]
+        ])
+      )
+    }
+  );
 
 export const loggedHelpValidationSchema = Yup.object().shape({
   category: Yup.string()
@@ -267,10 +362,28 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
   confirmEmailAddress: Yup.string()
     .email(INCORRECT_EMAIL_ADDRESS)
     .when("emailAddress", {
-      is: (email: any) => (email && email.length > 0 ? true : false),
+      is: (email: string) => email.length > 0,
       then: Yup.string()
         .oneOf([Yup.ref("emailAddress")], INCORRECT_CONFIRM_EMAIL_ADDRESS)
         .required(REQUIRED_FIELD)
     }),
   recaptchaToken: Yup.string().required(REQUIRED_FIELD)
+});
+
+export const activationValidationSchema = Yup.object().shape({
+  keyOrganizationFiscalCode: Yup.string(),
+  organizationFiscalCode: Yup.string().required(REQUIRED_FIELD),
+  organizationName: Yup.string().required(REQUIRED_FIELD),
+  pec: Yup.string()
+    .email(INCORRECT_EMAIL_ADDRESS)
+    .required(REQUIRED_FIELD),
+  referents: Yup.array()
+    .of(
+      Yup.string()
+        .min(4, "Deve essere al minimo di 4 caratteri")
+        .max(20, "Deve essere al massimo di 20 caratteri")
+        .required(REQUIRED_FIELD)
+    )
+    .required(REQUIRED_FIELD),
+  insertedAt: Yup.string()
 });

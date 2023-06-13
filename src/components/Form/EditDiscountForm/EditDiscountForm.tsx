@@ -1,40 +1,50 @@
+import { AxiosResponse } from "axios";
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { fromNullable } from "fp-ts/lib/Option";
+import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { format } from "date-fns";
 import { useHistory, useParams } from "react-router-dom";
-import { AxiosResponse } from "axios";
 import Api from "../../../api";
-import CenteredLoading from "../../CenteredLoading/CenteredLoading";
-import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
-import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
-import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
-import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
-import { RootState } from "../../../store/store";
-import FormSection from "../FormSection";
-import FormField from "../FormField";
-import { Discount } from "../../../api/generated";
-import { DASHBOARD } from "../../../navigation/routes";
-import { discountDataValidationSchema } from "../ValidationSchemas";
-import PublishModal from "../../Discounts/PublishModal";
-import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
-import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import { Discount, ProductCategory } from "../../../api/generated";
 import { Severity, useTooltip } from "../../../context/tooltip";
+import { DASHBOARD } from "../../../navigation/routes";
+import { RootState } from "../../../store/store";
+import {
+  withNormalizedSpaces,
+  clearIfReferenceIsBlank
+} from "../../../utils/strings";
+import CenteredLoading from "../../CenteredLoading/CenteredLoading";
+import Bucket from "../CreateProfileForm/DiscountData/Bucket";
+import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
+import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
+import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
 import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
+import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
+import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
+import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
+import FormField from "../FormField";
+import FormSection from "../FormSection";
+import { discountDataValidationSchema } from "../ValidationSchemas";
 
 const emptyInitialValues = {
   name: "",
+  name_en: "",
+  name_de: "-",
   description: "",
+  description_en: "",
+  description_de: "-",
   startDate: "",
   endDate: "",
   discount: "",
   productCategories: [],
   condition: "",
-  staticCode: "",
-  enrollToEyca: false
+  condition_en: "",
+  condition_de: "-",
+  staticCode: ""
 };
 
 const chainAxios = (response: AxiosResponse) =>
@@ -56,9 +66,6 @@ const EditDiscountForm = () => {
   const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
-  const [publishModal, setPublishModal] = useState(false);
-  const togglePublishModal = () => setPublishModal(!publishModal);
-  const [selectedPublish, setSelectedPublish] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
   const throwErrorTooltip = (e: string) => {
@@ -114,30 +121,40 @@ const EditDiscountForm = () => {
       .fold(
         () => setLoading(false),
         (discount: Discount) => {
+          const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
+            discount.description
+          );
+          const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
+            discount.condition
+          );
           setInitialValues({
             ...discount,
+            name: withNormalizedSpaces(discount.name),
+            name_en: withNormalizedSpaces(discount.name_en),
+            name_de: "-",
+            description: cleanedIfDescriptionIsBlank(discount.description),
+            description_en: cleanedIfDescriptionIsBlank(
+              discount.description_en
+            ),
+            description_de: "-",
+            condition: cleanedIfConditionIsBlank(discount.condition),
+            condition_en: cleanedIfConditionIsBlank(discount.condition_en),
+            condition_de: "-",
+            discountUrl: fromNullable(discount.discountUrl).toUndefined(),
             startDate: new Date(discount.startDate),
             endDate: new Date(discount.endDate),
-            landingPageReferrer:
-              discount.landingPageReferrer === null
-                ? undefined
-                : discount.landingPageReferrer,
-            landingPageUrl:
-              discount.landingPageUrl === null
-                ? undefined
-                : discount.landingPageUrl,
-            discount:
-              discount.discount === null ? undefined : discount.discount,
-            staticCode:
-              discount.staticCode === null ? undefined : discount.staticCode,
-            lastBucketCodeLoadUid:
-              discount.lastBucketCodeLoadUid === null
-                ? undefined
-                : discount.lastBucketCodeLoadUid,
-            lastBucketCodeLoadFileName:
-              discount.lastBucketCodeLoadFileName === null
-                ? undefined
-                : discount.lastBucketCodeLoadFileName
+            landingPageReferrer: fromNullable(
+              discount.landingPageReferrer
+            ).toUndefined(),
+            landingPageUrl: fromNullable(discount.landingPageUrl).toUndefined(),
+            discount: fromNullable(discount.discount).toUndefined(),
+            staticCode: fromNullable(discount.staticCode).toUndefined(),
+            lastBucketCodeLoadUid: fromNullable(
+              discount.lastBucketCodeLoadUid
+            ).toUndefined(),
+            lastBucketCodeLoadFileName: fromNullable(
+              discount.lastBucketCodeLoadFileName
+            ).toUndefined()
           });
           setLoading(false);
         }
@@ -156,17 +173,6 @@ const EditDiscountForm = () => {
           });
           setLoading(false);
         }
-      )
-      .run();
-
-  const publishDiscount = async (discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.publishDiscount(agreement.id, discountId),
-      toError
-    )
-      .fold(
-        () => void 0,
-        () => void 0
       )
       .run();
 
@@ -193,8 +199,26 @@ const EditDiscountForm = () => {
           )
         }
         onSubmit={values => {
+          const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
+            values.description
+          );
+          const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
+            values.condition
+          );
           const newValues = {
             ...values,
+            name: withNormalizedSpaces(values.name),
+            name_en: withNormalizedSpaces(values.name_en),
+            name_de: "-",
+            description: cleanedIfDescriptionIsBlank(values.description),
+            description_en: cleanedIfDescriptionIsBlank(values.description_en),
+            description_de: cleanedIfDescriptionIsBlank(values.description_de),
+            condition: cleanedIfConditionIsBlank(values.condition),
+            condition_en: cleanedIfConditionIsBlank(values.condition_en),
+            condition_de: cleanedIfConditionIsBlank(values.condition_de),
+            productCategories: values.productCategories.filter((pc: any) =>
+              Object.values(ProductCategory).includes(pc)
+            ),
             startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
             endDate: format(new Date(values.endDate), "yyyy-MM-dd")
           };
@@ -224,6 +248,17 @@ const EditDiscountForm = () => {
               >
                 <DiscountConditions />
               </FormField>
+              {!checkLanding && (
+                <FormField
+                  htmlFor="discountUrl"
+                  title="Link all’agevolazione"
+                  description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione"
+                  isTitleHeading
+                  isVisible
+                >
+                  <DiscountUrl />
+                </FormField>
+              )}
               {checkStaticCode && (
                 <FormField
                   htmlFor="staticCode"
@@ -256,7 +291,8 @@ const EditDiscountForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
-              {profile?.salesChannel?.channelType === "OnlineChannel" && (
+              {(profile?.salesChannel?.channelType === "OnlineChannel" ||
+                profile?.salesChannel?.channelType === "BothChannels") && (
                 <EnrollToEyca
                   isEycaSupported={checkStaticCode}
                   discountOption={
@@ -316,11 +352,6 @@ const EditDiscountForm = () => {
           </Form>
         )}
       </Formik>
-      <PublishModal
-        isOpen={publishModal}
-        toggle={togglePublishModal}
-        publish={() => publishDiscount(selectedPublish)}
-      />
     </>
   );
 };

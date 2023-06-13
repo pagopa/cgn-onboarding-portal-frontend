@@ -1,21 +1,25 @@
+import { Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import * as H from "history";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { useHistory } from "react-router-dom";
-import * as H from "history";
-import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import Api from "../../../api";
+import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
+import { EmptyAddresses } from "../../../utils/form_types";
+import {
+  clearIfReferenceIsBlank,
+  withNormalizedSpaces
+} from "../../../utils/strings";
+import CenteredLoading from "../../CenteredLoading/CenteredLoading";
+import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
+import ProfileImage from "../CreateProfileForm/ProfileData/ProfileImage";
 import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
 import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
-import ProfileImage from "../CreateProfileForm/ProfileData/ProfileImage";
-import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
-import { DASHBOARD } from "../../../navigation/routes";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
-import { EmptyAddresses } from "../../../utils/form_types";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -29,6 +33,8 @@ const defaultInitialValues = {
   fullName: "",
   hasDifferentFullName: false,
   name: "",
+  name_en: "",
+  name_de: "-",
   pecAddress: "",
   taxCodeOrVat: "",
   legalOffice: "",
@@ -43,15 +49,17 @@ const defaultInitialValues = {
     telephoneNumber: ""
   },
   description: "",
+  description_en: "",
+  description_de: "-",
   salesChannel: defaultSalesChannel
 };
 
 const updateProfile = (agreement: any, history: H.History) => async (
-  discount: any
+  profile: any
 ) => {
   if (agreement) {
     await tryCatch(
-      () => Api.Profile.updateProfile(agreement.id, discount),
+      () => Api.Profile.updateProfile(agreement.id, profile),
       toError
     )
       .fold(
@@ -78,28 +86,44 @@ const EditOperatorDataForm = () => {
       .fold(
         () => setLoading(false),
         (profile: any) => {
+          const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
           setInitialValues({
             ...profile,
+            name: cleanedIfNameIsBlank(profile.name),
+            name_en: cleanedIfNameIsBlank(profile.name_en),
+            name_de: "-",
+            description: withNormalizedSpaces(profile.description),
+            description_en: withNormalizedSpaces(profile.description_en),
+            description_de: "-",
             salesChannel:
               profile.salesChannel.channelType === "OfflineChannel" ||
               profile.salesChannel.channelType === "BothChannels"
                 ? {
                     ...profile.salesChannel,
-                    addresses: profile.salesChannel.addresses.map(
-                      (address: any) => {
-                        const addressSplit = address.fullAddress
-                          .split(",")
-                          .map((item: string) => item.trim());
-                        return {
-                          street: addressSplit[0],
-                          city: addressSplit[1],
-                          district: addressSplit[2],
-                          zipCode: addressSplit[3],
-                          value: address.fullAddress,
-                          label: address.fullAddress
-                        };
-                      }
-                    )
+                    addresses: profile.salesChannel.allNationalAddresses
+                      ? [
+                          {
+                            street: "",
+                            city: "",
+                            district: "",
+                            zipCode: "",
+                            value: "",
+                            label: ""
+                          }
+                        ]
+                      : profile.salesChannel.addresses.map((address: any) => {
+                          const addressSplit = address.fullAddress
+                            .split(",")
+                            .map((item: string) => item.trim());
+                          return {
+                            street: addressSplit[0],
+                            city: addressSplit[1],
+                            district: addressSplit[2],
+                            zipCode: addressSplit[3],
+                            value: address.fullAddress,
+                            label: address.fullAddress
+                          };
+                        })
                   }
                 : profile.salesChannel,
             hasDifferentFullName: !!profile.name
@@ -179,10 +203,21 @@ const EditOperatorDataForm = () => {
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
-        const { hasDifferentFullName, ...discount } = values;
+        const { hasDifferentFullName, ...profile } = values;
+        const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
         void updateProfileHandler({
-          ...discount,
-          salesChannel: { ...getSalesChannel(discount.salesChannel) }
+          ...profile,
+          name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
+          name_en: !hasDifferentFullName
+            ? ""
+            : cleanedIfNameIsBlank(profile.name_en),
+          name_de: !hasDifferentFullName
+            ? ""
+            : cleanedIfNameIsBlank(profile.name_de),
+          description: withNormalizedSpaces(profile.description),
+          description_en: withNormalizedSpaces(profile.description_en),
+          description_de: withNormalizedSpaces(profile.description_de),
+          salesChannel: { ...getSalesChannel(profile.salesChannel) }
         });
       }}
     >

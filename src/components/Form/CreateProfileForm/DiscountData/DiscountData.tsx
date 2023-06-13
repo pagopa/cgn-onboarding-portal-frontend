@@ -1,42 +1,59 @@
 /* eslint-disable sonarjs/cognitive-complexity */
+import { AxiosResponse } from "axios";
+import { format } from "date-fns";
+import { Button } from "design-react-kit";
+import { FieldArray, Form, Formik } from "formik";
+import { toError } from "fp-ts/lib/Either";
+import { fromNullable } from "fp-ts/lib/Option";
+import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { FieldArray, Form, Formik } from "formik";
-import { Button } from "design-react-kit";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { format } from "date-fns";
-import { AxiosResponse } from "axios";
-import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
+import {
+  CreateDiscount,
+  Discount,
+  Discounts,
+  ProductCategory
+} from "../../../../api/generated";
+import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import { Severity, useTooltip } from "../../../../context/tooltip";
+import { RootState } from "../../../../store/store";
+import {
+  clearIfReferenceIsBlank,
+  withNormalizedSpaces
+} from "../../../../utils/strings";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
+import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
-import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
 import StaticCode from "../../CreateProfileForm/DiscountData/StaticCode";
 import FormContainer from "../../FormContainer";
-import { RootState } from "../../../../store/store";
-import FormSection from "../../FormSection";
 import FormField from "../../FormField";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
-import { CreateDiscount, Discount, Discounts } from "../../../../api/generated";
+import FormSection from "../../FormSection";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
-import LandingPage from "./LandingPage";
 import Bucket from "./Bucket";
+import DiscountUrl from "./DiscountUrl";
 import EnrollToEyca from "./EnrollToEyca";
+import LandingPage from "./LandingPage";
 
 const emptyInitialValues = {
   discounts: [
     {
       name: "",
+      name_en: "",
+      name_de: "-",
       description: "",
+      description_en: "",
+      description_de: "-",
       startDate: "",
       endDate: "",
       discount: "",
+      discountUrl: "",
       productCategories: [],
       condition: "",
-      staticCode: "",
-      enrollToEyca: false
+      condition_en: "",
+      condition_de: "-",
+      staticCode: ""
     }
   ]
 };
@@ -150,28 +167,34 @@ const DiscountData = ({
           setInitialValues({
             discounts: discounts.items.map((discount: Discount) => ({
               ...discount,
+              name: withNormalizedSpaces(discount.name),
+              name_en: withNormalizedSpaces(discount.name_en),
+              name_de: "-",
+              description: clearIfReferenceIsBlank(discount.description)(discount.description),
+              description_en: clearIfReferenceIsBlank(discount.description)(
+                discount.description_en
+              ),
+              description_de: "-",
+              condition: clearIfReferenceIsBlank(discount.condition)(discount.condition),
+              condition_en: clearIfReferenceIsBlank(discount.condition)(discount.condition_en),
+              condition_de: "-",
+              discountUrl: fromNullable(discount.discountUrl).toUndefined(),
               startDate: new Date(discount.startDate),
               endDate: new Date(discount.endDate),
-              landingPageReferrer:
-                discount.landingPageReferrer === null
-                  ? undefined
-                  : discount.landingPageReferrer,
-              landingPageUrl:
-                discount.landingPageUrl === null
-                  ? undefined
-                  : discount.landingPageUrl,
-              discount:
-                discount.discount === null ? undefined : discount.discount,
-              staticCode:
-                discount.staticCode === null ? undefined : discount.staticCode,
-              lastBucketCodeLoadUid:
-                discount.lastBucketCodeLoadUid === null
-                  ? undefined
-                  : discount.lastBucketCodeLoadUid,
-              lastBucketCodeLoadFileName:
-                discount.lastBucketCodeLoadFileName === null
-                  ? undefined
-                  : discount.lastBucketCodeLoadFileName
+              landingPageReferrer: fromNullable(
+                discount.landingPageReferrer
+              ).toUndefined(),
+              landingPageUrl: fromNullable(
+                discount.landingPageUrl
+              ).toUndefined(),
+              discount: fromNullable(discount.discount).toUndefined(),
+              staticCode: fromNullable(discount.staticCode).toUndefined(),
+              lastBucketCodeLoadUid: fromNullable(
+                discount.lastBucketCodeLoadUid
+              ).toUndefined(),
+              lastBucketCodeLoadFileName: fromNullable(
+                discount.lastBucketCodeLoadFileName
+              ).toUndefined()
             }))
           });
           setLoading(false);
@@ -225,9 +248,33 @@ const DiscountData = ({
         checkBucket
       )}
       onSubmit={values => {
-        const newValues = {
+        const newValues: { discounts: ReadonlyArray<Discount> } = {
           discounts: values.discounts.map((discount: CreateDiscount) => ({
             ...discount,
+            name: withNormalizedSpaces(discount.name),
+            name_en: withNormalizedSpaces(discount.name_en),
+            name_de: "-",
+            description: clearIfReferenceIsBlank(discount.description)(
+              discount.description
+            ),
+            description_en: clearIfReferenceIsBlank(discount.description)(
+              discount.description_en
+            ),
+            description_de: clearIfReferenceIsBlank(discount.description)(
+              discount.description_de
+            ),
+            condition: clearIfReferenceIsBlank(discount.condition)(
+              discount.condition
+            ),
+            condition_en: clearIfReferenceIsBlank(discount.condition)(
+              discount.condition_en
+            ),
+            condition_de: clearIfReferenceIsBlank(discount.condition)(
+              discount.condition_de
+            ),
+            productCategories: discount.productCategories.filter((pc: any) =>
+              Object.values(ProductCategory).includes(pc)
+            ),
             startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
             endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
           }))
@@ -288,6 +335,17 @@ const DiscountData = ({
                       >
                         <DiscountConditions index={index} />
                       </FormField>
+                      {!checkLanding && (
+                        <FormField
+                          htmlFor="discountUrl"
+                          title="Link all’agevolazione"
+                          description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione"
+                          isTitleHeading
+                          isVisible
+                        >
+                          <DiscountUrl index={index} />
+                        </FormField>
+                      )}
                       {checkStaticCode && (
                         <FormField
                           htmlFor="staticCode"
@@ -321,8 +379,10 @@ const DiscountData = ({
                           setFieldValue={setFieldValue}
                         />
                       )}
-                      {profile?.salesChannel?.channelType ===
-                        "OnlineChannel" && (
+                      {(profile?.salesChannel?.channelType ===
+                        "OnlineChannel" ||
+                        profile?.salesChannel?.channelType ===
+                          "BothChannels") && (
                         <EnrollToEyca
                           isEycaSupported={checkStaticCode}
                           discountOption={
@@ -344,12 +404,19 @@ const DiscountData = ({
                             onClick={() =>
                               arrayHelpers.push({
                                 name: "",
+                                name_en: "",
+                                name_de: "-",
                                 description: "",
+                                description_en: "",
+                                description_de: "-",
                                 startDate: "",
                                 endDate: "",
                                 discount: "",
+                                discountUrl: "",
                                 productCategories: [],
                                 condition: "",
+                                condition_en: "",
+                                condition_de: "-",
                                 staticCode: ""
                               })
                             }

@@ -1,22 +1,27 @@
 /* eslint-disable sonarjs/cognitive-complexity */
+import { Form, Formik } from "formik";
+import * as array from "fp-ts/lib/Array";
+import { toError } from "fp-ts/lib/Either";
+import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import * as array from "fp-ts/lib/Array";
-import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
-import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
+import { SupportType } from "../../../../api/generated";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
-import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { Severity, useTooltip } from "../../../../context/tooltip";
 import { EmptyAddresses } from "../../../../utils/form_types";
+import {
+  withNormalizedSpaces,
+  clearIfReferenceIsBlank
+} from "../../../../utils/strings";
+import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
+import FormContainer from "../../FormContainer";
+import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import ProfileDescription from "./ProfileDescription";
+import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
-import ProfileImage from "./ProfileImage";
-import ProfileDescription from "./ProfileDescription";
 import SalesChannels from "./SalesChannels";
 
 const defaultSalesChannel = {
@@ -38,6 +43,8 @@ const defaultInitialValues = {
   fullName: "",
   hasDifferentFullName: false,
   name: "",
+  name_en: "",
+  name_de: "-",
   pecAddress: "",
   taxCodeOrVat: "",
   legalOffice: "",
@@ -52,6 +59,8 @@ const defaultInitialValues = {
     telephoneNumber: ""
   },
   description: "",
+  description_en: "",
+  description_de: "-",
   salesChannel: defaultSalesChannel
 };
 
@@ -117,8 +126,15 @@ const ProfileData = ({
       .fold(
         () => setLoading(false),
         (profile: any) => {
+          const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
           setInitialValues({
             ...profile,
+            name: cleanedIfNameIsBlank(profile.name),
+            name_en: cleanedIfNameIsBlank(profile.name_en),
+            name_de: "-",
+            description: withNormalizedSpaces(profile.description),
+            description_en: withNormalizedSpaces(profile.description_en),
+            description_de: "-",
             salesChannel:
               profile.salesChannel.channelType === "OfflineChannel" ||
               profile.salesChannel.channelType === "BothChannels"
@@ -226,14 +242,27 @@ const ProfileData = ({
         },
         fullName: user.company?.organization_name || "",
         taxCodeOrVat:
-          user.company?.organization_fiscal_code || user.fiscal_number || ""
+          user.company?.organization_fiscal_code || user.fiscal_number || "",
+        supportType: SupportType.EmailAddress,
+        supportValue: "-----"
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
-        const { hasDifferentFullName, ...discount } = values;
+        const { hasDifferentFullName, ...profile } = values;
+        const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
         void submitProfile()({
-          ...discount,
-          ...getSalesChannel(discount.salesChannel)
+          ...profile,
+          name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
+          name_en: !hasDifferentFullName
+            ? ""
+            : cleanedIfNameIsBlank(profile.name_en),
+          name_de: !hasDifferentFullName
+            ? ""
+            : cleanedIfNameIsBlank(profile.name_de),
+          description: withNormalizedSpaces(profile.description),
+          description_en: withNormalizedSpaces(profile.description_en),
+          description_de: withNormalizedSpaces(profile.description_de),
+          ...getSalesChannel(profile.salesChannel)
         });
       }}
     >

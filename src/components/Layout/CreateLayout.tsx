@@ -8,13 +8,21 @@ type Props = {
   breadcrumbLabel: string;
   title: string;
   children: any;
+  breadcrumbLink?: string;
 };
 
-const CreateLayout = ({ breadcrumbLabel, title, children }: Props) => (
+const CreateLayout = ({
+  breadcrumbLabel,
+  title,
+  children,
+  breadcrumbLink
+}: Props) => (
   <Layout>
     <Container className="mt-20 mb-64">
       <div className="col-10 offset-1">
-        <Breadcrumb>{breadcrumbLabel}</Breadcrumb>
+        <Breadcrumb breadcrumbLink={breadcrumbLink}>
+          {breadcrumbLabel}
+        </Breadcrumb>
 
         <div className="row">
           <div className="col-9">

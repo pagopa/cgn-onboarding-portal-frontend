@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useTable, usePagination, Row, useSortBy } from "react-table";
-import cx from "classnames";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Row, usePagination, useSortBy, useTable } from "react-table";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { Button, Icon } from "design-react-kit";
+import { Button } from "design-react-kit";
 import { format } from "date-fns";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
-  ApprovedAgreements,
-  ApprovedAgreement
+  ApprovedAgreement,
+  ApprovedAgreements
 } from "../../api/generated_backoffice";
+import Pager from "../Table/Pager";
+import TableHeader from "../Table/TableHeader";
+import { DiscountState } from "../../api/generated";
 import ConventionFilter from "./ConventionFilter";
-import ConventionDetails from "./ConventionDetails";
+import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorConvention = () => {
@@ -72,6 +74,16 @@ const OperatorConvention = () => {
         accessor: "agreementLastUpdateDate",
         Cell: ({ row }: { row: Row }) =>
           format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
+      },
+      {
+        Header: "Agevolazioni",
+        accessor: "publishedDiscounts"
+      },
+      {
+        Header: "TEST",
+        accessor: "testPending",
+        Cell: ({ row }: { row: Row }) =>
+          row.values.testPending && getBadgeStatus(DiscountState.TestPending)
       }
     ],
     []
@@ -114,6 +126,8 @@ const OperatorConvention = () => {
         return "AgreementDate";
       case "agreementLastUpdateDate":
         return "LastModifyDate";
+      case "publishedDiscounts":
+        return "PublishedDiscounts";
     }
   };
 
@@ -140,6 +154,7 @@ const OperatorConvention = () => {
         onClose={() => {
           setShowDetails(false);
           setSelectedConvention(undefined);
+          getConventions({});
         }}
       />
     );
@@ -162,103 +177,24 @@ const OperatorConvention = () => {
         <CenteredLoading />
       ) : (
         <>
-          <div className="mb-2 mt-4 d-flex justify-content-between">
-            {!!conventions?.total && (
-              <strong>
-                {startRowIndex}-{endRowIndex} di {conventions?.total}
-              </strong>
-            )}
-            <div className="d-flex align-items-center">
-              {canPreviousPage && (
-                <Icon
-                  icon="it-arrow-left"
-                  size="sm"
-                  color="primary"
-                  className="cursor-pointer mx-1"
-                  onClick={() => previousPage()}
-                />
-              )}
-              {pageArray.map(page => (
-                <div
-                  className={cx(
-                    "font-weight-bold mx-1",
-                    page !== pageIndex ? "cursor-pointer primary-color" : false
-                  )}
-                  key={page}
-                  onClick={() => {
-                    if (page !== pageIndex) {
-                      gotoPage(page);
-                    }
-                  }}
-                >
-                  {page + 1}
-                </div>
-              ))}
-              {canNextPage && (
-                <Icon
-                  icon="it-arrow-right"
-                  size="sm"
-                  color="primary"
-                  className="cursor-pointer mx-1"
-                  onClick={() => nextPage()}
-                />
-              )}
-            </div>
-          </div>
+          <Pager
+            canPreviousPage={canPreviousPage}
+            canNextPage={canNextPage}
+            startRowIndex={startRowIndex}
+            endRowIndex={endRowIndex}
+            pageIndex={pageIndex}
+            onPreviousPage={previousPage}
+            onNextPage={nextPage}
+            onGotoPage={gotoPage}
+            pageArray={pageArray}
+            total={conventions?.total}
+          />
           <table
             {...getTableProps()}
             style={{ width: "100%" }}
             className="mt-2 bg-white"
           >
-            <thead>
-              {headerGroups.map((headerGroup, i) => (
-                <tr
-                  {...headerGroup.getHeaderGroupProps()}
-                  key={i}
-                  style={{
-                    backgroundColor: "#F8F9F9",
-                    borderBottom: "1px solid #5A6772"
-                  }}
-                >
-                  {headerGroup.headers.map((column, i) => (
-                    <th
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                      key={i}
-                      className="px-6 py-2 text-sm font-weight-bold text-gray
-                    text-uppercase"
-                    >
-                      {column.render("Header")}
-                      <span>
-                        {column.canSort && (
-                          <>
-                            {column.isSorted ? (
-                              <>
-                                {column.isSortedDesc ? (
-                                  <Icon
-                                    icon="it-arrow-up-triangle"
-                                    style={{ color: "#5C6F82" }}
-                                  />
-                                ) : (
-                                  <Icon
-                                    icon="it-arrow-down-triangle"
-                                    style={{ color: "#5C6F82" }}
-                                  />
-                                )}
-                              </>
-                            ) : (
-                              <Icon
-                                icon="it-arrow-up-triangle"
-                                style={{ color: "#5C6F82" }}
-                              />
-                            )}
-                          </>
-                        )}
-                      </span>
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
+            <TableHeader headerGroups={headerGroups} />
             <tbody {...getTableBodyProps()}>
               {page.map(row => {
                 prepareRow(row);

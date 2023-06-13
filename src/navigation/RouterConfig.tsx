@@ -14,6 +14,8 @@ import EditOperatorData from "../pages/EditOperatorData";
 import RejectedProfile from "../pages/RejectedProfile";
 import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
+import CreateActivation from "../pages/CreateActivation";
+import EditActivation from "../pages/EditActivation";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -24,16 +26,13 @@ import {
   EDIT_OPERATOR_DATA,
   ADMIN_PANEL_RICHIESTE,
   ADMIN_PANEL_CONVENZIONATI,
-  REJECT_PROFILE
+  REJECT_PROFILE,
+  ADMIN_PANEL_ACCESSI,
+  ADMIN_PANEL_ACCESSI_EDIT,
+  ADMIN_PANEL_ACCESSI_CREA
 } from "./routes";
 
-export const RouterConfig = ({
-  user,
-  userType
-}: {
-  user: any;
-  userType: string;
-}) => {
+export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
   );
@@ -42,7 +41,13 @@ export const RouterConfig = ({
   const dispatch = useDispatch();
   const isAdmin = userType === "ADMIN";
 
-  const adminRoutes = [ADMIN_PANEL_RICHIESTE, ADMIN_PANEL_CONVENZIONATI];
+  const adminRoutes = [
+    ADMIN_PANEL_RICHIESTE,
+    ADMIN_PANEL_CONVENZIONATI,
+    ADMIN_PANEL_ACCESSI,
+    ADMIN_PANEL_ACCESSI_EDIT,
+    ADMIN_PANEL_ACCESSI_CREA
+  ];
 
   useEffect(() => {
     if (!isAdmin) {
@@ -78,6 +83,17 @@ export const RouterConfig = ({
       <Switch>
         <Route exact path={ADMIN_PANEL_RICHIESTE} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
+        <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
+        <Route
+          exact
+          path={ADMIN_PANEL_ACCESSI_EDIT}
+          component={EditActivation}
+        />
+        <Route
+          exact
+          path={ADMIN_PANEL_ACCESSI_CREA}
+          component={CreateActivation}
+        />
       </Switch>
     );
   }

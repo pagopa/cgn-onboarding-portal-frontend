@@ -1,20 +1,22 @@
 import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Profile } from "../../api/generated";
 
 type Props = {
   isOpen: any;
   toggle: any;
   publish: any;
+  profile?: Profile;
 };
 
-const PublishModal = ({ isOpen, toggle, publish }: Props) => (
+const PublishModal = ({ isOpen, toggle, publish, profile }: Props) => (
   <Modal isOpen={isOpen} toggle={toggle} size="md">
     <ModalHeader toggle={toggle}>Pubblica agevolazione</ModalHeader>
     <ModalBody>
-      Attenzione: hai terminato tutte le integrazioni tecniche per la
-      validazione dei codici sconto? Se procedi con la pubblicazione gli utenti utilizzeranno un
-      codice generato che non troverà nessun riscontro
+      {profile && profile.salesChannel.channelType !== "OfflineChannel"
+        ? "Se pubblichi, l’agevolazione diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."
+        : "Hai informato il personale addetto alle casse o alla relazione col pubblico? Se pubblichi, l’agevolazione diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."}
     </ModalBody>
     <ModalFooter className="d-flex flex-column">
       <Button
@@ -25,7 +27,7 @@ const PublishModal = ({ isOpen, toggle, publish }: Props) => (
         }}
         style={{ width: "100%" }}
       >
-        Pubblica
+        Sì, pubblica
       </Button>{" "}
       <Button
         color="primary"
@@ -33,7 +35,7 @@ const PublishModal = ({ isOpen, toggle, publish }: Props) => (
         onClick={toggle}
         style={{ width: "100%" }}
       >
-        Annulla
+        No, torna indietro
       </Button>
     </ModalFooter>
   </Modal>

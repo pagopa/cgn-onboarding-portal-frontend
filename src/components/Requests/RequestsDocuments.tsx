@@ -16,12 +16,14 @@ const CheckedDocument = ({
   doc,
   i,
   deleteDocument,
-  assignedToMe
+  assignedToMe,
+  canBeDeleted
 }: {
   doc: Document;
   i: number;
   deleteDocument: (type: DocumentType) => void;
   assignedToMe: boolean;
+  canBeDeleted?: boolean;
 }) => {
   const label =
     doc.documentType === "Agreement"
@@ -40,7 +42,7 @@ const CheckedDocument = ({
           </div>
         </div>
 
-        {assignedToMe && (
+        {assignedToMe && canBeDeleted && (
           <span
             className="d-flex flex-row align-items-center cursor-pointer"
             onClick={() => deleteDocument(doc.documentType)}
@@ -119,7 +121,7 @@ const UncheckedDocument = ({
   );
 };
 
-const RequestsDetails = ({
+const RequestDocuments = ({
   original,
   assignedToMe,
   setCheckAllDocs
@@ -161,6 +163,7 @@ const RequestsDetails = ({
         () => {
           getDocuments();
           setLoading(false);
+          setCheckAllDocs(true);
         }
       )
       .run();
@@ -194,10 +197,6 @@ const RequestsDetails = ({
     getDocuments();
   }, []);
 
-  useEffect(() => {
-    setCheckAllDocs(documents?.length === 2);
-  }, [documents]);
-
   return (
     <>
       <h1 className="h5 font-weight-bold text-dark-blue mb-5">Documenti</h1>
@@ -205,21 +204,7 @@ const RequestsDetails = ({
         <CenteredLoading />
       ) : (
         original.documents?.map((doc, i) => {
-          const uploadedDoc = documents?.find(
-            d => d.documentType === doc.documentType
-          );
-          if (!uploadedDoc) {
-            return (
-              <UncheckedDocument
-                key={i}
-                doc={doc}
-                i={i}
-                original={original}
-                uploadDocument={uploadDocument}
-                assignedToMe={assignedToMe}
-              />
-            );
-          } else {
+          if (doc.documentType === "AdhesionRequest") {
             return (
               <CheckedDocument
                 key={i}
@@ -230,10 +215,36 @@ const RequestsDetails = ({
               />
             );
           }
+          const uploadedDoc = documents?.find(
+            d => d.documentType === doc.documentType
+          );
+          if (uploadedDoc) {
+            return (
+              <CheckedDocument
+                key={i}
+                doc={doc}
+                i={i}
+                deleteDocument={deleteDocument}
+                assignedToMe={assignedToMe}
+                canBeDeleted
+              />
+            );
+          } else {
+            return (
+              <UncheckedDocument
+                key={i}
+                doc={doc}
+                i={i}
+                original={original}
+                uploadDocument={uploadDocument}
+                assignedToMe={assignedToMe}
+              />
+            );
+          }
         })
       )}
     </>
   );
 };
 
-export default RequestsDetails;
+export default RequestDocuments;

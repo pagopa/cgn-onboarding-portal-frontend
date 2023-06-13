@@ -5,7 +5,7 @@ const Item = ({
   value
 }: {
   label: string;
-  value: string | number | undefined;
+  value?: string | number | React.ReactNode;
 }) => (
   <div className="row mb-5">
     <div className="col-4 text-gray">{label}</div>

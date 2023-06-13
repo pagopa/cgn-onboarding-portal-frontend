@@ -1,9 +1,9 @@
-import React, { forwardRef } from "react";
 import { Field, FieldProps } from "formik";
+import React from "react";
 import DatePicker from "react-datepicker";
-import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import DateInputComponent from "../../DateInputComponent";
+import InputField from "../../FormField";
 
 type Props = {
   formValues?: any;
@@ -32,15 +32,36 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         isVisible
         required
       >
-        <Field
-          maxLength={100}
-          id="name"
-          name={hasIndex ? `discounts[${index}].name` : "name"}
-          type="text"
-        />
-        <CustomErrorMessage
-          name={hasIndex ? `discounts[${index}].name` : "name"}
-        />
+        <div className="row">
+          <div className="col-6">
+            <p className="text-sm font-weight-normal text-black mb-0">
+              Italiano 🇮🇹
+            </p>
+            <Field
+              maxLength={100}
+              id="name"
+              name={hasIndex ? `discounts[${index}].name` : "name"}
+              type="text"
+            />
+            <CustomErrorMessage
+              name={hasIndex ? `discounts[${index}].name` : "name"}
+            />
+          </div>
+          <div className="col-6">
+            <p className="text-sm font-weight-normal text-black mb-0">
+              Inglese 🇬🇧
+            </p>
+            <Field
+              maxLength={100}
+              id="name"
+              name={hasIndex ? `discounts[${index}].name_en` : "name_en"}
+              type="text"
+            />
+            <CustomErrorMessage
+              name={hasIndex ? `discounts[${index}].name_en` : "name_en"}
+            />
+          </div>
+        </div>
       </InputField>
       <InputField
         htmlFor="description"
@@ -48,17 +69,52 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         description="Se necessario, inserire una descrizione più approfondita dell'agevolazione (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri"
         isVisible
       >
-        <Field
-          as="textarea"
-          id="description"
-          name={hasIndex ? `discounts[${index}].description` : "description"}
-          placeholder="Inserisci una descrizione"
-          maxLength="250"
-          rows="4"
-        />
-        <CustomErrorMessage
-          name={hasIndex ? `discounts[${index}].description` : "description"}
-        />
+        <div className="row">
+          <div className="col-6">
+            <p className="text-sm font-weight-normal text-black mb-0">
+              Italiano 🇮🇹
+            </p>
+            <Field
+              as="textarea"
+              id="description"
+              name={
+                hasIndex ? `discounts[${index}].description` : "description"
+              }
+              placeholder="Inserisci una descrizione"
+              maxLength="250"
+              rows="4"
+            />
+            <CustomErrorMessage
+              name={
+                hasIndex ? `discounts[${index}].description` : "description"
+              }
+            />
+          </div>
+          <div className="col-6">
+            <p className="text-sm font-weight-normal text-black mb-0">
+              Inglese 🇬🇧
+            </p>
+            <Field
+              as="textarea"
+              id="description_en"
+              name={
+                hasIndex
+                  ? `discounts[${index}].description_en`
+                  : "description_en"
+              }
+              placeholder="Inserisci una descrizione"
+              maxLength="250"
+              rows="4"
+            />
+            <CustomErrorMessage
+              name={
+                hasIndex
+                  ? `discounts[${index}].description_en`
+                  : "description_en"
+              }
+            />
+          </div>
+        </div>
       </InputField>
       <div className="row">
         <div className="col-5">
@@ -148,13 +204,14 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
                 className="form-control"
                 id="input-group-2"
                 name="input-group-2"
-                onChange={e => 
+                onChange={e =>
                   setFieldValue(
                     hasIndex ? `discounts[${index}].discount` : "discount",
                     e.target.value
-                  )} 
-                />
-            </div>  
+                  )
+                }
+              />
+            </div>
           )}
         </Field>
         <CustomErrorMessage
