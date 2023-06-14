@@ -5,18 +5,25 @@ import { Label } from "reactstrap";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import { categoriesMap } from "../../../../utils/strings";
 import { ProductCategory } from "../../../../api/generated";
+import { MAX_CATEGORIES_SELECTED } from "../../../../utils/constants";
 
 type Props = {
+  selectedCategories?: Array<ProductCategory>;
   index?: number;
 };
 
-const ProductCategories = ({ index }: Props) => {
+const ProductCategories = ({ selectedCategories, index }: Props) => {
   const hasIndex = index !== undefined;
   const name = hasIndex
     ? `discounts[${index}].productCategories`
     : `productCategories`;
 
   const nameLabelStyle = { fontWeight: 700, marginRight: "5px" };
+
+  const isCheckboxDisabled = (category: ProductCategory) =>
+    selectedCategories &&
+    selectedCategories.length >= MAX_CATEGORIES_SELECTED &&
+    !selectedCategories.includes(category);
 
   return (
     <>
@@ -25,6 +32,7 @@ const ProductCategories = ({ index }: Props) => {
           <Field
             id={`${name}.${categoryKey}`}
             name={name}
+            disabled={isCheckboxDisabled(categoryKey as ProductCategory)}
             value={categoryKey}
             type="checkbox"
           />

@@ -29,6 +29,7 @@ import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
 import FormField from "../FormField";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
+import { MAX_CATEGORIES_SELECTED } from "../../../utils/constants";
 
 const emptyInitialValues = {
   name: "",
@@ -233,11 +234,13 @@ const EditDiscountForm = () => {
                 htmlFor="productCategories"
                 isTitleHeading
                 title="Categorie merceologiche"
-                description="Seleziona la o le categorie merceologiche a cui appatengono i beni/servizi oggetto dell’agevolazione"
+                description={`Seleziona al massimo ${MAX_CATEGORIES_SELECTED} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’agevolazione`}
                 isVisible
                 required
               >
-                <ProductCategories />
+                <ProductCategories
+                  selectedCategories={values.productCategories}
+                />
               </FormField>
               <FormField
                 htmlFor="discountConditions"
