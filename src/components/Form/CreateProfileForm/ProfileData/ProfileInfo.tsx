@@ -35,7 +35,14 @@ const ProfileInfo = ({ formValues }: Props) => (
       <InputField
         htmlFor="profileName"
         title="Nome Operatore visualizzato"
-        description={<>Può essere una semplificazione del nome dell'Operatore più riconoscibile dall'utente (es. PagoPA vs PagoPA SPA) <br/>Il nome dell'operatore deve rispettare l'uso delle maiuscole previste del proprio brand name (es. PagoPA vs PAGOPA)</>}
+        description={
+          <>
+            Può essere una semplificazione del nome dell&apos;Operatore più
+            riconoscibile dall&apos;utente (es. PagoPA vs PagoPA SPA) <br />
+            Il nome dell&apos;operatore deve rispettare l&apos;uso delle
+            maiuscole previste del proprio brand name (es. PagoPA vs PAGOPA)
+          </>
+        }
         isVisible
         required
       >

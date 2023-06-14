@@ -22,6 +22,7 @@ import {
   clearIfReferenceIsBlank,
   withNormalizedSpaces
 } from "../../../../utils/strings";
+import { MAX_CATEGORIES_SELECTED } from "../../../../utils/constants";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
@@ -170,13 +171,19 @@ const DiscountData = ({
               name: withNormalizedSpaces(discount.name),
               name_en: withNormalizedSpaces(discount.name_en),
               name_de: "-",
-              description: clearIfReferenceIsBlank(discount.description)(discount.description),
+              description: clearIfReferenceIsBlank(discount.description)(
+                discount.description
+              ),
               description_en: clearIfReferenceIsBlank(discount.description)(
                 discount.description_en
               ),
               description_de: "-",
-              condition: clearIfReferenceIsBlank(discount.condition)(discount.condition),
-              condition_en: clearIfReferenceIsBlank(discount.condition)(discount.condition_en),
+              condition: clearIfReferenceIsBlank(discount.condition)(
+                discount.condition
+              ),
+              condition_en: clearIfReferenceIsBlank(discount.condition)(
+                discount.condition_en
+              ),
               condition_de: "-",
               discountUrl: fromNullable(discount.discountUrl).toUndefined(),
               startDate: new Date(discount.startDate),
@@ -320,11 +327,14 @@ const DiscountData = ({
                         htmlFor="productCategories"
                         isTitleHeading
                         title="Categorie merceologiche"
-                        description="Seleziona la o le categorie merceologiche a cui appatengono i beni/servizi oggetto dell’agevolazione"
+                        description={`Seleziona al massimo ${MAX_CATEGORIES_SELECTED} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’agevolazione`}
                         isVisible
                         required
                       >
-                        <ProductCategories index={index} />
+                        <ProductCategories
+                          selectedCategories={values.productCategories}
+                          index={index}
+                        />
                       </FormField>
                       <FormField
                         htmlFor="discountConditions"
