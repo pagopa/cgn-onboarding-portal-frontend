@@ -5,7 +5,7 @@ import { Label } from "reactstrap";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import { categoriesMap } from "../../../../utils/strings";
 import { ProductCategory } from "../../../../api/generated";
-import { MAX_CATEGORIES_SELECTED } from "../../../../utils/constants";
+import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
 
 type Props = {
   selectedCategories?: Array<ProductCategory>;
@@ -22,7 +22,7 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
 
   const isCheckboxDisabled = (category: ProductCategory) =>
     selectedCategories &&
-    selectedCategories.length >= MAX_CATEGORIES_SELECTED &&
+    selectedCategories.length >= MAX_SELECTABLE_CATEGORIES &&
     !selectedCategories.includes(category);
 
   return (
