@@ -26,7 +26,7 @@ const LandingPage = ({ children, index }: Props) => {
       />
       <p className="mt-4 text-sm font-weight-normal text-black">
         {
-          "Inserire il valore del parametro referrer da trasmettere alla landing page*"
+          "Inserire il valore del parametro referrer da trasmettere alla landing page"
         }
       </p>
       <Field
