@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 import { HelpRequestCategoryEnum } from "../../api/generated";
-import { MAX_CATEGORIES_SELECTED } from "../../utils/constants";
+import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
 const INCORRECT_CONFIRM_EMAIL_ADDRESS = "I due indirizzi devono combaciare";
@@ -10,7 +10,7 @@ const ONLY_STRING = "Solo lettere";
 const DISCOUNT_RANGE =
   "Lo sconto deve essere un numero intero compreso tra 1 e 100";
 const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
-const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_CATEGORIES_SELECTED} categorie merceologiche`;
+const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche`;
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
 
@@ -18,21 +18,18 @@ const URL_REGEXP = /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2
 
 export const ProfileDataValidationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
-  name: Yup.string()
-    .when(["hasDifferentName"], {
-      is: true,
-      then: Yup.string().required(REQUIRED_FIELD)
-    }),
-  name_en: Yup.string()
-    .when(["hasDifferentName"], {
-      is: true,
-      then: Yup.string().required(REQUIRED_FIELD)
-    }),
-  name_de: Yup.string()
-    .when(["hasDifferentName"], {
-      is: true,
-      then: Yup.string().required(REQUIRED_FIELD)
-    }),
+  name: Yup.string().when(["hasDifferentName"], {
+    is: true,
+    then: Yup.string().required(REQUIRED_FIELD)
+  }),
+  name_en: Yup.string().when(["hasDifferentName"], {
+    is: true,
+    then: Yup.string().required(REQUIRED_FIELD)
+  }),
+  name_de: Yup.string().when(["hasDifferentName"], {
+    is: true,
+    then: Yup.string().required(REQUIRED_FIELD)
+  }),
   pecAddress: Yup.string()
     .email(INCORRECT_EMAIL_ADDRESS)
     .required(REQUIRED_FIELD),
@@ -164,7 +161,7 @@ export const discountDataValidationSchema = (
         .notRequired(),
       productCategories: Yup.array()
         .min(1, PRODUCT_CATEGORIES_ONE)
-        .max(MAX_CATEGORIES_SELECTED, PRODUCT_CATEGORIES_MAX)
+        .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX)
         .required(),
       condition: Yup.string().when(["condition_en"], {
         is: (_?: string) => _ && _.length > 0,
@@ -212,10 +209,10 @@ export const discountsListDataValidationSchema = (
   landingCheck?: boolean,
   bucketCheck?: boolean
 ) =>
-  Yup.object().shape(
-    {
-      discounts: Yup.array().of(
-        Yup.object().shape({
+  Yup.object().shape({
+    discounts: Yup.array().of(
+      Yup.object().shape(
+        {
           name: Yup.string()
             .max(100)
             .required(REQUIRED_FIELD),
@@ -293,10 +290,10 @@ export const discountsListDataValidationSchema = (
         [
           ["description", "description_en"],
           ["condition", "condition_en"]
-        ])
+        ]
       )
-    }
-  );
+    )
+  });
 
 export const loggedHelpValidationSchema = Yup.object().shape({
   category: Yup.string()
