@@ -10,6 +10,7 @@
 
 - [Getting started](#getting-started)
   - [Prerequisites](#prerequisites)
+    - [NodeJS](#nodejs)
   - [Setup the project](#setup-the-project)
   - [Run the dashboard](#run-the-dashboard)
   - [Login in localhost](#login-in-localhost)
@@ -65,14 +66,10 @@ After that you logged in successfully, you will be redirected to UAT environemnt
 - Open the browser inspect console;
 - Type the following snippet: 
 ```js
-window.cookieStore.get("pagopa_token").then(el => console.log(JSON.stringify({...el, domain: "localhost"})));
+window.cookieStore.get("pagopa_token").then(el => console.log(`window.cookieStore.set(${JSON.stringify({...el, domain: "localhost"})})`));
 ```
-- Copy the token from console;
+- Copy the logged snippet containing the token from console;
 - Back to http://localhost:3000
 - Open again the browser inspect console;
-- Type the following snippet:
-```js
-// Put into this string the copied token in UAT environment
-window.cookieStore.set(JSON.parse('TOKEN'));
-```
+- Paste the snippet copied before and press enter;
 - Reload the page and you are done ✅
