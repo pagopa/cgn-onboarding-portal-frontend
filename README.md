@@ -1,46 +1,78 @@
-# Getting Started with Create React App
+<p align="center">
+  <img src="src/assets/images/logo-cgn.png" width="100"/></br>
+  <h3 align="center">CGN - Portale esercenti</h3>
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <img src="https://img.shields.io/github/contributors-anon/pagopa/cgn-onboarding-portal-frontend" />
+  <img src="https://img.shields.io/github/repo-size/pagopa/cgn-onboarding-portal-frontend" />
+</p>
 
-## Available Scripts
+- [Getting started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Setup the project](#setup-the-project)
+  - [Run the dashboard](#run-the-dashboard)
+  - [Login in localhost](#login-in-localhost)
+ 
 
-In the project directory, you can run:
+# Getting started
 
-### `yarn start`
+The following sections provide instructions to build and run the app for development purposes.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Prerequisites
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### NodeJS
+To run the project you need to install the correct version of NodeJS.
+We recommend the use of a virtual environment of your choice. For ease of use, this guide adopts [nodenv](https://github.com/nodenv/nodenv)
 
-### `yarn test`
+The node version used in this project is stored in [.nvmrc](.nvmrc)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Setup the project
+In order to setup the project, we use [yarn](https://yarnpkg.com/) for managing javascript dependencies. 
+As stated [previously](#nodejs), we also use `nodenv` for managing the environment:
+```bash
+# Clone the repository
+$ git clone https://github.com/pagopa/cgn-onboarding-portal-frontend
 
-### `yarn build`
+# CD into the repository
+$ cd cgn-onboarding-portal-frontend
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Install NodeJS with nodenv, the returned version should match the one in the .nvmrc file
+$ nodenv install 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Install yarn and rehash to install shims
+$ npm install -g yarn && nodenv rehash
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Install dependencies 
+# Run this only during the first setup and when JS dependencies change
+$ yarn install
 
-### `yarn eject`
+# Generate the definitions from the OpenAPI specs
+# Run this only during the first setup and when specs change
+$ yarn generate
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Run the dashboard
+In order to run the dashboard, you should start the following code:
+```bash
+# Start the dashboard on port 3000 and pointing to UAT environment
+$ yarn start:uat
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Login in localhost 
+As soon as the dashboard is up and running, you will see a landing page where you should login. Choose what kind of login do you want (login as Operator or login as Admin).
+After that you logged in successfully, you will be redirected to UAT environemnt dashboard, so in this case you need to retrieve the token generated in UAT and put it in localhost env, to do so you have to:
+- Open the browser inspect console;
+- Type the following snippet: 
+```js
+window.cookieStore.get("pagopa_token").then(el => console.log(JSON.stringify({...el, domain: "localhost"})));
+```
+- Copy the token from console;
+- Back to http://localhost:3000
+- Open again the browser inspect console;
+- Type the following snippet:
+```js
+// Put into this string the copied token in UAT environment
+window.cookieStore.set(JSON.parse('TOKEN'));
+```
+- Reload the page and you are done ✅
