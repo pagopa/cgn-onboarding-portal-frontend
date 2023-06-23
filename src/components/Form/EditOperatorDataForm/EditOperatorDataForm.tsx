@@ -20,6 +20,7 @@ import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
 import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
+import { SupportContact } from "../SupportContact";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -234,6 +235,7 @@ const EditOperatorDataForm = () => {
             formValues={values}
             isValid
           />
+          <SupportContact/>
         </Form>
       )}
     </Formik>
