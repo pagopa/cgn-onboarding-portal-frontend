@@ -332,7 +332,7 @@ const DiscountData = ({
                         required
                       >
                         <ProductCategories
-                          selectedCategories={values.productCategories}
+                          selectedCategories={discount.productCategories}
                           index={index}
                         />
                       </FormField>
