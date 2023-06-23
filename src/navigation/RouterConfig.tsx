@@ -63,7 +63,9 @@ export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
           break;
         case AgreementState.PendingAgreement:
         case AgreementState.ApprovedAgreement:
-          history.push(DASHBOARD);
+          if (location.pathname === "/") {
+            history.push(DASHBOARD);
+          }
           break;
         case AgreementState.RejectedAgreement:
           history.push(REJECT_PROFILE);

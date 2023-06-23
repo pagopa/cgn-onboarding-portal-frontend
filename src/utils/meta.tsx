@@ -34,6 +34,9 @@ worker-src 'none';
 `;
 
 export const renderCSP = () => {
+  if (location.host.startsWith("localhost")) {
+    return;
+  }
   if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat") {
     // eslint-disable-next-line functional/immutable-data
     document.getElementsByTagName(
