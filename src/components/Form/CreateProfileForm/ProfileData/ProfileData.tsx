@@ -18,12 +18,7 @@ import {
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import {
-  SupportContact,
-  defaultSupportContactFormData,
-  supportContactDataToForm,
-  supportContactFormToData
-} from "../../SupportContact";
+import { SupportContact } from "../../SupportContact";
 import { OperatorDataButtons } from "../../EditOperatorDataForm/EditOperatorDataForm";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
@@ -69,7 +64,8 @@ const defaultInitialValues = {
   description_en: "",
   description_de: "-",
   salesChannel: defaultSalesChannel,
-  supportContact: defaultSupportContactFormData
+  supportType: "",
+  supportValue: ""
 };
 
 type Props = {
@@ -169,8 +165,7 @@ const ProfileData = ({
                         ]
                   }
                 : profile.salesChannel,
-            hasDifferentFullName: !!profile.name,
-            supportContact: supportContactDataToForm(profile)
+            hasDifferentFullName: !!profile.name
           });
           setLoading(false);
         }
@@ -271,8 +266,7 @@ const ProfileData = ({
           description: withNormalizedSpaces(profile.description),
           description_en: withNormalizedSpaces(profile.description_en),
           description_de: withNormalizedSpaces(profile.description_de),
-          ...getSalesChannel(profile.salesChannel),
-          ...supportContactFormToData(values.supportContact)
+          ...getSalesChannel(profile.salesChannel)
         });
       }}
     >

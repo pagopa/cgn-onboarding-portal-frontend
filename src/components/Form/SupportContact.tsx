@@ -11,8 +11,7 @@ export function SupportContact({ children }: SupportContactProps) {
   const formikContext = useFormikContext<
     Yup.InferType<typeof ProfileDataValidationSchema>
   >();
-  const contactType = formikContext.values.supportContact?.contactType;
-  console.log(formikContext);
+  const contactType = formikContext.values.supportType;
   return (
     <FormSection
       title="Contatti di assistenza"
@@ -21,14 +20,14 @@ export function SupportContact({ children }: SupportContactProps) {
     >
       <div className="d-flex flex-column">
         <div className="ml-8">
-          <CustomErrorMessage name="supportContact.contactType" />
+          <CustomErrorMessage name="supportType" />
         </div>
         <div className="form-check">
           <Field
             type="radio"
             id="support-contact-type-email"
-            name="supportContact.contactType"
-            value="email"
+            name="supportType"
+            value={SupportType.EmailAddress}
           />
           <label
             className="text-sm font-weight-normal text-black"
@@ -37,23 +36,23 @@ export function SupportContact({ children }: SupportContactProps) {
             <span className="text-sm">Email</span>
           </label>
         </div>
-        {contactType === "email" && (
+        {contactType === SupportType.EmailAddress && (
           <div className="ml-8">
             <Field
-              id="supportContact.email"
-              name="supportContact.email"
+              id="supportValue"
+              name="supportValue"
               type="email"
               placeholder="Inserire la mail"
             />
-            <CustomErrorMessage name="supportContact.email" />
+            <CustomErrorMessage name="supportValue" />
           </div>
         )}
         <div className="form-check">
           <Field
             type="radio"
             id="support-contact-type-phone"
-            name="supportContact.contactType"
-            value="phone"
+            name="supportType"
+            value={SupportType.PhoneNumber}
           />
           <label
             className="text-sm font-weight-normal text-black"
@@ -62,24 +61,24 @@ export function SupportContact({ children }: SupportContactProps) {
             <span className="text-sm">Telefono</span>
           </label>
         </div>
-        {contactType === "phone" && (
+        {contactType === SupportType.PhoneNumber && (
           <div className="ml-8">
             <Field
               maxLength={15}
-              id="supportContact.phone"
-              name="supportContact.phone"
+              id="supportValue"
+              name="supportValue"
               type="tel"
               placeholder="Inserire il numero di telefono"
             />
-            <CustomErrorMessage name="supportContact.phone" />
+            <CustomErrorMessage name="supportValue" />
           </div>
         )}
         <div className="form-check">
           <Field
             type="radio"
             id="support-contact-type-website"
-            name="supportContact.contactType"
-            value="website"
+            name="supportType"
+            value={SupportType.Website}
           />
           <label
             className="text-sm font-weight-normal text-black"
@@ -88,15 +87,15 @@ export function SupportContact({ children }: SupportContactProps) {
             <span className="text-sm">Sito web</span>
           </label>
         </div>
-        {contactType === "website" && (
+        {contactType === SupportType.Website && (
           <div className="ml-8">
             <Field
-              id="supportContact.website"
-              name="supportContact.website"
+              id="supportValue"
+              name="supportValue"
               type="url"
               placeholder="inserire il sito web (completo di protocollo http/https)"
             />
-            <CustomErrorMessage name="supportContact.website" />
+            <CustomErrorMessage name="supportValue" />
           </div>
         )}
       </div>
@@ -104,70 +103,3 @@ export function SupportContact({ children }: SupportContactProps) {
     </FormSection>
   );
 }
-
-export function supportContactFormToData(formData: {
-  contactType?: string;
-  phone?: string;
-  email?: string;
-  website?: string;
-}): {
-  supportType: SupportType;
-  supportValue: string;
-} {
-  switch (formData.contactType) {
-    case "email":
-      return {
-        supportType: SupportType.EmailAddress,
-        supportValue: formData.email || ""
-      };
-    case "phone":
-      return {
-        supportType: SupportType.PhoneNumber,
-        supportValue: formData.phone || ""
-      };
-    case "website":
-      return {
-        supportType: SupportType.Website,
-        supportValue: formData.website || ""
-      };
-    default:
-      throw new Error("Invalid support contact type");
-  }
-}
-
-export function supportContactDataToForm(data: {
-  supportType: SupportType;
-  supportValue: string;
-}): {
-  contactType?: string;
-  phone?: string;
-  email?: string;
-  website?: string;
-} {
-  switch (data.supportType) {
-    case SupportType.EmailAddress:
-      return {
-        contactType: "email",
-        email: data.supportValue
-      };
-    case SupportType.PhoneNumber:
-      return {
-        contactType: "phone",
-        phone: data.supportValue
-      };
-    case SupportType.Website:
-      return {
-        contactType: "website",
-        website: data.supportValue
-      };
-    default:
-      throw new Error("Invalid support contact type");
-  }
-}
-
-export const defaultSupportContactFormData = {
-  contactType: "",
-  phone: "",
-  email: "",
-  website: ""
-};

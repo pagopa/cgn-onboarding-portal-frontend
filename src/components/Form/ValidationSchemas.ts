@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { HelpRequestCategoryEnum } from "../../api/generated";
+import { HelpRequestCategoryEnum, SupportType } from "../../api/generated";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
@@ -115,30 +115,23 @@ export const ProfileDataValidationSchema = Yup.object().shape({
       otherwise: Yup.array().notRequired()
     })
   }),
-  supportContact: Yup.object().shape({
-    contactType: Yup.mixed<"email" | "phone" | "website">()
-      .oneOf(["email", "phone", "website"])
-      .required(REQUIRED_FIELD),
-    email: Yup.string().when("contactType", {
-      is: "email",
-      then: schema =>
-        schema.email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD)
-    }),
-    phone: Yup.string().when("contactType", {
-      is: "phone",
-      then: schema =>
-        schema
-          .matches(/^[0-9]{4,}$/, INCORRECT_PHONE_NUMBER)
-          .required(REQUIRED_FIELD)
-    }),
-    website: Yup.string().when("contactType", {
-      is: "website",
-      then: schema =>
-        schema
-          .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
-          .required(REQUIRED_FIELD)
+  supportType: Yup.mixed<SupportType>()
+    .oneOf(Object.values(SupportType))
+    .required(REQUIRED_FIELD),
+  supportValue: Yup.string()
+    .required(REQUIRED_FIELD)
+    .when("supportType", {
+      is: SupportType.EmailAddress,
+      then: schema => schema.email(INCORRECT_EMAIL_ADDRESS)
     })
-  })
+    .when("supportType", {
+      is: SupportType.PhoneNumber,
+      then: schema => schema.matches(/^[0-9]{4,}$/, INCORRECT_PHONE_NUMBER)
+    })
+    .when("supportType", {
+      is: SupportType.Website,
+      then: schema => schema.matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+    })
 });
 
 export const discountDataValidationSchema = (

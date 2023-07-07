@@ -79,7 +79,6 @@ const ProfileImage = () => {
         }
       )
       .run();
-
   return (
     <FormSection
       title="Immagine operatore"
@@ -97,7 +96,7 @@ const ProfileImage = () => {
               {agreement.imageUrl ? (
                 <div className="d-flex flex-row align-items-end">
                   <img
-                    src={`${agreement.imageUrl}?${Date.now()}`}
+                    src={`${agreement.imageUrl}`}
                     style={{
                       width: "128px",
                       height: "128px",
