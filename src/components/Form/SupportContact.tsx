@@ -1,11 +1,15 @@
 import React from "react";
 import { Field, useFormikContext } from "formik";
+import * as Yup from "yup";
 import FormSection from "./FormSection";
 import CustomErrorMessage from "./CustomErrorMessage";
+import { ProfileDataValidationSchema } from "./ValidationSchemas";
 
 type SupportContactProps = { children?: React.ReactNode };
 export function SupportContact({ children }: SupportContactProps) {
-  const formikContext = useFormikContext();
+  const formikContext = useFormikContext<
+    Yup.InferType<typeof ProfileDataValidationSchema>
+  >();
   const contactType = formikContext.values.supportContact?.contactType;
   return (
     <FormSection
@@ -79,18 +83,18 @@ export function SupportContact({ children }: SupportContactProps) {
             <span className="text-sm">Sito web</span>
           </label>
         </div>
+        {contactType === "website" && (
+          <div className="ml-8">
+            <Field
+              id="supportContact.website"
+              name="supportContact.website"
+              type="url"
+              placeholder="inserire il sito web (completo di protocollo http/https)"
+            />
+            <CustomErrorMessage name="supportContact.website" />
+          </div>
+        )}
       </div>
-      {contactType === "website" && (
-        <div className="ml-8">
-          <Field
-            id="supportContact.website"
-            name="supportContact.website"
-            type="url"
-            placeholder="inserire il sito web (completo di protocollo http/https)"
-          />
-          <CustomErrorMessage name="supportContact.website" />
-        </div>
-      )}
       {children}
     </FormSection>
   );

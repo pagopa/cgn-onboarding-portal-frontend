@@ -13,6 +13,7 @@ const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
 const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche`;
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
+const INCORRECT_PHONE_NUMBER = "Il numero di telefono inserito non è corretto";
 
 const URL_REGEXP = /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/g;
 
@@ -112,6 +113,32 @@ export const ProfileDataValidationSchema = Yup.object().shape({
         )
         .required(REQUIRED_FIELD),
       otherwise: Yup.array().notRequired()
+    })
+  }),
+  supportContact: Yup.object().shape({
+    contactType: Yup.mixed<"email" | "phone" | "website">().oneOf([
+      "email",
+      "phone",
+      "website"
+    ]),
+    email: Yup.string().when("contactType", {
+      is: "email",
+      then: schema =>
+        schema.email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD)
+    }),
+    phone: Yup.string().when("contactType", {
+      is: "phone",
+      then: schema =>
+        schema
+          .matches(/^[0-9]{4,}$/, INCORRECT_PHONE_NUMBER)
+          .required(REQUIRED_FIELD)
+    }),
+    website: Yup.string().when("contactType", {
+      is: "website",
+      then: schema =>
+        schema
+          .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+          .required(REQUIRED_FIELD)
     })
   })
 });
