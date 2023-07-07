@@ -235,25 +235,10 @@ const EditOperatorDataForm = () => {
             formValues={values}
           />
           <SupportContact>
-            <div className="mt-10">
-              <Button
-                className="px-14 mr-4"
-                outline
-                color="primary"
-                tag="button"
-                onClick={() => history.push(DASHBOARD)}
-              >
-                Indietro
-              </Button>
-              <Button
-                type="submit"
-                className="px-14 mr-4"
-                color="primary"
-                tag="button"
-              >
-                Continua
-              </Button>
-            </div>
+            <OperatorDataButtons
+              onBack={() => history.push(DASHBOARD)}
+              isEnabled={true}
+            />
           </SupportContact>
         </Form>
       )}
@@ -262,3 +247,34 @@ const EditOperatorDataForm = () => {
 };
 
 export default EditOperatorDataForm;
+
+export function OperatorDataButtons({
+  isEnabled,
+  onBack
+}: {
+  onBack(): void;
+  isEnabled: boolean;
+}) {
+  return (
+    <div className="mt-10">
+      <Button
+        className="px-14 mr-4"
+        outline
+        color="primary"
+        tag="button"
+        onClick={onBack}
+      >
+        Indietro
+      </Button>
+      <Button
+        type="submit"
+        className="px-14 mr-4"
+        color="primary"
+        tag="button"
+        disabled={!isEnabled}
+      >
+        Continua
+      </Button>
+    </div>
+  );
+}

@@ -23,6 +23,8 @@ import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
 import SalesChannels from "./SalesChannels";
+import { SupportContact } from "../../SupportContact";
+import { OperatorDataButtons } from "../../EditOperatorDataForm/EditOperatorDataForm";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -275,11 +277,15 @@ const ProfileData = ({
             <ProfileDescription />
             <SalesChannels
               // geolocationToken={geolocationToken}
-              handleBack={handleBack}
               formValues={values}
-              isValid={!!agreement.imageUrl}
               setFieldValue={setFieldValue}
             />
+            <SupportContact>
+              <OperatorDataButtons
+                onBack={handleBack}
+                isEnabled={!!agreement.imageUrl}
+              />
+            </SupportContact>
           </FormContainer>
         </Form>
       )}
