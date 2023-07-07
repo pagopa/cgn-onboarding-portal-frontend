@@ -1,7 +1,6 @@
 import React from "react";
 import { Field, useFormikContext } from "formik";
 import FormSection from "./FormSection";
-import InputField from "./FormField";
 import CustomErrorMessage from "./CustomErrorMessage";
 
 type SupportContactProps = { children?: React.ReactNode };
@@ -56,7 +55,7 @@ export function SupportContact({ children }: SupportContactProps) {
         </div>
         {contactType === "phone" && (
           <div className="ml-8">
-          <Field
+            <Field
               maxLength={15}
               id="supportContact.phone"
               name="supportContact.phone"
@@ -82,7 +81,7 @@ export function SupportContact({ children }: SupportContactProps) {
         </div>
       </div>
       {contactType === "website" && (
-          <div className="ml-8">
+        <div className="ml-8">
           <Field
             id="supportContact.website"
             name="supportContact.website"

@@ -4,6 +4,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import * as H from "history";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import Api from "../../../api";
 import { DASHBOARD } from "../../../navigation/routes";
@@ -231,11 +232,29 @@ const EditOperatorDataForm = () => {
           <SalesChannels
             // geolocationToken={geolocationToken}
             setFieldValue={setFieldValue}
-            handleBack={() => history.push(DASHBOARD)}
             formValues={values}
-            isValid
           />
-          <SupportContact/>
+          <SupportContact>
+            <div className="mt-10">
+              <Button
+                className="px-14 mr-4"
+                outline
+                color="primary"
+                tag="button"
+                onClick={() => history.push(DASHBOARD)}
+              >
+                Indietro
+              </Button>
+              <Button
+                type="submit"
+                className="px-14 mr-4"
+                color="primary"
+                tag="button"
+              >
+                Continua
+              </Button>
+            </div>
+          </SupportContact>
         </Form>
       )}
     </Formik>

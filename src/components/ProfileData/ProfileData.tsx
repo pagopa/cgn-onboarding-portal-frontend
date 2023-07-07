@@ -42,7 +42,7 @@ const ProfileData = () => {
             </h2>
             <table className="table">
               <tbody>
-                {profile.name && (
+                {Boolean(profile.name) && (
                   <ProfileDataItem
                     label="Nome operatore visualizzato"
                     value={profile.name}
