@@ -18,13 +18,18 @@ import {
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import {
+  SupportContact,
+  defaultSupportContactFormData,
+  supportContactDataToForm,
+  supportContactFormToData
+} from "../../SupportContact";
+import { OperatorDataButtons } from "../../EditOperatorDataForm/EditOperatorDataForm";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
 import SalesChannels from "./SalesChannels";
-import { SupportContact } from "../../SupportContact";
-import { OperatorDataButtons } from "../../EditOperatorDataForm/EditOperatorDataForm";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -63,7 +68,8 @@ const defaultInitialValues = {
   description: "",
   description_en: "",
   description_de: "-",
-  salesChannel: defaultSalesChannel
+  salesChannel: defaultSalesChannel,
+  supportContact: defaultSupportContactFormData
 };
 
 type Props = {
@@ -163,7 +169,8 @@ const ProfileData = ({
                         ]
                   }
                 : profile.salesChannel,
-            hasDifferentFullName: !!profile.name
+            hasDifferentFullName: !!profile.name,
+            supportContact: supportContactDataToForm(profile)
           });
           setLoading(false);
         }
@@ -264,7 +271,8 @@ const ProfileData = ({
           description: withNormalizedSpaces(profile.description),
           description_en: withNormalizedSpaces(profile.description_en),
           description_de: withNormalizedSpaces(profile.description_de),
-          ...getSalesChannel(profile.salesChannel)
+          ...getSalesChannel(profile.salesChannel),
+          ...supportContactFormToData(values.supportContact)
         });
       }}
     >

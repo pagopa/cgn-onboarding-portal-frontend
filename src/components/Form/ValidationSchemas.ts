@@ -116,11 +116,9 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     })
   }),
   supportContact: Yup.object().shape({
-    contactType: Yup.mixed<"email" | "phone" | "website">().oneOf([
-      "email",
-      "phone",
-      "website"
-    ]),
+    contactType: Yup.mixed<"email" | "phone" | "website">()
+      .oneOf(["email", "phone", "website"])
+      .required(REQUIRED_FIELD),
     email: Yup.string().when("contactType", {
       is: "email",
       then: schema =>

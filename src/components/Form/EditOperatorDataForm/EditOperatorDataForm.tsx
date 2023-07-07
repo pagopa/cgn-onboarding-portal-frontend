@@ -21,7 +21,12 @@ import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
 import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
-import { SupportContact } from "../SupportContact";
+import {
+  SupportContact,
+  defaultSupportContactFormData,
+  supportContactDataToForm,
+  supportContactFormToData
+} from "../SupportContact";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -53,7 +58,8 @@ const defaultInitialValues = {
   description: "",
   description_en: "",
   description_de: "-",
-  salesChannel: defaultSalesChannel
+  salesChannel: defaultSalesChannel,
+  supportContact: defaultSupportContactFormData
 };
 
 const updateProfile = (agreement: any, history: H.History) => async (
@@ -128,7 +134,8 @@ const EditOperatorDataForm = () => {
                         })
                   }
                 : profile.salesChannel,
-            hasDifferentFullName: !!profile.name
+            hasDifferentFullName: !!profile.name,
+            supportContact: supportContactDataToForm(profile)
           });
           setLoading(false);
         }
@@ -219,7 +226,8 @@ const EditOperatorDataForm = () => {
           description: withNormalizedSpaces(profile.description),
           description_en: withNormalizedSpaces(profile.description_en),
           description_de: withNormalizedSpaces(profile.description_de),
-          salesChannel: { ...getSalesChannel(profile.salesChannel) }
+          salesChannel: { ...getSalesChannel(profile.salesChannel) },
+          ...supportContactFormToData(values.supportContact)
         });
       }}
     >
