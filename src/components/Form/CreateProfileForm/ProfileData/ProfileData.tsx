@@ -248,7 +248,7 @@ const ProfileData = ({
         taxCodeOrVat:
           user.company?.organization_fiscal_code || user.fiscal_number || "",
         supportType: SupportType.EmailAddress,
-        supportValue: "-----"
+        supportValue: ""
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {

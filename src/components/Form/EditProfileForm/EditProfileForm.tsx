@@ -66,7 +66,7 @@ const EditProfileForm = () => {
           initialValues={{
             ...currentProfile,
             supportType: SupportType.EmailAddress,
-            supportValue: "-----"
+            supportValue: ""
           }}
           validationSchema={ProfileDataValidationSchema}
           onSubmit={values => {
