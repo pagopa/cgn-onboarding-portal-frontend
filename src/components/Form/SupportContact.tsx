@@ -28,6 +28,9 @@ export function SupportContact({ children }: SupportContactProps) {
             id="support-contact-type-email"
             name="supportType"
             value={SupportType.EmailAddress}
+            onChange={() => {
+              formikContext.setFieldValue("supportValue", "");
+            }}
           />
           <label
             className="text-sm font-weight-normal text-black"
@@ -53,6 +56,9 @@ export function SupportContact({ children }: SupportContactProps) {
             id="support-contact-type-phone"
             name="supportType"
             value={SupportType.PhoneNumber}
+            onChange={() => {
+              formikContext.setFieldValue("supportValue", "");
+            }}
           />
           <label
             className="text-sm font-weight-normal text-black"
@@ -79,6 +85,9 @@ export function SupportContact({ children }: SupportContactProps) {
             id="support-contact-type-website"
             name="supportType"
             value={SupportType.Website}
+            onChange={() => {
+              formikContext.setFieldValue("supportValue", "");
+            }}
           />
           <label
             className="text-sm font-weight-normal text-black"

@@ -96,7 +96,9 @@ const ProfileImage = () => {
               {agreement.imageUrl ? (
                 <div className="d-flex flex-row align-items-end">
                   <img
-                    src={`${agreement.imageUrl}`}
+                    src={`${agreement.imageUrl}?${
+                      Date.now() /* TODO: warning, this timestamp makes load image every time an interaction occurs leading to high bandwidth usage */
+                    }`}
                     style={{
                       width: "128px",
                       height: "128px",

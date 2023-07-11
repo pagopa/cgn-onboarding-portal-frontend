@@ -283,7 +283,8 @@ Props) => (
                         )}
                         {!hasBothChannels(
                           formValues.salesChannel?.channelType
-                        ) && null}
+                        ) &&
+                          null /* TODO this snippet was removed as it was not displayed, further investigation needed to confirm the deletion, left out for next iteration */}
                       </>
                     )}
                   </div>
