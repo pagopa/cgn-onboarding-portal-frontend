@@ -60,8 +60,9 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
             value={operator.organizationName}
           />
           <ProfileItem
-            label="Codice fiscale / Partita IVA"
+            label="Partita IVA"
             value={operator.keyOrganizationFiscalCode}
+            // NICE_TO_HAVE: aggiungere validazione della partita iva (può essere nazionale o estera, non può essere codice fiscale)
           />
           <ProfileItem label="Indirizzo PEC" value={operator.pec} />
           {operator.insertedAt && (

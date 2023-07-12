@@ -50,8 +50,9 @@ const ActivationForm = (props: Props) => {
             </InputField>
             <InputField
               htmlFor="organizationFiscalCode"
-              title="Codice fiscale / Partita IVA"
+              title="Partita IVA"
               required
+              // NICE_TO_HAVE: aggiungere validazione della partita iva (può essere nazionale o estera, non può essere codice fiscale)
             >
               <Field
                 id="organizationFiscalCode"
