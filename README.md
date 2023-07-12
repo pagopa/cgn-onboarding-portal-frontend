@@ -63,13 +63,21 @@ $ yarn start:uat
 ## Login in localhost 
 As soon as the dashboard is up and running, you will see a landing page where you should login. Choose what kind of login do you want (login as Operator or login as Admin).
 After that you logged in successfully, you will be redirected to UAT environemnt dashboard, so in this case you need to retrieve the token generated in UAT and put it in localhost env, to do so you have to:
-- Open the browser inspect console;
-- Type the following snippet: 
+- Open the browser inspect console and type the following snippet:
 ```js
-window.cookieStore.get("pagopa_token").then(el => console.log(`window.cookieStore.set(${JSON.stringify({...el, domain: "localhost"})})`));
+const dialog = window.document.createElement("dialog");
+dialog.innerText = "click here";
+dialog.onclick = async () => {
+  const token = await window.cookieStore.get("pagopa_token");
+  await navigator.clipboard.writeText(
+    `window.cookieStore.set(${JSON.stringify({
+      ...token,
+      domain: "localhost",
+    })}); window.location.reload();`
+  );
+  window.location.replace("http://localhost:3000");
+};
+window.document.body.appendChild(dialog);
+dialog.showModal();
 ```
-- Copy the logged snippet containing the token from console;
-- Back to http://localhost:3000
-- Open again the browser inspect console;
-- Paste the snippet copied before and press enter;
-- Reload the page and you are done ✅
+- Paste the snippet that was automatically placed in the clipboard in the browser console and press enter;
