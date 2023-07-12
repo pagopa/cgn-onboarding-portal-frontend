@@ -46,7 +46,7 @@ const Profile = () => {
                   value={profile.fullName}
                 />
                 <ProfileItem
-                  label="Codice Fiscale / Partita IVA"
+                  label="Partita IVA"
                   value={profile.taxCodeOrVat}
                 />
                 <ProfileItem label="Indirizzo PEC" value={profile.pecAddress} />
