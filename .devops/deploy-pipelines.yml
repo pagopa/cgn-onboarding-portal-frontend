@@ -61,7 +61,7 @@ stages:
       startsWith(variables['Build.SourceBranch'], 'refs/tags'),
       endsWith(variables['Build.SourceBranch'], '-RELEASE')
       ),
-      eq(variables['Build.SourceBranch'], format('refs/heads/{0}', 'production')),
+      eq(variables['Build.SourceBranch'], format('refs/heads/{0}', 'production'))
       )
     pool:
       vmImage: "ubuntu-latest"
