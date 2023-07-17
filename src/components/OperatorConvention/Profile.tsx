@@ -6,7 +6,7 @@ const Profile = ({ profile }: { profile: ApprovedAgreementProfile }) => (
     <div>
       <h5 className="mb-7 font-weight-bold">Dati relativi all’operatore</h5>
       <Item label="Ragione sociale operatore" value={profile.fullName} />
-      <Item label="Codice Fiscale / Partita IVA" value={profile.taxCodeOrVat} />
+      <Item label="Partita IVA" value={profile.taxCodeOrVat} />
       <Item label="Indirizzo PEC" value={profile.pecAddress} />
       <Item label="Sede legale" value={profile.legalOffice} />
       <Item label="Numero di telefono azienda" value={profile.telephoneNumber} />

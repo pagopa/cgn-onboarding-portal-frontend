@@ -66,8 +66,9 @@ const ProfileInfo = ({ formValues }: Props) => (
     )}
     <InputField
       htmlFor="taxCodeOrVat"
-      title="Codice fiscale / Partita IVA"
+      title="Partita IVA"
       required
+      // NICE_TO_HAVE: aggiungere validazione della partita iva (può essere nazionale o estera, non può essere codice fiscale)
     >
       <Field id="taxCodeOrVat" name="taxCodeOrVat" type="text" disabled />
       <CustomErrorMessage name="taxCodeOrVat" />
