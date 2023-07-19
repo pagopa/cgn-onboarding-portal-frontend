@@ -8,8 +8,15 @@ import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+import { InferType } from "yup";
+import { isEqual } from "lodash";
 import Api from "../../../api";
-import { Discount, ProductCategory } from "../../../api/generated";
+import {
+  Discount,
+  DiscountState,
+  ProductCategory,
+  UpdateDiscount
+} from "../../../api/generated";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
@@ -28,9 +35,16 @@ import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategori
 import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
 import FormField from "../FormField";
 import FormSection from "../FormSection";
-import { discountDataValidationSchema } from "../ValidationSchemas";
+import {
+  discountDataValidationSchema,
+  RemoveIndex
+} from "../ValidationSchemas";
 
-const emptyInitialValues = {
+type Values = RemoveIndex<
+  InferType<ReturnType<typeof discountDataValidationSchema>>
+>;
+
+const emptyInitialValues: Values = {
   name: "",
   name_en: "",
   name_de: "-",
@@ -39,12 +53,18 @@ const emptyInitialValues = {
   description_de: "-",
   startDate: "",
   endDate: "",
-  discount: "",
+  discount: undefined,
   productCategories: [],
   condition: "",
   condition_en: "",
   condition_de: "-",
-  staticCode: ""
+  staticCode: "",
+  discountUrl: undefined,
+  landingPageReferrer: undefined,
+  landingPageUrl: undefined,
+  lastBucketCodeLoadUid: undefined,
+  lastBucketCodeLoadFileName: undefined,
+  visibleOnEyca: undefined
 };
 
 const chainAxios = (response: AxiosResponse) =>
@@ -60,10 +80,11 @@ const chainAxios = (response: AxiosResponse) =>
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditDiscountForm = () => {
-  const { discountId } = useParams<any>();
+  const { discountId } = useParams<{ discountId: string }>();
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
+  const [discount, setDiscount] = useState<Discount | undefined>(undefined);
+  const [initialValues, setInitialValues] = useState(emptyInitialValues);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
   const { triggerTooltip } = useTooltip();
@@ -90,14 +111,10 @@ const EditDiscountForm = () => {
       profile?.salesChannel?.channelType === "BothChannels") &&
     profile?.salesChannel?.discountCodeType === "Bucket";
 
-  const updateDiscount = async (agreementId: string, discount: Discount) => {
-    const {
-      id,
-      agreementId: agId,
-      state,
-      creationDate,
-      ...updatedDiscount
-    } = discount;
+  const updateDiscount = async (
+    agreementId: string,
+    updatedDiscount: UpdateDiscount
+  ) => {
     await tryCatch(
       () =>
         Api.Discount.updateDiscount(agreementId, discountId, updatedDiscount),
@@ -121,6 +138,7 @@ const EditDiscountForm = () => {
       .fold(
         () => setLoading(false),
         (discount: Discount) => {
+          setDiscount(discount);
           const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
             discount.description
           );
@@ -128,7 +146,6 @@ const EditDiscountForm = () => {
             discount.condition
           );
           setInitialValues({
-            ...discount,
             name: withNormalizedSpaces(discount.name),
             name_en: withNormalizedSpaces(discount.name_en),
             name_de: "-",
@@ -141,8 +158,8 @@ const EditDiscountForm = () => {
             condition_en: cleanedIfConditionIsBlank(discount.condition_en),
             condition_de: "-",
             discountUrl: fromNullable(discount.discountUrl).toUndefined(),
-            startDate: new Date(discount.startDate),
-            endDate: new Date(discount.endDate),
+            startDate: new Date(discount.startDate) as any,
+            endDate: new Date(discount.endDate) as any,
             landingPageReferrer: fromNullable(
               discount.landingPageReferrer
             ).toUndefined(),
@@ -154,7 +171,9 @@ const EditDiscountForm = () => {
             ).toUndefined(),
             lastBucketCodeLoadFileName: fromNullable(
               discount.lastBucketCodeLoadFileName
-            ).toUndefined()
+            ).toUndefined(),
+            productCategories: discount.productCategories,
+            visibleOnEyca: discount.visibleOnEyca
           });
           setLoading(false);
         }
@@ -205,8 +224,7 @@ const EditDiscountForm = () => {
           const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
             values.condition
           );
-          const newValues = {
-            ...values,
+          const discountUpdate: UpdateDiscount = {
             name: withNormalizedSpaces(values.name),
             name_en: withNormalizedSpaces(values.name_en),
             name_de: "-",
@@ -216,13 +234,22 @@ const EditDiscountForm = () => {
             condition: cleanedIfConditionIsBlank(values.condition),
             condition_en: cleanedIfConditionIsBlank(values.condition_en),
             condition_de: cleanedIfConditionIsBlank(values.condition_de),
-            productCategories: values.productCategories.filter((pc: any) =>
-              Object.values(ProductCategory).includes(pc)
+            productCategories: values.productCategories.filter(
+              (pc: ProductCategory) =>
+                Object.values(ProductCategory).includes(pc)
             ),
             startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-            endDate: format(new Date(values.endDate), "yyyy-MM-dd")
+            endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
+            discountUrl: values.discountUrl,
+            discount: values.discount,
+            landingPageReferrer: values.landingPageReferrer,
+            landingPageUrl: values.landingPageUrl,
+            staticCode: values.staticCode,
+            lastBucketCodeLoadUid: values.lastBucketCodeLoadUid,
+            lastBucketCodeLoadFileName: values.lastBucketCodeLoadFileName,
+            visibleOnEyca: values.visibleOnEyca
           };
-          void updateDiscount(agreement.id, newValues);
+          void updateDiscount(agreement.id, discountUpdate);
         }}
       >
         {({ values, setFieldValue }) => (
@@ -306,7 +333,7 @@ const EditDiscountForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
-              {initialValues.state !== "draft" && (
+              {discount && discount.state !== DiscountState.Draft && (
                 <div className="mt-10">
                   <Button
                     className="px-14 mr-4"
@@ -322,12 +349,17 @@ const EditDiscountForm = () => {
                     className="px-14 mr-4"
                     color="primary"
                     tag="button"
+                    disabled={
+                      discount.state === DiscountState.Suspended
+                        ? isEqual(initialValues, values)
+                        : false
+                    }
                   >
                     Salva
                   </Button>
                 </div>
               )}
-              {initialValues.state === "draft" && (
+              {discount?.state === DiscountState.Draft && (
                 <div className="mt-10">
                   <Button
                     className="px-14 mr-4"
