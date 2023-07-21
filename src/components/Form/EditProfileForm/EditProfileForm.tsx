@@ -65,6 +65,7 @@ const EditProfileForm = () => {
         <Formik
           initialValues={{
             ...currentProfile,
+            secondaryReferents: currentProfile.secondaryReferents || [],
             supportType: SupportType.EmailAddress,
             supportValue: "-----"
           }}

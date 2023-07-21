@@ -58,6 +58,7 @@ const defaultInitialValues = {
     emailAddress: "",
     telephoneNumber: ""
   },
+  secondaryReferents: [],
   description: "",
   description_en: "",
   description_de: "-",
