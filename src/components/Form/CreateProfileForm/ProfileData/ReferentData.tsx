@@ -6,6 +6,7 @@ import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import { Referent } from "../../../../api/generated";
 
 const MAX_SECONDARY_REFERENTS = 4;
 
@@ -41,9 +42,9 @@ const Referent = ({
           : "Dati e contatti del referente incaricato"
       }
       description={
-        "Indicare il nome della persona responsabile del programma CGN per conto dell'Operatore" +
+        "Indicare il nome della persona responsabile del programma CGN per conto dell'Operatore. La persona indicata sarà destinataria di tutte le comunicazioni relative alla gestione delle agevolazioni e, più in generale, all’attuazione della convenzione." +
         (index === 0
-          ? `. Puoi indicare fino a ${MAX_SECONDARY_REFERENTS} aggiuntivi`
+          ? `Puoi indicare fino a ${MAX_SECONDARY_REFERENTS} aggiuntivi`
           : "")
       }
       isVisible={false}
@@ -133,13 +134,14 @@ function ReferentData({ children }: { children?: React.ReactNode }) {
       name="secondaryReferents"
       render={arrayHelpers => {
         const add = () => {
-          arrayHelpers.push({
+          const newReferent: Referent = {
             firstName: "",
             lastName: "",
             role: "",
             emailAddress: "",
             telephoneNumber: ""
-          });
+          };
+          arrayHelpers.push(newReferent);
         };
         const noSecondaryReferents =
           formikContext.values.secondaryReferents.length === 0;
