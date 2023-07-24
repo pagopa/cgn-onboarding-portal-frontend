@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { InferType } from "yup";
-import { isEqual } from "lodash";
+import { isEqual, isEqualWith } from "lodash";
 import Api from "../../../api";
 import {
   Discount,
@@ -40,11 +40,9 @@ import {
   RemoveIndex
 } from "../ValidationSchemas";
 
-type Values = RemoveIndex<
-  InferType<ReturnType<typeof discountDataValidationSchema>>
->;
+type Values = InferType<ReturnType<typeof discountDataValidationSchema>>;
 
-const emptyInitialValues: Values = {
+const emptyInitialValues: Partial<RemoveIndex<Values>> = {
   name: "",
   name_en: "",
   name_de: "-",
@@ -58,13 +56,7 @@ const emptyInitialValues: Values = {
   condition: "",
   condition_en: "",
   condition_de: "-",
-  staticCode: "",
-  discountUrl: undefined,
-  landingPageReferrer: undefined,
-  landingPageUrl: undefined,
-  lastBucketCodeLoadUid: undefined,
-  lastBucketCodeLoadFileName: undefined,
-  visibleOnEyca: undefined
+  staticCode: ""
 };
 
 const chainAxios = (response: AxiosResponse) =>
@@ -146,6 +138,7 @@ const EditDiscountForm = () => {
             discount.condition
           );
           setInitialValues({
+            ...discount,
             name: withNormalizedSpaces(discount.name),
             name_en: withNormalizedSpaces(discount.name_en),
             name_de: "-",
@@ -171,9 +164,7 @@ const EditDiscountForm = () => {
             ).toUndefined(),
             lastBucketCodeLoadFileName: fromNullable(
               discount.lastBucketCodeLoadFileName
-            ).toUndefined(),
-            productCategories: discount.productCategories,
-            visibleOnEyca: discount.visibleOnEyca
+            ).toUndefined()
           });
           setLoading(false);
         }
@@ -225,6 +216,7 @@ const EditDiscountForm = () => {
             values.condition
           );
           const discountUpdate: UpdateDiscount = {
+            ...values,
             name: withNormalizedSpaces(values.name),
             name_en: withNormalizedSpaces(values.name_en),
             name_de: "-",
@@ -234,20 +226,12 @@ const EditDiscountForm = () => {
             condition: cleanedIfConditionIsBlank(values.condition),
             condition_en: cleanedIfConditionIsBlank(values.condition_en),
             condition_de: cleanedIfConditionIsBlank(values.condition_de),
-            productCategories: values.productCategories.filter(
-              (pc: ProductCategory) =>
+            productCategories:
+              values.productCategories?.filter((pc: ProductCategory) =>
                 Object.values(ProductCategory).includes(pc)
-            ),
-            startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-            endDate: format(new Date(values.endDate), "yyyy-MM-dd"),
-            discountUrl: values.discountUrl,
-            discount: values.discount,
-            landingPageReferrer: values.landingPageReferrer,
-            landingPageUrl: values.landingPageUrl,
-            staticCode: values.staticCode,
-            lastBucketCodeLoadUid: values.lastBucketCodeLoadUid,
-            lastBucketCodeLoadFileName: values.lastBucketCodeLoadFileName,
-            visibleOnEyca: values.visibleOnEyca
+              ) ?? [],
+            startDate: format(new Date(values.startDate ?? ""), "yyyy-MM-dd"),
+            endDate: format(new Date(values.endDate ?? ""), "yyyy-MM-dd")
           };
           void updateDiscount(agreement.id, discountUpdate);
         }}
@@ -351,7 +335,18 @@ const EditDiscountForm = () => {
                     tag="button"
                     disabled={
                       discount.state === DiscountState.Suspended
-                        ? isEqual(initialValues, values)
+                        ? isEqualWith(
+                            initialValues,
+                            values,
+                            (left, right, key) => {
+                              if (key === "productCategories") {
+                                return isEqual(
+                                  [...left].sort(),
+                                  [...right].sort()
+                                );
+                              }
+                            }
+                          )
                         : false
                     }
                   >
