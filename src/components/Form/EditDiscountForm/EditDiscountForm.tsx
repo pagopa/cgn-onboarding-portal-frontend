@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { InferType } from "yup";
-import { isEqual, isEqualWith } from "lodash";
+import { isEqual, isEqualWith, isArray, sortBy } from "lodash";
 import Api from "../../../api";
 import {
   Discount,
@@ -335,18 +335,7 @@ const EditDiscountForm = () => {
                     tag="button"
                     disabled={
                       discount.state === DiscountState.Suspended
-                        ? isEqualWith(
-                            initialValues,
-                            values,
-                            (left, right, key) => {
-                              if (key === "productCategories") {
-                                return isEqual(
-                                  [...left].sort(),
-                                  [...right].sort()
-                                );
-                              }
-                            }
-                          )
+                        ? areObjectsEqual(values, initialValues)
                         : false
                     }
                   >
@@ -384,3 +373,26 @@ const EditDiscountForm = () => {
 };
 
 export default EditDiscountForm;
+
+/**
+ * Function used to compare two objects and check if they are equal
+ * indipendently from the order of the elements of the arrays
+ * @param obj1 first object to compare
+ * @param obj2 second object to compare
+ * @returns true if objects are equal, false otherwise
+ */
+function areObjectsEqual(obj1: any, obj2: any): boolean {
+  return isEqualWith(obj1, obj2, (value1, value2) => {
+    if (isArray(value1) && isArray(value2)) {
+      // Order the arrays and then compare them
+      return isEqual(sortBy([...value1]), sortBy([...value2]));
+    }
+    // Check if the two values are of different type but equal value
+    if (typeof value1 !== typeof value2) {
+      return String(value1) === String(value2);
+    }
+
+    // Uses the default comparison
+    return undefined;
+  });
+}
