@@ -11,7 +11,6 @@ export function SupportContact({ children }: SupportContactProps) {
   const formikContext = useFormikContext<
     Yup.InferType<typeof ProfileDataValidationSchema>
   >();
-  const contactType = formikContext.values.supportType;
   return (
     <FormSection
       title="Contatti di assistenza"
@@ -29,6 +28,10 @@ export function SupportContact({ children }: SupportContactProps) {
             name="supportType"
             value={SupportType.EmailAddress}
             onChange={() => {
+              formikContext.setFieldValue(
+                "supportType",
+                SupportType.EmailAddress
+              );
               formikContext.setFieldValue("supportValue", "");
             }}
           />
@@ -39,7 +42,7 @@ export function SupportContact({ children }: SupportContactProps) {
             <span className="text-sm">Email</span>
           </label>
         </div>
-        {contactType === SupportType.EmailAddress && (
+        {formikContext.values.supportType === SupportType.EmailAddress && (
           <div className="ml-8">
             <Field
               id="supportValue"
@@ -57,6 +60,10 @@ export function SupportContact({ children }: SupportContactProps) {
             name="supportType"
             value={SupportType.PhoneNumber}
             onChange={() => {
+              formikContext.setFieldValue(
+                "supportType",
+                SupportType.PhoneNumber
+              );
               formikContext.setFieldValue("supportValue", "");
             }}
           />
@@ -67,7 +74,7 @@ export function SupportContact({ children }: SupportContactProps) {
             <span className="text-sm">Telefono</span>
           </label>
         </div>
-        {contactType === SupportType.PhoneNumber && (
+        {formikContext.values.supportType === SupportType.PhoneNumber && (
           <div className="ml-8">
             <Field
               maxLength={15}
@@ -86,6 +93,7 @@ export function SupportContact({ children }: SupportContactProps) {
             name="supportType"
             value={SupportType.Website}
             onChange={() => {
+              formikContext.setFieldValue("supportType", SupportType.Website);
               formikContext.setFieldValue("supportValue", "");
             }}
           />
@@ -96,7 +104,7 @@ export function SupportContact({ children }: SupportContactProps) {
             <span className="text-sm">Sito web</span>
           </label>
         </div>
-        {contactType === SupportType.Website && (
+        {formikContext.values.supportType === SupportType.Website && (
           <div className="ml-8">
             <Field
               id="supportValue"
