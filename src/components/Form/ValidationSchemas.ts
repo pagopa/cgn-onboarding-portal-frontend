@@ -1,6 +1,11 @@
 import * as Yup from "yup";
 import { HelpRequestCategoryEnum } from "../../api/generated";
 
+// need to fix typescript for YUP https://github.com/jquense/yup/issues/946#issuecomment-1372017985
+export type RemoveIndex<T> = {
+  [K in keyof T as string extends K ? never : number extends K ? never : K]: T[K];
+};
+
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
 const INCORRECT_CONFIRM_EMAIL_ADDRESS = "I due indirizzi devono combaciare";
 const REQUIRED_FIELD = "Campo obbligatorio";

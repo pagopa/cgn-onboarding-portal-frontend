@@ -277,7 +277,7 @@ Props) => {
               value={row.original.name}
               value_en={row.original.name_en}
             />
-            {row.original.description && row.original.description_en && (
+            {Boolean(row.original.description && row.original.description_en) && (
               <MultilanguageProfileItem
                 label="Descrizione agevolazione"
                 value={row.original.description}
@@ -316,14 +316,14 @@ Props) => {
                 )}
               </td>
             </tr>
-            {row.original.condition && row.original.condition_en && (
+            {Boolean(row.original.condition && row.original.condition_en) && (
               <MultilanguageProfileItem
                 label="Condizioni dell’agevolazione"
                 value={row.original.condition}
                 value_en={row.original.condition_en}
               />
             )}
-            {row.original.discountUrl && (
+            {Boolean(row.original.discountUrl) && (
               <ProfileItem
                 label="Link all'agevolazione"
                 value={
@@ -337,19 +337,19 @@ Props) => {
                 }
               />
             )}
-            {row.original.staticCode && (
+            {Boolean(row.original.staticCode) && (
               <ProfileItem
                 label="Codice sconto statico"
                 value={row.original.staticCode}
               />
             )}
-            {row.original.landingPageUrl && (
+            {Boolean(row.original.landingPageUrl) && (
               <ProfileItem
                 label="Link alla landing page"
                 value={row.original.landingPageUrl}
               />
             )}
-            {row.original.landingPageReferrer && (
+            {Boolean(row.original.landingPageReferrer) && (
               <ProfileItem
                 label="Landing Page referer"
                 value={row.original.landingPageReferrer}
