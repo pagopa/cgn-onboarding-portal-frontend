@@ -22,17 +22,13 @@ const hasOnlineOrBothChannels = (channelType: string) =>
 const hasBothChannels = (channelType: string) => channelType === "BothChannels";
 
 type Props = {
-  handleBack: any;
   formValues: any;
-  isValid: boolean;
   setFieldValue: any;
   // geolocationToken: string;
 };
 
 const SalesChannels = ({
-  handleBack,
   formValues,
-  isValid,
   setFieldValue
 }: // geolocationToken
 Props) => (
@@ -287,27 +283,8 @@ Props) => (
                         )}
                         {!hasBothChannels(
                           formValues.salesChannel?.channelType
-                        ) && (
-                          <div className="mt-10">
-                            <Button
-                              className="px-14 mr-4"
-                              outline
-                              color="primary"
-                              tag="button"
-                              onClick={handleBack}
-                            >
-                              Indietro
-                            </Button>
-                            <Button
-                              type="submit"
-                              className="px-14 mr-4"
-                              color="primary"
-                              tag="button"
-                            >
-                              Continua
-                            </Button>
-                          </div>
-                        )}
+                        ) &&
+                          null /* TODO this snippet was removed as it was not displayed, further investigation needed to confirm the deletion, left out for next iteration */}
                       </>
                     )}
                   </div>
@@ -327,26 +304,6 @@ Props) => (
       >
         <Field id="websiteUrl" name="salesChannel.websiteUrl" type="text" />
         <CustomErrorMessage name="salesChannel.websiteUrl" />
-        <div className="mt-10">
-          <Button
-            className="px-14 mr-4"
-            outline
-            color="primary"
-            tag="button"
-            onClick={handleBack}
-          >
-            Indietro
-          </Button>
-          <Button
-            type="submit"
-            className="px-14 mr-4"
-            color="primary"
-            tag="button"
-            disabled={!isValid}
-          >
-            Continua
-          </Button>
-        </div>
       </FormSection>
     )}
   </>

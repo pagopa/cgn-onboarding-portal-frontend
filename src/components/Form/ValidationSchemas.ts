@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { HelpRequestCategoryEnum } from "../../api/generated";
+import { HelpRequestCategoryEnum, SupportType } from "../../api/generated";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
@@ -13,6 +13,7 @@ const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
 const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche`;
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
+const INCORRECT_PHONE_NUMBER = "Il numero di telefono inserito non è corretto";
 
 const URL_REGEXP = /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/g;
 
@@ -116,7 +117,24 @@ export const ProfileDataValidationSchema = Yup.object().shape({
         .required(REQUIRED_FIELD),
       otherwise: Yup.array().notRequired()
     })
-  })
+  }),
+  supportType: Yup.mixed<SupportType>()
+    .oneOf(Object.values(SupportType))
+    .required(REQUIRED_FIELD),
+  supportValue: Yup.string()
+    .required(REQUIRED_FIELD)
+    .when("supportType", {
+      is: SupportType.EmailAddress,
+      then: schema => schema.email(INCORRECT_EMAIL_ADDRESS)
+    })
+    .when("supportType", {
+      is: SupportType.PhoneNumber,
+      then: schema => schema.matches(/^[0-9]{4,}$/, INCORRECT_PHONE_NUMBER)
+    })
+    .when("supportType", {
+      is: SupportType.Website,
+      then: schema => schema.matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+    })
 });
 
 export const discountDataValidationSchema = (
