@@ -4,6 +4,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import * as H from "history";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import Api from "../../../api";
 import { DASHBOARD } from "../../../navigation/routes";
@@ -20,6 +21,7 @@ import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
 import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
+import { SupportContact } from "../SupportContact";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -51,7 +53,9 @@ const defaultInitialValues = {
   description: "",
   description_en: "",
   description_de: "-",
-  salesChannel: defaultSalesChannel
+  salesChannel: defaultSalesChannel,
+  supportType: "",
+  supportValue: ""
 };
 
 const updateProfile = (agreement: any, history: H.History) => async (
@@ -230,10 +234,14 @@ const EditOperatorDataForm = () => {
           <SalesChannels
             // geolocationToken={geolocationToken}
             setFieldValue={setFieldValue}
-            handleBack={() => history.push(DASHBOARD)}
             formValues={values}
-            isValid
           />
+          <SupportContact>
+            <OperatorDataButtons
+              onBack={() => history.push(DASHBOARD)}
+              isEnabled={true}
+            />
+          </SupportContact>
         </Form>
       )}
     </Formik>
@@ -241,3 +249,34 @@ const EditOperatorDataForm = () => {
 };
 
 export default EditOperatorDataForm;
+
+export function OperatorDataButtons({
+  isEnabled,
+  onBack
+}: {
+  onBack(): void;
+  isEnabled: boolean;
+}) {
+  return (
+    <div className="mt-10">
+      <Button
+        className="px-14 mr-4"
+        outline
+        color="primary"
+        tag="button"
+        onClick={onBack}
+      >
+        Indietro
+      </Button>
+      <Button
+        type="submit"
+        className="px-14 mr-4"
+        color="primary"
+        tag="button"
+        disabled={!isEnabled}
+      >
+        Continua
+      </Button>
+    </div>
+  );
+}

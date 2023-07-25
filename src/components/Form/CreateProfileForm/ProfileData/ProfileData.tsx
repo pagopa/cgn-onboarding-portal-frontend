@@ -18,6 +18,8 @@ import {
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import { SupportContact } from "../../SupportContact";
+import { OperatorDataButtons } from "../../EditOperatorDataForm/EditOperatorDataForm";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -61,7 +63,9 @@ const defaultInitialValues = {
   description: "",
   description_en: "",
   description_de: "-",
-  salesChannel: defaultSalesChannel
+  salesChannel: defaultSalesChannel,
+  supportType: "",
+  supportValue: ""
 };
 
 type Props = {
@@ -244,7 +248,7 @@ const ProfileData = ({
         taxCodeOrVat:
           user.company?.organization_fiscal_code || user.fiscal_number || "",
         supportType: SupportType.EmailAddress,
-        supportValue: "-----"
+        supportValue: ""
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
@@ -275,11 +279,15 @@ const ProfileData = ({
             <ProfileDescription />
             <SalesChannels
               // geolocationToken={geolocationToken}
-              handleBack={handleBack}
               formValues={values}
-              isValid={!!agreement.imageUrl}
               setFieldValue={setFieldValue}
             />
+            <SupportContact>
+              <OperatorDataButtons
+                onBack={handleBack}
+                isEnabled={!!agreement.imageUrl}
+              />
+            </SupportContact>
           </FormContainer>
         </Form>
       )}

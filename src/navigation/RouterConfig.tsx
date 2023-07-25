@@ -32,6 +32,7 @@ import {
   ADMIN_PANEL_ACCESSI_CREA
 } from "./routes";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
