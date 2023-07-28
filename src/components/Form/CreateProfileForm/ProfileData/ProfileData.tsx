@@ -247,9 +247,7 @@ const ProfileData = ({
         },
         fullName: user.company?.organization_name || "",
         taxCodeOrVat:
-          user.company?.organization_fiscal_code || user.fiscal_number || "",
-        supportType: SupportType.EmailAddress,
-        supportValue: ""
+          user.company?.organization_fiscal_code || user.fiscal_number || ""
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {

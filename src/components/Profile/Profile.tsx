@@ -66,8 +66,11 @@ const Profile = () => {
             </table>
           </section>
           {[profile.referent, ...profile.secondaryReferents].map(
-            (referent: Referent, index) => {
-              const title = index === 0 ? "Dati del referente incaricato" : `Referente ${index + 1}`;
+            (referent: Referent, index, array) => {
+              const title =
+                index === 0
+                  ? "Dati del referente incaricato"
+                  : `Referente ${index + 1}`;
               return (
                 <section key={index}>
                   <h2 className="h5 pt-8 font-weight-bold text-dark-blue">
@@ -75,14 +78,8 @@ const Profile = () => {
                   </h2>
                   <table className="table">
                     <tbody>
-                      <ProfileItem
-                        label="Nome"
-                        value={referent.firstName}
-                      />
-                      <ProfileItem
-                        label="Cognome"
-                        value={referent.lastName}
-                      />
+                      <ProfileItem label="Nome" value={referent.firstName} />
+                      <ProfileItem label="Cognome" value={referent.lastName} />
                       <ProfileItem
                         label="Ruolo all’interno dell’azienda"
                         value={referent.role}
@@ -97,14 +94,15 @@ const Profile = () => {
                       />
                     </tbody>
                   </table>
-                  {agreement.state === "ApprovedAgreement" && (
-                    <Link
-                      className="mt-4 btn btn-outline-primary"
-                      to={EDIT_PROFILE}
-                    >
-                      Modifica dati
-                    </Link>
-                  )}
+                  {index === array.length - 1 &&
+                    agreement.state === "ApprovedAgreement" && (
+                      <Link
+                        className="mt-4 btn btn-outline-primary"
+                        to={EDIT_PROFILE}
+                      >
+                        Modifica dati
+                      </Link>
+                    )}
                 </section>
               );
             }
