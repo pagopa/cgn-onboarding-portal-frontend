@@ -12,7 +12,9 @@ type Props = {
   footerDescription?: any;
   className?: any;
   hasClose?: boolean;
-  handleClose?: any;
+  handleClose?(): void;
+  hasRemove?: boolean;
+  onRemove?(): void;
 };
 
 const FormSection = ({
@@ -25,10 +27,26 @@ const FormSection = ({
   children,
   className,
   hasClose = false,
-  handleClose
+  handleClose,
+  hasRemove = false,
+  onRemove
 }: Props) => (
   <section className={`${className} mt-4 container bg-white`}>
-    <div className="row">
+    <div className="row" style={{ position: "relative" }}>
+      {hasRemove && (
+        <Icon
+          icon="it-close"
+          className="cursor-pointer"
+          size="xl"
+          onClick={onRemove}
+          style={{
+            position: "absolute",
+            top: "16px",
+            right: "16px",
+            fill: "#0073E5"
+          }}
+        />
+      )}
       <div className="col-10 offset-1 py-8">
         {hasIntroduction && (
           <>
@@ -39,7 +57,11 @@ const FormSection = ({
                   <br /> Le informazioni contrassegnate con il simbolo{" "}
                   <VisibleIcon /> saranno visibili in app.
                 </p>
-                <Icon icon="it-close" className="cursor-pointer" onClick={handleClose} />
+                <Icon
+                  icon="it-close"
+                  className="cursor-pointer"
+                  onClick={handleClose}
+                />
               </div>
             )}
             {!hasClose && (
