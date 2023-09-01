@@ -63,11 +63,7 @@ const EditProfileForm = () => {
     <>
       {currentProfile && (
         <Formik
-          initialValues={{
-            ...currentProfile,
-            supportType: SupportType.EmailAddress,
-            supportValue: "-----"
-          }}
+          initialValues={currentProfile}
           validationSchema={ProfileDataValidationSchema}
           onSubmit={values => {
             const { hasDifferentFullName, ...profile } = values;

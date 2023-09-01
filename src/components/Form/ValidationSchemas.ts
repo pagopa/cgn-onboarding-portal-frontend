@@ -19,6 +19,25 @@ const INCORRECT_WEBSITE_URL =
 
 const URL_REGEXP = /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/g;
 
+const ReferentValidationSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
+    .required(REQUIRED_FIELD),
+  lastName: Yup.string()
+    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
+    .required(REQUIRED_FIELD),
+  role: Yup.string()
+    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
+    .required(REQUIRED_FIELD),
+  emailAddress: Yup.string()
+    .email(INCORRECT_EMAIL_ADDRESS)
+    .required(REQUIRED_FIELD),
+  telephoneNumber: Yup.string()
+    .matches(/^[0-9]*$/, ONLY_NUMBER)
+    .min(4, "Deve essere di 4 caratteri")
+    .required(REQUIRED_FIELD)
+});
+
 export const ProfileDataValidationSchema = Yup.object().shape({
   hasDifferentName: Yup.boolean(),
   name: Yup.string()
@@ -51,24 +70,8 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     .min(4, "Deve essere al minimo di 4 caratteri")
     .max(20, "Deve essere al massimo di 20 caratteri")
     .required(REQUIRED_FIELD),
-  referent: Yup.object().shape({
-    firstName: Yup.string()
-      .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-      .required(REQUIRED_FIELD),
-    lastName: Yup.string()
-      .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-      .required(REQUIRED_FIELD),
-    role: Yup.string()
-      .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-      .required(REQUIRED_FIELD),
-    emailAddress: Yup.string()
-      .email(INCORRECT_EMAIL_ADDRESS)
-      .required(REQUIRED_FIELD),
-    telephoneNumber: Yup.string()
-      .matches(/^[0-9]*$/, ONLY_NUMBER)
-      .min(4, "Deve essere di 4 caratteri")
-      .required(REQUIRED_FIELD)
-  }),
+  referent: ReferentValidationSchema,
+  secondaryReferents: Yup.array().of(ReferentValidationSchema).required(REQUIRED_FIELD),
   description: Yup.string().required(REQUIRED_FIELD),
   description_en: Yup.string().required(REQUIRED_FIELD),
   description_de: Yup.string().required(REQUIRED_FIELD),
