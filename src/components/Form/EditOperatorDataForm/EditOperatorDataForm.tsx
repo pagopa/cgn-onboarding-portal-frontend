@@ -52,7 +52,9 @@ const defaultInitialValues = {
   description: "",
   description_en: "",
   description_de: "-",
-  salesChannel: defaultSalesChannel
+  salesChannel: defaultSalesChannel,
+  supportType: "PHONENUMBER",
+  supportValue: "000000000"
 };
 
 const updateProfile = (agreement: any, history: H.History) => async (
