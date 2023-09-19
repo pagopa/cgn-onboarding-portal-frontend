@@ -62,7 +62,9 @@ const defaultInitialValues = {
   description: "",
   description_en: "",
   description_de: "-",
-  salesChannel: defaultSalesChannel
+  salesChannel: defaultSalesChannel,
+  supportType: "PHONENUMBER",
+  supportValue: "000000000"
 };
 
 type Props = {
