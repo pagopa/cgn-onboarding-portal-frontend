@@ -253,6 +253,8 @@ const ProfileData = ({
         const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
         void submitProfile()({
           ...profile,
+          supportType: "PHONENUMBER",
+          supportValue: "000000000",
           name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
           name_en: !hasDifferentFullName
             ? ""
