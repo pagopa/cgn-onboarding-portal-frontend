@@ -63,7 +63,7 @@ const defaultInitialValues = {
   description_en: "",
   description_de: "-",
   salesChannel: defaultSalesChannel,
-  supportType: "PHONENUMBER",
+  supportType: "PhoneNumber",
   supportValue: "000000000"
 };
 
@@ -253,7 +253,7 @@ const ProfileData = ({
         const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
         void submitProfile()({
           ...profile,
-          supportType: "PHONENUMBER",
+          supportType: "PhoneNumber",
           supportValue: "000000000",
           name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
           name_en: !hasDifferentFullName

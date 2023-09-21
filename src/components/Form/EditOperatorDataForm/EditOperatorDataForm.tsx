@@ -53,7 +53,7 @@ const defaultInitialValues = {
   description_en: "",
   description_de: "-",
   salesChannel: defaultSalesChannel,
-  supportType: "PHONENUMBER",
+  supportType: "PhoneNumber",
   supportValue: "000000000"
 };
 
