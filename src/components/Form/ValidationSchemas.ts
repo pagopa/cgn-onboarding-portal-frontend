@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 import { HelpRequestCategoryEnum } from "../../api/generated";
+import { MAX_CATEGORIES_SELECTED } from "../../utils/constants";
 
 // need to fix typescript for YUP https://github.com/jquense/yup/issues/946#issuecomment-1372017985
 export type RemoveIndex<T> = {
@@ -14,6 +15,7 @@ const ONLY_STRING = "Solo lettere";
 const DISCOUNT_RANGE =
   "Lo sconto deve essere un numero intero compreso tra 1 e 100";
 const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
+const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_CATEGORIES_SELECTED} categorie merceologiche`;
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
 
@@ -170,6 +172,7 @@ export const discountDataValidationSchema = (
         .notRequired(),
       productCategories: Yup.array()
         .min(1, PRODUCT_CATEGORIES_ONE)
+        .max(MAX_CATEGORIES_SELECTED, PRODUCT_CATEGORIES_MAX)
         .required(),
       condition: Yup.string().when(["condition_en"], {
         is: (_?: string) => _ && _.length > 0,

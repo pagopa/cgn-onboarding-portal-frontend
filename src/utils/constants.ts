@@ -1,0 +1,1 @@
+export const MAX_CATEGORIES_SELECTED = 2;
