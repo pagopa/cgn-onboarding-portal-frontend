@@ -1,1 +1,1 @@
-export const MAX_CATEGORIES_SELECTED = 2;
+export const MAX_SELECTABLE_CATEGORIES = 2;
