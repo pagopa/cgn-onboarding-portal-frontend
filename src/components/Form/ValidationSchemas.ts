@@ -66,7 +66,9 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     .max(20, "Deve essere al massimo di 20 caratteri")
     .required(REQUIRED_FIELD),
   referent: ReferentValidationSchema,
-  secondaryReferents: Yup.array().of(ReferentValidationSchema).required(REQUIRED_FIELD),
+  secondaryReferents: Yup.array()
+    .of(ReferentValidationSchema)
+    .required(REQUIRED_FIELD),
   description: Yup.string().required(REQUIRED_FIELD),
   description_en: Yup.string().required(REQUIRED_FIELD),
   description_de: Yup.string().required(REQUIRED_FIELD),
@@ -203,7 +205,9 @@ export const discountDataValidationSchema = (
       }),
       landingPageUrl: Yup.string().when("condition", {
         is: () => landingCheck,
-        then: Yup.string().required(REQUIRED_FIELD),
+        then: Yup.string()
+          .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+          .required(REQUIRED_FIELD),
         otherwise: Yup.string()
       }),
       landingPageReferrer: Yup.string(),
@@ -292,7 +296,9 @@ export const discountsListDataValidationSchema = (
           }),
           landingPageUrl: Yup.string().when("condition", {
             is: () => landingCheck,
-            then: Yup.string().required(REQUIRED_FIELD),
+            then: Yup.string()
+              .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+              .required(REQUIRED_FIELD),
             otherwise: Yup.string()
           }),
           landingPageReferrer: Yup.string(),
