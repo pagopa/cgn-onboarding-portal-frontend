@@ -825,6 +825,12 @@ definitions:
       - Website
       - PhoneNumber
 
+  EntityType:
+    type: string
+    enum:
+      - Private
+      - PublicAdministration
+
   ApprovedAgreementProfile:
     type: object
     required:
@@ -1266,6 +1272,8 @@ definitions:
           insertedAt:
             type: string
             format: date
+          entityType:
+            $ref: '#/definitions/EntityType'
         required:
           - pec
 
