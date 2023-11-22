@@ -100,6 +100,7 @@ const CreateActivationForm = () => {
         void createActivation(newValues);
       }}
       isSubmitting={submitting}
+      canChangeEntityType={false}
     />
   );
 };

@@ -19,6 +19,7 @@ type Props = {
   onSubmit: (values: OrganizationWithReferents) => void;
   isSubmitting: boolean;
   enableReinitialize: boolean;
+  canChangeEntityType: boolean;
 };
 
 const ActivationForm = (props: Props) => {
@@ -55,30 +56,32 @@ const ActivationForm = (props: Props) => {
             <InputField htmlFor="entityType" title="Tipologia di ente" required>
               <div className="form-check">
                 <Field
-                  id="entityTypePubblico"
-                  name="entityType"
-                  type="radio"
-                  value={EntityType.PublicAdministration}
-                />
-                <label
-                  className="text-sm font-weight-normal text-black"
-                  htmlFor="entityTypePubblico"
-                >
-                  <span className="text-sm">Pubblico</span>
-                </label>
-              </div>
-              <div className="form-check">
-                <Field
                   id="entityTypePrivato"
                   name="entityType"
                   type="radio"
                   value={EntityType.Private}
+                  readOnly={!props.canChangeEntityType}
                 />
                 <label
                   className="text-sm font-weight-normal text-black"
                   htmlFor="entityTypePrivato"
                 >
                   <span className="text-sm">Privato</span>
+                </label>
+              </div>
+              <div className="form-check">
+                <Field
+                  id="entityTypePubblico"
+                  name="entityType"
+                  type="radio"
+                  value={EntityType.PublicAdministration}
+                  readOnly={!props.canChangeEntityType}
+                />
+                <label
+                  className="text-sm font-weight-normal text-black"
+                  htmlFor="entityTypePubblico"
+                >
+                  <span className="text-sm">Pubblico</span>
                 </label>
               </div>
               <CustomErrorMessage name="entityType" />
