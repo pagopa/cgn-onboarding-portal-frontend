@@ -28,7 +28,7 @@ export const categoriesMap: Record<ProductCategory, CategoryElement> = {
   },
   Home: {
     name: "Casa",
-    description: "(Agevolazioni per la casa, mutui, gestori luce e gas, ...)"
+    description: "(Opportunità per la casa, mutui, gestori luce e gas, ...)"
   },
   TelephonyAndInternet: {
     name: "Telefonia e internet",
@@ -80,4 +80,7 @@ export const withNormalizedSpaces = (value?: string) =>
 
 export const clearIfReferenceIsBlank = (reference?: string) => (
   value?: string
-) => (withNormalizedSpaces(reference).length <= 0 ? "" : withNormalizedSpaces(value));
+) =>
+  withNormalizedSpaces(reference).length <= 0
+    ? ""
+    : withNormalizedSpaces(value);

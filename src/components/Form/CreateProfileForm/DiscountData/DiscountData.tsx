@@ -73,7 +73,7 @@ const chainAxios = (response: AxiosResponse) =>
       r.status === 409
         ? new Error("Upload codici ancora in corso")
         : new Error(
-            "Errore durante la modifica dell'agevolazione, controllare i dati e riprovare"
+            "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
           )
   )(response);
 
@@ -97,7 +97,7 @@ const DiscountData = ({
     triggerTooltip({
       severity: Severity.DANGER,
       text:
-        "Errore durante la creazione dell'agevolazione, controllare i dati e riprovare"
+        "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
     });
   };
 
@@ -327,7 +327,7 @@ const DiscountData = ({
                         htmlFor="productCategories"
                         isTitleHeading
                         title="Categorie merceologiche"
-                        description={`Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’agevolazione`}
+                        description={`Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’opportunità`}
                         isVisible
                         required
                       >
@@ -339,8 +339,8 @@ const DiscountData = ({
                       <FormField
                         htmlFor="discountConditions"
                         isTitleHeading
-                        title="Condizioni dell’agevolazione"
-                        description="Descrivere eventuali limitazioni relative all’agevolazione (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
+                        title="Condizioni dell’opportunità"
+                        description="Descrivere eventuali limitazioni relative all’opportunità (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
                         isVisible
                       >
                         <DiscountConditions index={index} />
@@ -348,8 +348,8 @@ const DiscountData = ({
                       {!checkLanding && (
                         <FormField
                           htmlFor="discountUrl"
-                          title="Link all’agevolazione"
-                          description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione"
+                          title="Link all’opportunità"
+                          description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’opportunità"
                           isTitleHeading
                           isVisible
                         >
@@ -361,7 +361,7 @@ const DiscountData = ({
                           htmlFor="staticCode"
                           isTitleHeading
                           title="Codice statico"
-                          description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                          description="Inserire il codice relativo all’opportunità che l’utente dovrà inserire sul vostro portale online"
                           isVisible
                           required
                         >
@@ -373,7 +373,7 @@ const DiscountData = ({
                           htmlFor="landingPage"
                           isTitleHeading
                           title="Indirizzo della landing page"
-                          description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’agevolazione"
+                          description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’opportunità"
                           isVisible
                           required
                         >
@@ -433,7 +433,7 @@ const DiscountData = ({
                           >
                             <PlusCircleIcon className="mr-2" />
                             <span className="text-base font-weight-semibold text-blue">
-                              Aggiungi un&apos;altra agevolazione
+                              Aggiungi un&apos;altra opportunità
                             </span>
                           </div>
                           <div className="mt-10">

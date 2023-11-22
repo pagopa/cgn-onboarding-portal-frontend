@@ -76,7 +76,7 @@ const OperatorConvention = () => {
           format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
       },
       {
-        Header: "Agevolazioni",
+        Header: "Opportunità",
         accessor: "publishedDiscounts"
       },
       {

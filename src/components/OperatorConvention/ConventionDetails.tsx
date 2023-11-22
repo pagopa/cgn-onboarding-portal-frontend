@@ -114,7 +114,7 @@ const getView = (
           />
         );
       } else {
-        return <h6>Nessuna Agevolazione pubblicata</h6>;
+        return <h6>Nessuna Opportunità pubblicata</h6>;
       }
     }
     switch (view) {
@@ -208,7 +208,7 @@ const ConventionDetails = ({
                       view,
                       setView,
                       "agevolazione",
-                      "Agevolazioni",
+                      "Opportunità",
                       details?.discounts?.length ? (
                         <ul className="link-list">
                           {details?.discounts?.map((d, i: number) => (

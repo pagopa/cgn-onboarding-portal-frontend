@@ -12,11 +12,11 @@ type Props = {
 
 const PublishModal = ({ isOpen, toggle, publish, profile }: Props) => (
   <Modal isOpen={isOpen} toggle={toggle} size="md">
-    <ModalHeader toggle={toggle}>Pubblica agevolazione</ModalHeader>
+    <ModalHeader toggle={toggle}>Pubblica opportunità</ModalHeader>
     <ModalBody>
       {profile && profile.salesChannel.channelType !== "OfflineChannel"
-        ? "Se pubblichi, l’agevolazione diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."
-        : "Hai informato il personale addetto alle casse o alla relazione col pubblico? Se pubblichi, l’agevolazione diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."}
+        ? "Se pubblichi, l’opportunità diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."
+        : "Hai informato il personale addetto alle casse o alla relazione col pubblico? Se pubblichi, l’opportunità diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."}
     </ModalBody>
     <ModalFooter className="d-flex flex-column">
       <Button

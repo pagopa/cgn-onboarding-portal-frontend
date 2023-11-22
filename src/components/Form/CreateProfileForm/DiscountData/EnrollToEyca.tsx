@@ -64,7 +64,7 @@ const EnrollToEyca = ({
       <FormField
         htmlFor={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
         isTitleHeading
-        title="Vuoi che questa agevolazione sia visibile su EYCA?"
+        title="Vuoi che questa opportunità sia visibile su EYCA?"
         description={
           isEycaSupported ? (
             <>
@@ -124,7 +124,7 @@ const EnrollToEyca = ({
             for={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
             tag="label"
           >
-            Sì, voglio che questa agevolazione sia valida anche per il circuito
+            Sì, voglio che questa opportunità sia valida anche per il circuito
             EYCA
           </Label>
         </FormGroup>

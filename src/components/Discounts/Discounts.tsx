@@ -26,7 +26,7 @@ const chainAxios = (response: AxiosResponse) =>
     (r: AxiosResponse) =>
       r.status === 409
         ? new Error("Upload codici ancora in corso")
-        : new Error("Errore durante la pubblicazione dell'agevolazione")
+        : new Error("Errore durante la pubblicazione dell'opportunità")
   )(response);
 
 const Discounts = () => {
@@ -67,7 +67,7 @@ const Discounts = () => {
       toError
     )
       .fold(
-        _ => throwErrorTooltip("Errore nella cancellazione dell'agevolazione"),
+        _ => throwErrorTooltip("Errore nella cancellazione dell'opportunità"),
         () =>
           setDiscounts(
             discounts.filter(
@@ -100,7 +100,7 @@ const Discounts = () => {
       .fold(
         _ =>
           throwErrorTooltip(
-            "Errore durante la richiesta di cambio di stato dell'agevolazione"
+            "Errore durante la richiesta di cambio di stato dell'opportunità"
           ),
         () => void getDiscounts()
       )
@@ -116,7 +116,7 @@ const Discounts = () => {
       .fold(
         _ =>
           throwErrorTooltip(
-            "Errore durante la richiesta di test dell'agevolazione"
+            "Errore durante la richiesta di test dell'opportunità"
           ),
         () => void getDiscounts()
       )
@@ -173,7 +173,7 @@ const Discounts = () => {
   const columns: Array<Column<Discount>> = useMemo(
     () => [
       {
-        Header: "Nome agevolazione",
+        Header: "Nome opportunità",
         accessor: "name",
         sortType: "string"
       },
@@ -248,10 +248,10 @@ const Discounts = () => {
         />
         <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
           <ModalHeader toggle={toggleDeleteModal}>
-            Elimina agevolazione
+            Elimina opportunità
           </ModalHeader>
           <ModalBody>
-            Sei sicuro di voler eliminare questa agevolazione?
+            Sei sicuro di voler eliminare questa opportunità?
           </ModalBody>
           <ModalFooter className="d-flex flex-column">
             <Button
@@ -334,7 +334,7 @@ const Discounts = () => {
       {agreement.state === "ApprovedAgreement" && (
         <div className="bg-white px-8 pt-10 pb-10">
           <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
-            Nuova agevolazione
+            Nuova opportunità
           </Link>
         </div>
       )}

@@ -53,7 +53,7 @@ const Discount = ({
           triggerTooltip({
             severity: Severity.SUCCESS,
             text:
-              "La sospensione dell'agevolazione è stata effettuata con successo.",
+              "La sospensione dell'opportunità è stata effettuata con successo.",
             title: "sospensione effettuata"
           });
           reloadDetails();
@@ -80,7 +80,7 @@ const Discount = ({
           triggerTooltip({
             severity: Severity.SUCCESS,
             text:
-              "La motivazione del fallimento del test dell'agevolazione è stata inviata con successo.",
+              "La motivazione del fallimento del test dell'opportunità è stata inviata con successo.",
             title: "Test respinto"
           });
           reloadDetails();
@@ -104,7 +104,7 @@ const Discount = ({
           triggerTooltip({
             severity: Severity.SUCCESS,
             text:
-              "L'agevolazione ha superato il test ed è pronta per essere pubblicata dall'operatore",
+              "L'opportunità ha superato il test ed è pronta per essere pubblicata dall'operatore",
             title: "Test superato"
           });
           reloadDetails();
@@ -129,17 +129,17 @@ const Discount = ({
   return (
     <div>
       <h5 className="mb-7 d-flex align-items-center font-weight-bold">
-        Agevolazioni
+        Opportunità
       </h5>
-      <Item label="Nome agevolazione" value={discount.name} />
-      <Item label="Descrizione agevolazione" value={discount.description} />
+      <Item label="Nome opportunità" value={discount.name} />
+      <Item label="Descrizione opportunità" value={discount.description} />
       <Item label="Stato" value={getBadgeStatus(discount.state)} />
       <Item
-        label="Data di inizio dell'agevolazione"
+        label="Data di inizio dell'opportunità"
         value={format(new Date(discount.startDate), "dd/MM/yyyy")}
       />
       <Item
-        label="Data di fine agevolazione"
+        label="Data di fine opportunità"
         value={format(new Date(discount.endDate), "dd/MM/yyyy")}
       />
       <Item
@@ -156,10 +156,10 @@ const Discount = ({
           )}
         </div>
       </div>
-      <Item label="Condizioni dell’agevolazione" value={discount.condition} />
+      <Item label="Condizioni dell’opportunità" value={discount.condition} />
       {discount.discountUrl && (
         <Item
-          label="Link all’agevolazione"
+          label="Link all’opportunità"
           value={
             <a href={discount.discountUrl} target="_blank" rel="noreferrer">
               {discount.discountUrl}
@@ -172,7 +172,7 @@ const Discount = ({
       profile.salesChannel?.discountCodeType === "API" && (
         <div className="row mb-5">
           <div className="col-4 text-gray">
-            Per testare questa agevolazione, contatta PagoPA
+            Per testare questa opportunità, contatta PagoPA
           </div>
         </div>
       )}
@@ -181,7 +181,7 @@ const Discount = ({
       profile.salesChannel?.discountCodeType === "LandingPage" && (
         <div className="row mb-5">
           <div className="text-gray">
-            Per testare questa agevolazione, usa il Playground CGN presente in
+            Per testare questa opportunità, usa il Playground CGN presente in
             app IO
           </div>
         </div>
@@ -226,7 +226,7 @@ const Discount = ({
           <h6 className="text-gray">Aggiungi una nota</h6>
           <p>
             Inserisci una nota di spiegazione riguardo al motivo per cui questa
-            agevolazione sarà sospesa. La nota sarà visibile all’operatore
+            opportunità sarà sospesa. La nota sarà visibile all’operatore
           </p>
           <div className="form-group">
             <textarea
@@ -265,7 +265,7 @@ const Discount = ({
         discount.state === "published" && (
           <div className="mt-5">
             <Button color="primary" onClick={() => setSuspendMode(true)}>
-              Sospendi agevolazione
+              Sospendi opportunità
             </Button>
           </div>
         )

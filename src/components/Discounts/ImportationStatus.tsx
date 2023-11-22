@@ -57,8 +57,8 @@ const getRenderAttributesByState = (
         title: "L’ELABORAZIONE DEI CODICI NON È COMPLETA",
         body: (
           <>
-            Potrai pubblicare l’agevolazione solo quando avremo importato tutti
-            i codici sui nostri sistemi. Torna a trovarci
+            Potrai pubblicare l’opportunità solo quando avremo importato tutti i
+            codici sui nostri sistemi. Torna a trovarci
           </>
         )
       };
@@ -68,8 +68,8 @@ const getRenderAttributesByState = (
         body: (
           <>
             E’ stata raggiunta la soglia minima di codici sconti per questa
-            agevolazione. Ad esaurimento dei codici sconto l’agevolazione non
-            sarà più visibile in app.{" "}
+            opportunità. Ad esaurimento dei codici sconto l’opportunità non sarà
+            più visibile in app.{" "}
             <Link
               to={`/admin/operatori/agevolazioni/modifica/${discountId}`}
               className="font-weight-semibold"

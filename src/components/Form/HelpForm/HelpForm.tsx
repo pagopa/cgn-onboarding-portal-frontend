@@ -52,10 +52,10 @@ const topics = [
   {
     key: "Discounts",
     items: [
-      "Aggiungere un’agevolazione",
-      "Modificare un’agevolazione",
-      "Eliminare un’agevolazione",
-      "Stati dell’agevolazione",
+      "Aggiungere un’opportunità",
+      "Modificare un’opportunità",
+      "Eliminare un’opportunità",
+      "Stati dell’opportunità",
       "Codice statico"
     ]
   },
@@ -156,7 +156,7 @@ const HelpForm = () => {
                     className="text-sm font-weight-normal text-black"
                     htmlFor="Discounts"
                   >
-                    Agevolazioni
+                    Opportunità
                   </label>
                 </div>
                 <div className="form-check">
