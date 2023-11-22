@@ -215,7 +215,7 @@ paths:
           $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
-  
+
   /agreements/{agreementId}/discounts/bucket:
 
     post:
@@ -839,6 +839,8 @@ definitions:
         $ref: '#/definitions/SalesChannel'
       supportType:
         $ref: '#/definitions/SupportType'
+      entityType:
+        $ref: '#/definitions/EntityType'
       supportValue:
         type: string
         minLength: 5
@@ -847,6 +849,7 @@ definitions:
         type: array
         items:
          $ref: '#/definitions/Referent'
+
 
   Referent:
     type: object

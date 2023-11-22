@@ -6,7 +6,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Api from "../../../../api";
-import { SupportType } from "../../../../api/generated";
+import { Profile } from "../../../../api/generated";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
@@ -88,6 +88,7 @@ const ProfileData = ({
   const { triggerTooltip } = useTooltip();
   const [loading, setLoading] = useState(true);
   const [geolocationToken, setGeolocationToken] = useState<any>();
+  const [existingProfile, setExistingProfile] = useState<Profile | undefined>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -130,7 +131,8 @@ const ProfileData = ({
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        (profile: any) => {
+        (profile: Profile) => {
+          setExistingProfile(profile);
           const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
           setInitialValues({
             ...profile,
@@ -145,20 +147,24 @@ const ProfileData = ({
               profile.salesChannel.channelType === "BothChannels"
                 ? {
                     ...profile.salesChannel,
-                    addresses: !array.isEmpty(profile.salesChannel.addresses)
-                      ? profile.salesChannel.addresses.map((address: any) => {
-                          const addressSplit = address.fullAddress
-                            .split(",")
-                            .map((item: string) => item.trim());
-                          return {
-                            street: addressSplit[0],
-                            city: addressSplit[1],
-                            district: addressSplit[2],
-                            zipCode: addressSplit[3],
-                            value: address.fullAddress,
-                            label: address.fullAddress
-                          };
-                        })
+                    addresses: !array.isEmpty(
+                      (profile.salesChannel as any).addresses
+                    )
+                      ? (profile.salesChannel as any).addresses.map(
+                          (address: any) => {
+                            const addressSplit = address.fullAddress
+                              .split(",")
+                              .map((item: string) => item.trim());
+                            return {
+                              street: addressSplit[0],
+                              city: addressSplit[1],
+                              district: addressSplit[2],
+                              zipCode: addressSplit[3],
+                              value: address.fullAddress,
+                              label: address.fullAddress
+                            };
+                          }
+                        )
                       : [
                           {
                             fullAddress: ""
@@ -232,10 +238,10 @@ const ProfileData = ({
         };
     }
   };
-
-  if (loading) {
+  if (loading || !existingProfile?.entityType) {
     return <CenteredLoading />;
   }
+  const entityType = existingProfile.entityType;
   return (
     <Formik
       enableReinitialize
@@ -272,14 +278,13 @@ const ProfileData = ({
       {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           <FormContainer className="mb-20">
-            <ProfileInfo formValues={values} />
-            <ReferentData />
+            <ProfileInfo entityType={entityType} />
+            <ReferentData entityType={entityType} />
             <ProfileImage />
             <ProfileDescription />
             <SalesChannels
+              entityType={entityType}
               // geolocationToken={geolocationToken}
-              formValues={values}
-              setFieldValue={setFieldValue}
             />
             <SupportContact>
               <OperatorDataButtons
