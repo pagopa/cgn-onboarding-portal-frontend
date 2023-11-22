@@ -22,7 +22,7 @@ const TableHeader = ({ headerGroups }: Props) => (
             {...column.getHeaderProps(column.getSortByToggleProps())}
             key={i}
             className="px-6 py-2 text-sm font-weight-bold text-gray
-                    text-uppercase"
+                    text-uppercase text-nowrap"
           >
             {column.render("Header")}
             <span>
