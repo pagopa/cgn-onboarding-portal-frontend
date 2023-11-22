@@ -96,6 +96,8 @@ paths:
       responses:
         204:
           description: Agreement unassigned to the user
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -114,6 +116,8 @@ paths:
       responses:
         204:
           description: Agreement approved
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -138,6 +142,8 @@ paths:
       responses:
         204:
           description: Agreement rejected
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -183,6 +189,8 @@ paths:
           description: Document uploaded
           schema:
             $ref: '#/definitions/Document'
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -201,6 +209,8 @@ paths:
       responses:
         204:
           description: Document deleted
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -224,12 +234,86 @@ paths:
       responses:
         204:
           description: Discount suspended
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         409:
           $ref: '#/responses/Conflict'
+
+  /agreement-requests/{agreementId}/discounts/{discountId}/bucket-code:
+    get:
+      tags:
+        - discount
+      summary: Get a bucket code for discount
+      operationId: getDiscountBucketCode
+      parameters:
+        - $ref: '#/parameters/AgreementId'
+        - $ref: '#/parameters/DiscountId'
+      responses:
+        200:
+          description: A bucket code
+          schema:
+            $ref: '#/definitions/BucketCode'
+        400:
+          $ref: '#/responses/InvalidRequest'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        409:
+          $ref: '#/responses/Conflict'
+
+  /agreement-requests/{agreementId}/discounts/{discountId}/test-passed:
+    post:
+      tags:
+        - discount
+      summary: Mark as test passed
+      operationId: setDiscountTestPassed
+      parameters:
+        - $ref: '#/parameters/AgreementId'
+        - $ref: '#/parameters/DiscountId'
+      responses:
+        204:
+          description: Test passed
+        400:
+          $ref: '#/responses/InvalidRequest'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        409:
+          $ref: '#/responses/Conflict'
+
+  /agreement-requests/{agreementId}/discounts/{discountId}/test-failed:
+    post:
+      tags:
+        - discount
+      summary: Mark as test failed with a reason
+      operationId: setDiscountTestFailed
+      parameters:
+        - $ref: '#/parameters/AgreementId'
+        - $ref: '#/parameters/DiscountId'
+        - in: body
+          description: Failure reason
+          name: failure
+          required: true
+          schema:
+            $ref: '#/definitions/FailureReason'
+      responses:
+        204:
+          description: Test failed
+        400:
+          $ref: '#/responses/InvalidRequest'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        409:
+          $ref: '#/responses/Conflict'
+
   /approved-agreements:
     get:
       tags:
@@ -283,8 +367,198 @@ paths:
           $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
+
+  /organizations:
+    get:
+      tags:
+        - attributeauthority
+      operationId: getOrganizations
+      summary: Get organizations
+      description: Get all organizations
+      parameters:
+        - $ref: "#/parameters/SearchQuery"
+        - $ref: "#/parameters/PageNumber"
+        - $ref: "#/parameters/PageSize"
+        - $ref: "#/parameters/SortOrganizationsBy"
+        - $ref: "#/parameters/SortDirection"
+      responses:
+        200:
+          description: List of organizations.
+          schema:
+            $ref: "#/definitions/Organizations"
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+    post:
+      tags:
+        - attributeauthority
+      operationId: upsertOrganization
+      summary: Upsert organization.
+      description: Update or insert an organization.
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/OrganizationWithReferents"
+      responses:
+        200:
+          description: Upserted organization.
+          schema:
+            $ref: "#/definitions/OrganizationWithReferents"
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+  /organization/{keyOrganizationFiscalCode}:
+    get:
+      tags:
+        - attributeauthority
+      operationId: getOrganization
+      summary: Get organization
+      description: Get an organization by fiscal code
+      parameters:
+        - $ref: "#/parameters/KeyOrganizationFiscalCode"
+      responses:
+        200:
+          description: An organization with referents.
+          schema:
+            $ref: "#/definitions/OrganizationWithReferentsAndStatus"
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+    delete:
+      tags:
+        - attributeauthority
+      operationId: deleteOrganization
+      summary: Delete organization.
+      description: Delete an organization
+      parameters:
+        - $ref: "#/parameters/KeyOrganizationFiscalCode"
+      responses:
+        200:
+          description: Deleted.
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+  /organization/{keyOrganizationFiscalCode}/referents:
+    get:
+      tags:
+        - attributeauthority
+      operationId: getReferents
+      summary: Get referents
+      description: Get all referents for a organization
+      parameters:
+        - $ref: "#/parameters/KeyOrganizationFiscalCode"
+      responses:
+        200:
+          description: List of referents.
+          schema:
+            $ref: "#/definitions/Referents"
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+    post:
+      tags:
+        - attributeauthority
+      operationId: insertReferent
+      summary: Insert referent.
+      description: Insert a referent fiscalcode.
+      parameters:
+        - $ref: "#/parameters/KeyOrganizationFiscalCode"
+        - $ref: "#/parameters/ReferentFiscalCodeBody"
+      responses:
+        200:
+          description: Inserted referent.
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+  /organization/{keyOrganizationFiscalCode}/referents/{referentFiscalCode}:
+    delete:
+      tags:
+        - attributeauthority
+      operationId: deleteReferent
+      summary: Delete referent.
+      description: Delete a referent
+      parameters:
+        - $ref: "#/parameters/KeyOrganizationFiscalCode"
+        - $ref: "#/parameters/ReferentFiscalCode"
+      responses:
+        200:
+          description: Deleted.
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+  /export/agreements:
+    get:
+      tags:
+        - exports
+      summary: Download an export of agreements in CSV format
+      operationId: exportAgreements
+      responses:
+        200:
+          description: CSV export of all agreements
+          schema:
+            type: file
+        400:
+          $ref: '#/responses/InvalidRequest'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+  /export/eyca-discounts:
+    get:
+      tags:
+        - exports
+      summary: Download an export of eyca discounts in CSV format
+      operationId: exportEycaDiscounts
+      responses:
+        200:
+          description: CSV export of all agreements
+          schema:
+            type: file
+        400:
+          $ref: '#/responses/InvalidRequest'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+  /export/send-eyca-discounts:
+    post:
+      tags:
+        - exports
+      summary: Send eyca discounts to EYCA via client
+      operationId: sendEycaDiscounts
+      responses:
+        200:
+          description: Send eyca discounts to EYCA via client
+          schema:
+            type: string
+        400:
+          $ref: '#/responses/InvalidRequest'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+
 consumes:
   - application/json
+
 produces:
   - application/json
 
@@ -323,7 +597,7 @@ parameters:
     type: string
     enum:
       - Agreement
-      - ManifestationOfInterest
+      - AdhesionRequest
   RequestColumnSort:
     name: sortColumn
     in: query
@@ -335,7 +609,6 @@ parameters:
       - RequestDate
       - State
       - Assignee
-
   ApprovedColumnSort:
     name: sortColumn
     in: query
@@ -346,7 +619,47 @@ parameters:
       - Operator
       - AgreementDate
       - LastModifyDate
-
+      - PublishedDiscounts
+  KeyOrganizationFiscalCode:
+    name: keyOrganizationFiscalCode
+    in: path
+    description: Organization fiscal code
+    required: true
+    type: string
+    minLength: 8
+    maxLength: 16
+  ReferentFiscalCode:
+    in: path
+    name: referentFiscalCode
+    description: Referent fiscal code
+    required: true
+    type: string
+    pattern: '^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$'
+  ReferentFiscalCodeBody:
+    in: body
+    name: body
+    required: true
+    schema:
+      $ref: "#/definitions/ReferentFiscalCode"
+  SearchQuery:
+    name: searchQuery
+    in: query
+    description: String to search in organization name o fiscal code
+    required: false
+    type: string
+    minLength: 1
+    maxLength: 100
+  SortOrganizationsBy:
+    name: sortBy
+    in: query
+    description: The field to sort by
+    required: false
+    type: string
+    enum:
+      - fiscalCode
+      - name
+      - pec
+      - insertedAt
   SortDirection:
     name: sortDirection
     in: query
@@ -426,6 +739,8 @@ definitions:
       - fullName
       - agreementStartDate
       - agreementLastUpdateDate
+      - publishedDiscounts
+      - testPending
     properties:
       agreementId:
         type: string
@@ -437,6 +752,12 @@ definitions:
       agreementLastUpdateDate:
         type: string
         format: date
+      publishedDiscounts:
+        type: integer
+        format: int64
+      testPending:
+        type: boolean
+        default: false
 
   ApprovedAgreementDetail:
     type: object
@@ -453,6 +774,7 @@ definitions:
         $ref: '#/definitions/ApprovedAgreementDiscounts'
       documents:
         $ref: '#/definitions/Documents'
+
   AgreementState:
     type: string
     enum:
@@ -496,10 +818,19 @@ definitions:
       referent:
         $ref: '#/definitions/Referent'
 
+  SupportType:
+    type: string
+    enum:
+      - EmailAddress
+      - Website
+      - PhoneNumber
+
   ApprovedAgreementProfile:
     type: object
     required:
       - description
+      - description_en
+      - description_de
       - salesChannel
       - lastUpateDate
       #tab profilo
@@ -511,10 +842,20 @@ definitions:
       - legalRepresentativeFullName
       - legalRepresentativeTaxCode
       - referent
+      - supportType
+      - supportValue
     properties:
       name:
         type: string
+      name_en:
+        type: string
+      name_de:
+        type: string
       description:
+        type: string
+      description_en:
+        type: string
+      description_de:
         type: string
       salesChannel:
         $ref: '#/definitions/SalesChannel'
@@ -546,10 +887,16 @@ definitions:
         type: string
       legalRepresentativeTaxCode:
         type: string
-        maxLength: 4
-        minLength: 20
+        minLength: 4
+        maxLength: 20
       referent:
         $ref: '#/definitions/ApprovedAgreementReferent'
+      supportType:
+        $ref: '#/definitions/SupportType'
+      supportValue:
+        type: string
+        minLength: 5
+        maxLength: 500
 
   Referent:
     type: object
@@ -627,6 +974,12 @@ definitions:
       name:
         type: string
         maxLength: 100
+      name_en:
+        type: string
+        maxLength: 100
+      name_de:
+        type: string
+        maxLength: 100
 
   ApprovedAgreementDiscount:
     type: object
@@ -636,18 +989,28 @@ definitions:
       - description
       - startDate
       - endDate
-      - discount
       - productCategories
       - condition
       - lastUpateDate
       - state
+      - visibleOnEyca
     properties:
       id:
         type: string
       name:
         type: string
         maxLength: 100
+      name_en:
+        type: string
+        maxLength: 100
+      name_de:
+        type: string
+        maxLength: 100
       description:
+        type: string
+      description_en:
+        type: string
+      description_de:
         type: string
       startDate:
         type: string
@@ -658,7 +1021,7 @@ definitions:
       discount:
         type: integer
         format: int32
-        minimum: 5
+        minimum: 1
         maximum: 99
       productCategories:
         type: array
@@ -667,11 +1030,33 @@ definitions:
         minItems: 1
       condition:
         type: string
+      condition_en:
+        type: string
+      condition_de:
+        type: string
       lastUpateDate:
         type: string
         format: date
       state:
         $ref: '#/definitions/DiscountState'
+      discountUrl:
+        type: string
+        maxLength: 500
+      staticCode:
+        type: string
+        maxLength: 100
+      landingPageUrl:
+        type: string
+        maxLength: 500
+      landingPageReferrer:
+        type: string
+        maxLength: 100
+      testFailureReason:
+        type: string
+        maxLength: 500
+      visibleOnEyca:
+        type: boolean
+        default: false
 
   DiscountState:
     type: string
@@ -680,6 +1065,9 @@ definitions:
       - published
       - suspended
       - expired
+      - test_pending
+      - test_passed
+      - test_failed
 
   ProductCategory:
     type: string
@@ -710,9 +1098,12 @@ definitions:
       - type: object
         required:
           - websiteUrl
+          - discountCodeType
         properties:
           websiteUrl:
             type: string
+          discountCodeType:
+            $ref: '#/definitions/DiscountCodeType'
 
   OfflineChannel:
     allOf:
@@ -725,11 +1116,13 @@ definitions:
             type: string
           addresses:
             type: array
-            minItems: 1
             items:
               type: string
               minLength: 10
               maxLength: 500
+          allNationalAddresses:
+            type: boolean
+            default: false
 
   BothChannels:
     allOf:
@@ -743,11 +1136,15 @@ definitions:
             type: string
           addresses:
             type: array
-            minItems: 1
             items:
               type: string
               minLength: 10
               maxLength: 500
+          allNationalAddresses:
+            type: boolean
+            default: false
+          discountCodeType:
+            $ref: '#/definitions/DiscountCodeType'
 
   SalesChannelType:
     type: string
@@ -755,6 +1152,14 @@ definitions:
       - OnlineChannel
       - OfflineChannel
       - BothChannels
+
+  DiscountCodeType:
+    type: string
+    enum:
+      - Static
+      - API
+      - LandingPage
+      - Bucket
 
   Documents:
     type: array
@@ -780,7 +1185,7 @@ definitions:
     type: string
     enum:
       - Agreement
-      - ManifestationOfInterest
+      - AdhesionRequest
 
   SuspendDiscount:
     type: object
@@ -790,6 +1195,126 @@ definitions:
       reasonMessage:
         type: string
         maxLength: 500
+
+  BucketCode:
+    type: object
+    required:
+      - code
+    properties:
+      code:
+        type: string
+
+  FailureReason:
+    type: object
+    required:
+      - reasonMessage
+    properties:
+      reasonMessage:
+        type: string
+        maxLength: 500
+
+  KeyOrganizationFiscalCode:
+    type: object
+    properties:
+      keyOrganizationFiscalCode:
+        type: string
+        minLength: 8
+        maxLength: 16
+    required:
+      - keyOrganizationFiscalCode
+
+  OrganizationFiscalCode:
+    type: object
+    properties:
+      organizationFiscalCode:
+        type: string
+        minLength: 8
+        maxLength: 16
+    required:
+      - organizationFiscalCode
+
+  OrganizationName:
+    type: object
+    properties:
+      organizationName:
+        type: string
+        minLength: 1
+        maxLength: 100
+    required:
+      - organizationName
+
+  ReferentFiscalCode:
+    type: object
+    properties:
+      referentFiscalCode:
+        type: string
+        pattern: '^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$'
+    required:
+      - referentFiscalCode˙
+
+  Organization:
+    allOf:
+      - $ref: "#/definitions/OrganizationFiscalCode"
+      - $ref: "#/definitions/OrganizationName"
+      - type: object
+        properties:
+          pec:
+            type: string
+            format: email
+            minLength: 5
+            maxLength: 100
+          insertedAt:
+            type: string
+            format: date
+        required:
+          - pec
+
+  Referents:
+    type: array
+    items:
+      type: string
+      minLength: 16
+      maxLength: 16
+
+  OrganizationStatus:
+    type: string
+    enum:
+      - Enabled
+      - Draft
+      - Pending
+      - Active
+
+  OrganizationWithReferents:
+    allOf:
+      - $ref: "#/definitions/KeyOrganizationFiscalCode"
+      - $ref: "#/definitions/Organization"
+      - type: object
+        properties:
+          referents:
+            $ref: "#/definitions/Referents"
+        required:
+          - referents
+
+  OrganizationWithReferentsAndStatus:
+    allOf:
+      - $ref: "#/definitions/OrganizationWithReferents"
+      - type: object
+        properties:
+          status:
+            $ref: "#/definitions/OrganizationStatus"
+        required:
+          - status
+
+  Organizations:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/OrganizationWithReferentsAndStatus"
+      count:
+        type: integer
+
 
 responses:
   InvalidRequest:
