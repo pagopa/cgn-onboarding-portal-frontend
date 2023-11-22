@@ -27,13 +27,13 @@ const Introduction = ({ name, activeTab, handleClick }: Props) => (
     </div>
     <Nav className="auto mt-11" tabs tag="ul" vertical={false}>
       <NavItem active={activeTab === 0} onClick={() => handleClick(0)}>
-        Dati operatore
+        Profilo
       </NavItem>
       <NavItem active={activeTab === 1} onClick={() => handleClick(1)}>
-        Agevolazioni
+        Opportunità
       </NavItem>
       <NavItem active={activeTab === 2} onClick={() => handleClick(2)}>
-        Profilo
+        Dati dell&apos;ente
       </NavItem>
     </Nav>
   </section>
