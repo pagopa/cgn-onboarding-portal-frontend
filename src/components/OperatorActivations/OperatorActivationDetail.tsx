@@ -4,7 +4,10 @@ import { Button, Icon } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { OrganizationWithReferents } from "../../api/generated_backoffice";
+import {
+  EntityType,
+  OrganizationWithReferents
+} from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
 import Api from "../../api/backoffice";
 import { Severity, useTooltip } from "../../context/tooltip";
@@ -58,6 +61,19 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           <ProfileItem
             label="Ragione sociale operatore"
             value={operator.organizationName}
+          />
+          <ProfileItem
+            label="Tipologia di ente"
+            value={(() => {
+              switch (operator.entityType) {
+                case EntityType.Private:
+                  return "Privato";
+                case EntityType.PublicAdministration:
+                  return "Pubblico";
+                default:
+                  return "";
+              }
+            })()}
           />
           <ProfileItem
             label="Partita IVA"
