@@ -13,6 +13,7 @@ const emptyInitialValues: OrganizationWithReferents = {
   keyOrganizationFiscalCode: "",
   organizationFiscalCode: "",
   organizationName: "",
+  entityType: undefined,
   pec: "",
   referents: [""]
 };

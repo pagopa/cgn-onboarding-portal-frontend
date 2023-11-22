@@ -5,14 +5,18 @@ import { useHistory } from "react-router-dom";
 import PlusCircleIcon from "../../assets/icons/plus-circle.svg";
 import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
 import CenteredLoading from "../CenteredLoading";
+import {
+  OrganizationWithReferents,
+  EntityType
+} from "../../api/generated_backoffice";
 import FormSection from "./FormSection";
 import InputField from "./FormField";
 import CustomErrorMessage from "./CustomErrorMessage";
 import { activationValidationSchema } from "./ValidationSchemas";
 
 type Props = {
-  initialValues: any;
-  onSubmit: (values: any) => void;
+  initialValues: OrganizationWithReferents;
+  onSubmit: (values: OrganizationWithReferents) => void;
   isSubmitting: boolean;
   enableReinitialize: boolean;
 };
@@ -47,6 +51,37 @@ const ActivationForm = (props: Props) => {
                 type="text"
               />
               <CustomErrorMessage name="organizationName" />
+            </InputField>
+            <InputField htmlFor="entityType" title="Tipologia di ente" required>
+              <div className="form-check">
+                <Field
+                  id="entityTypePubblico"
+                  name="entityType"
+                  type="radio"
+                  value={EntityType.PublicAdministration}
+                />
+                <label
+                  className="text-sm font-weight-normal text-black"
+                  htmlFor="entityTypePubblico"
+                >
+                  <span className="text-sm">Pubblico</span>
+                </label>
+              </div>
+              <div className="form-check">
+                <Field
+                  id="entityTypePrivato"
+                  name="entityType"
+                  type="radio"
+                  value={EntityType.Private}
+                />
+                <label
+                  className="text-sm font-weight-normal text-black"
+                  htmlFor="entityTypePrivato"
+                >
+                  <span className="text-sm">Privato</span>
+                </label>
+              </div>
+              <CustomErrorMessage name="entityType" />
             </InputField>
             <InputField
               htmlFor="organizationFiscalCode"

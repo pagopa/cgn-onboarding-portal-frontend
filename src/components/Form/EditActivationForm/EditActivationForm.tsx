@@ -16,7 +16,8 @@ const emptyInitialValues: OrganizationWithReferents = {
   organizationName: "",
   insertedAt: "",
   pec: "",
-  referents: [""]
+  referents: [""],
+  entityType: undefined
 };
 
 const CreateActivationForm = () => {

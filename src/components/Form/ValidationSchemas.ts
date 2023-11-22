@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 import { HelpRequestCategoryEnum, SupportType } from "../../api/generated";
+import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
@@ -66,7 +67,9 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     .max(20, "Deve essere al massimo di 20 caratteri")
     .required(REQUIRED_FIELD),
   referent: ReferentValidationSchema,
-  secondaryReferents: Yup.array().of(ReferentValidationSchema).required(REQUIRED_FIELD),
+  secondaryReferents: Yup.array()
+    .of(ReferentValidationSchema)
+    .required(REQUIRED_FIELD),
   description: Yup.string().required(REQUIRED_FIELD),
   description_en: Yup.string().required(REQUIRED_FIELD),
   description_de: Yup.string().required(REQUIRED_FIELD),
@@ -398,5 +401,8 @@ export const activationValidationSchema = Yup.object().shape({
         .required(REQUIRED_FIELD)
     )
     .required(REQUIRED_FIELD),
-  insertedAt: Yup.string()
+  insertedAt: Yup.string(),
+  entityType: Yup.string()
+    .oneOf(Object.values(EntityType), REQUIRED_FIELD)
+    .required(REQUIRED_FIELD)
 });
