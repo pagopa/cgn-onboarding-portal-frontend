@@ -13,7 +13,7 @@ import Api from "../../api/index";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
-import { Discount, Profile } from "../../api/generated";
+import { AgreementState, Discount, Profile } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
@@ -275,67 +275,83 @@ const Discounts = () => {
           </ModalFooter>
         </Modal>
       </div>
-      <table
-        {...getTableProps()}
-        style={{ width: "100%" }}
-        className="mt-2 bg-white"
-      >
-        <TableHeader headerGroups={headerGroups} />
-        <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row);
-            return (
-              <React.Fragment key={row.getRowProps().key}>
-                <tr>
-                  {row.cells.map(cell => (
-                    // eslint-disable-next-line react/jsx-key
-                    <td
-                      className="px-6 py-2 border-bottom text-sm"
-                      {...cell.getCellProps()}
-                    >
-                      {cell.render("Cell")}
-                    </td>
-                  ))}
-                </tr>
-                {row.isExpanded ? (
-                  <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
-                    <td colSpan={visibleColumns.length}>
-                      {
-                        <DiscountDetailRow
-                          row={row}
-                          agreement={agreement}
-                          profile={profile}
-                          onPublish={() => {
-                            setSelectedPublish(row.original.id);
-                            togglePublishModal();
-                          }}
-                          onUnpublish={() => {
-                            setSelectedDiscount(row.original.id);
-                            toggleUnpublishModal();
-                          }}
-                          onDelete={() => {
-                            setSelectedDiscount(row.original.id);
-                            toggleDeleteModal();
-                          }}
-                          onTest={() => {
-                            setSelectedDiscount(row.original.id);
-                            toggleTestModal();
-                          }}
-                        />
-                      }
-                    </td>
+      {agreement.state === AgreementState.ApprovedAgreement && (
+        <table
+          {...getTableProps()}
+          style={{ width: "100%" }}
+          className="mt-2 bg-white"
+        >
+          <TableHeader headerGroups={headerGroups} />
+          <tbody {...getTableBodyProps()}>
+            {rows.map(row => {
+              prepareRow(row);
+              return (
+                <React.Fragment key={row.getRowProps().key}>
+                  <tr>
+                    {row.cells.map(cell => (
+                      // eslint-disable-next-line react/jsx-key
+                      <td
+                        className="px-6 py-2 border-bottom text-sm"
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render("Cell")}
+                      </td>
+                    ))}
                   </tr>
-                ) : null}
-              </React.Fragment>
-            );
-          })}
-        </tbody>
-      </table>
-      {agreement.state === "ApprovedAgreement" && (
-        <div className="bg-white px-8 pt-10 pb-10">
+                  {row.isExpanded ? (
+                    <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
+                      <td colSpan={visibleColumns.length}>
+                        {
+                          <DiscountDetailRow
+                            row={row}
+                            agreement={agreement}
+                            profile={profile}
+                            onPublish={() => {
+                              setSelectedPublish(row.original.id);
+                              togglePublishModal();
+                            }}
+                            onUnpublish={() => {
+                              setSelectedDiscount(row.original.id);
+                              toggleUnpublishModal();
+                            }}
+                            onDelete={() => {
+                              setSelectedDiscount(row.original.id);
+                              toggleDeleteModal();
+                            }}
+                            onTest={() => {
+                              setSelectedDiscount(row.original.id);
+                              toggleTestModal();
+                            }}
+                          />
+                        }
+                      </td>
+                    </tr>
+                  ) : null}
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+      {agreement.state === AgreementState.ApprovedAgreement ? (
+        <div className="bg-white px-8 pt-10 pb-10 flex">
           <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
             Nuova opportunità
           </Link>
+        </div>
+      ) : (
+        <div className="bg-white px-8 pt-10 pb-10 flex d-flex justify-content-center flex-column align-items-center">
+          <p className="text-center m-10">
+            Non è presente nessuna opportunità.
+            <br />
+            Potrai creare nuove opportunità quando la convezione sarà attiva.
+          </p>
+          <a
+            href="https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/Vgh5yq561A3SOPVQrWes/richiesta-di-convenzione/dati-delle-agevolazioni"
+            className="btn btn-outline-primary m-8"
+          >
+            Scopri di più
+          </a>
         </div>
       )}
     </div>
