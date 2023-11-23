@@ -27,8 +27,6 @@ const CreateProfile = () => {
     ["profile", { agreementId: agreement.id }],
     async () => {
       const response = await Api.Profile.getProfile(agreement.id);
-      // eslint-disable-next-line
-      response.data.entityType = EntityType.PublicAdministration;
       return response.data;
     }
   );

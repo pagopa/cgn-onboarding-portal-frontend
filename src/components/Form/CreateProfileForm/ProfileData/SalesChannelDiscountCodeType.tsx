@@ -17,9 +17,11 @@ const SalesChannelDiscountCodeType = ({
 }) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
-  const updateSalesChannelType = () => {
+  const updateSalesChannelType = (
+    event: React.MouseEvent<HTMLInputElement>
+  ) => {
     if (entityType === EntityType.PublicAdministration) {
-      if (formikContext.values.salesChannel.discountCodeType === "") {
+      if (event.currentTarget.value === "") {
         formikContext.setFieldValue(
           "salesChannel.channelType",
           SalesChannelType.OfflineChannel
