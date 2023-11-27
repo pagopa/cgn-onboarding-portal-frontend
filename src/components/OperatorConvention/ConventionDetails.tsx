@@ -198,12 +198,7 @@ const ConventionDetails = ({
               <div className="menu-wrapper">
                 <div className="link-list-wrapper">
                   <ul className="link-list">
-                    {menuLink(
-                      view,
-                      setView,
-                      "dati_operatore",
-                      "Dati Operatore"
-                    )}
+                    {menuLink(view, setView, "dati_operatore", "Profilo")}
                     {menuLink(
                       view,
                       setView,
@@ -235,8 +230,8 @@ const ConventionDetails = ({
                         </ul>
                       ) : null
                     )}
-                    {menuLink(view, setView, "profilo", "Profilo")}
-                    {menuLink(view, setView, "referente", "Referente")}
+                    {menuLink(view, setView, "profilo", "Dati dell'ente")}
+                    {menuLink(view, setView, "referente", "Dati del referente")}
                     {menuLink(view, setView, "documenti", "Documenti")}
                   </ul>
                 </div>
