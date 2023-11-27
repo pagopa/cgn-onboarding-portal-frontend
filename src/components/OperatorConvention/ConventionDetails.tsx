@@ -114,7 +114,14 @@ const getView = (
           />
         );
       } else {
-        return <h6>Nessuna Opportunità pubblicata</h6>;
+        return (
+          <div>
+            <h5 className="mb-5 font-weight-bold">Opportunità</h5>
+            <p className="text-center text-gray">
+              Non è presente nessuna opportunità.
+            </p>
+          </div>
+        );
       }
     }
     switch (view) {

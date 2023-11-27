@@ -906,6 +906,8 @@ definitions:
         type: string
         minLength: 5
         maxLength: 500
+      entityType:
+        $ref: '#/definitions/EntityType'
 
   Referent:
     type: object
