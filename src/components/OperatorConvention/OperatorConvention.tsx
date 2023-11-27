@@ -8,7 +8,8 @@ import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
   ApprovedAgreement,
-  ApprovedAgreements
+  ApprovedAgreements,
+  EntityType
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
@@ -62,6 +63,20 @@ const OperatorConvention = () => {
       {
         Header: "Operatore",
         accessor: "fullName"
+      },
+      {
+        Header: "Tipologia ente",
+        accessor: "entityType",
+        Cell({ row }: { row: Row<ApprovedAgreement> }) {
+          switch (row.original.entityType) {
+            case EntityType.PublicAdministration:
+              return "Pubblico";
+            case EntityType.Private:
+              return "Privato";
+            default:
+              return "";
+          }
+        }
       },
       {
         Header: "Data Convenzionamento",

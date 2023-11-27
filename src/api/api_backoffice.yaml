@@ -758,6 +758,9 @@ definitions:
       testPending:
         type: boolean
         default: false
+      entityType:
+        $ref: '#/definitions/EntityType'
+
 
   ApprovedAgreementDetail:
     type: object
