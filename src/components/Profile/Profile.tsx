@@ -61,7 +61,7 @@ const Profile = () => {
                 <ProfileItem label="Indirizzo PEC" value={profile.pecAddress} />
                 <ProfileItem label="Sede legale" value={profile.legalOffice} />
                 <ProfileItem
-                  label="Numero di telefono azienda"
+                  label="Numero di telefono ente"
                   value={profile.telephoneNumber}
                 />
                 <ProfileItem
@@ -92,7 +92,7 @@ const Profile = () => {
                       <ProfileItem label="Nome" value={referent.firstName} />
                       <ProfileItem label="Cognome" value={referent.lastName} />
                       <ProfileItem
-                        label="Ruolo all’interno dell’azienda"
+                        label="Ruolo all’interno dell’ente"
                         value={referent.role}
                       />
                       <ProfileItem
