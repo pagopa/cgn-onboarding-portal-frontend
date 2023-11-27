@@ -334,10 +334,17 @@ const Discounts = () => {
         </table>
       )}
       {agreement.state === AgreementState.ApprovedAgreement ? (
-        <div className="bg-white px-8 pt-10 pb-10 flex">
-          <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
-            Nuova opportunità
-          </Link>
+        <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
+          {data.length === 0 && (
+            <div className="text-center text-gray pb-10">
+              Non è presente nessuna opportunità.
+            </div>
+          )}
+          <div className="text-center">
+            <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
+              Nuova opportunità
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="bg-white px-8 pt-10 pb-10 flex d-flex justify-content-center flex-column align-items-center">
