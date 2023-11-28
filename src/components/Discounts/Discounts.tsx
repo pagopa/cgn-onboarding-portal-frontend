@@ -288,10 +288,14 @@ const Discounts = () => {
               return (
                 <React.Fragment key={row.getRowProps().key}>
                   <tr>
-                    {row.cells.map(cell => (
+                    {row.cells.map((cell, i) => (
                       // eslint-disable-next-line react/jsx-key
                       <td
-                        className="px-6 py-2 border-bottom text-sm"
+                        className={`
+                        ${i === 0 ? "pl-6" : ""}
+                        ${i === headerGroups.length - 1 ? "pr-6" : ""}
+                        px-3 py-2 border-bottom text-sm
+                        `}
                         {...cell.getCellProps()}
                       >
                         {cell.render("Cell")}

@@ -215,7 +215,11 @@ const Requests = () => {
                     <tr className="cursor-pointer">
                       {row.cells.map((cell, i) => (
                         <td
-                          className="px-6 py-2 border-bottom text-sm"
+                          className={`
+                          ${i === 0 ? "pl-6" : ""}
+                          ${i === headerGroups.length - 1 ? "pr-6" : ""}
+                          px-3 py-2 border-bottom text-sm
+                          `}
                           {...cell.getCellProps()}
                           key={i}
                         >
