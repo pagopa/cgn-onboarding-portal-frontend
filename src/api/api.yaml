@@ -571,6 +571,8 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/CompletedStep'
+      entityType:
+        $ref: '#/definitions/EntityType'
   DraftAgreement:
     allOf:
       - $ref: '#/definitions/Agreement'

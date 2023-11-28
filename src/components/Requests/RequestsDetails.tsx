@@ -6,6 +6,7 @@ import { toError } from "fp-ts/lib/Either";
 import Api from "../../api/backoffice";
 import { RootState } from "../../store/store";
 import { useTooltip, Severity } from "../../context/tooltip";
+import { Agreement, EntityType } from "../../api/generated_backoffice";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -15,7 +16,7 @@ const RequestsDetails = ({
   updateList,
   setLoading
 }: {
-  original: any;
+  original: Agreement;
   updateList: () => void;
   setLoading: (state: boolean) => void;
 }) => {
@@ -28,7 +29,8 @@ const RequestsDetails = ({
   const { triggerTooltip } = useTooltip();
 
   const assignedToMe =
-    `${user.given_name} ${user.family_name}` === original.assignee?.fullName;
+    `${user.given_name} ${user.family_name}` ===
+    (original as any).assignee?.fullName;
 
   const approveAgreementApi = async () =>
     await tryCatch(() => Api.Agreement.approveAgreement(original.id), toError)
@@ -94,6 +96,19 @@ const RequestsDetails = ({
         <RequestItem
           label="Ragione sociale operatore"
           value={original.profile?.fullName}
+        />
+        <RequestItem
+          label="Tipologia ente"
+          value={(() => {
+            switch (original.entityType) {
+              case EntityType.Private:
+                return "Privato";
+              case EntityType.PublicAdministration:
+                return "Pubblico";
+              default:
+                return "";
+            }
+          })()}
         />
         <RequestItem
           label="Numero agevolazioni proposte"

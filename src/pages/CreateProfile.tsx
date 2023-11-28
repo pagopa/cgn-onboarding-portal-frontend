@@ -10,7 +10,6 @@ import { RootState } from "../store/store";
 import { CompletedStep, EntityType } from "../api/generated";
 import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
 import CgnLogo from "../components/Logo/CgnLogo";
-import { useSimpleQuery } from "../utils/useSimpleQuery";
 import Api from "../api";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -23,14 +22,7 @@ const CreateProfile = () => {
   );
   const [showRequireApproval, setShowRequireApproval] = useState(false);
 
-  const profileQuery = useSimpleQuery(
-    ["profile", { agreementId: agreement.id }],
-    async () => {
-      const response = await Api.Profile.getProfile(agreement.id);
-      return response.data;
-    }
-  );
-  const entityType = profileQuery.data?.entityType;
+  const entityType = agreement.entityType;
 
   const handleNext = (step: number, key?: string) => {
     if (key && !completedSteps.includes(key)) {

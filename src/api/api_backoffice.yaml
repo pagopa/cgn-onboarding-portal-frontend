@@ -716,6 +716,8 @@ definitions:
         $ref: '#/definitions/Discounts'
       documents:
         $ref: '#/definitions/Documents'
+      entityType:
+        $ref: '#/definitions/EntityType'
 
   PendingAgreement:
     allOf:
