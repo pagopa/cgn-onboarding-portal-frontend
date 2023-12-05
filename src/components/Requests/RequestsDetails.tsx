@@ -6,7 +6,8 @@ import { toError } from "fp-ts/lib/Either";
 import Api from "../../api/backoffice";
 import { RootState } from "../../store/store";
 import { useTooltip, Severity } from "../../context/tooltip";
-import { Agreement, EntityType } from "../../api/generated_backoffice";
+import { Agreement } from "../../api/generated_backoffice";
+import { getEntityTypeLabel } from "../../utils/strings";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -99,16 +100,7 @@ const RequestsDetails = ({
         />
         <RequestItem
           label="Tipologia ente"
-          value={(() => {
-            switch (original.entityType) {
-              case EntityType.Private:
-                return "Privato";
-              case EntityType.PublicAdministration:
-                return "Pubblico";
-              default:
-                return "";
-            }
-          })()}
+          value={getEntityTypeLabel(original.entityType)}
         />
         <RequestItem
           label="Numero agevolazioni proposte"

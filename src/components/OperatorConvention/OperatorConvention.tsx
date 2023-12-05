@@ -14,6 +14,7 @@ import {
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { DiscountState } from "../../api/generated";
+import { getEntityTypeLabel } from "../../utils/strings";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
 
@@ -67,16 +68,8 @@ const OperatorConvention = () => {
       {
         Header: "Tipologia ente",
         accessor: "entityType",
-        Cell({ row }: { row: Row<ApprovedAgreement> }) {
-          switch (row.original.entityType) {
-            case EntityType.PublicAdministration:
-              return "Pubblico";
-            case EntityType.Private:
-              return "Privato";
-            default:
-              return "";
-          }
-        }
+        Cell: ({ row }: { row: Row<ApprovedAgreement> }) =>
+          getEntityTypeLabel(row.original.entityType)
       },
       {
         Header: "Data Convenzionamento",

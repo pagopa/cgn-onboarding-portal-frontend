@@ -6,7 +6,8 @@ import { toError } from "fp-ts/lib/Either";
 import Api from "../../api/index";
 import { EDIT_PROFILE } from "../../navigation/routes";
 import { RootState } from "../../store/store";
-import { EntityType, Profile, Referent } from "../../api/generated";
+import { Profile, Referent } from "../../api/generated";
+import { getEntityTypeLabel } from "../../utils/strings";
 import ProfileItem from "./ProfileItem";
 import ProfileDocuments from "./ProfileDocuments";
 import ProfileApiToken from "./ProfileApiToken";
@@ -49,14 +50,7 @@ const Profile = () => {
                 <ProfileItem label="Partita IVA" value={profile.taxCodeOrVat} />
                 <ProfileItem
                   label="Tipologia di ente"
-                  value={(() => {
-                    switch (profile.entityType) {
-                      case EntityType.PublicAdministration:
-                        return "Pubblico";
-                      case EntityType.Private:
-                        return "Privato";
-                    }
-                  })()}
+                  value={getEntityTypeLabel(profile.entityType)}
                 />
                 <ProfileItem label="Indirizzo PEC" value={profile.pecAddress} />
                 <ProfileItem label="Sede legale" value={profile.legalOffice} />

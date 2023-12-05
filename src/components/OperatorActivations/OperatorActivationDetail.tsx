@@ -12,6 +12,7 @@ import ProfileItem from "../Profile/ProfileItem";
 import Api from "../../api/backoffice";
 import { Severity, useTooltip } from "../../context/tooltip";
 import CenteredLoading from "../CenteredLoading";
+import { getEntityTypeLabel } from "../../utils/strings";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
@@ -64,16 +65,7 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           />
           <ProfileItem
             label="Tipologia di ente"
-            value={(() => {
-              switch (operator.entityType) {
-                case EntityType.Private:
-                  return "Privato";
-                case EntityType.PublicAdministration:
-                  return "Pubblico";
-                default:
-                  return "";
-              }
-            })()}
+            value={getEntityTypeLabel(operator.entityType)}
           />
           <ProfileItem
             label="Partita IVA"

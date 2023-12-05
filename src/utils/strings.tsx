@@ -1,6 +1,9 @@
 import { fromNullable } from "fp-ts/lib/Option";
-import { ProductCategory } from "../api/generated";
-import { OrganizationStatus } from "../api/generated_backoffice";
+import { ProductCategory, EntityType as EntityTypeA } from "../api/generated";
+import {
+  OrganizationStatus,
+  EntityType as EntityTypeB
+} from "../api/generated_backoffice";
 
 type CategoryElement = {
   name: string;
@@ -84,3 +87,18 @@ export const clearIfReferenceIsBlank = (reference?: string) => (
   withNormalizedSpaces(reference).length <= 0
     ? ""
     : withNormalizedSpaces(value);
+
+export function getEntityTypeLabel(
+  entityType: EntityTypeA | EntityTypeB | undefined
+) {
+  switch (entityType) {
+    case EntityTypeA.Private:
+    case EntityTypeB.Private:
+      return "Privato";
+    case EntityTypeA.PublicAdministration:
+    case EntityTypeB.PublicAdministration:
+      return "Pubblico";
+    default:
+      return "";
+  }
+}

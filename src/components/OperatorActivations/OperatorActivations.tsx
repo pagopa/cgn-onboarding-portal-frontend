@@ -21,7 +21,10 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
-import { makeOrganizationStatusReadable } from "../../utils/strings";
+import {
+  getEntityTypeLabel,
+  makeOrganizationStatusReadable
+} from "../../utils/strings";
 import { EntityType } from "../../api/generated_backoffice";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
@@ -77,16 +80,8 @@ const OperatorActivations = () => {
       },
       {
         Header: "TIPOLOGIA ENTE",
-        Cell: ({ row }: { row: Row<OrganizationWithReferentsAndStatus> }) => {
-          switch (row.original.entityType) {
-            case EntityType.Private:
-              return "Privato";
-            case EntityType.PublicAdministration:
-              return "Pubblico";
-            default:
-              return "";
-          }
-        }
+        Cell: ({ row }: { row: Row<OrganizationWithReferentsAndStatus> }) =>
+          getEntityTypeLabel(row.original.entityType)
       },
       {
         Header: "UTENTI ABILITATI",

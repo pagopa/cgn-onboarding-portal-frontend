@@ -10,7 +10,6 @@ import { RootState } from "../store/store";
 import { CompletedStep, EntityType } from "../api/generated";
 import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
 import CgnLogo from "../components/Logo/CgnLogo";
-import Api from "../api";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CreateProfile = () => {
@@ -118,32 +117,7 @@ const CreateProfile = () => {
           activeStep={step}
           completedSteps={completedSteps}
           handleChangeStep={setStep}
-          steps={(() => {
-            const guideStep = {
-              key: "Guide",
-              label: "Documentazione"
-            };
-            const profileStep = {
-              key: "Profile",
-              label: "Dati operatore"
-            };
-            const discountStep = {
-              key: "Discount",
-              label: "Dati agevolazione"
-            };
-            const documentStep = {
-              key: "Document",
-              label: "Documenti"
-            };
-            switch (entityType) {
-              case EntityType.Private:
-                return [guideStep, profileStep, discountStep, documentStep];
-              case EntityType.PublicAdministration:
-                return [guideStep, profileStep, documentStep];
-              default:
-                return [];
-            }
-          })()}
+          steps={getSteps(entityType)}
         ></Stepper>
       </div>
       {selectedTab()}
@@ -152,3 +126,30 @@ const CreateProfile = () => {
 };
 
 export default CreateProfile;
+
+function getSteps(entityType: EntityType) {
+  const guideStep = {
+    key: "Guide",
+    label: "Documentazione"
+  };
+  const profileStep = {
+    key: "Profile",
+    label: "Dati operatore"
+  };
+  const discountStep = {
+    key: "Discount",
+    label: "Dati agevolazione"
+  };
+  const documentStep = {
+    key: "Document",
+    label: "Documenti"
+  };
+  switch (entityType) {
+    case EntityType.Private:
+      return [guideStep, profileStep, discountStep, documentStep];
+    case EntityType.PublicAdministration:
+      return [guideStep, profileStep, documentStep];
+    default:
+      return [];
+  }
+}

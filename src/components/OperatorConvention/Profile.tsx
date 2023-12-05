@@ -1,8 +1,6 @@
 import React from "react";
-import {
-  ApprovedAgreementProfile,
-  EntityType
-} from "../../api/generated_backoffice";
+import { ApprovedAgreementProfile } from "../../api/generated_backoffice";
+import { getEntityTypeLabel } from "../../utils/strings";
 import Item from "./Item";
 
 const Profile = ({ profile }: { profile: ApprovedAgreementProfile }) => (
@@ -11,16 +9,7 @@ const Profile = ({ profile }: { profile: ApprovedAgreementProfile }) => (
     <Item label="Ragione sociale operatore" value={profile.fullName} />
     <Item
       label="Tipologia ente"
-      value={(() => {
-        switch (profile.entityType) {
-          case EntityType.PublicAdministration:
-            return "Pubblico";
-          case EntityType.Private:
-            return "Privato";
-          default:
-            return "";
-        }
-      })()}
+      value={getEntityTypeLabel(profile.entityType)}
     />
     <Item label="Partita IVA" value={profile.taxCodeOrVat} />
     <Item label="Indirizzo PEC" value={profile.pecAddress} />
