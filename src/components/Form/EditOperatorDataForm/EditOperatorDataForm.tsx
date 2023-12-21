@@ -195,13 +195,10 @@ const EditOperatorDataForm = () => {
         };
     }
   };
-
-  if (loading || !existingProfile?.entityType) {
+  if (loading || !agreement.entityType) {
     return <CenteredLoading />;
   }
-
-  const entityType = existingProfile.entityType;
-
+  const entityType = agreement.entityType;
   return (
     <Formik
       initialValues={{

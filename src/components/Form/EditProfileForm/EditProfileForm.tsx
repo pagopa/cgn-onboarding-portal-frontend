@@ -61,11 +61,11 @@ const EditProfileForm = () => {
       )
       .run();
 
-  if (!currentProfile || !existingProfile?.entityType) {
+  if (!currentProfile || !agreement?.entityType) {
     return null;
   }
 
-  const entityType = existingProfile.entityType;
+  const entityType = agreement.entityType;
 
   return (
     <Formik

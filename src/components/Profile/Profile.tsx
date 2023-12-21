@@ -50,7 +50,7 @@ const Profile = () => {
                 <ProfileItem label="Partita IVA" value={profile.taxCodeOrVat} />
                 <ProfileItem
                   label="Tipologia di ente"
-                  value={getEntityTypeLabel(profile.entityType)}
+                  value={getEntityTypeLabel(agreement.entityType)}
                 />
                 <ProfileItem label="Indirizzo PEC" value={profile.pecAddress} />
                 <ProfileItem label="Sede legale" value={profile.legalOffice} />

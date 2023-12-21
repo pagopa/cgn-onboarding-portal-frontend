@@ -719,6 +719,7 @@ definitions:
       entityType:
         $ref: '#/definitions/EntityType'
 
+
   PendingAgreement:
     allOf:
       - $ref: '#/definitions/Agreement'
@@ -763,7 +764,6 @@ definitions:
       entityType:
         $ref: '#/definitions/EntityType'
 
-
   ApprovedAgreementDetail:
     type: object
     required:
@@ -787,6 +787,12 @@ definitions:
       - AssignedAgreement
       - ApprovedAgreement
       - RejectedAgreement
+
+  EntityType:
+    type: string
+    enum:
+      - Private
+      - PublicAdministration
 
   RefuseAgreement:
     type: object
@@ -829,12 +835,6 @@ definitions:
       - EmailAddress
       - Website
       - PhoneNumber
-
-  EntityType:
-    type: string
-    enum:
-      - Private
-      - PublicAdministration
 
   ApprovedAgreementProfile:
     type: object

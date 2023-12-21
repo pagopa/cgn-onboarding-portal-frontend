@@ -59,6 +59,21 @@ paths:
         403:
           $ref: '#/responses/Forbidden'
 
+    get:
+      tags:
+        - agreement
+      summary: Get an agreement
+      operationId: getAgreement
+      responses:
+        200:
+          description: Agreement
+          schema:
+            $ref: '#/definitions/Agreement'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
   /agreements/{agreementId}/images:
     post:
       tags:
@@ -215,7 +230,7 @@ paths:
           $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
-
+  
   /agreements/{agreementId}/discounts/bucket:
 
     post:
@@ -573,6 +588,7 @@ definitions:
           $ref: '#/definitions/CompletedStep'
       entityType:
         $ref: '#/definitions/EntityType'
+
   DraftAgreement:
     allOf:
       - $ref: '#/definitions/Agreement'
@@ -663,7 +679,6 @@ definitions:
       - salesChannel
       - supportType
       - supportValue
-      - entityType
     properties:
       fullName:
         type: string
@@ -706,8 +721,6 @@ definitions:
         $ref: '#/definitions/SalesChannel'
       supportType:
         $ref: '#/definitions/SupportType'
-      entityType:
-        $ref: '#/definitions/EntityType'
       supportValue:
         type: string
         minLength: 5
@@ -841,8 +854,6 @@ definitions:
         $ref: '#/definitions/SalesChannel'
       supportType:
         $ref: '#/definitions/SupportType'
-      entityType:
-        $ref: '#/definitions/EntityType'
       supportValue:
         type: string
         minLength: 5
@@ -851,7 +862,6 @@ definitions:
         type: array
         items:
          $ref: '#/definitions/Referent'
-
 
   Referent:
     type: object

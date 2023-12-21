@@ -238,10 +238,10 @@ const ProfileData = ({
         };
     }
   };
-  if (loading || !existingProfile?.entityType) {
+  const entityType = agreement.entityType;
+  if (loading || !entityType) {
     return <CenteredLoading />;
   }
-  const entityType = existingProfile.entityType;
   return (
     <Formik
       enableReinitialize
