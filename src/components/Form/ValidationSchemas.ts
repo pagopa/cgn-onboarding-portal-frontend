@@ -206,7 +206,9 @@ export const discountDataValidationSchema = (
       }),
       landingPageUrl: Yup.string().when("condition", {
         is: () => landingCheck,
-        then: Yup.string().required(REQUIRED_FIELD),
+        then: Yup.string()
+          .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+          .required(REQUIRED_FIELD),
         otherwise: Yup.string()
       }),
       landingPageReferrer: Yup.string(),
@@ -295,7 +297,9 @@ export const discountsListDataValidationSchema = (
           }),
           landingPageUrl: Yup.string().when("condition", {
             is: () => landingCheck,
-            then: Yup.string().required(REQUIRED_FIELD),
+            then: Yup.string()
+              .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+              .required(REQUIRED_FIELD),
             otherwise: Yup.string()
           }),
           landingPageReferrer: Yup.string(),
