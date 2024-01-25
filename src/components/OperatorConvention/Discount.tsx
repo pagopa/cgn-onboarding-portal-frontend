@@ -161,7 +161,7 @@ const Discount = ({
         <Item
           label="Link all’agevolazione"
           value={
-            <a href={discount.discountUrl} target="_blank" rel="noreferrer">
+            <a href={discount.discountUrl} target="_blank" rel="noreferrer" className="text-break">
               {discount.discountUrl}
             </a>
           }
