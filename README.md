@@ -54,7 +54,7 @@ $ yarn generate
 ```
 
 ## Run the dashboard
-In order to run the dashboard, you should start the following code:
+To run the dashboard, you should start the following code:
 ```bash
 # Start the dashboard on port 3000 and pointing to UAT environment
 $ yarn start:uat
@@ -62,7 +62,7 @@ $ yarn start:uat
 
 ## Login in localhost 
 As soon as the dashboard is up and running, you will see a landing page where you should login. Choose what kind of login do you want (login as Operator or login as Admin).
-After that you logged in successfully, you will be redirected to UAT environemnt dashboard, so in this case you need to retrieve the token generated in UAT and put it in localhost env, to do so you have to:
+After that you logged in successfully, you will be redirected to UAT environemnt dashboard, in this case you need to retrieve the token generated in UAT and put it in localhost env, to do so you have to:
 - Open the browser inspect console and type the following snippet:
 ```js
 const dialog = window.document.createElement("dialog");
