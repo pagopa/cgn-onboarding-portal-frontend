@@ -1,6 +1,9 @@
 import { fromNullable } from "fp-ts/lib/Option";
-import { ProductCategory } from "../api/generated";
-import { OrganizationStatus } from "../api/generated_backoffice";
+import { ProductCategory, EntityType as EntityTypeA } from "../api/generated";
+import {
+  OrganizationStatus,
+  EntityType as EntityTypeB
+} from "../api/generated_backoffice";
 
 type CategoryElement = {
   name: string;
@@ -28,7 +31,7 @@ export const categoriesMap: Record<ProductCategory, CategoryElement> = {
   },
   Home: {
     name: "Casa",
-    description: "(Agevolazioni per la casa, mutui, gestori luce e gas, ...)"
+    description: "(Opportunità per la casa, mutui, gestori luce e gas, ...)"
   },
   TelephonyAndInternet: {
     name: "Telefonia e internet",
@@ -80,4 +83,22 @@ export const withNormalizedSpaces = (value?: string) =>
 
 export const clearIfReferenceIsBlank = (reference?: string) => (
   value?: string
-) => (withNormalizedSpaces(reference).length <= 0 ? "" : withNormalizedSpaces(value));
+) =>
+  withNormalizedSpaces(reference).length <= 0
+    ? ""
+    : withNormalizedSpaces(value);
+
+export function getEntityTypeLabel(
+  entityType: EntityTypeA | EntityTypeB | undefined
+) {
+  switch (entityType) {
+    case EntityTypeA.Private:
+    case EntityTypeB.Private:
+      return "Privato";
+    case EntityTypeA.PublicAdministration:
+    case EntityTypeB.PublicAdministration:
+      return "Pubblico";
+    default:
+      return "";
+  }
+}

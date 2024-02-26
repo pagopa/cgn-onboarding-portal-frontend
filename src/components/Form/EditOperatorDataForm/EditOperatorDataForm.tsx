@@ -22,6 +22,7 @@ import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 import { SupportContact } from "../SupportContact";
+import { Profile } from "../../../api/generated";
 
 const defaultSalesChannel = {
   channelType: "",
@@ -84,13 +85,15 @@ const EditOperatorDataForm = () => {
   const [loading, setLoading] = useState(true);
   const [geolocationToken, setGeolocationToken] = useState<any>();
   const updateProfileHandler = updateProfile(agreement, history);
+  const [existingProfile, setExistingProfile] = useState<Profile | undefined>();
 
   const getProfile = async (agreementId: string) =>
     await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
       .map(response => response.data)
       .fold(
         () => setLoading(false),
-        (profile: any) => {
+        (profile: Profile) => {
+          setExistingProfile(profile);
           const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
           setInitialValues({
             ...profile,
@@ -105,7 +108,8 @@ const EditOperatorDataForm = () => {
               profile.salesChannel.channelType === "BothChannels"
                 ? {
                     ...profile.salesChannel,
-                    addresses: profile.salesChannel.allNationalAddresses
+                    addresses: (profile.salesChannel as any)
+                      .allNationalAddresses
                       ? [
                           {
                             street: "",
@@ -116,19 +120,21 @@ const EditOperatorDataForm = () => {
                             label: ""
                           }
                         ]
-                      : profile.salesChannel.addresses.map((address: any) => {
-                          const addressSplit = address.fullAddress
-                            .split(",")
-                            .map((item: string) => item.trim());
-                          return {
-                            street: addressSplit[0],
-                            city: addressSplit[1],
-                            district: addressSplit[2],
-                            zipCode: addressSplit[3],
-                            value: address.fullAddress,
-                            label: address.fullAddress
-                          };
-                        })
+                      : (profile.salesChannel as any).addresses.map(
+                          (address: any) => {
+                            const addressSplit = address.fullAddress
+                              .split(",")
+                              .map((item: string) => item.trim());
+                            return {
+                              street: addressSplit[0],
+                              city: addressSplit[1],
+                              district: addressSplit[2],
+                              zipCode: addressSplit[3],
+                              value: address.fullAddress,
+                              label: address.fullAddress
+                            };
+                          }
+                        )
                   }
                 : profile.salesChannel,
             hasDifferentFullName: !!profile.name
@@ -189,11 +195,10 @@ const EditOperatorDataForm = () => {
         };
     }
   };
-
-  if (loading) {
+  if (loading || !agreement.entityType) {
     return <CenteredLoading />;
   }
-
+  const entityType = agreement.entityType;
   return (
     <Formik
       initialValues={{
@@ -228,14 +233,13 @@ const EditOperatorDataForm = () => {
     >
       {({ values, setFieldValue }) => (
         <Form autoComplete="off">
-          <ProfileInfo formValues={values} />
-          <ReferentData />
+          <ProfileInfo entityType={entityType} />
+          <ReferentData entityType={entityType} />
           <ProfileImage />
           <ProfileDescription />
           <SalesChannels
+            entityType={entityType}
             // geolocationToken={geolocationToken}
-            setFieldValue={setFieldValue}
-            formValues={values}
           />
           <SupportContact>
             <OperatorDataButtons

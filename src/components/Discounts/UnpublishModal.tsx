@@ -10,9 +10,9 @@ type Props = {
 
 const UnpublishModal = ({ isOpen, toggle, unpublish }: Props) => (
   <Modal isOpen={isOpen} toggle={toggle} size="md">
-    <ModalHeader toggle={toggle}>Sospendi agevolazione</ModalHeader>
+    <ModalHeader toggle={toggle}>Sospendi opportunità</ModalHeader>
     <ModalBody>
-      Sei sicuro di voler riportare in bozza questa agevolazione? Se non hai
+      Sei sicuro di voler riportare in bozza questa opportunità? Se non hai
       altre agevolazioni pubblicate in questo momento, non sarai più visibile
       nella lista degli operatori aderenti all&lsquo;iniziativa.
     </ModalBody>

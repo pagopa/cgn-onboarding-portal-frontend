@@ -6,7 +6,7 @@ import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { Referent } from "../../../../api/generated";
+import { EntityType, Referent } from "../../../../api/generated";
 
 const MAX_SECONDARY_REFERENTS = 4;
 
@@ -17,6 +17,7 @@ type Props = {
   showRemove: boolean;
   onRemove(): void;
   children?: React.ReactNode;
+  entityType: EntityType;
 };
 
 /* eslint complexity: ["error", 20000] */
@@ -28,7 +29,8 @@ const Referent = ({
   onAdd,
   showRemove,
   onRemove,
-  children
+  children,
+  entityType
 }: Props) => {
   const referentFieldName =
     index !== null ? `secondaryReferents[${index}]` : "referent";
@@ -77,7 +79,14 @@ const Referent = ({
       </InputField>
       <InputField
         htmlFor={`${referentFieldId}.role`}
-        title="Ruolo all'interno dell'organizzazione"
+        title={(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Ruolo all'interno dell'organizzazione";
+            case EntityType.PublicAdministration:
+              return "Ruolo all'interno dell'ente";
+          }
+        })()}
         required
       >
         <Field
@@ -126,7 +135,13 @@ const Referent = ({
   );
 };
 
-function ReferentData({ children }: { children?: React.ReactNode }) {
+function ReferentData({
+  children,
+  entityType
+}: {
+  entityType: EntityType;
+  children?: React.ReactNode;
+}) {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
   return (
@@ -153,6 +168,7 @@ function ReferentData({ children }: { children?: React.ReactNode }) {
               onAdd={add}
               showRemove={false}
               onRemove={() => undefined}
+              entityType={entityType}
             >
               {noSecondaryReferents ? children : undefined}
             </Referent>
@@ -167,6 +183,7 @@ function ReferentData({ children }: { children?: React.ReactNode }) {
                     onAdd={add}
                     showRemove={true}
                     onRemove={() => arrayHelpers.remove(index)}
+                    entityType={entityType}
                   >
                     {isLast ? children : undefined}
                   </Referent>

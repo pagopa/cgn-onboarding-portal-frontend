@@ -55,7 +55,7 @@ const chainAxios = (response: AxiosResponse) =>
       r.status === 409
         ? new Error("Upload codici ancora in corso")
         : new Error(
-            "Errore durante la modifica dell'agevolazione, controllare i dati e riprovare"
+            "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
           )
   )(response);
 
@@ -234,7 +234,7 @@ const EditDiscountForm = () => {
                 htmlFor="productCategories"
                 isTitleHeading
                 title="Categorie merceologiche"
-                description={`Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’agevolazione`}
+                description={`Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’opportunità`}
                 isVisible
                 required
               >
@@ -245,8 +245,8 @@ const EditDiscountForm = () => {
               <FormField
                 htmlFor="discountConditions"
                 isTitleHeading
-                title="Condizioni dell’agevolazione"
-                description="Descrivere eventuali limitazioni relative all’agevolazione (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
+                title="Condizioni dell’opportunità"
+                description="Descrivere eventuali limitazioni relative all’opportunità (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
                 isVisible
               >
                 <DiscountConditions />
@@ -254,8 +254,8 @@ const EditDiscountForm = () => {
               {!checkLanding && (
                 <FormField
                   htmlFor="discountUrl"
-                  title="Link all’agevolazione"
-                  description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione"
+                  title="Link all’opportunità"
+                  description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’opportunità"
                   isTitleHeading
                   isVisible
                 >
@@ -267,7 +267,7 @@ const EditDiscountForm = () => {
                   htmlFor="staticCode"
                   isTitleHeading
                   title="Codice statico"
-                  description="Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online"
+                  description="Inserire il codice relativo all’opportunità che l’utente dovrà inserire sul vostro portale online"
                   isVisible
                   required
                 >
@@ -279,7 +279,7 @@ const EditDiscountForm = () => {
                   htmlFor="landingPage"
                   isTitleHeading
                   title="Indirizzo della landing page"
-                  description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’agevolazione"
+                  description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’opportunità"
                   isVisible
                   required
                 >

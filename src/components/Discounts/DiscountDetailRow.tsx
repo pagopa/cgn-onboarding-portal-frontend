@@ -248,14 +248,14 @@ Props) => {
         {row.original.state === "test_failed" && (
           <Callout
             type={"danger"}
-            title={"IL TEST PER QUESTA AGEVOLAZIONE È FALLITO"}
+            title={"IL TEST PER QUESTA OPPORTUNITA' È FALLITO"}
             body={row.original.testFailureReason}
           />
         )}
         {row.original.state === "suspended" && (
           <Callout
             type={"danger"}
-            title={"Questa agevolazione è stata sospesa"}
+            title={"Questa opportunità è stata sospesa"}
             body={row.original.suspendedReasonMessage}
           />
         )}
@@ -273,31 +273,31 @@ Props) => {
         <table className="table">
           <tbody>
             <MultilanguageProfileItem
-              label="Nome agevolazione"
+              label="Nome opportunità"
               value={row.original.name}
               value_en={row.original.name_en}
             />
             {row.original.description && row.original.description_en && (
               <MultilanguageProfileItem
-                label="Descrizione agevolazione"
+                label="Descrizione opportunità"
                 value={row.original.description}
                 value_en={row.original.description_en}
               />
             )}
             <tr>
               <td className={`px-0 text-gray border-bottom-0`}>
-                Stato Agevolazione
+                Stato Opportunità
               </td>
               <td className={`border-bottom-0`}>
                 {getDiscountComponent(row.values.state)}
               </td>
             </tr>
             <ProfileItem
-              label="Data di inizio dell'agevolazione"
+              label="Data di inizio dell'opportunità"
               value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
             />
             <ProfileItem
-              label="Data di fine agevolazione"
+              label="Data di fine opportunità"
               value={format(new Date(row.original.endDate), "dd/MM/yyyy")}
             />
             <ProfileItem
@@ -318,14 +318,14 @@ Props) => {
             </tr>
             {row.original.condition && row.original.condition_en && (
               <MultilanguageProfileItem
-                label="Condizioni dell’agevolazione"
+                label="Condizioni dell’opportunità"
                 value={row.original.condition}
                 value_en={row.original.condition_en}
               />
             )}
             {row.original.discountUrl && (
               <ProfileItem
-                label="Link all'agevolazione"
+                label="Link all'opportunità"
                 value={
                   <a
                     href={row.original.discountUrl}

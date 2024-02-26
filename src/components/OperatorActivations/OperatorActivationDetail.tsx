@@ -4,11 +4,15 @@ import { Button, Icon } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
-import { OrganizationWithReferents } from "../../api/generated_backoffice";
+import {
+  EntityType,
+  OrganizationWithReferents
+} from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
 import Api from "../../api/backoffice";
 import { Severity, useTooltip } from "../../context/tooltip";
 import CenteredLoading from "../CenteredLoading";
+import { getEntityTypeLabel } from "../../utils/strings";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
@@ -58,6 +62,10 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           <ProfileItem
             label="Ragione sociale operatore"
             value={operator.organizationName}
+          />
+          <ProfileItem
+            label="Tipologia di ente"
+            value={getEntityTypeLabel(operator.entityType)}
           />
           <ProfileItem
             label="Partita IVA"

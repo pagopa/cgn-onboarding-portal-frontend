@@ -27,6 +27,8 @@ tags:
     description: Help
   - name: geolocation-token
     description: API Geolocation Token
+  - name: bucket
+    description: Bucket Load
 
 paths:
   /geolocation-token:
@@ -57,6 +59,21 @@ paths:
         403:
           $ref: '#/responses/Forbidden'
 
+    get:
+      tags:
+        - agreement
+      summary: Get an agreement
+      operationId: getAgreement
+      responses:
+        200:
+          description: Agreement
+          schema:
+            $ref: '#/definitions/Agreement'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
   /agreements/{agreementId}/images:
     post:
       tags:
@@ -77,7 +94,9 @@ paths:
           schema:
             $ref: '#/definitions/UploadedImage'
         400:
-          $ref: '#/definitions/ImageErrorCode'
+          description: Image error code
+          schema:
+            $ref: '#/definitions/ImageErrorCode'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -211,6 +230,52 @@ paths:
           $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
+  
+  /agreements/{agreementId}/discounts/bucket:
+
+    post:
+      tags:
+        - bucket
+      summary: uploadBucket
+      operationId: uploadBucket
+      consumes:
+        - multipart/form-data
+      parameters:
+        - $ref: '#/parameters/AgreementId'
+        - in: formData
+          name: document
+          type: file
+          required: true
+      responses:
+        200:
+          description: Bucket uploaded
+          schema:
+            $ref: '#/definitions/BucketLoad'
+        400:
+          $ref: '#/responses/InvalidRequest'
+        403:
+          $ref: '#/responses/Forbidden'
+        409:
+          $ref: '#/responses/Conflict'
+
+  /agreements/{agreementId}/discounts/{discountId}/bucket-loading-progress:
+    get:
+      tags:
+        - discount-bucket-loading-progress
+      summary: Get the loading progress for the last bucket of codes of a discount
+      operationId: getDiscountBucketCodeLoadingProgess
+      parameters:
+        - $ref: '#/parameters/AgreementId'
+        - $ref: '#/parameters/DiscountId'
+      responses:
+        200:
+          description: Number of codes loaded for running bucket
+          schema:
+            $ref: '#/definitions/DiscountBucketCodeLoadingProgess'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
 
   /agreements/{agreementId}/discounts/{discountId}:
     get:
@@ -255,6 +320,8 @@ paths:
           $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
+        409:
+          $ref: '#/responses/Conflict'
 
     delete:
       tags:
@@ -272,6 +339,25 @@ paths:
         404:
           $ref: '#/responses/NotFound'
 
+  /agreements/{agreementId}/discounts/{discountId}/testing:
+    post:
+      tags:
+        - discount
+      summary: Set a discount ready to be tested
+      operationId: testDiscount
+      parameters:
+        - $ref: '#/parameters/AgreementId'
+        - $ref: '#/parameters/DiscountId'
+      responses:
+        204:
+          description: Discount ready to test
+        400:
+          $ref: '#/responses/InvalidRequest'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
   /agreements/{agreementId}/discounts/{discountId}/publishing:
     post:
       tags:
@@ -284,6 +370,27 @@ paths:
       responses:
         204:
           description: Discount published
+        400:
+          $ref: '#/responses/InvalidRequest'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+
+  /agreements/{agreementId}/discounts/{discountId}/unpublishing:
+    post:
+      tags:
+        - discount
+      summary: Unpublish a discount making it a draft
+      operationId: unpublishDiscount
+      parameters:
+        - $ref: '#/parameters/AgreementId'
+        - $ref: '#/parameters/DiscountId'
+      responses:
+        204:
+          description: Discount suspended
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -303,6 +410,8 @@ paths:
           description: Document template
           schema:
             type: file
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -346,6 +455,8 @@ paths:
           description: Document uploaded
           schema:
             $ref: '#/definitions/Document'
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -362,6 +473,8 @@ paths:
       responses:
         204:
           description: Document deleted
+        400:
+          $ref: '#/responses/InvalidRequest'
         403:
           $ref: '#/responses/Forbidden'
         404:
@@ -473,6 +586,9 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/CompletedStep'
+      entityType:
+        $ref: '#/definitions/EntityType'
+
   DraftAgreement:
     allOf:
       - $ref: '#/definitions/Agreement'
@@ -533,6 +649,19 @@ definitions:
       imageUrl:
         type: string
 
+  SupportType:
+    type: string
+    enum:
+      - EmailAddress
+      - Website
+      - PhoneNumber
+
+  EntityType:
+    type: string
+    enum:
+      - Private
+      - PublicAdministration
+
   CreateProfile:
     type: object
     required:
@@ -545,15 +674,23 @@ definitions:
       - legalRepresentativeTaxCode
       - referent
       - description
+      - description_en
+      - description_de
       - salesChannel
+      - supportType
+      - supportValue
     properties:
       fullName:
         type: string
       name:
         type: string
+      name_en:
+        type: string
+      name_de:
+        type: string
       taxCodeOrVat:
         type: string
-        minLength: 11
+        minLength: 8
         maxLength: 16
       pecAddress:
         type: string
@@ -570,14 +707,28 @@ definitions:
         type: string
       legalRepresentativeTaxCode:
         type: string
-        maxLength: 4
-        minLength: 20
+        minLength: 4
+        maxLength: 20
       referent:
         $ref: '#/definitions/CreateReferent'
       description:
         type: string
+      description_en:
+        type: string
+      description_de:
+        type: string
       salesChannel:
         $ref: '#/definitions/SalesChannel'
+      supportType:
+        $ref: '#/definitions/SupportType'
+      supportValue:
+        type: string
+        minLength: 5
+        maxLength: 500
+      secondaryReferents:
+        type: array
+        items:
+          $ref: '#/definitions/CreateReferent'
 
   UpdateProfile:
     type: object
@@ -589,9 +740,17 @@ definitions:
       - legalRepresentativeTaxCode
       - referent
       - description
+      - description_en
+      - description_de
       - salesChannel
+      - supportType
+      - supportValue
     properties:
       name:
+        type: string
+      name_en:
+        type: string
+      name_de:
         type: string
       pecAddress:
         type: string
@@ -608,14 +767,29 @@ definitions:
         type: string
       legalRepresentativeTaxCode:
         type: string
-        maxLength: 4
-        minLength: 20
+        minLength: 4
+        maxLength: 20
       referent:
         $ref: '#/definitions/UpdateReferent'
       description:
         type: string
+      description_en:
+        type: string
+      description_de:
+        type: string
       salesChannel:
         $ref: '#/definitions/SalesChannel'
+      supportType:
+        $ref: '#/definitions/SupportType'
+      supportValue:
+        type: string
+        minLength: 5
+        maxLength: 500
+      secondaryReferents:
+        type: array
+        items:
+          $ref: '#/definitions/UpdateReferent'
+
 
   Profile:
     type: object
@@ -631,7 +805,11 @@ definitions:
       - legalRepresentativeTaxCode
       - referent
       - description
+      - description_en
+      - description_de
       - salesChannel
+      - supportType
+      - supportValue
     properties:
       id:
         type: string
@@ -640,6 +818,10 @@ definitions:
       fullName:
         type: string
       name:
+        type: string
+      name_en:
+        type: string
+      name_de:
         type: string
       taxCodeOrVat:
         type: string
@@ -658,14 +840,28 @@ definitions:
         type: string
       legalRepresentativeTaxCode:
         type: string
-        maxLength: 4
-        minLength: 20
+        minLength: 4
+        maxLength: 20
       referent:
         $ref: '#/definitions/Referent'
       description:
         type: string
+      description_en:
+        type: string
+      description_de:
+        type: string
       salesChannel:
         $ref: '#/definitions/SalesChannel'
+      supportType:
+        $ref: '#/definitions/SupportType'
+      supportValue:
+        type: string
+        minLength: 5
+        maxLength: 500
+      secondaryReferents:
+        type: array
+        items:
+         $ref: '#/definitions/Referent'
 
   Referent:
     type: object
@@ -728,9 +924,11 @@ definitions:
             type: string
           addresses:
             type: array
-            minItems: 1
             items:
               $ref: '#/definitions/Address'
+          allNationalAddresses:
+            type: boolean
+            default: false
 
   BothChannels:
     allOf:
@@ -744,9 +942,11 @@ definitions:
             type: string
           addresses:
             type: array
-            minItems: 1
             items:
               $ref: '#/definitions/Address'
+          allNationalAddresses:
+            type: boolean
+            default: false
           discountCodeType:
             $ref: '#/definitions/DiscountCodeType'
 
@@ -757,11 +957,26 @@ definitions:
       - OfflineChannel
       - BothChannels
 
+  DiscountBucketCodeLoadingProgess:
+    type: object
+    required:
+      - loaded
+      - percent
+    properties:
+      loaded:
+        type: integer
+        format: int64
+      percent:
+        type: number
+        format: float
+
   DiscountCodeType:
     type: string
     enum:
       - Static
       - API
+      - LandingPage
+      - Bucket
 
   CreateReferent:
     type: object
@@ -823,15 +1038,28 @@ definitions:
     type: object
     required:
       - name
+      - name_en
+      - name_de
       - startDate
       - endDate
-      - discount
       - productCategories
     properties:
       name:
         type: string
         maxLength: 100
+      name_en:
+        type: string
+        maxLength: 100
+      name_de:
+        type: string
+        maxLength: 100
       description:
+        type: string
+        maxLength: 250
+      description_en:
+        type: string
+        maxLength: 250
+      description_de:
         type: string
         maxLength: 250
       startDate:
@@ -843,8 +1071,8 @@ definitions:
       discount:
         type: integer
         format: int32
-        minimum: 5
-        maximum: 99
+        minimum: 1
+        maximum: 100
       productCategories:
         type: array
         items:
@@ -853,25 +1081,60 @@ definitions:
       condition:
         type: string
         maxLength: 200
+      condition_en:
+        type: string
+        maxLength: 200
+      condition_de:
+        type: string
+        maxLength: 200
       staticCode:
         type: string
         maxLength: 100
+      visibleOnEyca:
+        type: boolean
+        default: false
+      landingPageUrl:
+        type: string
+        maxLength: 500
+      landingPageReferrer:
+        type: string
+        maxLength: 100
+      lastBucketCodeLoadUid:
+        type: string
+        maxLength: 255
+      lastBucketCodeLoadFileName:
+        type: string
+        maxLength: 255
+      discountUrl:
+        type: string
+        maxLength: 500
 
   UpdateDiscount:
     type: object
     required:
       - name
-      - description
+      - name_en
+      - name_de
       - startDate
       - endDate
-      - discount
       - productCategories
-      - condition
     properties:
       name:
         type: string
         maxLength: 100
+      name_en:
+        type: string
+        maxLength: 100
+      name_de:
+        type: string
+        maxLength: 100
       description:
+        type: string
+        maxLength: 250
+      description_en:
+        type: string
+        maxLength: 250
+      description_de:
         type: string
         maxLength: 250
       startDate:
@@ -883,8 +1146,8 @@ definitions:
       discount:
         type: integer
         format: int32
-        minimum: 5
-        maximum: 99
+        minimum: 1
+        maximum: 100
       productCategories:
         type: array
         items:
@@ -893,9 +1156,33 @@ definitions:
       condition:
         type: string
         maxLength: 200
+      condition_en:
+        type: string
+        maxLength: 200
+      condition_de:
+        type: string
+        maxLength: 200
       staticCode:
         type: string
         maxLength: 100
+      visibleOnEyca:
+        type: boolean
+        default: false
+      landingPageUrl:
+        type: string
+        maxLength: 500
+      landingPageReferrer:
+        type: string
+        maxLength: 100
+      lastBucketCodeLoadUid:
+        type: string
+        maxLength: 255
+      lastBucketCodeLoadFileName:
+        type: string
+        maxLength: 255
+      discountUrl:
+        type: string
+        maxLength: 500
 
   Discounts:
     type: object
@@ -914,12 +1201,11 @@ definitions:
       - agreementId
       - state
       - name
-      - description
+      - name_en
+      - name_de
       - startDate
       - endDate
-      - discount
       - productCategories
-      - condition
     properties:
       id:
         type: string
@@ -930,8 +1216,21 @@ definitions:
       name:
         type: string
         maxLength: 100
+      name_en:
+        type: string
+        maxLength: 100
+      name_de:
+        type: string
+        maxLength: 100
       description:
         type: string
+        maxLength: 250
+      description_en:
+        type: string
+        maxLength: 250
+      description_de:
+        type: string
+        maxLength: 250
       startDate:
         type: string
         format: date
@@ -941,8 +1240,8 @@ definitions:
       discount:
         type: integer
         format: int32
-        minimum: 5
-        maximum: 99
+        minimum: 1
+        maximum: 100
       productCategories:
         type: array
         items:
@@ -950,15 +1249,54 @@ definitions:
         minItems: 1
       condition:
         type: string
+        maxLength: 200
+      condition_en:
+        type: string
+        maxLength: 200
+      condition_de:
+        type: string
+        maxLength: 200
       staticCode:
         type: string
         maxLength: 100
+      visibleOnEyca:
+        type: boolean
+        default: false
       creationDate:
         type: string
         format: date
       suspendedReasonMessage:
         type: string
         maxLength: 250
+      landingPageUrl:
+        type: string
+        maxLength: 500
+      landingPageReferrer:
+        type: string
+        maxLength: 100
+      lastBucketCodeLoadUid:
+        type: string
+        maxLength: 255
+      lastBucketCodeLoadFileName:
+        type: string
+        maxLength: 255
+      lastBucketCodeLoadStatus:
+        $ref: '#/definitions/BucketCodeLoadStatus'
+      discountUrl:
+        type: string
+        maxLength: 500
+      testFailureReason:
+        type: string
+        maxLength: 500
+
+  BucketCodeLoadStatus:
+    type: string
+    enum:
+      - pending
+      - running
+      - finished
+      - failed
+
   DiscountState:
     type: string
     enum:
@@ -966,6 +1304,10 @@ definitions:
       - published
       - suspended
       - expired
+      - test_pending
+      - test_passed
+      - test_failed
+
   ProductCategory:
     type: string
     enum:
@@ -979,11 +1321,11 @@ definitions:
       - SustainableMobility
       - TelephonyAndInternet
       - Travelling
+
   Address:
     type: object
     required:
       - fullAddress
-      - coordinates
     properties:
       fullAddress:
         type: string
@@ -1028,6 +1370,15 @@ definitions:
         type: string
         format: date-time
 
+  BucketLoad:
+    type: object
+    required:
+      - uid
+    properties:
+      uid:
+        type: string
+        minLength: 1
+        maxLength: 255
   ApiTokens:
     type: object
     required:
@@ -1088,6 +1439,8 @@ responses:
   NotFound:
     description: Not found
     #content: {} #TODO
+  Conflict:
+    description: Conflict
 
 securityDefinitions:
   Bearer:

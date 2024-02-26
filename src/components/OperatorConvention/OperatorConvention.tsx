@@ -8,11 +8,13 @@ import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
   ApprovedAgreement,
-  ApprovedAgreements
+  ApprovedAgreements,
+  EntityType
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { DiscountState } from "../../api/generated";
+import { getEntityTypeLabel } from "../../utils/strings";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
 
@@ -64,6 +66,12 @@ const OperatorConvention = () => {
         accessor: "fullName"
       },
       {
+        Header: "Tipologia ente",
+        accessor: "entityType",
+        Cell: ({ row }: { row: Row<ApprovedAgreement> }) =>
+          getEntityTypeLabel(row.original.entityType)
+      },
+      {
         Header: "Data Convenzionamento",
         accessor: "agreementStartDate",
         Cell: ({ row }: { row: Row }) =>
@@ -76,7 +84,7 @@ const OperatorConvention = () => {
           format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
       },
       {
-        Header: "Agevolazioni",
+        Header: "Opportunità",
         accessor: "publishedDiscounts"
       },
       {
@@ -209,7 +217,11 @@ const OperatorConvention = () => {
                     >
                       {row.cells.map((cell, i) => (
                         <td
-                          className="px-6 py-2 border-bottom text-sm"
+                          className={`
+                          ${i === 0 ? "pl-6" : ""}
+                          ${i === headerGroups.length - 1 ? "pr-6" : ""}
+                          px-3 py-2 border-bottom text-sm
+                          `}
                           {...cell.getCellProps()}
                           key={i}
                         >

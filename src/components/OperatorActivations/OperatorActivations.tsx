@@ -21,7 +21,11 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
-import { makeOrganizationStatusReadable } from "../../utils/strings";
+import {
+  getEntityTypeLabel,
+  makeOrganizationStatusReadable
+} from "../../utils/strings";
+import { EntityType } from "../../api/generated_backoffice";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
@@ -75,8 +79,9 @@ const OperatorActivations = () => {
         accessor: "organizationName"
       },
       {
-        Header: "CF/P.IVA",
-        accessor: "organizationFiscalCode"
+        Header: "TIPOLOGIA ENTE",
+        Cell: ({ row }: { row: Row<OrganizationWithReferentsAndStatus> }) =>
+          getEntityTypeLabel(row.original.entityType)
       },
       {
         Header: "UTENTI ABILITATI",
@@ -252,7 +257,11 @@ const OperatorActivations = () => {
                     >
                       {row.cells.map((cell, i) => (
                         <td
-                          className="px-6 py-2 border-bottom text-sm"
+                          className={`
+                          ${i === 0 ? "pl-6" : ""}
+                          ${i === headerGroups.length - 1 ? "pr-6" : ""}
+                          px-3 py-2 border-bottom text-sm
+                          `}
                           {...cell.getCellProps()}
                           key={i}
                         >

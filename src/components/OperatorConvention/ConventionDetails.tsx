@@ -114,7 +114,14 @@ const getView = (
           />
         );
       } else {
-        return <h6>Nessuna Agevolazione pubblicata</h6>;
+        return (
+          <div>
+            <h5 className="mb-5 font-weight-bold">Opportunità</h5>
+            <p className="text-center text-gray">
+              Non è presente nessuna opportunità.
+            </p>
+          </div>
+        );
       }
     }
     switch (view) {
@@ -198,17 +205,12 @@ const ConventionDetails = ({
               <div className="menu-wrapper">
                 <div className="link-list-wrapper">
                   <ul className="link-list">
-                    {menuLink(
-                      view,
-                      setView,
-                      "dati_operatore",
-                      "Dati Operatore"
-                    )}
+                    {menuLink(view, setView, "dati_operatore", "Profilo")}
                     {menuLink(
                       view,
                       setView,
                       "agevolazione",
-                      "Agevolazioni",
+                      "Opportunità",
                       details?.discounts?.length ? (
                         <ul className="link-list">
                           {details?.discounts?.map((d, i: number) => (
@@ -235,8 +237,8 @@ const ConventionDetails = ({
                         </ul>
                       ) : null
                     )}
-                    {menuLink(view, setView, "profilo", "Profilo")}
-                    {menuLink(view, setView, "referente", "Referente")}
+                    {menuLink(view, setView, "profilo", "Dati dell'ente")}
+                    {menuLink(view, setView, "referente", "Dati del referente")}
                     {menuLink(view, setView, "documenti", "Documenti")}
                   </ul>
                 </div>

@@ -6,13 +6,14 @@ import { toError } from "fp-ts/lib/Either";
 import Api from "../../api/index";
 import { EDIT_PROFILE } from "../../navigation/routes";
 import { RootState } from "../../store/store";
-import { Referent } from "../../api/generated";
+import { Profile, Referent } from "../../api/generated";
+import { getEntityTypeLabel } from "../../utils/strings";
 import ProfileItem from "./ProfileItem";
 import ProfileDocuments from "./ProfileDocuments";
 import ProfileApiToken from "./ProfileApiToken";
 
 const Profile = () => {
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
   const getProfile = async (agreementId: string) =>
@@ -26,7 +27,7 @@ const Profile = () => {
 
   const hasProfileApiToken = () =>
     agreement.state === "ApprovedAgreement" &&
-    profile.salesChannel.discountCodeType === "API";
+    (profile?.salesChannel as any).discountCodeType === "API";
 
   useEffect(() => {
     void getProfile(agreement.id);
@@ -47,10 +48,14 @@ const Profile = () => {
                   value={profile.fullName}
                 />
                 <ProfileItem label="Partita IVA" value={profile.taxCodeOrVat} />
+                <ProfileItem
+                  label="Tipologia di ente"
+                  value={getEntityTypeLabel(agreement.entityType)}
+                />
                 <ProfileItem label="Indirizzo PEC" value={profile.pecAddress} />
                 <ProfileItem label="Sede legale" value={profile.legalOffice} />
                 <ProfileItem
-                  label="Numero di telefono azienda"
+                  label="Numero di telefono ente"
                   value={profile.telephoneNumber}
                 />
                 <ProfileItem
@@ -65,7 +70,7 @@ const Profile = () => {
               </tbody>
             </table>
           </section>
-          {[profile.referent, ...profile.secondaryReferents].map(
+          {[profile.referent, ...(profile.secondaryReferents ?? [])].map(
             (referent: Referent, index, array) => {
               const title =
                 index === 0
@@ -81,7 +86,7 @@ const Profile = () => {
                       <ProfileItem label="Nome" value={referent.firstName} />
                       <ProfileItem label="Cognome" value={referent.lastName} />
                       <ProfileItem
-                        label="Ruolo all’interno dell’azienda"
+                        label="Ruolo all’interno dell’ente"
                         value={referent.role}
                       />
                       <ProfileItem

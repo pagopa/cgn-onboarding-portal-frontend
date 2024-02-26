@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 import { HelpRequestCategoryEnum, SupportType } from "../../api/generated";
+import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
@@ -404,5 +405,8 @@ export const activationValidationSchema = Yup.object().shape({
         .required(REQUIRED_FIELD)
     )
     .required(REQUIRED_FIELD),
-  insertedAt: Yup.string()
+  insertedAt: Yup.string(),
+  entityType: Yup.string()
+    .oneOf(Object.values(EntityType), REQUIRED_FIELD)
+    .required(REQUIRED_FIELD)
 });

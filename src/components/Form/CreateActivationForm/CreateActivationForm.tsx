@@ -6,13 +6,17 @@ import { Severity, useTooltip } from "../../../context/tooltip";
 import Api from "../../../api/backoffice";
 import chainAxios from "../../../utils/chainAxios";
 import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
-import { OrganizationWithReferents } from "../../../api/generated_backoffice";
+import {
+  EntityType,
+  OrganizationWithReferents
+} from "../../../api/generated_backoffice";
 import ActivationForm from "../ActivationForm";
 
 const emptyInitialValues: OrganizationWithReferents = {
   keyOrganizationFiscalCode: "",
   organizationFiscalCode: "",
   organizationName: "",
+  entityType: EntityType.Private,
   pec: "",
   referents: [""]
 };
@@ -62,6 +66,7 @@ const CreateActivationForm = () => {
         void createActivation(newValues);
       }}
       isSubmitting={loading}
+      canChangeEntityType={true}
     />
   );
 };

@@ -7,10 +7,11 @@ import ProfileData from "../components/Form/CreateProfileForm/ProfileData/Profil
 import DiscountData from "../components/Form/CreateProfileForm/DiscountData/DiscountData";
 import Documents from "../components/Form/CreateProfileForm/Documents/Documents";
 import { RootState } from "../store/store";
-import { CompletedStep } from "../api/generated";
+import { CompletedStep, EntityType } from "../api/generated";
 import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
 import CgnLogo from "../components/Logo/CgnLogo";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const CreateProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [loading, setLoading] = useState(true);
@@ -19,6 +20,8 @@ const CreateProfile = () => {
     agreement.completedSteps
   );
   const [showRequireApproval, setShowRequireApproval] = useState(false);
+
+  const entityType = agreement.entityType;
 
   const handleNext = (step: number, key?: string) => {
     if (key && !completedSteps.includes(key)) {
@@ -32,53 +35,61 @@ const CreateProfile = () => {
   };
 
   useEffect(() => {
-    if (agreement.state === "RejectedAgreement") {
-      setStep(1);
-      setCompletedSteps([...completedSteps, "Guide"]);
-    } else if (agreement.completedSteps.includes(CompletedStep.Profile)) {
-      setCompletedSteps([...completedSteps, "Guide"]);
-      if (step < 3) {
-        setStep(step + 1);
+    if (entityType) {
+      if (agreement.state === "RejectedAgreement") {
+        setStep(1);
+        setCompletedSteps([...completedSteps, "Guide"]);
+      } else if (agreement.completedSteps.includes(CompletedStep.Profile)) {
+        setCompletedSteps([...completedSteps, "Guide"]);
+        if (entityType === EntityType.Private && step < 3) {
+          setStep(step + 1);
+        }
+        if (entityType === EntityType.PublicAdministration && step < 2) {
+          setStep(step + 1);
+        }
       }
+      setLoading(false);
     }
-    setLoading(false);
-  }, []);
+  }, [entityType]);
 
   const selectedTab = () => {
-    switch (step) {
-      case 0:
-        return (
-          <Documentation
-            isCompleted={completedSteps.includes("Guide")}
-            handleNext={() => handleNext(1, "Guide")}
-          />
-        );
-      case 1:
-        return (
-          <ProfileData
-            isCompleted={completedSteps.includes("Profile")}
-            handleNext={() => handleNext(2, "Profile")}
-            handleBack={() => setStep(0)}
-            onUpdate={onUpdate}
-          />
-        );
-      case 2:
-        return (
-          <DiscountData
-            isCompleted={completedSteps.includes("Discount")}
-            handleNext={() => handleNext(3, "Discount")}
-            handleBack={() => setStep(1)}
-            onUpdate={onUpdate}
-          />
-        );
-      case 3:
-        return (
-          <Documents
-            isCompleted={completedSteps.includes("Document")}
-            handleBack={() => setStep(2)}
-            setShowRequireApproval={setShowRequireApproval}
-          />
-        );
+    if (step === 0) {
+      return (
+        <Documentation
+          isCompleted={completedSteps.includes("Guide")}
+          handleNext={() => handleNext(1, "Guide")}
+        />
+      );
+    } else if (step === 1) {
+      return (
+        <ProfileData
+          isCompleted={completedSteps.includes("Profile")}
+          handleNext={() => handleNext(2, "Profile")}
+          handleBack={() => setStep(0)}
+          onUpdate={onUpdate}
+        />
+      );
+    } else if (entityType === EntityType.Private && step === 2) {
+      // public administration entity type does not have discount wizard step
+      return (
+        <DiscountData
+          isCompleted={completedSteps.includes("Discount")}
+          handleNext={() => handleNext(3, "Discount")}
+          handleBack={() => setStep(1)}
+          onUpdate={onUpdate}
+        />
+      );
+    } else if (
+      (entityType === EntityType.Private && step === 3) ||
+      (entityType === EntityType.PublicAdministration && step === 2)
+    ) {
+      return (
+        <Documents
+          isCompleted={completedSteps.includes("Document")}
+          handleBack={() => setStep(2)}
+          setShowRequireApproval={setShowRequireApproval}
+        />
+      );
     }
   };
 
@@ -86,7 +97,7 @@ const CreateProfile = () => {
     return <RequestApproval />;
   }
 
-  return !loading ? (
+  return !loading && entityType ? (
     <Layout hasHeaderBorder>
       <div className="bg-white">
         <div className="container p-10">
@@ -106,24 +117,7 @@ const CreateProfile = () => {
           activeStep={step}
           completedSteps={completedSteps}
           handleChangeStep={setStep}
-          steps={[
-            {
-              key: "Guide",
-              label: "Documentazione"
-            },
-            {
-              key: "Profile",
-              label: "Dati operatore"
-            },
-            {
-              key: "Discount",
-              label: "Dati agevolazione"
-            },
-            {
-              key: "Document",
-              label: "Documenti"
-            }
-          ]}
+          steps={getSteps(entityType)}
         ></Stepper>
       </div>
       {selectedTab()}
@@ -132,3 +126,30 @@ const CreateProfile = () => {
 };
 
 export default CreateProfile;
+
+function getSteps(entityType: EntityType) {
+  const guideStep = {
+    key: "Guide",
+    label: "Documentazione"
+  };
+  const profileStep = {
+    key: "Profile",
+    label: "Dati operatore"
+  };
+  const discountStep = {
+    key: "Discount",
+    label: "Dati agevolazione"
+  };
+  const documentStep = {
+    key: "Document",
+    label: "Documenti"
+  };
+  switch (entityType) {
+    case EntityType.Private:
+      return [guideStep, profileStep, discountStep, documentStep];
+    case EntityType.PublicAdministration:
+      return [guideStep, profileStep, documentStep];
+    default:
+      return [];
+  }
+}

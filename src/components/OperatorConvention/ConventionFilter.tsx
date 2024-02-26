@@ -90,7 +90,7 @@ const ConventionFilter = ({
             const today = new Date();
             saveAs(
               blob,
-              `Agevolazioni Eyca - ${today.getDate()}/${today.getMonth() +
+              `Opportunità Eyca - ${today.getDate()}/${today.getMonth() +
                 1}/${today.getFullYear()}`
             );
           }

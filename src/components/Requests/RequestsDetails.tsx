@@ -6,6 +6,8 @@ import { toError } from "fp-ts/lib/Either";
 import Api from "../../api/backoffice";
 import { RootState } from "../../store/store";
 import { useTooltip, Severity } from "../../context/tooltip";
+import { Agreement } from "../../api/generated_backoffice";
+import { getEntityTypeLabel } from "../../utils/strings";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -15,7 +17,7 @@ const RequestsDetails = ({
   updateList,
   setLoading
 }: {
-  original: any;
+  original: Agreement;
   updateList: () => void;
   setLoading: (state: boolean) => void;
 }) => {
@@ -28,7 +30,8 @@ const RequestsDetails = ({
   const { triggerTooltip } = useTooltip();
 
   const assignedToMe =
-    `${user.given_name} ${user.family_name}` === original.assignee?.fullName;
+    `${user.given_name} ${user.family_name}` ===
+    (original as any).assignee?.fullName;
 
   const approveAgreementApi = async () =>
     await tryCatch(() => Api.Agreement.approveAgreement(original.id), toError)
@@ -96,6 +99,10 @@ const RequestsDetails = ({
           value={original.profile?.fullName}
         />
         <RequestItem
+          label="Tipologia ente"
+          value={getEntityTypeLabel(original.entityType)}
+        />
+        <RequestItem
           label="Numero agevolazioni proposte"
           value={original.discounts?.length}
         />
@@ -103,7 +110,7 @@ const RequestsDetails = ({
           {original.discounts?.map((doc: { name: any }, i: number) => (
             <RequestItem
               key={i}
-              label={`Agevolazione #${i + 1}`}
+              label={`Opportunità #${i + 1}`}
               value={doc.name}
             />
           ))}

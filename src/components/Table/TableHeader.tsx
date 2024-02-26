@@ -21,34 +21,47 @@ const TableHeader = ({ headerGroups }: Props) => (
           <th
             {...column.getHeaderProps(column.getSortByToggleProps())}
             key={i}
-            className="px-6 py-2 text-sm font-weight-bold text-gray
-                    text-uppercase"
+            className={`
+              ${i === 0 ? "pl-6" : ""}
+              ${i === headerGroup.headers.length - 1 ? "pr-6" : ""}
+              px-3 py-2 font-weight-bold text-gray
+              text-uppercase text-nowrap
+            `}
+            style={{ fontSize: "0.75rem", verticalAlign: "middle" }}
           >
             {column.render("Header")}
-            <span>
+            <span style={{ position: "relative" }}>
               {column.canSort && (
-                <>
+                <div
+                  style={{ position: "absolute", left: "100%", top: "-25%" }}
+                >
                   {column.isSorted ? (
                     <>
                       {column.isSortedDesc ? (
                         <Icon
                           icon="it-arrow-up-triangle"
-                          style={{ color: "#5C6F82" }}
+                          style={{
+                            color: "#5C6F82"
+                          }}
                         />
                       ) : (
                         <Icon
                           icon="it-arrow-down-triangle"
-                          style={{ color: "#5C6F82" }}
+                          style={{
+                            color: "#5C6F82"
+                          }}
                         />
                       )}
                     </>
                   ) : (
                     <Icon
                       icon="it-arrow-up-triangle"
-                      style={{ color: "#5C6F82" }}
+                      style={{
+                        color: "#5C6F82"
+                      }}
                     />
                   )}
-                </>
+                </div>
               )}
             </span>
           </th>

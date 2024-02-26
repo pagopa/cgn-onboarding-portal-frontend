@@ -2,5 +2,6 @@
   "editor.formatOnSave": true,
   "search.exclude": {
     "**/.cache": true
-  }
+  },
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
