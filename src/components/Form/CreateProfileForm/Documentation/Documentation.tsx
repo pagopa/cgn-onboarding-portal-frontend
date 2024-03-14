@@ -40,7 +40,7 @@ const Documentation = ({
           <DocumentIcon className="mr-5" />
           <a
             className="font-weight-semibold"
-            href="https://pagopa.gitbook.io/documentazione-tecnica-portale-operatori-1.0.0"
+            href="https://docs.pagopa.it/carta-giovani-nazionale"
             target="_blank"
             onClick={handleClick}
             rel="noreferrer"
