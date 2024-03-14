@@ -56,8 +56,8 @@ const Discounts = () => {
     await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
       .map(response => response.data.items)
       .fold(
-        _ => throwErrorTooltip("Errore nel caricamento delle agevolazioni"),
-        discounts => setDiscounts(discounts)
+        _ => throwErrorTooltip("Errore nel caricamento delle agevolazioni")
+        // discounts => setDiscounts(discounts)
       )
       .run();
 
@@ -358,8 +358,10 @@ const Discounts = () => {
             Potrai creare nuove opportunità quando la convezione sarà attiva.
           </p>
           <a
-            href="https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/Vgh5yq561A3SOPVQrWes/richiesta-di-convenzione/dati-delle-agevolazioni"
+            href="https://docs.pagopa.it/carta-giovani-nazionale/richiesta-di-convenzione/dati-delle-agevolazioni"
             className="btn btn-outline-primary m-8"
+            target="_blank"
+            rel="noreferrer"
           >
             Scopri di più
           </a>
