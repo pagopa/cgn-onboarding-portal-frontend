@@ -112,7 +112,7 @@ const RequestsDetails = ({
               {original.discounts?.map((doc: { name: any }, i: number) => (
                 <RequestItem
                   key={i}
-                  label={`Opportunità #${i + 1}`}
+                  label={`Agevolazione #${i + 1}`}
                   value={doc.name}
                 />
               ))}
