@@ -334,7 +334,12 @@ const SalesChannels = ({ entityType }: Props) => {
           required
           isVisible
         >
-          <Field id="websiteUrl" name="salesChannel.websiteUrl" type="text" />
+          <Field
+            id="websiteUrl"
+            name="salesChannel.websiteUrl"
+            type="text"
+            placeholder="Inserisci un sito web (completo di protocollo http o https)"
+          />
           <CustomErrorMessage name="salesChannel.websiteUrl" />
         </FormSection>
       )}
