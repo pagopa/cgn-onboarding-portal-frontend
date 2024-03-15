@@ -2,14 +2,16 @@ import React from "react";
 import { Nav } from "design-react-kit";
 import NavItem from "../NavItem";
 import CgnLogo from "../Logo/CgnLogo";
+import { EntityType } from "../../api/generated";
 
 type Props = {
   name: string;
   activeTab: number;
   handleClick: any;
+  entityType: EntityType;
 };
 
-const Introduction = ({ name, activeTab, handleClick }: Props) => (
+const Introduction = ({ name, activeTab, handleClick, entityType }: Props) => (
   <section className="bg-white text-left">
     <div className="px-8 pt-10">
       <div className="row">
@@ -30,7 +32,14 @@ const Introduction = ({ name, activeTab, handleClick }: Props) => (
         Profilo
       </NavItem>
       <NavItem active={activeTab === 1} onClick={() => handleClick(1)}>
-        Opportunità
+        {(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Agevolazioni";
+            case EntityType.PublicAdministration:
+              return "Opportunità";
+          }
+        })()}
       </NavItem>
       <NavItem active={activeTab === 2} onClick={() => handleClick(2)}>
         Dati dell&apos;ente
