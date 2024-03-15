@@ -16,6 +16,7 @@ export function SupportContact({ children }: SupportContactProps) {
       title="Contatti di assistenza"
       description="Indicare un contatto di assistenza tra indirizzo e-mail, numero di telefono o sito web a cui gli utenti possono rivolgersi in caso di necessità"
       isVisible={true}
+      required
     >
       <div className="d-flex flex-column">
         <div className="ml-8">
