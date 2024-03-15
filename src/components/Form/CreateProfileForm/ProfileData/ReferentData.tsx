@@ -44,7 +44,14 @@ const Referent = ({
           : "Dati e contatti del referente incaricato"
       }
       description={
-        "Indicare il nome della persona responsabile del programma CGN per conto dell'Operatore. La persona indicata sarà destinataria di tutte le comunicazioni relative alla gestione delle agevolazioni e, più in generale, all’attuazione della convenzione." +
+        `Indicare il nome della persona responsabile del programma CGN per conto dell'Operatore. La persona indicata sarà destinataria di tutte le comunicazioni relative alla gestione delle ${(() => {
+          switch (entityType) {
+            case EntityType.PublicAdministration:
+              return "opportunità";
+            case EntityType.Private:
+              return "agevolazioni";
+          }
+        })()} e, più in generale, all’attuazione della convenzione.` +
         (index === 0
           ? `Puoi indicare fino a ${MAX_SECONDARY_REFERENTS} aggiuntivi`
           : "")
