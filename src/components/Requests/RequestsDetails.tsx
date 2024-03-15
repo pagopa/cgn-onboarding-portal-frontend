@@ -6,7 +6,7 @@ import { toError } from "fp-ts/lib/Either";
 import Api from "../../api/backoffice";
 import { RootState } from "../../store/store";
 import { useTooltip, Severity } from "../../context/tooltip";
-import { Agreement } from "../../api/generated_backoffice";
+import { Agreement, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
@@ -102,19 +102,23 @@ const RequestsDetails = ({
           label="Tipologia ente"
           value={getEntityTypeLabel(original.entityType)}
         />
-        <RequestItem
-          label="Numero agevolazioni proposte"
-          value={original.discounts?.length}
-        />
-        <div className="ml-3">
-          {original.discounts?.map((doc: { name: any }, i: number) => (
+        {original.entityType === EntityType.Private && (
+          <React.Fragment>
             <RequestItem
-              key={i}
-              label={`Opportunità #${i + 1}`}
-              value={doc.name}
+              label="Numero agevolazioni proposte"
+              value={original.discounts?.length}
             />
-          ))}
-        </div>
+            <div className="ml-3">
+              {original.discounts?.map((doc: { name: any }, i: number) => (
+                <RequestItem
+                  key={i}
+                  label={`Opportunità #${i + 1}`}
+                  value={doc.name}
+                />
+              ))}
+            </div>
+          </React.Fragment>
+        )}
       </div>
       <h1 className="h5 font-weight-bold text-dark-blue mb-5">
         Dati del referente incaricato
