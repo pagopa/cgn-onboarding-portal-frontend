@@ -1,4 +1,4 @@
-/* eslint sonarjs/cognitive-complexity: 0 */ // --> OFF
+/* eslint-disable sonarjs/cognitive-complexity */
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";

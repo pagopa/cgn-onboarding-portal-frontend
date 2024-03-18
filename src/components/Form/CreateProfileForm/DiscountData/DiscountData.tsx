@@ -322,6 +322,7 @@ const DiscountData = ({
                         formValues={values}
                         setFieldValue={setFieldValue}
                         index={index}
+                        entityType={agreement.entityType}
                       />
                       <FormField
                         htmlFor="productCategories"
