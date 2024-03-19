@@ -146,7 +146,8 @@ const SalesChannels = ({ entityType }: Props) => {
                         }
                         case EntityType.PublicAdministration: {
                           return (
-                            formValues.discountCodeType === "" && index === 0
+                            formValues.salesChannel.channelType ===
+                            "OfflineChannel"
                           );
                         }
                       }
@@ -157,7 +158,14 @@ const SalesChannels = ({ entityType }: Props) => {
                       <ToggleField
                         small={false}
                         htmlFor="allNationalAddresses"
-                        text="Rappresenti un franchising e vuoi che le agevolazioni valgano in tutti i punti vendita presenti sul territorio nazionale?"
+                        text={(() => {
+                          switch (entityType) {
+                            case EntityType.Private:
+                              return "Rappresenti un franchising e vuoi che le agevolazioni valgano in tutti i punti vendita presenti sul territorio nazionale?";
+                            case EntityType.PublicAdministration:
+                              return "Rappresenti un ente e vuoi che le opportunità valgano in tutti i punti vendita presenti sul territorio nazionale?";
+                          }
+                        })()}
                       >
                         <Field
                           id="allNationalAddresses"
@@ -326,7 +334,12 @@ const SalesChannels = ({ entityType }: Props) => {
           required
           isVisible
         >
-          <Field id="websiteUrl" name="salesChannel.websiteUrl" type="text" />
+          <Field
+            id="websiteUrl"
+            name="salesChannel.websiteUrl"
+            type="text"
+            placeholder="Inserisci un sito web (completo di protocollo http o https)"
+          />
           <CustomErrorMessage name="salesChannel.websiteUrl" />
         </FormSection>
       )}

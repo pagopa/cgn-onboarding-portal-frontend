@@ -8,7 +8,8 @@ import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
   ApprovedAgreementDetail,
-  ApprovedAgreement
+  ApprovedAgreement,
+  EntityType
 } from "../../api/generated_backoffice";
 import { DiscountState } from "../../api/generated";
 import Documents from "./Documents";
@@ -210,7 +211,16 @@ const ConventionDetails = ({
                       view,
                       setView,
                       "agevolazione",
-                      "Opportunità",
+                      (() => {
+                        switch (agreement.entityType) {
+                          case EntityType.Private:
+                            return "Agevolazioni";
+                          case EntityType.PublicAdministration:
+                            return "Opportunità";
+                          default:
+                            return "Agevolazioni";
+                        }
+                      })(),
                       details?.discounts?.length ? (
                         <ul className="link-list">
                           {details?.discounts?.map((d, i: number) => (

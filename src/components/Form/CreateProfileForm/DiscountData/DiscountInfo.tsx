@@ -1,18 +1,26 @@
+/* eslint-disable sonarjs/cognitive-complexity */
+
 import { Field, FieldProps } from "formik";
 import React from "react";
 import DatePicker from "react-datepicker";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import DateInputComponent from "../../DateInputComponent";
 import InputField from "../../FormField";
+import { EntityType } from "../../../../api/generated";
 
 type Props = {
   formValues?: any;
   setFieldValue?: any;
   index?: number;
+  entityType: EntityType | undefined;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
+const DiscountInfo = ({
+  formValues,
+  setFieldValue,
+  index,
+  entityType
+}: Props) => {
   const hasIndex = index !== undefined;
 
   const dateFrom = hasIndex
@@ -27,8 +35,22 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
     <>
       <InputField
         htmlFor="name"
-        title="Nome opportunità"
-        description="Inserire un breve testo che descriva il tipo di opportunità offerta (max 100 caratteri)"
+        title={(() => {
+          switch (entityType) {
+            case EntityType.PublicAdministration:
+              return "Nome opportunità";
+            case EntityType.Private:
+              return "Nome agevolazione";
+          }
+        })()}
+        description={(() => {
+          switch (entityType) {
+            case EntityType.PublicAdministration:
+              return "Inserire un breve testo che descriva il tipo di opportunità offerta (max 100 caratteri)";
+            case EntityType.Private:
+              return "Inserire un breve testo che descriva il tipo di agevolazione offerta (max 100 caratteri)";
+          }
+        })()}
         isVisible
         required
       >
@@ -65,8 +87,22 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
       </InputField>
       <InputField
         htmlFor="description"
-        title="Descrizione opportunità"
-        description="Se necessario, inserire una descrizione più approfondita dell'opportunità (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri"
+        title={(() => {
+          switch (entityType) {
+            case EntityType.PublicAdministration:
+              return "Descrizione opportunità";
+            case EntityType.Private:
+              return "Descrizione agevolazione";
+          }
+        })()}
+        description={(() => {
+          switch (entityType) {
+            case EntityType.PublicAdministration:
+              return "Se necessario, inserire una descrizione più approfondita dell'opportunità (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri";
+            case EntityType.Private:
+              return "Se necessario, inserire una descrizione più approfondita dell'agevolazione (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri";
+          }
+        })()}
         isVisible
       >
         <div className="row">
@@ -120,8 +156,22 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         <div className="col-5">
           <InputField
             htmlFor="startDate"
-            title="Data di inizio dell'opportunità"
-            description="Indicare il giorno e l’ora da cui l'opportunità diventa valida"
+            title={(() => {
+              switch (entityType) {
+                case EntityType.PublicAdministration:
+                  return "Data di inizio dell'opportunità";
+                case EntityType.Private:
+                  return "Data di inizio dell'agevolazione";
+              }
+            })()}
+            description={(() => {
+              switch (entityType) {
+                case EntityType.PublicAdministration:
+                  return "Indicare il giorno e l’ora da cui l'opportunità diventa valida";
+                case EntityType.Private:
+                  return "Indicare il giorno e l’ora da cui l'agevolazione diventa valida";
+              }
+            })()}
             isVisible
             required
           >
@@ -152,8 +202,22 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         <div className="col-5 offset-1">
           <InputField
             htmlFor="endDate"
-            title="Data di fine opportunità"
-            description="Indicare la data e l’ora da cui l’opportunità non è più valida"
+            title={(() => {
+              switch (entityType) {
+                case EntityType.PublicAdministration:
+                  return "Data di fine opportunità";
+                case EntityType.Private:
+                  return "Data di fine agevolazione";
+              }
+            })()}
+            description={(() => {
+              switch (entityType) {
+                case EntityType.PublicAdministration:
+                  return "Indicare la data e l’ora da cui l’opportunità non è più valida";
+                case EntityType.Private:
+                  return "Indicare la data e l’ora da cui agevolazione non è più valida";
+              }
+            })()}
             isVisible
             required
           >
@@ -185,7 +249,14 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
       <InputField
         htmlFor="discount"
         title="Entità dello sconto"
-        description="Se l'opportunità lo prevede, inserire la percentuale (%) di sconto erogata"
+        description={(() => {
+          switch (entityType) {
+            case EntityType.PublicAdministration:
+              return "Se l'opportunità lo prevede, inserire la percentuale (%) di sconto erogata";
+            case EntityType.Private:
+              return "Se l'agevolazione lo prevede, inserire la percentuale (%) di sconto erogata";
+          }
+        })()}
         isVisible
       >
         <Field

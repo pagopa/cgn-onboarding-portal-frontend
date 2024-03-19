@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/cognitive-complexity */
+
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Column, useExpanded, useSortBy, useTable } from "react-table";
@@ -13,7 +15,12 @@ import Api from "../../api/index";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
-import { AgreementState, Discount, Profile } from "../../api/generated";
+import {
+  AgreementState,
+  Discount,
+  EntityType,
+  Profile
+} from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
@@ -173,7 +180,14 @@ const Discounts = () => {
   const columns: Array<Column<Discount>> = useMemo(
     () => [
       {
-        Header: "Nome opportunità",
+        Header: (() => {
+          switch (agreement.entityType) {
+            case EntityType.Private:
+              return "Nome agevolazione";
+            case EntityType.PublicAdministration:
+              return "Nome opportunità";
+          }
+        })(),
         accessor: "name",
         sortType: "string"
       },
@@ -248,10 +262,24 @@ const Discounts = () => {
         />
         <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
           <ModalHeader toggle={toggleDeleteModal}>
-            Elimina opportunità
+            {(() => {
+              switch (agreement.entityType) {
+                case EntityType.Private:
+                  return "Elimina agevolazione";
+                case EntityType.PublicAdministration:
+                  return "Elimina opportunità";
+              }
+            })()}
           </ModalHeader>
           <ModalBody>
-            Sei sicuro di voler eliminare questa opportunità?
+            {(() => {
+              switch (agreement.entityType) {
+                case EntityType.Private:
+                  return "Sei sicuro di voler eliminare questa agevolazione?";
+                case EntityType.PublicAdministration:
+                  return "Sei sicuro di voler eliminare questa opportunità?";
+              }
+            })()}
           </ModalBody>
           <ModalFooter className="d-flex flex-column">
             <Button
@@ -341,25 +369,58 @@ const Discounts = () => {
         <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
           {data.length === 0 && (
             <div className="text-center text-gray pb-10">
-              Non è presente nessuna opportunità.
+              {(() => {
+                switch (agreement.entityType) {
+                  case EntityType.Private:
+                    return "Non è presente nessuna agevolazione.";
+                  case EntityType.PublicAdministration:
+                    return "Non è presente nessuna opportunità.";
+                }
+              })()}
             </div>
           )}
           <div className="text-center">
             <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
-              Nuova opportunità
+              {(() => {
+                switch (agreement.entityType) {
+                  case EntityType.Private:
+                    return "Nuova agevolazione";
+                  case EntityType.PublicAdministration:
+                    return "Nuova opportunità";
+                }
+              })()}
             </Link>
           </div>
         </div>
       ) : (
         <div className="bg-white px-8 pt-10 pb-10 flex d-flex justify-content-center flex-column align-items-center">
-          <p className="text-center m-10">
-            Non è presente nessuna opportunità.
-            <br />
-            Potrai creare nuove opportunità quando la convezione sarà attiva.
-          </p>
+          {(() => {
+            switch (agreement.entityType) {
+              case EntityType.Private:
+                return (
+                  <p className="text-center m-10">
+                    Non è presente nessuna agevolazione.
+                    <br />
+                    Potrai creare nuove agevolazione quando la convezione sarà
+                    attiva.
+                  </p>
+                );
+              case EntityType.PublicAdministration:
+                return (
+                  <p className="text-center m-10">
+                    Non è presente nessuna opportunità.
+                    <br />
+                    Potrai creare nuove opportunità quando la convezione sarà
+                    attiva.
+                  </p>
+                );
+            }
+          })()}
           <a
-            href="https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/Vgh5yq561A3SOPVQrWes/richiesta-di-convenzione/dati-delle-agevolazioni"
+            href="https://docs.pagopa.it/carta-giovani-nazionale/richiesta-di-convenzione/dati-delle-agevolazioni"
             className="btn btn-outline-primary m-8"
+            target="_blank"
+            rel="noreferrer"
           >
             Scopri di più
           </a>

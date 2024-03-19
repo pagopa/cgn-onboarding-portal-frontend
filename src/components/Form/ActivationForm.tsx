@@ -53,7 +53,12 @@ const ActivationForm = (props: Props) => {
               />
               <CustomErrorMessage name="organizationName" />
             </InputField>
-            <InputField htmlFor="entityType" title="Tipologia di ente" required>
+            <InputField
+              htmlFor="entityType"
+              title="Tipologia di ente"
+              required
+              description="La scelta non potra essere modificata in seguito"
+            >
               <div className="form-check">
                 <Field
                   id="entityTypePrivato"
@@ -61,6 +66,7 @@ const ActivationForm = (props: Props) => {
                   type="radio"
                   value={EntityType.Private}
                   readOnly={!props.canChangeEntityType}
+                  disabled={!props.canChangeEntityType}
                 />
                 <label
                   className="text-sm font-weight-normal text-black"
@@ -76,6 +82,7 @@ const ActivationForm = (props: Props) => {
                   type="radio"
                   value={EntityType.PublicAdministration}
                   readOnly={!props.canChangeEntityType}
+                  disabled={!props.canChangeEntityType}
                 />
                 <label
                   className="text-sm font-weight-normal text-black"
