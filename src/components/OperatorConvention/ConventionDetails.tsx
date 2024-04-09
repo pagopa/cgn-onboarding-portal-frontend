@@ -199,6 +199,8 @@ const ConventionDetails = ({
     getConventionDetails();
   }, []);
 
+  const entityType = agreement.entityType;
+
   return loading ? (
     <div className="mt-2 px-8 py-10 bg-white">
       <CenteredLoading />
@@ -239,9 +241,8 @@ const ConventionDetails = ({
                         switch (entityType) {
                           case EntityType.Private:
                             return "Agevolazioni";
-                          case EntityType.PublicAdministration:
-                            return "Opportunità";
                           default:
+                          case EntityType.PublicAdministration:
                             return "Opportunità";
                         }
                       })(),

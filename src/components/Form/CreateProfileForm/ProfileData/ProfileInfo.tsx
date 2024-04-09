@@ -9,7 +9,7 @@ import ToggleField from "../../ToggleField";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 
 type Props = {
-  entityType: EntityType;
+  entityType: EntityType | undefined;
 };
 
 const ProfileInfo = ({ entityType }: Props) => {
@@ -88,10 +88,11 @@ const ProfileInfo = ({ entityType }: Props) => {
           type="email"
           placeholder={(() => {
             switch (entityType) {
-              case EntityType.PublicAdministration:
-                return "Inserisci l'indirizzo pec dell'ente";
               case EntityType.Private:
                 return "Inserisci l'indirizzo pec dell'organizzazione";
+              default:
+              case EntityType.PublicAdministration:
+                return "Inserisci l'indirizzo pec dell'ente";
             }
           })()}
         />
@@ -104,10 +105,11 @@ const ProfileInfo = ({ entityType }: Props) => {
           type="text"
           placeholder={(() => {
             switch (entityType) {
-              case EntityType.PublicAdministration:
-                return "Inserisci la sede legale ente";
               case EntityType.Private:
                 return "Inserisci la sede legale dell’organizzazione";
+              default:
+              case EntityType.PublicAdministration:
+                return "Inserisci la sede legale ente";
             }
           })()}
         />
@@ -125,10 +127,11 @@ const ProfileInfo = ({ entityType }: Props) => {
           type="text"
           placeholder={(() => {
             switch (entityType) {
-              case EntityType.PublicAdministration:
-                return "Inserisci il numero di telefono ente";
               case EntityType.Private:
                 return "Inserisci il numero di telefono dell’organizzazione";
+              default:
+              case EntityType.PublicAdministration:
+                return "Inserisci il numero di telefono ente";
             }
           })()}
         />
@@ -145,10 +148,11 @@ const ProfileInfo = ({ entityType }: Props) => {
           type="text"
           placeholder={(() => {
             switch (entityType) {
-              case EntityType.PublicAdministration:
-                return "Inserisci il nome e cognome del Legale rappresentante ente";
               case EntityType.Private:
                 return "Inserisci il nome e cognome del Legale rappresentante dell’organizzazione";
+              default:
+              case EntityType.PublicAdministration:
+                return "Inserisci il nome e cognome del Legale rappresentante ente";
             }
           })()}
         />
@@ -167,10 +171,11 @@ const ProfileInfo = ({ entityType }: Props) => {
           type="text"
           placeholder={(() => {
             switch (entityType) {
-              case EntityType.PublicAdministration:
-                return "Inserisci il Codice fiscale del Legale rappresentante ente";
               case EntityType.Private:
                 return "Inserisci il Codice fiscale del Legale rappresentante dell’organizzazione";
+              default:
+              case EntityType.PublicAdministration:
+                return "Inserisci il Codice fiscale del Legale rappresentante ente";
             }
           })()}
         />

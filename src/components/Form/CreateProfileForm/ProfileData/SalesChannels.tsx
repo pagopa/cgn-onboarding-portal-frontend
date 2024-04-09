@@ -26,7 +26,7 @@ const hasBothChannels = (channelType: string) => channelType === "BothChannels";
 
 type Props = {
   // geolocationToken: string;
-  entityType: EntityType;
+  entityType: EntityType | undefined;
 };
 
 const SalesChannels = ({ entityType }: Props) => {
@@ -144,6 +144,7 @@ const SalesChannels = ({ entityType }: Props) => {
                               true && index + 1 === 1
                           );
                         }
+                        default:
                         case EntityType.PublicAdministration: {
                           return (
                             formValues.salesChannel.channelType ===
@@ -162,6 +163,7 @@ const SalesChannels = ({ entityType }: Props) => {
                           switch (entityType) {
                             case EntityType.Private:
                               return "Rappresenti un franchising e vuoi che le agevolazioni valgano in tutti i punti vendita presenti sul territorio nazionale?";
+                            default:
                             case EntityType.PublicAdministration:
                               return "Rappresenti un ente e vuoi che le opportunità valgano in tutti i punti vendita presenti sul territorio nazionale?";
                           }
@@ -327,6 +329,7 @@ const SalesChannels = ({ entityType }: Props) => {
             switch (entityType) {
               case EntityType.Private:
                 return "Inserire l'URL del proprio e-commerce o del proprio sito istituzionale";
+              default:
               case EntityType.PublicAdministration:
                 return "Inserire l'URL del sito web principale dell'ente";
             }

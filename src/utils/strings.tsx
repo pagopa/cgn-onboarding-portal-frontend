@@ -42,9 +42,8 @@ export function categoriesMap(
         switch (entityType) {
           case EntityType.Private:
             return "(Opportunità per la casa, mutui, gestori luce e gas, ...)";
-          case EntityType.PublicAdministration:
-            return "(Agevolazioni per la casa, mutui, gestori luce e gas, ...)";
           default:
+          case EntityType.PublicAdministration:
             return "(Agevolazioni per la casa, mutui, gestori luce e gas, ...)";
         }
       })()
@@ -115,10 +114,9 @@ export function getEntityTypeLabel(
     case EntityTypeA.Private:
     case EntityTypeB.Private:
       return "Privato";
+    default:
     case EntityTypeA.PublicAdministration:
     case EntityTypeB.PublicAdministration:
       return "Pubblico";
-    default:
-      return "";
   }
 }

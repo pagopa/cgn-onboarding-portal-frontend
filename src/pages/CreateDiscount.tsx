@@ -15,9 +15,8 @@ const CreateDiscount = () => {
         switch (entityType) {
           case EntityType.Private:
             return "Aggiungi agevolazione";
-          case EntityType.PublicAdministration:
-            return "Aggiungi opportunità";
           default:
+          case EntityType.PublicAdministration:
             return "Aggiungi opportunità";
         }
       })()}
@@ -25,9 +24,8 @@ const CreateDiscount = () => {
         switch (entityType) {
           case EntityType.Private:
             return "Dati agevolazione";
-          case EntityType.PublicAdministration:
-            return "Dati opportunità";
           default:
+          case EntityType.PublicAdministration:
             return "Dati opportunità";
         }
       })()}

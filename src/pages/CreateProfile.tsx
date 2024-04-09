@@ -97,7 +97,7 @@ const CreateProfile = () => {
     return <RequestApproval />;
   }
 
-  return !loading && entityType ? (
+  return !loading ? (
     <Layout hasHeaderBorder>
       <div className="bg-white">
         <div className="container p-10">
@@ -156,9 +156,8 @@ function getSteps(entityType: EntityType | undefined) {
   switch (entityType) {
     case EntityType.Private:
       return [guideStep, profileStep, discountStep, documentStep];
+    default:
     case EntityType.PublicAdministration:
       return [guideStep, profileStep, documentStep];
-    default:
-      return [];
   }
 }

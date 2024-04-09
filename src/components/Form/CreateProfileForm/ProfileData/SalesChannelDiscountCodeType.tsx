@@ -13,7 +13,7 @@ import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 const SalesChannelDiscountCodeType = ({
   entityType
 }: {
-  entityType: EntityType;
+  entityType: EntityType | undefined;
 }) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
@@ -105,6 +105,7 @@ const SalesChannelDiscountCodeType = ({
                         verrà letto e accettato dai miei sistemi
                       </>
                     );
+                  default:
                   case EntityType.PublicAdministration:
                     return (
                       <>
@@ -149,6 +150,7 @@ const SalesChannelDiscountCodeType = ({
                         sospesa
                       </>
                     );
+                  default:
                   case EntityType.PublicAdministration:
                     return (
                       <>
@@ -194,6 +196,7 @@ const SalesChannelDiscountCodeType = ({
                         degli sconti
                       </>
                     );
+                  default:
                   case EntityType.PublicAdministration:
                     return (
                       <>

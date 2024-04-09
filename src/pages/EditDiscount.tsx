@@ -6,8 +6,9 @@ import { RootState } from "../store/store";
 import { EntityType } from "../api/generated";
 
 const EditDiscount = () => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
-  const entityType = agreement?.entityType;
+  const entityType = useSelector(
+    (state: RootState) => state.agreement.value.entityType
+  );
   return (
     <CreateLayout
       breadcrumbLabel="Modifica dati"
@@ -15,9 +16,8 @@ const EditDiscount = () => {
         switch (entityType) {
           case EntityType.Private:
             return "Dati agevolazione";
-          case EntityType.PublicAdministration:
-            return "Dati opportunità";
           default:
+          case EntityType.PublicAdministration:
             return "Dati opportunità";
         }
       })()}
