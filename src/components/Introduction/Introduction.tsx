@@ -8,7 +8,7 @@ type Props = {
   name: string;
   activeTab: number;
   handleClick: any;
-  entityType: EntityType;
+  entityType: EntityType | undefined;
 };
 
 const Introduction = ({ name, activeTab, handleClick, entityType }: Props) => (
@@ -36,6 +36,7 @@ const Introduction = ({ name, activeTab, handleClick, entityType }: Props) => (
           switch (entityType) {
             case EntityType.Private:
               return "Agevolazioni";
+            default:
             case EntityType.PublicAdministration:
               return "Opportunità";
           }
