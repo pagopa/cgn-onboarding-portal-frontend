@@ -8,8 +8,7 @@ import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
   ApprovedAgreement,
-  ApprovedAgreements,
-  EntityType
+  ApprovedAgreements
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";

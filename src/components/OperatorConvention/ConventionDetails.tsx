@@ -95,12 +95,14 @@ export const getBadgeStatus = (state: DiscountState) => {
   }
 };
 
+/* eslint-disable sonarjs/cognitive-complexity */
 const getView = (
   details: ApprovedAgreementDetail | undefined,
   view: string,
   getConventionDetails: () => void,
   agreement: ApprovedAgreement
 ) => {
+  const entityType = agreement.entityType;
   if (details) {
     if (view.includes("agevolazione")) {
       const discount =
@@ -117,9 +119,31 @@ const getView = (
       } else {
         return (
           <div>
-            <h5 className="mb-5 font-weight-bold">Opportunità</h5>
+            <h5 className="mb-5 font-weight-bold">
+              {(() => {
+                switch (entityType) {
+                  case EntityType.Private:
+                    return "Agevolazione";
+                  case EntityType.PublicAdministration:
+                    return "Opportunità";
+                  default:
+                    return "Opportunità";
+                }
+              })()}
+            </h5>
             <p className="text-center text-gray">
-              Non è presente nessuna opportunità.
+              Non è presente nessuna{" "}
+              {(() => {
+                switch (entityType) {
+                  case EntityType.Private:
+                    return "agevolazione";
+                  case EntityType.PublicAdministration:
+                    return "opportunità";
+                  default:
+                    return "opportunità";
+                }
+              })()}
+              .
             </p>
           </div>
         );
@@ -212,13 +236,13 @@ const ConventionDetails = ({
                       setView,
                       "agevolazione",
                       (() => {
-                        switch (agreement.entityType) {
+                        switch (entityType) {
                           case EntityType.Private:
                             return "Agevolazioni";
                           case EntityType.PublicAdministration:
                             return "Opportunità";
                           default:
-                            return "Agevolazioni";
+                            return "Opportunità";
                         }
                       })(),
                       details?.discounts?.length ? (

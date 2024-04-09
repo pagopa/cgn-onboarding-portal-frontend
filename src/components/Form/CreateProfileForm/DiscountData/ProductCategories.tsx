@@ -2,10 +2,12 @@ import React from "react";
 import { Field } from "formik";
 import { FormGroup } from "design-react-kit";
 import { Label } from "reactstrap";
+import { useSelector } from "react-redux";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import { categoriesMap } from "../../../../utils/strings";
 import { ProductCategory } from "../../../../api/generated";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
+import { RootState } from "../../../../store/store";
 
 type Props = {
   selectedCategories?: Array<ProductCategory>;
@@ -25,9 +27,13 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
     selectedCategories.length >= MAX_SELECTABLE_CATEGORIES &&
     !selectedCategories.includes(category);
 
+  const entityType = useSelector(
+    (state: RootState) => state.agreement.value.entityType
+  );
+
   return (
     <>
-      {Object.keys(categoriesMap).map((categoryKey, i) => (
+      {Object.keys(categoriesMap(entityType)).map((categoryKey, i) => (
         <FormGroup check tag="div" className="mt-4" key={i}>
           <Field
             id={`${name}.${categoryKey}`}
@@ -39,9 +45,12 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
           <Label check for={`${name}.${categoryKey}`} tag="label">
             <div className="row ml-1">
               <p style={nameLabelStyle}>
-                {categoriesMap[categoryKey as ProductCategory].name}{" "}
+                {categoriesMap(entityType)[categoryKey as ProductCategory].name}{" "}
               </p>{" "}
-              {categoriesMap[categoryKey as ProductCategory].description}
+              {
+                categoriesMap(entityType)[categoryKey as ProductCategory]
+                  .description
+              }
             </div>
           </Label>
         </FormGroup>

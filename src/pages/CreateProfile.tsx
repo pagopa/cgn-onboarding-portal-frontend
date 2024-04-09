@@ -127,7 +127,7 @@ const CreateProfile = () => {
 
 export default CreateProfile;
 
-function getSteps(entityType: EntityType) {
+function getSteps(entityType: EntityType | undefined) {
   const guideStep = {
     key: "Guide",
     label: "Documentazione"
@@ -138,7 +138,16 @@ function getSteps(entityType: EntityType) {
   };
   const discountStep = {
     key: "Discount",
-    label: "Dati agevolazione"
+    label: (() => {
+      switch (entityType) {
+        case EntityType.Private:
+          return "Dati agevolazione";
+        case EntityType.PublicAdministration:
+          return "Dati opportunità";
+        default:
+          return "Dati opportunità";
+      }
+    })()
   };
   const documentStep = {
     key: "Document",
