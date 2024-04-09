@@ -388,7 +388,7 @@ const DiscountData = ({
                           description={(() => {
                             switch (entityType) {
                               case EntityType.Private:
-                                return `Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere agevolazione`;
+                                return `Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione`;
                               default:
                               case EntityType.PublicAdministration:
                                 return `Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’opportunità`;
