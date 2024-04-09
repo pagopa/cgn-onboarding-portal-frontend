@@ -29,6 +29,7 @@ type Props = {
   entityType: EntityType;
 };
 
+/* eslint-disable sonarjs/cognitive-complexity */
 const SalesChannels = ({ entityType }: Props) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
