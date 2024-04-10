@@ -195,7 +195,7 @@ const EditOperatorDataForm = () => {
         };
     }
   };
-  if (loading || !agreement.entityType) {
+  if (loading) {
     return <CenteredLoading />;
   }
   const entityType = agreement.entityType;

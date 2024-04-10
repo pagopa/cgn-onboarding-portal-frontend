@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { toError } from "fp-ts/lib/Either";
+import { useSelector } from "react-redux";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useMemo, useState } from "react";
 import Api from "../../api/backoffice";
@@ -13,10 +14,12 @@ import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
+import { RootState } from "../../store/store";
 import BucketCodeModal from "./BucketCodeModal";
 import { getBadgeStatus } from "./ConventionDetails";
 import Item from "./Item";
 
+/* eslint-disable sonarjs/cognitive-complexity */
 const Discount = ({
   discount,
   agreementId,
@@ -126,6 +129,10 @@ const Discount = ({
     [profile]
   );
 
+  const entityType = useSelector(
+    (state: RootState) => state.agreement.value?.entityType
+  );
+
   return (
     <div>
       <h5 className="mb-7 d-flex align-items-center font-weight-bold">
@@ -150,7 +157,8 @@ const Discount = ({
         <div className="col-4 text-gray">Categorie merceologiche</div>
         <div className="col-8">
           {makeProductCategoriesString(
-            discount.productCategories
+            discount.productCategories,
+            entityType
           ).map((productCategory, index) =>
             productCategory ? <p key={index}>{productCategory}</p> : null
           )}

@@ -1,5 +1,6 @@
 import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
+import { useSelector } from "react-redux";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Field } from "formik";
@@ -11,7 +12,8 @@ import CustomErrorMessage from "../../CustomErrorMessage";
 import chainAxios from "../../../../utils/chainAxios";
 import FormField from "../../FormField";
 import bucketTemplate from "../../../../templates/test-codes.csv";
-import { BucketCodeLoadStatus } from "../../../../api/generated";
+import { BucketCodeLoadStatus, EntityType } from "../../../../api/generated";
+import { RootState } from "../../../../store/store";
 
 type Props = {
   label: string;
@@ -112,6 +114,10 @@ Props) => {
     index !== undefined
       ? formValues.discounts[index].lastBucketCodeLoadStatus
       : formValues.lastBucketCodeLoadStatus;
+
+  const entityType = useSelector(
+    (state: RootState) => state.agreement.value?.entityType
+  );
   return (
     <FormField
       htmlFor="lastBucketCodeLoadUid"
@@ -119,8 +125,25 @@ Props) => {
       title="Carica la lista di codici sconto"
       description={
         <>
-          Caricare un file .CSV con la lista di almeno 10.000 di codici sconto
-          statici relativi all’opportunità.
+          {(() => {
+            switch (entityType) {
+              case EntityType.Private:
+                return (
+                  <>
+                    Caricare un file .CSV con la lista di almeno 10.000 di
+                    codici sconto statici relativi agevolazione.
+                  </>
+                );
+              default:
+              case EntityType.PublicAdministration:
+                return (
+                  <>
+                    Caricare un file .CSV con la lista di almeno 10.000 di
+                    codici sconto statici relativi all’opportunità.
+                  </>
+                );
+            }
+          })()}
           <br />
           Per maggiori informazioni, consultare la{" "}
           <a

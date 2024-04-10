@@ -45,10 +45,11 @@ const DiscountInfo = ({
         })()}
         description={(() => {
           switch (entityType) {
-            case EntityType.PublicAdministration:
-              return "Inserire un breve testo che descriva il tipo di opportunità offerta (max 100 caratteri)";
             case EntityType.Private:
               return "Inserire un breve testo che descriva il tipo di agevolazione offerta (max 100 caratteri)";
+            default:
+            case EntityType.PublicAdministration:
+              return "Inserire un breve testo che descriva il tipo di opportunità offerta (max 100 caratteri)";
           }
         })()}
         isVisible
@@ -89,18 +90,20 @@ const DiscountInfo = ({
         htmlFor="description"
         title={(() => {
           switch (entityType) {
-            case EntityType.PublicAdministration:
-              return "Descrizione opportunità";
             case EntityType.Private:
               return "Descrizione agevolazione";
+            default:
+            case EntityType.PublicAdministration:
+              return "Descrizione opportunità";
           }
         })()}
         description={(() => {
           switch (entityType) {
-            case EntityType.PublicAdministration:
-              return "Se necessario, inserire una descrizione più approfondita dell'opportunità (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri";
             case EntityType.Private:
               return "Se necessario, inserire una descrizione più approfondita dell'agevolazione (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri";
+            default:
+            case EntityType.PublicAdministration:
+              return "Se necessario, inserire una descrizione più approfondita dell'opportunità (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri";
           }
         })()}
         isVisible
@@ -158,18 +161,20 @@ const DiscountInfo = ({
             htmlFor="startDate"
             title={(() => {
               switch (entityType) {
-                case EntityType.PublicAdministration:
-                  return "Data di inizio dell'opportunità";
                 case EntityType.Private:
                   return "Data di inizio dell'agevolazione";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Data di inizio dell'opportunità";
               }
             })()}
             description={(() => {
               switch (entityType) {
-                case EntityType.PublicAdministration:
-                  return "Indicare il giorno e l’ora da cui l'opportunità diventa valida";
                 case EntityType.Private:
                   return "Indicare il giorno e l’ora da cui l'agevolazione diventa valida";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Indicare il giorno e l’ora da cui l'opportunità diventa valida";
               }
             })()}
             isVisible
@@ -204,18 +209,20 @@ const DiscountInfo = ({
             htmlFor="endDate"
             title={(() => {
               switch (entityType) {
-                case EntityType.PublicAdministration:
-                  return "Data di fine opportunità";
                 case EntityType.Private:
                   return "Data di fine agevolazione";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Data di fine opportunità";
               }
             })()}
             description={(() => {
               switch (entityType) {
-                case EntityType.PublicAdministration:
-                  return "Indicare la data e l’ora da cui l’opportunità non è più valida";
                 case EntityType.Private:
                   return "Indicare la data e l’ora da cui agevolazione non è più valida";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Indicare la data e l’ora da cui l’opportunità non è più valida";
               }
             })()}
             isVisible
@@ -251,10 +258,11 @@ const DiscountInfo = ({
         title="Entità dello sconto"
         description={(() => {
           switch (entityType) {
-            case EntityType.PublicAdministration:
-              return "Se l'opportunità lo prevede, inserire la percentuale (%) di sconto erogata";
             case EntityType.Private:
               return "Se l'agevolazione lo prevede, inserire la percentuale (%) di sconto erogata";
+            default:
+            case EntityType.PublicAdministration:
+              return "Se l'opportunità lo prevede, inserire la percentuale (%) di sconto erogata";
           }
         })()}
         isVisible

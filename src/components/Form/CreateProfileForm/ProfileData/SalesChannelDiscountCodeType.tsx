@@ -13,7 +13,7 @@ import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 const SalesChannelDiscountCodeType = ({
   entityType
 }: {
-  entityType: EntityType;
+  entityType: EntityType | undefined;
 }) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
@@ -96,8 +96,25 @@ const SalesChannelDiscountCodeType = ({
               >
                 Con codice statico
               </a>
-              : assocerò ad ogni opportunità un codice statico che verrà letto e
-              accettato dai miei sistemi
+              {(() => {
+                switch (entityType) {
+                  case EntityType.Private:
+                    return (
+                      <>
+                        : assocerò ad ogni agevolazione un codice statico che
+                        verrà letto e accettato dai miei sistemi
+                      </>
+                    );
+                  default:
+                  case EntityType.PublicAdministration:
+                    return (
+                      <>
+                        : assocerò ad ogni opportunità un codice statico che
+                        verrà letto e accettato dai miei sistemi
+                      </>
+                    );
+                }
+              })()}
             </span>
           </label>
         </div>
@@ -121,10 +138,31 @@ const SalesChannelDiscountCodeType = ({
               >
                 Con lista di codici statici
               </a>
-              : assocerò ad ogni opportunità una lista di codici statici che
-              verranno letti e accettati dai miei sistemi e che mi impegno a
-              caricare periodicamente, consapevole del fatto che, se si
-              esaurissero, l’opportunità sarebbe sospesa
+              {(() => {
+                switch (entityType) {
+                  case EntityType.Private:
+                    return (
+                      <>
+                        : assocerò ad ogni agevolazione una lista di codici
+                        statici che verranno letti e accettati dai miei sistemi
+                        e che mi impegno a caricare periodicamente, consapevole
+                        del fatto che, se si esaurissero, l’agevolazione sarebbe
+                        sospesa
+                      </>
+                    );
+                  default:
+                  case EntityType.PublicAdministration:
+                    return (
+                      <>
+                        : assocerò ad ogni opportunità una lista di codici
+                        statici che verranno letti e accettati dai miei sistemi
+                        e che mi impegno a caricare periodicamente, consapevole
+                        del fatto che, se si esaurissero, l’opportunità sarebbe
+                        sospesa
+                      </>
+                    );
+                }
+              })()}
             </span>
           </label>
         </div>
@@ -148,8 +186,27 @@ const SalesChannelDiscountCodeType = ({
               >
                 Con link a landing page
               </a>
-              : fornirò per ogni opportunità un link con cui il cittadino che
-              accede proveniendo da IO potrà usufruire degli sconti
+              {(() => {
+                switch (entityType) {
+                  case EntityType.Private:
+                    return (
+                      <>
+                        : fornirò per ogni agevolazione un link con cui il
+                        cittadino che accede proveniendo da IO potrà usufruire
+                        degli sconti
+                      </>
+                    );
+                  default:
+                  case EntityType.PublicAdministration:
+                    return (
+                      <>
+                        : fornirò per ogni opportunità un link con cui il
+                        cittadino che accede proveniendo da IO potrà usufruire
+                        degli sconti
+                      </>
+                    );
+                }
+              })()}
             </span>
           </label>
         </div>

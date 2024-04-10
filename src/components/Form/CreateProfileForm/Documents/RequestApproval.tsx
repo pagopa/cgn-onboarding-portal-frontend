@@ -1,6 +1,8 @@
 import React from "react";
 import { Button } from "design-react-kit";
+import { Link } from "react-router-dom";
 import Hourglass from "../../../../assets/icons/hourglass.svg";
+import { DASHBOARD } from "../../../../navigation/routes";
 
 const RequestApproval = () => (
   <section className="request-approval">
@@ -12,17 +14,12 @@ const RequestApproval = () => (
         <br />
         Riceverete una e-mail non appena sarà approvata.
       </div>
-      <Button
-        className="px-14 mr-4"
-        color="primary"
-        outline
-        tag="button"
-        onClick={() => window.location.replace("/")}
-      >
-        Esci
-      </Button>
+      <Link to={DASHBOARD}>
+        <Button className="px-14 mr-4" color="primary" outline tag="button">
+          Esci
+        </Button>
+      </Link>
     </div>
   </section>
 );
-
 export default RequestApproval;
