@@ -7,7 +7,7 @@ import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import Api from "../../../../api";
 import { RootState } from "../../../../store/store";
-import { Documents } from "../../../../api/generated";
+import { Documents, EntityType } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
 import FileRow from "./FileRow";
 
@@ -58,7 +58,16 @@ const Documents = ({
   const getUploadedDoc = (type: string) =>
     documents.items.find(d => d.documentType === type);
 
-  const allUploaded = documents.items.length === 2;
+  const entityType = agreement.entityType;
+
+  const allUploaded = (() => {
+    switch (entityType) {
+      case EntityType.Private:
+        return documents.items.length === 2;
+      case EntityType.PublicAdministration:
+        return documents.items.length === 1;
+    }
+  })();
 
   useEffect(() => {
     void getFiles();
@@ -85,13 +94,15 @@ const Documents = ({
           label="Convenzione"
           agreementId={agreement.id}
         />
-        <FileRow
-          getFiles={getFiles}
-          uploadedDoc={getUploadedDoc("adhesion_request")}
-          type="adhesion_request"
-          label="Domanda di adesione alla CGN"
-          agreementId={agreement.id}
-        />
+        {entityType === EntityType.Private && (
+          <FileRow
+            getFiles={getFiles}
+            uploadedDoc={getUploadedDoc("adhesion_request")}
+            type="adhesion_request"
+            label="Domanda di adesione alla CGN"
+            agreementId={agreement.id}
+          />
+        )}
         {(isCompleted || allUploaded) && (
           <p className="mt-8 text-gray">
             Invia la tua candidatura per approvazione. <br />

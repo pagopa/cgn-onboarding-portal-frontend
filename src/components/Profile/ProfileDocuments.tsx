@@ -5,11 +5,13 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import Api from "../../api";
 import { formatDate } from "../../utils/dates";
+import { EntityType } from "../../api/generated";
+import { RootState } from "../../store/store";
 
 const ProfileDocuments = () => {
   const [agreementDocument, setAgreementDocument] = useState<any>();
   const [manifestationDocument, setManifestationDocument] = useState<any>();
-  const agreement = useSelector((state: any) => state.agreement.value);
+  const agreement = useSelector((state: RootState) => state.agreement.value);
 
   const getDocuments = async (agreementId: string) =>
     await tryCatch(() => Api.Document.getDocuments(agreementId), toError)
@@ -39,6 +41,8 @@ const ProfileDocuments = () => {
     void getDocuments(agreement.id);
   }, []);
 
+  const entityType = agreement.entityType;
+
   return (
     <>
       {agreementDocument && manifestationDocument && (
@@ -66,25 +70,27 @@ const ProfileDocuments = () => {
               </div>
             </LinkListItem>
             <LinkListItem divider tag="a" />
-            <LinkListItem
-              tag="div"
-              className="d-flex flex-row align-items-center"
-            >
-              <Icon icon="it-file" color="primary" className="mr-4" />
-              <div className="flex flex-row justify-items-start">
-                <a
-                  className="text-sm font-weight-semibold text-blue"
-                  href={manifestationDocument.documentUrl}
-                  style={{ padding: 0 }}
-                >
-                  Allegato 1 - Domanda di adesione alla CGN
-                </a>
-                <p className="text-sm font-weight-light text-dark-blue">
-                  Caricato il
-                  {formatDate(manifestationDocument.documentTimestamp)}
-                </p>
-              </div>
-            </LinkListItem>
+            {entityType === EntityType.Private && (
+              <LinkListItem
+                tag="div"
+                className="d-flex flex-row align-items-center"
+              >
+                <Icon icon="it-file" color="primary" className="mr-4" />
+                <div className="flex flex-row justify-items-start">
+                  <a
+                    className="text-sm font-weight-semibold text-blue"
+                    href={manifestationDocument.documentUrl}
+                    style={{ padding: 0 }}
+                  >
+                    Allegato 1 - Domanda di adesione alla CGN
+                  </a>
+                  <p className="text-sm font-weight-light text-dark-blue">
+                    Caricato il
+                    {formatDate(manifestationDocument.documentTimestamp)}
+                  </p>
+                </div>
+              </LinkListItem>
+            )}
             <LinkListItem divider tag="a" />
             <LinkListItem
               tag="div"
