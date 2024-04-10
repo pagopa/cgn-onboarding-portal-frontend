@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Field } from "formik";
 import { Button, FormGroup } from "design-react-kit";
+import { useSelector } from "react-redux";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import FormField from "../../FormField";
+import { RootState } from "../../../../store/store";
+import { EntityType } from "../../../../api/generated";
 
 type Props = {
   isEycaSupported: boolean;
@@ -32,6 +35,7 @@ const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
   </Modal>
 );
 
+/* eslint-disable sonarjs/cognitive-complexity */
 const EnrollToEyca = ({
   index,
   formValues,
@@ -59,12 +63,25 @@ const EnrollToEyca = ({
     );
     setIsModalOpen(false);
   };
+
+  const entityType = useSelector(
+    (state: RootState) => state.agreement.value.entityType
+  );
+
   return (
     <>
       <FormField
         htmlFor={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
         isTitleHeading
-        title="Vuoi che questa opportunità sia visibile su EYCA?"
+        title={(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return `Vuoi che questa agevolazione sia visibile su EYCA?`;
+            default:
+            case EntityType.PublicAdministration:
+              return `Vuoi che questa opportunità sia visibile su EYCA?`;
+          }
+        })()}
         description={
           isEycaSupported ? (
             <>
@@ -124,8 +141,25 @@ const EnrollToEyca = ({
             for={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
             tag="label"
           >
-            Sì, voglio che questa opportunità sia valida anche per il circuito
-            EYCA
+            {(() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return (
+                    <>
+                      Sì, voglio che questa agevolazione sia valida anche per il
+                      circuito EYCA
+                    </>
+                  );
+                default:
+                case EntityType.PublicAdministration:
+                  return (
+                    <>
+                      Sì, voglio che questa opportunità sia valida anche per il
+                      circuito EYCA
+                    </>
+                  );
+              }
+            })()}
           </Label>
         </FormGroup>
       </FormField>

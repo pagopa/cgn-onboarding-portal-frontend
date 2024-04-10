@@ -13,6 +13,7 @@ import {
   CreateDiscount,
   Discount,
   Discounts,
+  EntityType,
   ProductCategory
 } from "../../../../api/generated";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
@@ -241,6 +242,8 @@ const DiscountData = ({
     void getProfile(agreement.id);
   }, []);
 
+  const entityType = agreement.entityType;
+
   if (loading) {
     return <CenteredLoading />;
   }
@@ -328,7 +331,15 @@ const DiscountData = ({
                         htmlFor="productCategories"
                         isTitleHeading
                         title="Categorie merceologiche"
-                        description={`Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’opportunità`}
+                        description={(() => {
+                          switch (entityType) {
+                            case EntityType.Private:
+                              return `Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto agevolazione`;
+                            default:
+                            case EntityType.PublicAdministration:
+                              return `Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’opportunità`;
+                          }
+                        })()}
                         isVisible
                         required
                       >
@@ -340,8 +351,24 @@ const DiscountData = ({
                       <FormField
                         htmlFor="discountConditions"
                         isTitleHeading
-                        title="Condizioni dell’opportunità"
-                        description="Descrivere eventuali limitazioni relative all’opportunità (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
+                        title={(() => {
+                          switch (entityType) {
+                            case EntityType.Private:
+                              return `Condizioni dell’agevolazione`;
+                            default:
+                            case EntityType.PublicAdministration:
+                              return `Condizioni dell’opportunità`;
+                          }
+                        })()}
+                        description={(() => {
+                          switch (entityType) {
+                            case EntityType.Private:
+                              return `Descrivere eventuali limitazioni relative all’agevolazione (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri`;
+                            default:
+                            case EntityType.PublicAdministration:
+                              return `Descrivere eventuali limitazioni relative all’opportunità (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri`;
+                          }
+                        })()}
                         isVisible
                       >
                         <DiscountConditions index={index} />
@@ -349,8 +376,24 @@ const DiscountData = ({
                       {!checkLanding && (
                         <FormField
                           htmlFor="discountUrl"
-                          title="Link all’opportunità"
-                          description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’opportunità"
+                          title={(() => {
+                            switch (entityType) {
+                              case EntityType.Private:
+                                return `Link all’agevolazione`;
+                              default:
+                              case EntityType.PublicAdministration:
+                                return `Link all’opportunità`;
+                            }
+                          })()}
+                          description={(() => {
+                            switch (entityType) {
+                              case EntityType.Private:
+                                return `Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione`;
+                              default:
+                              case EntityType.PublicAdministration:
+                                return `Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’opportunità`;
+                            }
+                          })()}
                           isTitleHeading
                           isVisible
                         >
@@ -362,7 +405,15 @@ const DiscountData = ({
                           htmlFor="staticCode"
                           isTitleHeading
                           title="Codice statico"
-                          description="Inserire il codice relativo all’opportunità che l’utente dovrà inserire sul vostro portale online"
+                          description={(() => {
+                            switch (entityType) {
+                              case EntityType.Private:
+                                return `Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online`;
+                              default:
+                              case EntityType.PublicAdministration:
+                                return `Inserire il codice relativo all’opportunità che l’utente dovrà inserire sul vostro portale online`;
+                            }
+                          })()}
                           isVisible
                           required
                         >
@@ -374,7 +425,15 @@ const DiscountData = ({
                           htmlFor="landingPage"
                           isTitleHeading
                           title="Indirizzo della landing page"
-                          description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’opportunità"
+                          description={(() => {
+                            switch (entityType) {
+                              case EntityType.Private:
+                                return `Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’agevolazione`;
+                              default:
+                              case EntityType.PublicAdministration:
+                                return `Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’opportunità`;
+                            }
+                          })()}
                           isVisible
                           required
                         >
@@ -434,7 +493,15 @@ const DiscountData = ({
                           >
                             <PlusCircleIcon className="mr-2" />
                             <span className="text-base font-weight-semibold text-blue">
-                              Aggiungi un&apos;altra opportunità
+                              {(() => {
+                                switch (entityType) {
+                                  case EntityType.Private:
+                                    return `Aggiungi un&apos;altra agevolazione`;
+                                  default:
+                                  case EntityType.PublicAdministration:
+                                    return `Aggiungi un&apos;altra opportunità`;
+                                }
+                              })()}
                             </span>
                           </div>
                           <div className="mt-10">

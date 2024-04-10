@@ -17,7 +17,7 @@ type Props = {
   showRemove: boolean;
   onRemove(): void;
   children?: React.ReactNode;
-  entityType: EntityType;
+  entityType: EntityType | undefined;
 };
 
 /* eslint complexity: ["error", 20000] */
@@ -46,10 +46,11 @@ const Referent = ({
       description={
         `Indicare il nome della persona responsabile del programma CGN per conto dell'Operatore. La persona indicata sarà destinataria di tutte le comunicazioni relative alla gestione delle ${(() => {
           switch (entityType) {
-            case EntityType.PublicAdministration:
-              return "opportunità";
             case EntityType.Private:
               return "agevolazioni";
+            default:
+            case EntityType.PublicAdministration:
+              return "opportunità";
           }
         })()} e, più in generale, all’attuazione della convenzione.` +
         (index === 0
@@ -90,6 +91,7 @@ const Referent = ({
           switch (entityType) {
             case EntityType.Private:
               return "Ruolo all'interno dell'organizzazione";
+            default:
             case EntityType.PublicAdministration:
               return "Ruolo all'interno dell'ente";
           }
@@ -146,7 +148,7 @@ function ReferentData({
   children,
   entityType
 }: {
-  entityType: EntityType;
+  entityType: EntityType | undefined;
   children?: React.ReactNode;
 }) {
   type Values = InferType<typeof ProfileDataValidationSchema>;

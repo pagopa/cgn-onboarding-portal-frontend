@@ -176,14 +176,17 @@ const Discounts = () => {
     void getProfile(agreement.id);
   }, []);
 
+  const entityType = agreement.entityType;
+
   const data = useMemo(() => [...discounts], [discounts]);
   const columns: Array<Column<Discount>> = useMemo(
     () => [
       {
         Header: (() => {
-          switch (agreement.entityType) {
+          switch (entityType) {
             case EntityType.Private:
               return "Nome agevolazione";
+            default:
             case EntityType.PublicAdministration:
               return "Nome opportunità";
           }
@@ -263,9 +266,10 @@ const Discounts = () => {
         <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
           <ModalHeader toggle={toggleDeleteModal}>
             {(() => {
-              switch (agreement.entityType) {
+              switch (entityType) {
                 case EntityType.Private:
                   return "Elimina agevolazione";
+                default:
                 case EntityType.PublicAdministration:
                   return "Elimina opportunità";
               }
@@ -273,9 +277,10 @@ const Discounts = () => {
           </ModalHeader>
           <ModalBody>
             {(() => {
-              switch (agreement.entityType) {
+              switch (entityType) {
                 case EntityType.Private:
                   return "Sei sicuro di voler eliminare questa agevolazione?";
+                default:
                 case EntityType.PublicAdministration:
                   return "Sei sicuro di voler eliminare questa opportunità?";
               }
@@ -303,7 +308,8 @@ const Discounts = () => {
           </ModalFooter>
         </Modal>
       </div>
-      {agreement.state === AgreementState.ApprovedAgreement && (
+      {(agreement.state === AgreementState.ApprovedAgreement ||
+        entityType === EntityType.Private) && (
         <table
           {...getTableProps()}
           style={{ width: "100%" }}
@@ -370,9 +376,10 @@ const Discounts = () => {
           {data.length === 0 && (
             <div className="text-center text-gray pb-10">
               {(() => {
-                switch (agreement.entityType) {
+                switch (entityType) {
                   case EntityType.Private:
                     return "Non è presente nessuna agevolazione.";
+                  default:
                   case EntityType.PublicAdministration:
                     return "Non è presente nessuna opportunità.";
                 }
@@ -382,9 +389,10 @@ const Discounts = () => {
           <div className="text-center">
             <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
               {(() => {
-                switch (agreement.entityType) {
+                switch (entityType) {
                   case EntityType.Private:
                     return "Nuova agevolazione";
+                  default:
                   case EntityType.PublicAdministration:
                     return "Nuova opportunità";
                 }
@@ -393,38 +401,29 @@ const Discounts = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-white px-8 pt-10 pb-10 flex d-flex justify-content-center flex-column align-items-center">
-          {(() => {
-            switch (agreement.entityType) {
-              case EntityType.Private:
-                return (
-                  <p className="text-center m-10">
-                    Non è presente nessuna agevolazione.
-                    <br />
-                    Potrai creare nuove agevolazione quando la convezione sarà
-                    attiva.
-                  </p>
-                );
-              case EntityType.PublicAdministration:
-                return (
+        (() => {
+          switch (entityType) {
+            case EntityType.PublicAdministration:
+              return (
+                <div className="bg-white px-8 pt-10 pb-10 flex d-flex justify-content-center flex-column align-items-center">
                   <p className="text-center m-10">
                     Non è presente nessuna opportunità.
                     <br />
                     Potrai creare nuove opportunità quando la convezione sarà
                     attiva.
                   </p>
-                );
-            }
-          })()}
-          <a
-            href="https://docs.pagopa.it/carta-giovani-nazionale/richiesta-di-convenzione/dati-delle-agevolazioni"
-            className="btn btn-outline-primary m-8"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Scopri di più
-          </a>
-        </div>
+                  <a
+                    href="https://docs.pagopa.it/carta-giovani-nazionale/richiesta-di-convenzione/dati-delle-agevolazioni"
+                    className="btn btn-outline-primary m-8"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Scopri di più
+                  </a>
+                </div>
+              );
+          }
+        })()
       )}
     </div>
   );

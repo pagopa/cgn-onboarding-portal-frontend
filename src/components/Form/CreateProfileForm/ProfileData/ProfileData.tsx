@@ -239,7 +239,7 @@ const ProfileData = ({
     }
   };
   const entityType = agreement.entityType;
-  if (loading || !entityType) {
+  if (loading) {
     return <CenteredLoading />;
   }
   return (

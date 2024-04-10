@@ -11,7 +11,11 @@ import {
   notLoggedHelpValidationSchema
 } from "../ValidationSchemas";
 import { RootState } from "../../../store/store";
-import { HelpRequest, HelpRequestCategoryEnum } from "../../../api/generated";
+import {
+  EntityType,
+  HelpRequest,
+  HelpRequestCategoryEnum
+} from "../../../api/generated";
 import Api from "../../../api";
 import { getCookie } from "../../../utils/cookie";
 import InputFieldMultiple from "../InputFieldMultiple";
@@ -40,7 +44,7 @@ const notLoggedInitialValues = {
   recaptchaToken: ""
 };
 
-const topics = [
+const topics = (entityType: EntityType | undefined) => [
   {
     key: "DataFilling",
     items: [
@@ -51,13 +55,27 @@ const topics = [
   },
   {
     key: "Discounts",
-    items: [
-      "Aggiungere un’opportunità",
-      "Modificare un’opportunità",
-      "Eliminare un’opportunità",
-      "Stati dell’opportunità",
-      "Codice statico"
-    ]
+    items: (() => {
+      switch (entityType) {
+        case EntityType.Private:
+          return [
+            "Aggiungere un'agevolazione",
+            "Modificare un'agevolazione",
+            "Eliminare un'agevolazione",
+            "Stati dell'agevolazione",
+            "Codice statico"
+          ];
+        default:
+        case EntityType.PublicAdministration:
+          return [
+            "Aggiungere un'opportunità",
+            "Modificare un'opportunità",
+            "Eliminare un'opportunità",
+            "Stati dell'opportunità",
+            "Codice statico"
+          ];
+      }
+    })()
   },
   {
     key: "Documents",
@@ -101,6 +119,8 @@ const HelpForm = () => {
     category === HelpRequestCategoryEnum.DataFilling ||
     category === HelpRequestCategoryEnum.Discounts ||
     category === HelpRequestCategoryEnum.Documents;
+
+  const entityType = agreement.entityType;
 
   return (
     <Formik
@@ -240,7 +260,7 @@ const HelpForm = () => {
                 <div>
                   <Field className="select" name="topic" as="select">
                     <>
-                      {topics
+                      {topics(entityType)
                         .find(topic => topic.key === values.category)
                         ?.items.map(item => (
                           <option key={item} value={item}>

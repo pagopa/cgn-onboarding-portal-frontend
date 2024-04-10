@@ -61,7 +61,7 @@ const EditProfileForm = () => {
       )
       .run();
 
-  if (!currentProfile || !agreement?.entityType) {
+  if (!currentProfile) {
     return null;
   }
 
