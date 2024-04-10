@@ -29,6 +29,7 @@ type Props = {
   entityType: EntityType | undefined;
 };
 
+/* eslint-disable sonarjs/cognitive-complexity */
 const SalesChannels = ({ entityType }: Props) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
@@ -135,7 +136,14 @@ const SalesChannels = ({ entityType }: Props) => {
                     title={
                       index + 1 >= 2 ? `Indirizzo ${index + 1}` : `Indirizzo`
                     }
-                    description="Inserisci l'indirizzo completo del/i punto/i vendita per permetterne la corretta visualizzazione del pin sulla mappa in app IO"
+                    description={(() => {
+                      switch (entityType) {
+                        case EntityType.Private:
+                          return "Inserisci l'indirizzo completo della sede. Servirà agli utenti per usufruire delle agevolazioni del tuo operatore, se richiedono una sede fisica.";
+                        case EntityType.PublicAdministration:
+                          return "Inserisci l'indirizzo completo della sede. Servirà agli utenti per usufruire delle opportunità del tuo operatore, se richiedono una sede fisica.";
+                      }
+                    })()}
                     required={(() => {
                       switch (entityType) {
                         case EntityType.Private: {
