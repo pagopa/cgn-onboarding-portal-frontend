@@ -187,7 +187,7 @@ const CreateDiscountForm = () => {
                     return `Descrivere eventuali limitazioni relative all'agevolazione (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri`;
                   default:
                   case EntityType.PublicAdministration:
-                    return `Descrivere eventuali limitazioni relative all’opportunità (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri`;
+                    return `Descrivere eventuali limitazioni relative all'opportunità (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri`;
                 }
               })()}
               isVisible
@@ -200,19 +200,19 @@ const CreateDiscountForm = () => {
                 title={(() => {
                   switch (entityType) {
                     case EntityType.Private:
-                      return `Link agevolazione`;
+                      return `Link all'agevolazione`;
                     default:
                     case EntityType.PublicAdministration:
-                      return `Link all’opportunità`;
+                      return `Link all'opportunità`;
                   }
                 })()}
                 description={(() => {
                   switch (entityType) {
                     case EntityType.Private:
-                      return `Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’agevolazione`;
+                      return `Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all'agevolazione`;
                     default:
                     case EntityType.PublicAdministration:
-                      return `Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’opportunità`;
+                      return `Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all'opportunità`;
                   }
                 })()}
                 isTitleHeading
@@ -229,10 +229,10 @@ const CreateDiscountForm = () => {
                 description={(() => {
                   switch (entityType) {
                     case EntityType.Private:
-                      return `Inserire il codice relativo all’agevolazione che l’utente dovrà inserire sul vostro portale online`;
+                      return `Inserire il codice relativo all'agevolazione che l’utente dovrà inserire sul vostro portale online`;
                     default:
                     case EntityType.PublicAdministration:
-                      return `Inserire il codice relativo all’opportunità che l’utente dovrà inserire sul vostro portale online`;
+                      return `Inserire il codice relativo all'opportunità che l’utente dovrà inserire sul vostro portale online`;
                   }
                 })()}
                 isVisible

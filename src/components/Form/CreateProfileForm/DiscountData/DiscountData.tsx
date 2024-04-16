@@ -334,10 +334,10 @@ const DiscountData = ({
                         description={(() => {
                           switch (entityType) {
                             case EntityType.Private:
-                              return `Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto agevolazione`;
+                              return `Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell'agevolazione`;
                             default:
                             case EntityType.PublicAdministration:
-                              return `Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’opportunità`;
+                              return `Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell'opportunità`;
                           }
                         })()}
                         isVisible
@@ -496,10 +496,10 @@ const DiscountData = ({
                               {(() => {
                                 switch (entityType) {
                                   case EntityType.Private:
-                                    return `Aggiungi un&apos;altra agevolazione`;
+                                    return `Aggiungi un'altra agevolazione`;
                                   default:
                                   case EntityType.PublicAdministration:
-                                    return `Aggiungi un&apos;altra opportunità`;
+                                    return `Aggiungi un'altra opportunità`;
                                 }
                               })()}
                             </span>

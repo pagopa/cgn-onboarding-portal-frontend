@@ -14,6 +14,7 @@ import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
+import { EntityType } from "../../api/generated";
 import { RootState } from "../../store/store";
 import BucketCodeModal from "./BucketCodeModal";
 import { getBadgeStatus } from "./ConventionDetails";
@@ -37,6 +38,10 @@ const Discount = ({
   const [rejectMessage, setRejectMessage] = useState("");
   const [isBucketModalOpen, setIsBucketModalOpen] = useState(false);
 
+  const entityType = useSelector(
+    (state: RootState) => state.agreement.value?.entityType
+  );
+
   const { triggerTooltip } = useTooltip();
 
   const toggleBucketModal = () => setIsBucketModalOpen(!isBucketModalOpen);
@@ -55,8 +60,15 @@ const Discount = ({
         () => {
           triggerTooltip({
             severity: Severity.SUCCESS,
-            text:
-              "La sospensione dell'opportunità è stata effettuata con successo.",
+            text: (() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return "La sospensione dell'agevolazione è stata effettuata con successo.";
+                default:
+                case EntityType.PublicAdministration:
+                  return "La sospensione dell'opportunità è stata effettuata con successo.";
+              }
+            })(),
             title: "sospensione effettuata"
           });
           reloadDetails();
@@ -82,8 +94,15 @@ const Discount = ({
         () => {
           triggerTooltip({
             severity: Severity.SUCCESS,
-            text:
-              "La motivazione del fallimento del test dell'opportunità è stata inviata con successo.",
+            text: (() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return "La motivazione del fallimento del test dell'agevolazione è stata inviata con successo.";
+                default:
+                case EntityType.PublicAdministration:
+                  return "La motivazione del fallimento del test dell'opportunità è stata inviata con successo.";
+              }
+            })(),
             title: "Test respinto"
           });
           reloadDetails();
@@ -106,8 +125,15 @@ const Discount = ({
         () => {
           triggerTooltip({
             severity: Severity.SUCCESS,
-            text:
-              "L'opportunità ha superato il test ed è pronta per essere pubblicata dall'operatore",
+            text: (() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return "L'agevolazione ha superato il test ed è pronta per essere pubblicata dall'operatore";
+                default:
+                case EntityType.PublicAdministration:
+                  return "L'opportunità ha superato il test ed è pronta per essere pubblicata dall'operatore";
+              }
+            })(),
             title: "Test superato"
           });
           reloadDetails();
@@ -129,24 +155,66 @@ const Discount = ({
     [profile]
   );
 
-  const entityType = useSelector(
-    (state: RootState) => state.agreement.value?.entityType
-  );
-
   return (
     <div>
       <h5 className="mb-7 d-flex align-items-center font-weight-bold">
-        Opportunità
+        {(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Agevolazione";
+            default:
+            case EntityType.PublicAdministration:
+              return "Opportunità";
+          }
+        })()}
       </h5>
-      <Item label="Nome opportunità" value={discount.name} />
-      <Item label="Descrizione opportunità" value={discount.description} />
+      <Item
+        label={(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Nome agevolazione";
+            default:
+            case EntityType.PublicAdministration:
+              return "Nome opportunità";
+          }
+        })()}
+        value={discount.name}
+      />
+      <Item
+        label={(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Descrizione agevolazione";
+            default:
+            case EntityType.PublicAdministration:
+              return "Descrizione opportunità";
+          }
+        })()}
+        value={discount.description}
+      />
       <Item label="Stato" value={getBadgeStatus(discount.state)} />
       <Item
-        label="Data di inizio dell'opportunità"
+        label={(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Data di inizio dell'agevolazione";
+            default:
+            case EntityType.PublicAdministration:
+              return "Data di inizio dell'opportunità";
+          }
+        })()}
         value={format(new Date(discount.startDate), "dd/MM/yyyy")}
       />
       <Item
-        label="Data di fine opportunità"
+        label={(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Data di fine agevolazione";
+            default:
+            case EntityType.PublicAdministration:
+              return "Data di fine opportunità";
+          }
+        })()}
         value={format(new Date(discount.endDate), "dd/MM/yyyy")}
       />
       <Item
@@ -164,10 +232,29 @@ const Discount = ({
           )}
         </div>
       </div>
-      <Item label="Condizioni dell’opportunità" value={discount.condition} />
+      <Item
+        label={(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Condizioni dell'agevolazione";
+            default:
+            case EntityType.PublicAdministration:
+              return "Condizioni dell'opportunità";
+          }
+        })()}
+        value={discount.condition}
+      />
       {discount.discountUrl && (
         <Item
-          label="Link all’opportunità"
+          label={(() => {
+            switch (entityType) {
+              case EntityType.Private:
+                return "Link all'agevolazione";
+              default:
+              case EntityType.PublicAdministration:
+                return "Link all'opportunità";
+            }
+          })()}
           value={
             <a href={discount.discountUrl} target="_blank" rel="noreferrer">
               {discount.discountUrl}
@@ -180,7 +267,15 @@ const Discount = ({
       profile.salesChannel?.discountCodeType === "API" && (
         <div className="row mb-5">
           <div className="col-4 text-gray">
-            Per testare questa opportunità, contatta PagoPA
+            {(() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return "Per testare questa agevolazione, contatta PagoPA";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Per testare questa opportunità, contatta PagoPA";
+              }
+            })()}
           </div>
         </div>
       )}
@@ -189,8 +284,15 @@ const Discount = ({
       profile.salesChannel?.discountCodeType === "LandingPage" && (
         <div className="row mb-5">
           <div className="text-gray">
-            Per testare questa opportunità, usa il Playground CGN presente in
-            app IO
+            {(() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return "Per testare questa agevolazione, usa il Playground CGN presente in app IO";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Per testare questa opportunità, usa il Playground CGN presente in app IO";
+              }
+            })()}
           </div>
         </div>
       )}
@@ -233,8 +335,27 @@ const Discount = ({
         <div className="mt-10">
           <h6 className="text-gray">Aggiungi una nota</h6>
           <p>
-            Inserisci una nota di spiegazione riguardo al motivo per cui questa
-            opportunità sarà sospesa. La nota sarà visibile all’operatore
+            {(() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return (
+                    <>
+                      Inserisci una nota di spiegazione riguardo al motivo per
+                      cui questa agevolazione sarà sospesa. La nota sarà
+                      visibile all’operatore
+                    </>
+                  );
+                default:
+                case EntityType.PublicAdministration:
+                  return (
+                    <>
+                      Inserisci una nota di spiegazione riguardo al motivo per
+                      cui questa opportunità sarà sospesa. La nota sarà visibile
+                      all’operatore
+                    </>
+                  );
+              }
+            })()}
           </p>
           <div className="form-group">
             <textarea
@@ -273,7 +394,15 @@ const Discount = ({
         discount.state === "published" && (
           <div className="mt-5">
             <Button color="primary" onClick={() => setSuspendMode(true)}>
-              Sospendi opportunità
+              {(() => {
+                switch (entityType) {
+                  case EntityType.Private:
+                    return "Sospendi agevolazione";
+                  default:
+                  case EntityType.PublicAdministration:
+                    return "Sospendi opportunità";
+                }
+              })()}
             </Button>
           </div>
         )

@@ -12,7 +12,7 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
-import { DiscountState } from "../../api/generated";
+import { DiscountState, EntityType } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
@@ -57,6 +57,8 @@ const OperatorConvention = () => {
     void getConventionsApi(params);
   };
 
+  const entityType = selectedConvention?.entityType;
+
   const data = useMemo(() => conventions?.items || [], [conventions]);
   const columns = useMemo(
     () => [
@@ -83,7 +85,15 @@ const OperatorConvention = () => {
           format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
       },
       {
-        Header: "Opportunità",
+        Header: (() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Agevolazioni";
+            default:
+            case EntityType.PublicAdministration:
+              return "Opportunità";
+          }
+        })(),
         accessor: "publishedDiscounts"
       },
       {

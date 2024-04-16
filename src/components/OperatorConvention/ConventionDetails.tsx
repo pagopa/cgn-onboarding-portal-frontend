@@ -124,9 +124,8 @@ const getView = (
                 switch (entityType) {
                   case EntityType.Private:
                     return "Agevolazione";
-                  case EntityType.PublicAdministration:
-                    return "Opportunità";
                   default:
+                  case EntityType.PublicAdministration:
                     return "Opportunità";
                 }
               })()}
@@ -137,9 +136,8 @@ const getView = (
                 switch (entityType) {
                   case EntityType.Private:
                     return "agevolazione";
-                  case EntityType.PublicAdministration:
-                    return "opportunità";
                   default:
+                  case EntityType.PublicAdministration:
                     return "opportunità";
                 }
               })()}
