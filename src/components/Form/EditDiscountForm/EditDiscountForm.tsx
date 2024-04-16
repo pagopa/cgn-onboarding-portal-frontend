@@ -48,17 +48,6 @@ const emptyInitialValues = {
   staticCode: ""
 };
 
-const chainAxios = (response: AxiosResponse) =>
-  fromPredicate(
-    (_: AxiosResponse) => _.status === 200 || _.status === 204,
-    (r: AxiosResponse) =>
-      r.status === 409
-        ? new Error("Upload codici ancora in corso")
-        : new Error(
-            "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
-          )
-  )(response);
-
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditDiscountForm = () => {
   const { discountId } = useParams<any>();
@@ -68,6 +57,27 @@ const EditDiscountForm = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
   const { triggerTooltip } = useTooltip();
+
+  const entityType = agreement.entityType;
+
+  const chainAxios = (response: AxiosResponse) =>
+    fromPredicate(
+      (_: AxiosResponse) => _.status === 200 || _.status === 204,
+      (r: AxiosResponse) =>
+        r.status === 409
+          ? new Error("Upload codici ancora in corso")
+          : new Error(
+              (() => {
+                switch (entityType) {
+                  case EntityType.Private:
+                    return "Errore durante la modifica dell'agevolazione, controllare i dati e riprovare";
+                  default:
+                  case EntityType.PublicAdministration:
+                    return "Errore durante la modifica dell'opportunità, controllare i dati e riprovare";
+                }
+              })()
+            )
+    )(response);
 
   const throwErrorTooltip = (e: string) => {
     triggerTooltip({
@@ -182,8 +192,6 @@ const EditDiscountForm = () => {
     void getDiscount(agreement.id);
     void getProfile(agreement.id);
   }, []);
-
-  const entityType = agreement.entityType;
 
   if (loading) {
     return <CenteredLoading />;

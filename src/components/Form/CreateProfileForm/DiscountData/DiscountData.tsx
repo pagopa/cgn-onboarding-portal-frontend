@@ -67,17 +67,6 @@ type Props = {
   onUpdate: () => void;
 };
 
-const chainAxios = (response: AxiosResponse) =>
-  fromPredicate(
-    (_: AxiosResponse) => _.status === 200 || _.status === 204,
-    (r: AxiosResponse) =>
-      r.status === 409
-        ? new Error("Upload codici ancora in corso")
-        : new Error(
-            "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
-          )
-  )(response);
-
 const DiscountData = ({
   handleBack,
   handleNext,
@@ -90,6 +79,27 @@ const DiscountData = ({
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
 
+  const entityType = agreement.entityType;
+
+  const chainAxios = (response: AxiosResponse) =>
+    fromPredicate(
+      (_: AxiosResponse) => _.status === 200 || _.status === 204,
+      (r: AxiosResponse) =>
+        r.status === 409
+          ? new Error("Upload codici ancora in corso")
+          : new Error(
+              (() => {
+                switch (entityType) {
+                  case EntityType.Private:
+                    return "Errore durante la modifica dell'agevolazione, controllare i dati e riprovare";
+                  default:
+                  case EntityType.PublicAdministration:
+                    return "Errore durante la modifica dell'opportunità, controllare i dati e riprovare";
+                }
+              })()
+            )
+    )(response);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -97,8 +107,15 @@ const DiscountData = ({
   const throwErrorTooltip = () => {
     triggerTooltip({
       severity: Severity.DANGER,
-      text:
-        "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
+      text: (() => {
+        switch (entityType) {
+          case EntityType.Private:
+            return "Errore durante la creazione dell'agevolazione, controllare i dati e riprovare";
+          default:
+          case EntityType.PublicAdministration:
+            return "Errore durante la creazione dell'opportunità, controllare i dati e riprovare";
+        }
+      })()
     });
   };
 
@@ -241,8 +258,6 @@ const DiscountData = ({
     }
     void getProfile(agreement.id);
   }, []);
-
-  const entityType = agreement.entityType;
 
   if (loading) {
     return <CenteredLoading />;

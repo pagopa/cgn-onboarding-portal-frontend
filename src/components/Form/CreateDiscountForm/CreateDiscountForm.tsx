@@ -53,11 +53,20 @@ const CreateDiscountForm = () => {
   const [profile, setProfile] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
+  const entityType = agreement.entityType;
+
   const throwErrorTooltip = () => {
     triggerTooltip({
       severity: Severity.DANGER,
-      text:
-        "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
+      text: (() => {
+        switch (entityType) {
+          case EntityType.Private:
+            return "Errore durante la creazione dell'agevolazione, controllare i dati e riprovare";
+          default:
+          case EntityType.PublicAdministration:
+            return "Errore durante la creazione dell'opportunità, controllare i dati e riprovare";
+        }
+      })()
     });
   };
 
@@ -108,8 +117,6 @@ const CreateDiscountForm = () => {
     setLoading(true);
     void getProfile(agreement.id);
   }, []);
-
-  const entityType = agreement.entityType;
 
   return (
     <Formik
