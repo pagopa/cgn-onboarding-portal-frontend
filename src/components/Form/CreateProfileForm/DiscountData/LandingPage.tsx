@@ -16,7 +16,7 @@ const LandingPage = ({ children, index }: Props) => {
         name={
           hasIndex ? `discounts[${index}].landingPageUrl` : "landingPageUrl"
         }
-        placeholder="Inserisci indirizzo"
+        placeholder="Inserisci indirizzo (completo di protocollo http o https)"
         type="text"
       />
       <CustomErrorMessage
