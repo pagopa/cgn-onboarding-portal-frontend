@@ -37,10 +37,11 @@ const DiscountInfo = ({
         htmlFor="name"
         title={(() => {
           switch (entityType) {
-            case EntityType.PublicAdministration:
-              return "Nome opportunità";
             case EntityType.Private:
               return "Nome agevolazione";
+            default:
+            case EntityType.PublicAdministration:
+              return "Nome opportunità";
           }
         })()}
         description={(() => {

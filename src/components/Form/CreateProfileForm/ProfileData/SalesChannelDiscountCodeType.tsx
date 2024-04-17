@@ -231,8 +231,19 @@ const SalesChannelDiscountCodeType = ({
                 >
                   Sede fisica
                 </a>
-                : indicherò una sede fisica dove il cittadino potrà usufruire
-                dell’opportunità
+
+                {(() => {
+                  switch (entityType) {
+                    default:
+                    case EntityType.PublicAdministration:
+                      return (
+                        <>
+                          : indicherò una sede fisica dove il cittadino potrà
+                          usufruire dell’opportunità
+                        </>
+                      );
+                  }
+                })()}
               </span>
             </label>
           </div>

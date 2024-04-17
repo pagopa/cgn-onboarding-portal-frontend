@@ -99,7 +99,7 @@ const ProfileDocuments = () => {
               <Icon icon="it-file" color="primary" className="mr-4" />
               <div>
                 <a
-                  href="https://pagopa.gitbook.io/documentazione-tecnica-portale-operatori-1.0.0"
+                  href="https://docs.pagopa.it/carta-giovani-nazionale"
                   target="_blank"
                   className="text-sm font-weight-semibold text-blue"
                   rel="noreferrer"

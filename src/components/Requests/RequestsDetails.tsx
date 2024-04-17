@@ -29,6 +29,8 @@ const RequestsDetails = ({
   const [checkAllDocs, setCheckAllDocs] = useState(false);
   const { triggerTooltip } = useTooltip();
 
+  const entityType = original.entityType as EntityType;
+
   const assignedToMe =
     `${user.given_name} ${user.family_name}` ===
     (original as any).assignee?.fullName;
@@ -100,19 +102,33 @@ const RequestsDetails = ({
         />
         <RequestItem
           label="Tipologia ente"
-          value={getEntityTypeLabel(original.entityType)}
+          value={getEntityTypeLabel(entityType)}
         />
-        {original.entityType === EntityType.Private && (
+        {entityType === EntityType.Private && (
           <React.Fragment>
             <RequestItem
-              label="Numero agevolazioni proposte"
+              label={(() => {
+                switch (entityType) {
+                  case EntityType.Private:
+                    return "Numero agevolazioni proposte";
+                  default:
+                    return "Numero opportunità proposte";
+                }
+              })()}
               value={original.discounts?.length}
             />
             <div className="ml-3">
               {original.discounts?.map((doc: { name: any }, i: number) => (
                 <RequestItem
                   key={i}
-                  label={`Agevolazione #${i + 1}`}
+                  label={(() => {
+                    switch (entityType) {
+                      case EntityType.Private:
+                        return `Agevolazione #${i + 1}`;
+                      default:
+                        return `Opportunità #${i + 1}`;
+                    }
+                  })()}
                   value={doc.name}
                 />
               ))}

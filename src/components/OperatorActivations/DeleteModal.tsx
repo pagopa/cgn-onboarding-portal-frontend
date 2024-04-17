@@ -25,9 +25,8 @@ const DeleteModal = ({ isOpen, toggle, onDelete }: Props) => {
           switch (entityType) {
             case EntityType.Private:
               return "agevolazioni";
-            case EntityType.PublicAdministration:
-              return "opportunità";
             default:
+            case EntityType.PublicAdministration:
               return "opportunità";
           }
         })()}{" "}

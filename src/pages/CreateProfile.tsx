@@ -142,9 +142,8 @@ function getSteps(entityType: EntityType | undefined) {
       switch (entityType) {
         case EntityType.Private:
           return "Dati agevolazione";
-        case EntityType.PublicAdministration:
-          return "Dati opportunità";
         default:
+        case EntityType.PublicAdministration:
           return "Dati opportunità";
       }
     })()

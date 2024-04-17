@@ -63,7 +63,18 @@ const Discounts = () => {
     await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
       .map(response => response.data.items)
       .fold(
-        _ => throwErrorTooltip("Errore nel caricamento delle agevolazioni"),
+        _ =>
+          throwErrorTooltip(
+            (() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return "Errore nel caricamento delle agevolazioni";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Errore nel caricamento delle opportunità";
+              }
+            })()
+          ),
         discounts => setDiscounts(discounts)
       )
       .run();
@@ -74,7 +85,18 @@ const Discounts = () => {
       toError
     )
       .fold(
-        _ => throwErrorTooltip("Errore nella cancellazione dell'opportunità"),
+        _ =>
+          throwErrorTooltip(
+            (() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return "Errore nella cancellazione dell'agevolazione";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Errore nella cancellazione dell'opportunità";
+              }
+            })()
+          ),
         () =>
           setDiscounts(
             discounts.filter(
@@ -107,7 +129,15 @@ const Discounts = () => {
       .fold(
         _ =>
           throwErrorTooltip(
-            "Errore durante la richiesta di cambio di stato dell'opportunità"
+            (() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return "Errore durante la richiesta di cambio di stato dell'agevolazione";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Errore durante la richiesta di cambio di stato dell'opportunità";
+              }
+            })()
           ),
         () => void getDiscounts()
       )
@@ -123,7 +153,15 @@ const Discounts = () => {
       .fold(
         _ =>
           throwErrorTooltip(
-            "Errore durante la richiesta di test dell'opportunità"
+            (() => {
+              switch (entityType) {
+                case EntityType.Private:
+                  return "Errore durante la richiesta di test dell'agevolazione";
+                default:
+                case EntityType.PublicAdministration:
+                  return "Errore durante la richiesta di test dell'opportunità";
+              }
+            })()
           ),
         () => void getDiscounts()
       )

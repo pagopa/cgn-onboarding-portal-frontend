@@ -176,7 +176,15 @@ const HelpForm = () => {
                     className="text-sm font-weight-normal text-black"
                     htmlFor="Discounts"
                   >
-                    Opportunità
+                    {(() => {
+                      switch (entityType) {
+                        case EntityType.Private:
+                          return "Agevolazione";
+                        default:
+                        case EntityType.PublicAdministration:
+                          return "Opportunità";
+                      }
+                    })()}
                   </label>
                 </div>
                 <div className="form-check">
