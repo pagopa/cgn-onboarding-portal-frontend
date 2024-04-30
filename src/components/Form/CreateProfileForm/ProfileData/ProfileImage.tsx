@@ -68,6 +68,7 @@ const ProfileImage = () => {
             text: getImageErrorCodeDescription(error?.response?.data)
           });
           setLoading(false);
+          setImageRefreshTimestamp(Date.now());
         },
         response => {
           if (response?.imageUrl) {
@@ -76,9 +77,13 @@ const ProfileImage = () => {
             );
           }
           setLoading(false);
+          setImageRefreshTimestamp(Date.now());
         }
       )
       .run();
+  const [imageRefreshTimestamp, setImageRefreshTimestamp] = useState(
+    Date.now()
+  );
   return (
     <FormSection
       title="Immagine operatore"
@@ -96,9 +101,7 @@ const ProfileImage = () => {
               {agreement.imageUrl ? (
                 <div className="d-flex flex-row align-items-end">
                   <img
-                    src={`${agreement.imageUrl}?${
-                      Date.now() /* TODO: warning, this timestamp makes load image every time an interaction occurs leading to high bandwidth usage */
-                    }`}
+                    src={`${agreement.imageUrl}?${imageRefreshTimestamp}`}
                     style={{
                       width: "128px",
                       height: "128px",

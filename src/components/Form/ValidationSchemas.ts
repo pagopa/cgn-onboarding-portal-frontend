@@ -1,5 +1,9 @@
 import * as Yup from "yup";
-import { HelpRequestCategoryEnum, SupportType } from "../../api/generated";
+import {
+  HelpRequestCategoryEnum,
+  SalesChannelType,
+  SupportType
+} from "../../api/generated";
 import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 
@@ -93,9 +97,10 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     }),
     allNationalAddresses: Yup.boolean().required(REQUIRED_FIELD),
     addresses: Yup.array().when(["channelType", "allNationalAddresses"], {
-      is: (channel: string, allNationalAddr: boolean) =>
-        (channel === "OfflineChannel" || channel === "BothChannels") &&
-        !allNationalAddr,
+      is: (channel: string, allNationalAddresses: boolean) =>
+        (channel === SalesChannelType.OfflineChannel ||
+          channel === SalesChannelType.BothChannels) &&
+        !allNationalAddresses,
       then: Yup.array()
         .of(
           Yup.object().shape({
