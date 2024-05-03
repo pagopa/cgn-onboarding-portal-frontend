@@ -17,23 +17,70 @@ const SalesChannelDiscountCodeType = ({
 }) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
-  const updateSalesChannelType = (
+  const formValues = formikContext.values;
+  const formikContextSetFieldValue = formikContext.setFieldValue;
+  const updateSalesChannelType = (channelType: SalesChannelType) => (
     event: React.MouseEvent<HTMLInputElement>
   ) => {
-    if (entityType === EntityType.PublicAdministration) {
-      if (event.currentTarget.value === "") {
-        formikContext.setFieldValue(
-          "salesChannel.channelType",
-          SalesChannelType.OfflineChannel
-        );
-      } else {
-        formikContext.setFieldValue(
-          "salesChannel.channelType",
-          SalesChannelType.OnlineChannel
-        );
-      }
-    }
+    formikContext.setFieldValue("salesChannel.channelType", channelType);
   };
+  // here we are using an effect because there is more code that uses channelType attribute on the form for checks
+  // logically channelType is a derived value based on discountCodeType, addresses, allNationalAddresses
+  // channelType can be factored out from the form values, but i still needs to be sent to the backend at this point
+  React.useEffect(() => {
+    const thereAreSomeAddresses =
+      formikContext.values.salesChannel.addresses?.some(
+        address =>
+          address.street || address.zipCode || address.city || address.district
+      ) || formValues.salesChannel?.allNationalAddresses;
+    const chosenChannelType = (() => {
+      switch (formValues.salesChannel.discountCodeType) {
+        case DiscountCodeType.Api:
+        case DiscountCodeType.Static:
+        case DiscountCodeType.Bucket:
+        case DiscountCodeType.LandingPage:
+          return SalesChannelType.OnlineChannel;
+        default:
+          return SalesChannelType.OfflineChannel;
+      }
+    })();
+    if (
+      thereAreSomeAddresses &&
+      chosenChannelType === SalesChannelType.OfflineChannel
+    ) {
+      formikContextSetFieldValue(
+        "salesChannel.channelType",
+        SalesChannelType.OfflineChannel
+      );
+    }
+    if (
+      thereAreSomeAddresses &&
+      chosenChannelType === SalesChannelType.OnlineChannel
+    ) {
+      formikContextSetFieldValue(
+        "salesChannel.channelType",
+        SalesChannelType.BothChannels
+      );
+    }
+    if (
+      !thereAreSomeAddresses &&
+      chosenChannelType === SalesChannelType.OfflineChannel
+    ) {
+      formikContextSetFieldValue(
+        "salesChannel.channelType",
+        SalesChannelType.OfflineChannel
+      );
+    }
+    if (
+      !thereAreSomeAddresses &&
+      chosenChannelType === SalesChannelType.OnlineChannel
+    ) {
+      formikContextSetFieldValue(
+        "salesChannel.channelType",
+        SalesChannelType.OnlineChannel
+      );
+    }
+  }, [formValues]);
   return (
     <FormSection
       title={(() => {
@@ -55,7 +102,7 @@ const SalesChannelDiscountCodeType = ({
             type="radio"
             name="salesChannel.discountCodeType"
             value={DiscountCodeType.Api}
-            onClick={updateSalesChannelType}
+            onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
           />
           <label
             className="text-sm font-weight-normal text-black"
@@ -82,7 +129,7 @@ const SalesChannelDiscountCodeType = ({
             type="radio"
             name="salesChannel.discountCodeType"
             value={DiscountCodeType.Static}
-            onClick={updateSalesChannelType}
+            onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
           />
           <label
             className="text-sm font-weight-normal text-black"
@@ -124,7 +171,7 @@ const SalesChannelDiscountCodeType = ({
             type="radio"
             name="salesChannel.discountCodeType"
             value={DiscountCodeType.Bucket}
-            onClick={updateSalesChannelType}
+            onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
           />
           <label
             className="text-sm font-weight-normal text-black"
@@ -172,7 +219,7 @@ const SalesChannelDiscountCodeType = ({
             type="radio"
             name="salesChannel.discountCodeType"
             value={DiscountCodeType.LandingPage}
-            onClick={updateSalesChannelType}
+            onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
           />
           <label
             className="text-sm font-weight-normal text-black"
@@ -210,44 +257,42 @@ const SalesChannelDiscountCodeType = ({
             </span>
           </label>
         </div>
-        {entityType === EntityType.PublicAdministration && (
-          <div className="form-check">
-            <Field
-              id="physcalPlace"
-              type="radio"
-              name="salesChannel.discountCodeType"
-              value=""
-              onClick={updateSalesChannelType}
-            />
-            <label
-              className="text-sm font-weight-normal text-black"
-              htmlFor="physcalPlace"
-            >
-              <span className="text-sm">
-                <a
-                  href="https://docs.pagopa.it/carta-giovani-nazionale/attuazione-della-convenzione/presenza-fisica-del-beneficiario"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Sede fisica
-                </a>
+        <div className="form-check">
+          <Field
+            id="physcalPlace"
+            type="radio"
+            name="salesChannel.discountCodeType"
+            value=""
+            onClick={updateSalesChannelType(SalesChannelType.OfflineChannel)}
+          />
+          <label
+            className="text-sm font-weight-normal text-black"
+            htmlFor="physcalPlace"
+          >
+            <span className="text-sm">
+              <a
+                href="https://docs.pagopa.it/carta-giovani-nazionale/attuazione-della-convenzione/presenza-fisica-del-beneficiario"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Sede fisica
+              </a>
 
-                {(() => {
-                  switch (entityType) {
-                    default:
-                    case EntityType.PublicAdministration:
-                      return (
-                        <>
-                          : indicherò una sede fisica dove il cittadino potrà
-                          usufruire dell’opportunità
-                        </>
-                      );
-                  }
-                })()}
-              </span>
-            </label>
-          </div>
-        )}
+              {(() => {
+                switch (entityType) {
+                  default:
+                  case EntityType.PublicAdministration:
+                    return (
+                      <>
+                        : indicherò una sede fisica dove il cittadino potrà
+                        usufruire dell’opportunità
+                      </>
+                    );
+                }
+              })()}
+            </span>
+          </label>
+        </div>
         <CustomErrorMessage name={`salesChannel.discountCodeType`} />
       </div>
     </FormSection>
