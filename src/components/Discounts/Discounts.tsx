@@ -180,8 +180,10 @@ const Discounts = () => {
       {
         Header: "Aggiunta il",
         accessor: "startDate",
-        Cell: ({ row }: any) =>
-          format(new Date(row.values.startDate), "dd/MM/yyyy")
+        Cell: ({ row }) =>
+          row.original.creationDate
+            ? format(new Date(row.original.creationDate), "dd/MM/yyyy")
+            : null
       },
       {
         Header: "Stato",
