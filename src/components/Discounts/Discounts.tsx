@@ -230,7 +230,22 @@ const Discounts = () => {
           }
         })(),
         accessor: "name",
-        sortType: "string"
+        sortType: "string",
+        Cell({ row }) {
+          return <div style={{
+            whiteSpace: "normal",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            width: "calc(190px - 1.5rem)",
+            height: "calc(56px - 0.5rem)",
+            overflow: "hidden",
+            wordBreak: "break-all",
+          }}>
+            {row.original.name}
+          </div>
+        }
       },
       {
         Header: "Aggiunta il",
