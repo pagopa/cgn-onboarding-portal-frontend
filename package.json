@@ -33,7 +33,7 @@
     "@azure/msal-browser": "^2.14.1",
     "@reduxjs/toolkit": "^1.5.1",
     "axios": "^0.21.1",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "^5.0.0",
     "bootstrap-italia": "^1.4.3",
     "classnames": "^2.2.6",
     "cross-env": "^7.0.3",
