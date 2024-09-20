@@ -18,7 +18,6 @@ import {
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { SupportContact } from "../../SupportContact";
 import { OperatorDataButtons } from "../../EditOperatorDataForm/EditOperatorDataForm";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
@@ -64,9 +63,7 @@ const defaultInitialValues = {
   description: "",
   description_en: "",
   description_de: "-",
-  salesChannel: defaultSalesChannel,
-  supportType: "",
-  supportValue: ""
+  salesChannel: defaultSalesChannel
 };
 
 type Props = {
@@ -285,13 +282,12 @@ const ProfileData = ({
             <SalesChannels
               entityType={entityType}
               // geolocationToken={geolocationToken}
-            />
-            <SupportContact>
+            >
               <OperatorDataButtons
                 onBack={handleBack}
                 isEnabled={!!agreement.imageUrl}
               />
-            </SupportContact>
+            </SalesChannels>
           </FormContainer>
         </Form>
       )}

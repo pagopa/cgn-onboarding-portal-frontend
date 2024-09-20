@@ -19,10 +19,11 @@ import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 type Props = {
   // geolocationToken: string;
   entityType: EntityType | undefined;
+  children?: React.ReactNode;
 };
 
 /* eslint-disable sonarjs/cognitive-complexity */
-const SalesChannels = ({ entityType }: Props) => {
+const SalesChannels = ({ entityType, children }: Props) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
   const formValues = formikContext.values;
@@ -291,6 +292,7 @@ const SalesChannels = ({ entityType }: Props) => {
             placeholder="Inserisci un sito web (completo di protocollo http o https)"
           />
           <CustomErrorMessage name="salesChannel.websiteUrl" />
+          {children}
         </FormSection>
       )}
     </>

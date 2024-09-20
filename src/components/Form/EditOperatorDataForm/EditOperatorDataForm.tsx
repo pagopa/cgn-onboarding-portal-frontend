@@ -21,7 +21,6 @@ import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
 import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
-import { SupportContact } from "../SupportContact";
 import { Profile } from "../../../api/generated";
 
 const defaultSalesChannel = {
@@ -55,9 +54,7 @@ const defaultInitialValues = {
   description: "",
   description_en: "",
   description_de: "-",
-  salesChannel: defaultSalesChannel,
-  supportType: "",
-  supportValue: ""
+  salesChannel: defaultSalesChannel
 };
 
 const updateProfile = (agreement: any, history: H.History) => async (
@@ -240,13 +237,12 @@ const EditOperatorDataForm = () => {
           <SalesChannels
             entityType={entityType}
             // geolocationToken={geolocationToken}
-          />
-          <SupportContact>
+          >
             <OperatorDataButtons
               onBack={() => history.push(DASHBOARD)}
               isEnabled={true}
             />
-          </SupportContact>
+          </SalesChannels>
         </Form>
       )}
     </Formik>
