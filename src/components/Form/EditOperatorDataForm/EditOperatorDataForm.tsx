@@ -23,6 +23,9 @@ import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 import { Profile } from "../../../api/generated";
 
+// WARNING: this file is 90% duplicated with src/components/Form/CreateProfileForm/ProfileData/ProfileData.tsx
+// any changes here should be reflected there as well
+
 const defaultSalesChannel = {
   channelType: "",
   websiteUrl: "",
@@ -57,31 +60,14 @@ const defaultInitialValues = {
   salesChannel: defaultSalesChannel
 };
 
-const updateProfile = (agreement: any, history: H.History) => async (
-  profile: any
-) => {
-  if (agreement) {
-    await tryCatch(
-      () => Api.Profile.updateProfile(agreement.id, profile),
-      toError
-    )
-      .fold(
-        () => void 0,
-        () => history.push(DASHBOARD)
-      )
-      .run();
-  }
-};
-
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const EditOperatorDataForm = () => {
+const EditOperatorForm = (variant: "edit-data" | "edit-profile") => () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const user = useSelector((state: RootState) => state.user.data);
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const [loading, setLoading] = useState(true);
   const [geolocationToken, setGeolocationToken] = useState<any>();
-  const updateProfileHandler = updateProfile(agreement, history);
   const [existingProfile, setExistingProfile] = useState<Profile | undefined>();
 
   const getProfile = async (agreementId: string) =>
@@ -192,10 +178,24 @@ const EditOperatorDataForm = () => {
         };
     }
   };
+
+  const editProfile = async (profile: any) =>
+    await tryCatch(
+      () => Api.Profile.updateProfile(agreement.id, profile),
+      toError
+    )
+      .map(response => response.data)
+      .fold(
+        () => void 0,
+        () => history.push(DASHBOARD)
+      )
+      .run();
+
   if (loading) {
     return <CenteredLoading />;
   }
   const entityType = agreement.entityType;
+
   return (
     <Formik
       initialValues={{
@@ -212,7 +212,7 @@ const EditOperatorDataForm = () => {
       onSubmit={values => {
         const { hasDifferentFullName, ...profile } = values;
         const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
-        void updateProfileHandler({
+        void editProfile({
           ...profile,
           name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
           name_en: !hasDifferentFullName
@@ -228,28 +228,46 @@ const EditOperatorDataForm = () => {
         });
       }}
     >
-      {({ values, setFieldValue }) => (
-        <Form autoComplete="off">
-          <ProfileInfo entityType={entityType} />
-          <ReferentData entityType={entityType} />
-          <ProfileImage />
-          <ProfileDescription />
-          <SalesChannels
-            entityType={entityType}
-            // geolocationToken={geolocationToken}
-          >
-            <OperatorDataButtons
-              onBack={() => history.push(DASHBOARD)}
-              isEnabled={true}
-            />
-          </SalesChannels>
-        </Form>
-      )}
+      {({ values, setFieldValue }) => {
+        switch (variant) {
+          case "edit-data":
+            return (
+              <Form autoComplete="off">
+                <ProfileInfo entityType={entityType} />
+                <ReferentData entityType={entityType} />
+                <ProfileImage />
+                <ProfileDescription />
+                <SalesChannels
+                  entityType={entityType}
+                  // geolocationToken={geolocationToken}
+                >
+                  <OperatorDataButtons
+                    onBack={() => history.push(DASHBOARD)}
+                    isEnabled={true}
+                  />
+                </SalesChannels>
+              </Form>
+            );
+          case "edit-profile":
+            return (
+              <Form autoComplete="off">
+                <ProfileInfo entityType={entityType} />
+                <ReferentData entityType={entityType}>
+                  <OperatorDataButtons
+                    onBack={() => history.push(DASHBOARD)}
+                    isEnabled={true}
+                  />
+                </ReferentData>
+              </Form>
+            );
+        }
+      }}
     </Formik>
   );
 };
 
-export default EditOperatorDataForm;
+export const EditOperatorDataForm = EditOperatorForm("edit-data");
+export const EditProfileForm = EditOperatorForm("edit-profile");
 
 export function OperatorDataButtons({
   isEnabled,
@@ -276,7 +294,7 @@ export function OperatorDataButtons({
         tag="button"
         disabled={!isEnabled}
       >
-        Continua
+        Salva
       </Button>
     </div>
   );
