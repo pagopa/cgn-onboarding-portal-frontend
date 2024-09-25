@@ -195,7 +195,11 @@ export const discountDataValidationSchema = (
           .required(REQUIRED_FIELD),
         otherwise: Yup.string()
       }),
-      landingPageReferrer: Yup.string(),
+      landingPageReferrer: Yup.string().when("condition", {
+        is: () => landingCheck,
+        then: Yup.string().required(REQUIRED_FIELD),
+        otherwise: Yup.string()
+      }),
       lastBucketCodeLoadUid: Yup.string().when("condition", {
         is: () => bucketCheck,
         then: Yup.string().required(REQUIRED_FIELD),
@@ -286,7 +290,11 @@ export const discountsListDataValidationSchema = (
               .required(REQUIRED_FIELD),
             otherwise: Yup.string()
           }),
-          landingPageReferrer: Yup.string(),
+          landingPageReferrer: Yup.string().when("condition", {
+            is: () => landingCheck,
+            then: Yup.string().required(REQUIRED_FIELD),
+            otherwise: Yup.string()
+          }),
           lastBucketCodeLoadUid: Yup.string().when("condition", {
             is: () => bucketCheck,
             then: Yup.string().required(REQUIRED_FIELD),
