@@ -5,6 +5,7 @@ import { toError } from "fp-ts/lib/Either";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Button } from "design-react-kit";
 import Api from "../../../../api";
 import { Profile } from "../../../../api/generated";
 import { Severity, useTooltip } from "../../../../context/tooltip";
@@ -18,13 +19,14 @@ import {
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { SupportContact } from "../../SupportContact";
-import { OperatorDataButtons } from "../../EditOperatorDataForm/EditOperatorDataForm";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
 import SalesChannels from "./SalesChannels";
+
+// WARNING: this file is 90% duplicated with src/components/Form/EditOperatorDataForm/EditOperatorDataForm.tsx
+// any changes here should be reflected there as well
 
 const defaultSalesChannel = {
   channelType: "",
@@ -64,9 +66,7 @@ const defaultInitialValues = {
   description: "",
   description_en: "",
   description_de: "-",
-  salesChannel: defaultSalesChannel,
-  supportType: "",
-  supportValue: ""
+  salesChannel: defaultSalesChannel
 };
 
 type Props = {
@@ -285,13 +285,12 @@ const ProfileData = ({
             <SalesChannels
               entityType={entityType}
               // geolocationToken={geolocationToken}
-            />
-            <SupportContact>
+            >
               <OperatorDataButtons
                 onBack={handleBack}
                 isEnabled={!!agreement.imageUrl}
               />
-            </SupportContact>
+            </SalesChannels>
           </FormContainer>
         </Form>
       )}
@@ -300,3 +299,34 @@ const ProfileData = ({
 };
 
 export default ProfileData;
+
+function OperatorDataButtons({
+  isEnabled,
+  onBack
+}: {
+  onBack(): void;
+  isEnabled: boolean;
+}) {
+  return (
+    <div className="mt-10">
+      <Button
+        className="px-14 mr-4"
+        outline
+        color="primary"
+        tag="button"
+        onClick={onBack}
+      >
+        Indietro
+      </Button>
+      <Button
+        type="submit"
+        className="px-14 mr-4"
+        color="primary"
+        tag="button"
+        disabled={!isEnabled}
+      >
+        Continua
+      </Button>
+    </div>
+  );
+}
