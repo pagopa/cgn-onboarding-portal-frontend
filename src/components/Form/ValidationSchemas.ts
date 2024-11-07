@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { HelpRequestCategoryEnum, SupportType } from "../../api/generated";
+import { HelpRequestCategoryEnum, SalesChannelType } from "../../api/generated";
 import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 
@@ -93,9 +93,10 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     }),
     allNationalAddresses: Yup.boolean().required(REQUIRED_FIELD),
     addresses: Yup.array().when(["channelType", "allNationalAddresses"], {
-      is: (channel: string, allNationalAddr: boolean) =>
-        (channel === "OfflineChannel" || channel === "BothChannels") &&
-        !allNationalAddr,
+      is: (channel: string, allNationalAddresses: boolean) =>
+        (channel === SalesChannelType.OfflineChannel ||
+          channel === SalesChannelType.BothChannels) &&
+        !allNationalAddresses,
       then: Yup.array()
         .of(
           Yup.object().shape({
@@ -120,24 +121,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
         .required(REQUIRED_FIELD),
       otherwise: Yup.array().notRequired()
     })
-  }),
-  supportType: Yup.mixed<SupportType>()
-    .oneOf(Object.values(SupportType))
-    .required(REQUIRED_FIELD),
-  supportValue: Yup.string()
-    .required(REQUIRED_FIELD)
-    .when("supportType", {
-      is: SupportType.EmailAddress,
-      then: schema => schema.email(INCORRECT_EMAIL_ADDRESS)
-    })
-    .when("supportType", {
-      is: SupportType.PhoneNumber,
-      then: schema => schema.matches(/^[0-9]{4,}$/, INCORRECT_PHONE_NUMBER)
-    })
-    .when("supportType", {
-      is: SupportType.Website,
-      then: schema => schema.matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
-    })
+  })
 });
 
 export const discountDataValidationSchema = (
@@ -211,7 +195,11 @@ export const discountDataValidationSchema = (
           .required(REQUIRED_FIELD),
         otherwise: Yup.string()
       }),
-      landingPageReferrer: Yup.string(),
+      landingPageReferrer: Yup.string().when("condition", {
+        is: () => landingCheck,
+        then: Yup.string().required(REQUIRED_FIELD),
+        otherwise: Yup.string()
+      }),
       lastBucketCodeLoadUid: Yup.string().when("condition", {
         is: () => bucketCheck,
         then: Yup.string().required(REQUIRED_FIELD),
@@ -302,7 +290,11 @@ export const discountsListDataValidationSchema = (
               .required(REQUIRED_FIELD),
             otherwise: Yup.string()
           }),
-          landingPageReferrer: Yup.string(),
+          landingPageReferrer: Yup.string().when("condition", {
+            is: () => landingCheck,
+            then: Yup.string().required(REQUIRED_FIELD),
+            otherwise: Yup.string()
+          }),
           lastBucketCodeLoadUid: Yup.string().when("condition", {
             is: () => bucketCheck,
             then: Yup.string().required(REQUIRED_FIELD),
