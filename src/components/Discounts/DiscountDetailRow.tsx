@@ -255,30 +255,14 @@ Props) => {
         {row.original.state === "test_failed" && (
           <Callout
             type={"danger"}
-            title={(() => {
-              switch (entityType) {
-                case EntityType.Private:
-                  return "IL TEST PER QUESTA AGEVOLAZIONE È FALLITO";
-                default:
-                case EntityType.PublicAdministration:
-                  return "IL TEST PER QUESTA OPPORTUNITA' È FALLITO";
-              }
-            })()}
+            title="IL TEST PER QUESTA OPPORTUNITA' È FALLITO"
             body={row.original.testFailureReason}
           />
         )}
         {row.original.state === "suspended" && (
           <Callout
             type={"danger"}
-            title={(() => {
-              switch (entityType) {
-                case EntityType.Private:
-                  return "Questa agevolazione è stata sospesa";
-                default:
-                case EntityType.PublicAdministration:
-                  return "Questa opportunità è stata sospesa";
-              }
-            })()}
+            title="Questa opportunità è stata sospesa"
             body={row.original.suspendedReasonMessage}
           />
         )}
@@ -296,71 +280,31 @@ Props) => {
         <table className="table">
           <tbody>
             <MultilanguageProfileItem
-              label={(() => {
-                switch (entityType) {
-                  case EntityType.Private:
-                    return "Nome agevolazione";
-                  default:
-                  case EntityType.PublicAdministration:
-                    return "Nome opportunità";
-                }
-              })()}
+              label="Nome opportunità"
               value={row.original.name}
               value_en={row.original.name_en}
             />
             {row.original.description && row.original.description_en && (
               <MultilanguageProfileItem
-                label={(() => {
-                  switch (entityType) {
-                    case EntityType.Private:
-                      return "Descrizione agevolazione";
-                    default:
-                    case EntityType.PublicAdministration:
-                      return "Descrizione opportunità";
-                  }
-                })()}
+                label="Descrizione opportunità"
                 value={row.original.description}
                 value_en={row.original.description_en}
               />
             )}
             <tr>
               <td className={`px-0 text-gray border-bottom-0`}>
-                {(() => {
-                  switch (entityType) {
-                    case EntityType.Private:
-                      return "Stato agevolazione";
-                    default:
-                    case EntityType.PublicAdministration:
-                      return "Stato opportunità";
-                  }
-                })()}
+                Stato opportunità
               </td>
               <td className={`border-bottom-0`}>
                 {getDiscountComponent(row.values.state)}
               </td>
             </tr>
             <ProfileItem
-              label={(() => {
-                switch (entityType) {
-                  case EntityType.Private:
-                    return "Data di inizio dell'agevolazione";
-                  default:
-                  case EntityType.PublicAdministration:
-                    return "Data di inizio dell'opportunità";
-                }
-              })()}
+              label="Data di inizio dell'opportunità"
               value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
             />
             <ProfileItem
-              label={(() => {
-                switch (entityType) {
-                  case EntityType.Private:
-                    return "Data di fine agevolazione";
-                  default:
-                  case EntityType.PublicAdministration:
-                    return "Data di fine opportunità";
-                }
-              })()}
+              label="Data di fine opportunità"
               value={format(new Date(row.original.endDate), "dd/MM/yyyy")}
             />
             <ProfileItem
@@ -382,30 +326,14 @@ Props) => {
             </tr>
             {row.original.condition && row.original.condition_en && (
               <MultilanguageProfileItem
-                label={(() => {
-                  switch (entityType) {
-                    case EntityType.Private:
-                      return "Condizioni dell'agevolazione";
-                    default:
-                    case EntityType.PublicAdministration:
-                      return "Condizioni dell'opportunità";
-                  }
-                })()}
+                label="Condizioni dell'opportunità"
                 value={row.original.condition}
                 value_en={row.original.condition_en}
               />
             )}
             {row.original.discountUrl && (
               <ProfileItem
-                label={(() => {
-                  switch (entityType) {
-                    case EntityType.Private:
-                      return "Link all'agevolazione";
-                    default:
-                    case EntityType.PublicAdministration:
-                      return "Link all'opportunità";
-                  }
-                })()}
+                label="Link all'opportunità"
                 value={
                   <a
                     href={row.original.discountUrl}

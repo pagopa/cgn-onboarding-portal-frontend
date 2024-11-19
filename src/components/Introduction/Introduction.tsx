@@ -32,15 +32,7 @@ const Introduction = ({ name, activeTab, handleClick, entityType }: Props) => (
         Profilo
       </NavItem>
       <NavItem active={activeTab === 1} onClick={() => handleClick(1)}>
-        {(() => {
-          switch (entityType) {
-            case EntityType.Private:
-              return "Agevolazioni";
-            default:
-            case EntityType.PublicAdministration:
-              return "Opportunità";
-          }
-        })()}
+        Opportunità
       </NavItem>
       <NavItem active={activeTab === 2} onClick={() => handleClick(2)}>
         Dati dell&apos;ente

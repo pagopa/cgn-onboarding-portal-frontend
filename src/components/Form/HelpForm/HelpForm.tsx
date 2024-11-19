@@ -55,27 +55,13 @@ const topics = (entityType: EntityType | undefined) => [
   },
   {
     key: "Discounts",
-    items: (() => {
-      switch (entityType) {
-        case EntityType.Private:
-          return [
-            "Aggiungere un'agevolazione",
-            "Modificare un'agevolazione",
-            "Eliminare un'agevolazione",
-            "Stati dell'agevolazione",
-            "Codice statico"
-          ];
-        default:
-        case EntityType.PublicAdministration:
-          return [
-            "Aggiungere un'opportunità",
-            "Modificare un'opportunità",
-            "Eliminare un'opportunità",
-            "Stati dell'opportunità",
-            "Codice statico"
-          ];
-      }
-    })()
+    items: [
+      "Aggiungere un'opportunità",
+      "Modificare un'opportunità",
+      "Eliminare un'opportunità",
+      "Stati dell'opportunità",
+      "Codice statico"
+    ]
   },
   {
     key: "Documents",
@@ -176,15 +162,7 @@ const HelpForm = () => {
                     className="text-sm font-weight-normal text-black"
                     htmlFor="Discounts"
                   >
-                    {(() => {
-                      switch (entityType) {
-                        case EntityType.Private:
-                          return "Agevolazione";
-                        default:
-                        case EntityType.PublicAdministration:
-                          return "Opportunità";
-                      }
-                    })()}
+                    Opportunità
                   </label>
                 </div>
                 <div className="form-check">

@@ -119,29 +119,9 @@ const getView = (
       } else {
         return (
           <div>
-            <h5 className="mb-5 font-weight-bold">
-              {(() => {
-                switch (entityType) {
-                  case EntityType.Private:
-                    return "Agevolazione";
-                  default:
-                  case EntityType.PublicAdministration:
-                    return "Opportunità";
-                }
-              })()}
-            </h5>
+            <h5 className="mb-5 font-weight-bold">Opportunità</h5>
             <p className="text-center text-gray">
-              Non è presente nessuna{" "}
-              {(() => {
-                switch (entityType) {
-                  case EntityType.Private:
-                    return "agevolazione";
-                  default:
-                  case EntityType.PublicAdministration:
-                    return "opportunità";
-                }
-              })()}
-              .
+              Non è presente nessuna opportunità.
             </p>
           </div>
         );
@@ -235,15 +215,7 @@ const ConventionDetails = ({
                       view,
                       setView,
                       "agevolazione",
-                      (() => {
-                        switch (entityType) {
-                          case EntityType.Private:
-                            return "Agevolazioni";
-                          default:
-                          case EntityType.PublicAdministration:
-                            return "Opportunità";
-                        }
-                      })(),
+                      "Opportunità",
                       details?.discounts?.length ? (
                         <ul className="link-list">
                           {details?.discounts?.map((d, i: number) => (

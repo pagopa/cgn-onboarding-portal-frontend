@@ -73,14 +73,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
               <FormSection
                 key={index}
                 title={index + 1 >= 2 ? `Indirizzo ${index + 1}` : `Indirizzo`}
-                description={(() => {
-                  switch (entityType) {
-                    case EntityType.Private:
-                      return "Inserisci l'indirizzo completo della sede. Servirà agli utenti per usufruire delle agevolazioni del tuo operatore, se richiedono una sede fisica.";
-                    case EntityType.PublicAdministration:
-                      return "Inserisci l'indirizzo completo della sede. Servirà agli utenti per usufruire delle opportunità del tuo operatore, se richiedono una sede fisica.";
-                  }
-                })()}
+                description="Inserisci l'indirizzo completo della sede. Servirà agli utenti per usufruire delle opportunità del tuo operatore, se richiedono una sede fisica."
                 required={(() => {
                   switch (entityType) {
                     case EntityType.Private: {
@@ -109,7 +102,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                     text={(() => {
                       switch (entityType) {
                         case EntityType.Private:
-                          return "Rappresenti un franchising e vuoi che le agevolazioni valgano in tutti i punti vendita presenti sul territorio nazionale?";
+                          return "Rappresenti un franchising e vuoi che le opportunità valgano in tutti i punti vendita presenti sul territorio nazionale?";
                         default:
                         case EntityType.PublicAdministration:
                           return "Rappresenti un ente e vuoi che le opportunità valgano in tutti i punti vendita presenti sul territorio nazionale?";

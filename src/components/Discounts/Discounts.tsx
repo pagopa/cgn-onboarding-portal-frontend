@@ -63,18 +63,7 @@ const Discounts = () => {
     await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
       .map(response => response.data.items)
       .fold(
-        _ =>
-          throwErrorTooltip(
-            (() => {
-              switch (entityType) {
-                case EntityType.Private:
-                  return "Errore nel caricamento delle agevolazioni";
-                default:
-                case EntityType.PublicAdministration:
-                  return "Errore nel caricamento delle opportunità";
-              }
-            })()
-          ),
+        _ => throwErrorTooltip("Errore nel caricamento delle opportunità"),
         discounts => setDiscounts(discounts)
       )
       .run();
@@ -85,18 +74,7 @@ const Discounts = () => {
       toError
     )
       .fold(
-        _ =>
-          throwErrorTooltip(
-            (() => {
-              switch (entityType) {
-                case EntityType.Private:
-                  return "Errore nella cancellazione dell'agevolazione";
-                default:
-                case EntityType.PublicAdministration:
-                  return "Errore nella cancellazione dell'opportunità";
-              }
-            })()
-          ),
+        _ => throwErrorTooltip("Errore nella cancellazione dell'opportunità"),
         () =>
           setDiscounts(
             discounts.filter(
@@ -129,15 +107,7 @@ const Discounts = () => {
       .fold(
         _ =>
           throwErrorTooltip(
-            (() => {
-              switch (entityType) {
-                case EntityType.Private:
-                  return "Errore durante la richiesta di cambio di stato dell'agevolazione";
-                default:
-                case EntityType.PublicAdministration:
-                  return "Errore durante la richiesta di cambio di stato dell'opportunità";
-              }
-            })()
+            "Errore durante la richiesta di cambio di stato dell'opportunità"
           ),
         () => void getDiscounts()
       )
@@ -153,15 +123,7 @@ const Discounts = () => {
       .fold(
         _ =>
           throwErrorTooltip(
-            (() => {
-              switch (entityType) {
-                case EntityType.Private:
-                  return "Errore durante la richiesta di test dell'agevolazione";
-                default:
-                case EntityType.PublicAdministration:
-                  return "Errore durante la richiesta di test dell'opportunità";
-              }
-            })()
+            "Errore durante la richiesta di test dell'opportunità"
           ),
         () => void getDiscounts()
       )
@@ -220,31 +182,27 @@ const Discounts = () => {
   const columns: Array<Column<Discount>> = useMemo(
     () => [
       {
-        Header: (() => {
-          switch (entityType) {
-            case EntityType.Private:
-              return "Nome agevolazione";
-            default:
-            case EntityType.PublicAdministration:
-              return "Nome opportunità";
-          }
-        })(),
+        Header: "Nome opportunità",
         accessor: "name",
         sortType: "string",
         Cell({ row }) {
-          return <div style={{
-            whiteSpace: "normal",
-            textOverflow: "ellipsis",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            width: "calc(190px - 1.5rem)",
-            height: "calc(56px - 0.5rem)",
-            overflow: "hidden",
-            wordBreak: "break-all",
-          }}>
-            {row.original.name}
-          </div>
+          return (
+            <div
+              style={{
+                whiteSpace: "normal",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                width: "calc(190px - 1.5rem)",
+                height: "calc(56px - 0.5rem)",
+                overflow: "hidden",
+                wordBreak: "break-all"
+              }}
+            >
+              {row.original.name}
+            </div>
+          );
         }
       },
       {
@@ -318,26 +276,10 @@ const Discounts = () => {
         />
         <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
           <ModalHeader toggle={toggleDeleteModal}>
-            {(() => {
-              switch (entityType) {
-                case EntityType.Private:
-                  return "Elimina agevolazione";
-                default:
-                case EntityType.PublicAdministration:
-                  return "Elimina opportunità";
-              }
-            })()}
+            Elimina opportunità
           </ModalHeader>
           <ModalBody>
-            {(() => {
-              switch (entityType) {
-                case EntityType.Private:
-                  return "Sei sicuro di voler eliminare questa agevolazione?";
-                default:
-                case EntityType.PublicAdministration:
-                  return "Sei sicuro di voler eliminare questa opportunità?";
-              }
-            })()}
+            Sei sicuro di voler eliminare questa opportunità?
           </ModalBody>
           <ModalFooter className="d-flex flex-column">
             <Button
@@ -428,28 +370,12 @@ const Discounts = () => {
         <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
           {data.length === 0 && (
             <div className="text-center text-gray pb-10">
-              {(() => {
-                switch (entityType) {
-                  case EntityType.Private:
-                    return "Non è presente nessuna agevolazione.";
-                  default:
-                  case EntityType.PublicAdministration:
-                    return "Non è presente nessuna opportunità.";
-                }
-              })()}
+              Non è presente nessuna opportunità.
             </div>
           )}
           <div className="text-center">
             <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
-              {(() => {
-                switch (entityType) {
-                  case EntityType.Private:
-                    return "Nuova agevolazione";
-                  default:
-                  case EntityType.PublicAdministration:
-                    return "Nuova opportunità";
-                }
-              })()}
+              Nuova opportunità
             </Link>
           </div>
         </div>
