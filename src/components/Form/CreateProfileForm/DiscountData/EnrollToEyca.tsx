@@ -73,15 +73,7 @@ const EnrollToEyca = ({
       <FormField
         htmlFor={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
         isTitleHeading
-        title={(() => {
-          switch (entityType) {
-            case EntityType.Private:
-              return `Vuoi che questa agevolazione sia visibile su EYCA?`;
-            default:
-            case EntityType.PublicAdministration:
-              return `Vuoi che questa opportunità sia visibile su EYCA?`;
-          }
-        })()}
+        title="Vuoi che questa opportunità sia visibile su EYCA?"
         description={
           isEycaSupported ? (
             <>
@@ -141,25 +133,8 @@ const EnrollToEyca = ({
             for={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
             tag="label"
           >
-            {(() => {
-              switch (entityType) {
-                case EntityType.Private:
-                  return (
-                    <>
-                      Sì, voglio che questa agevolazione sia valida anche per il
-                      circuito EYCA
-                    </>
-                  );
-                default:
-                case EntityType.PublicAdministration:
-                  return (
-                    <>
-                      Sì, voglio che questa opportunità sia valida anche per il
-                      circuito EYCA
-                    </>
-                  );
-              }
-            })()}
+            Sì, voglio che questa opportunità sia valida anche per il circuito
+            EYCA
           </Label>
         </FormGroup>
       </FormField>

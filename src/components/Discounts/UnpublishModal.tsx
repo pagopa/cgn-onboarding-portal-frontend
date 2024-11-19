@@ -17,41 +17,11 @@ const UnpublishModal = ({ isOpen, toggle, unpublish }: Props) => {
   );
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
-      <ModalHeader toggle={toggle}>
-        {(() => {
-          switch (entityType) {
-            case EntityType.Private:
-              return "Sospendi agevolazione";
-            default:
-            case EntityType.PublicAdministration:
-              return "Sospendi opportunità";
-          }
-        })()}
-      </ModalHeader>
+      <ModalHeader toggle={toggle}>Sospendi opportunità</ModalHeader>
       <ModalBody>
-        {(() => {
-          switch (entityType) {
-            case EntityType.Private:
-              return (
-                <>
-                  Sei sicuro di voler riportare in bozza questa opportunità? Se
-                  non hai altre agevolazioni pubblicate in questo momento, non
-                  sarai più visibile nella lista degli operatori aderenti
-                  all&lsquo;iniziativa.
-                </>
-              );
-            default:
-            case EntityType.PublicAdministration:
-              return (
-                <>
-                  Sei sicuro di voler riportare in bozza questa opportunità? Se
-                  non hai altre opportunità pubblicate in questo momento, non
-                  sarai più visibile nella lista degli operatori aderenti
-                  all&lsquo;iniziativa.
-                </>
-              );
-          }
-        })()}
+        Sei sicuro di voler riportare in bozza questa opportunità? Se non hai
+        altre opportunità pubblicate in questo momento, non sarai più visibile
+        nella lista degli operatori aderenti all&lsquo;iniziativa.
       </ModalBody>
       <ModalFooter className="d-flex flex-column">
         <Button

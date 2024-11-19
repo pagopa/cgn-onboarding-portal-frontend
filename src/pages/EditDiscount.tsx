@@ -10,18 +10,7 @@ const EditDiscount = () => {
     (state: RootState) => state.agreement.value.entityType
   );
   return (
-    <CreateLayout
-      breadcrumbLabel="Modifica dati"
-      title={(() => {
-        switch (entityType) {
-          case EntityType.Private:
-            return "Dati agevolazione";
-          default:
-          case EntityType.PublicAdministration:
-            return "Dati opportunità";
-        }
-      })()}
-    >
+    <CreateLayout breadcrumbLabel="Modifica dati" title="Dati opportunità">
       <EditDiscountForm />
     </CreateLayout>
   );

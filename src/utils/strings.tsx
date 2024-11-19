@@ -38,15 +38,7 @@ export function categoriesMap(
     },
     Home: {
       name: "Casa",
-      description: (() => {
-        switch (entityType) {
-          case EntityType.Private:
-            return "(Opportunità per la casa, mutui, gestori luce e gas, ...)";
-          default:
-          case EntityType.PublicAdministration:
-            return "(Agevolazioni per la casa, mutui, gestori luce e gas, ...)";
-        }
-      })()
+      description: "(Opportunità per la casa, mutui, gestori luce e gas, ...)"
     },
     TelephonyAndInternet: {
       name: "Telefonia e internet",

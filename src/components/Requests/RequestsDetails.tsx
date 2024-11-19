@@ -107,28 +107,14 @@ const RequestsDetails = ({
         {entityType === EntityType.Private && (
           <React.Fragment>
             <RequestItem
-              label={(() => {
-                switch (entityType) {
-                  case EntityType.Private:
-                    return "Numero agevolazioni proposte";
-                  default:
-                    return "Numero opportunità proposte";
-                }
-              })()}
+              label="Numero opportunità proposte"
               value={original.discounts?.length}
             />
             <div className="ml-3">
               {original.discounts?.map((doc: { name: any }, i: number) => (
                 <RequestItem
                   key={i}
-                  label={(() => {
-                    switch (entityType) {
-                      case EntityType.Private:
-                        return `Agevolazione #${i + 1}`;
-                      default:
-                        return `Opportunità #${i + 1}`;
-                    }
-                  })()}
+                  label={`Opportunità #${i + 1}`}
                   value={doc.name}
                 />
               ))}

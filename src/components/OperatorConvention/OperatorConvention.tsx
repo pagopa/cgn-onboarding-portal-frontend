@@ -85,15 +85,7 @@ const OperatorConvention = () => {
           format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
       },
       {
-        Header: (() => {
-          switch (entityType) {
-            case EntityType.Private:
-              return "Agevolazioni";
-            default:
-            case EntityType.PublicAdministration:
-              return "Opportunità";
-          }
-        })(),
+        Header: "Opportunità",
         accessor: "publishedDiscounts"
       },
       {

@@ -11,24 +11,8 @@ const CreateDiscount = () => {
   );
   return (
     <CreateLayout
-      breadcrumbLabel={(() => {
-        switch (entityType) {
-          case EntityType.Private:
-            return "Aggiungi agevolazione";
-          default:
-          case EntityType.PublicAdministration:
-            return "Aggiungi opportunità";
-        }
-      })()}
-      title={(() => {
-        switch (entityType) {
-          case EntityType.Private:
-            return "Dati agevolazione";
-          default:
-          case EntityType.PublicAdministration:
-            return "Dati opportunità";
-        }
-      })()}
+      breadcrumbLabel="Aggiungi opportunità"
+      title="Dati opportunità"
     >
       <CreateDiscountForm />
     </CreateLayout>

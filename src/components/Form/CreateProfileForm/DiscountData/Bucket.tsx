@@ -125,25 +125,8 @@ Props) => {
       title="Carica la lista di codici sconto"
       description={
         <>
-          {(() => {
-            switch (entityType) {
-              case EntityType.Private:
-                return (
-                  <>
-                    Caricare un file .CSV con la lista di almeno 10.000 di
-                    codici sconto statici relativi agevolazione.
-                  </>
-                );
-              default:
-              case EntityType.PublicAdministration:
-                return (
-                  <>
-                    Caricare un file .CSV con la lista di almeno 10.000 di
-                    codici sconto statici relativi all’opportunità.
-                  </>
-                );
-            }
-          })()}
+          Caricare un file .CSV con la lista di almeno 10.000 di codici sconto
+          statici relativi all’opportunità.
           <br />
           Per maggiori informazioni, consultare la{" "}
           <a

@@ -138,15 +138,7 @@ function getSteps(entityType: EntityType | undefined) {
   };
   const discountStep = {
     key: "Discount",
-    label: (() => {
-      switch (entityType) {
-        case EntityType.Private:
-          return "Dati agevolazione";
-        default:
-        case EntityType.PublicAdministration:
-          return "Dati opportunità";
-      }
-    })()
+    label: "Dati opportunità"
   };
   const documentStep = {
     key: "Document",
