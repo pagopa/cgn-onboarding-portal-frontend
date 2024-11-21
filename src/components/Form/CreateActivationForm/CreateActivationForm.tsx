@@ -44,7 +44,6 @@ const CreateActivationForm = () => {
         }
       } else {
         if (response.status === 200) {
-          setLoading(false);
           history.push(ADMIN_PANEL_ACCESSI);
         } else {
           throw new Error();
@@ -56,6 +55,8 @@ const CreateActivationForm = () => {
         text:
           "Errore durante la creazione dell'operatore, controllare i dati e riprovare"
       });
+    } finally {
+      setLoading(false);
     }
   };
 
