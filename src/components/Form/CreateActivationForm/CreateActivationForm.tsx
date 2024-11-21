@@ -1,10 +1,8 @@
 import { useHistory } from "react-router-dom";
 import React, { useState } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import { AxiosError } from "axios";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import Api from "../../../api/backoffice";
-import chainAxios from "../../../utils/chainAxios";
 import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
 import {
   EntityType,
@@ -26,32 +24,40 @@ const CreateActivationForm = () => {
   const [loading, setLoading] = useState(false);
   const { triggerTooltip } = useTooltip();
 
-  const throwErrorTooltip = () => {
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text:
-        "Errore durante la creazione dell'operatore, controllare i dati e riprovare"
-    });
-  };
-
-  const createActivation = async (organization: OrganizationWithReferents) =>
-    await tryCatch(
-      () => Api.AttributeAuthority.upsertOrganization(organization),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => {
-          setLoading(false);
-          throwErrorTooltip();
-        },
-        () => {
+  const createActivation = async (organization: OrganizationWithReferents) => {
+    try {
+      const response = await Api.AttributeAuthority.upsertOrganization(
+        organization
+      );
+      if (response instanceof AxiosError) {
+        if (
+          response.response?.status === 400 &&
+          response.response?.data === "CANNOT_BIND_MORE_THAN_TEN_ORGANIZATIONS"
+        ) {
+          triggerTooltip({
+            severity: Severity.WARNING,
+            text:
+              "Gli utenti indicati possono gestire un numero massimo di 10 operatori. Controlla e riprova."
+          });
+        } else {
+          throw new Error();
+        }
+      } else {
+        if (response.status === 200) {
           setLoading(false);
           history.push(ADMIN_PANEL_ACCESSI);
+        } else {
+          throw new Error();
         }
-      )
-      .run();
+      }
+    } catch (error) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text:
+          "Errore durante la creazione dell'operatore, controllare i dati e riprovare"
+      });
+    }
+  };
 
   return (
     <ActivationForm
