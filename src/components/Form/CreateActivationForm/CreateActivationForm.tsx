@@ -9,7 +9,7 @@ import {
   OrganizationWithReferents
 } from "../../../api/generated_backoffice";
 import ActivationForm from "../ActivationForm";
-import { simplifyAxios } from "../../../utils/simplifyAxios";
+import { normalizeAxiosResponse } from "../../../utils/normalizeAxiosResponse";
 
 const emptyInitialValues: OrganizationWithReferents = {
   keyOrganizationFiscalCode: "",
@@ -27,7 +27,7 @@ const CreateActivationForm = () => {
 
   const createActivation = async (organization: OrganizationWithReferents) => {
     setLoading(true);
-    const response = await simplifyAxios(
+    const response = await normalizeAxiosResponse(
       Api.AttributeAuthority.upsertOrganization(organization)
     );
     setLoading(false);

@@ -8,7 +8,7 @@ import { AxiosError, AxiosResponse } from "axios";
  */
 type StatusCodeOk = 200 | 201 | 204;
 type StatusCodeKo = 400 | 403 | 404 | 409 | 404 | 500;
-export async function simplifyAxios<Data>(
+export async function normalizeAxiosResponse<Data>(
   axiosOutcome: Promise<AxiosResponse<Data, unknown>>
 ): Promise<
   | { status: StatusCodeOk; data: Data }

@@ -9,7 +9,7 @@ import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
 import { OrganizationWithReferents } from "../../../api/generated_backoffice";
 import CenteredLoading from "../../CenteredLoading";
 import ActivationForm from "../ActivationForm";
-import { simplifyAxios } from "../../../utils/simplifyAxios";
+import { normalizeAxiosResponse } from "../../../utils/normalizeAxiosResponse";
 
 const emptyInitialValues: OrganizationWithReferents = {
   keyOrganizationFiscalCode: "",
@@ -40,7 +40,7 @@ const CreateActivationForm = () => {
 
   const createActivation = async (organization: OrganizationWithReferents) => {
     setSubmitting(true);
-    const response = await simplifyAxios(
+    const response = await normalizeAxiosResponse(
       Api.AttributeAuthority.upsertOrganization(organization)
     );
     setSubmitting(false);
