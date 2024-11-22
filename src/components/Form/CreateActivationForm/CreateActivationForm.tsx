@@ -26,6 +26,7 @@ const CreateActivationForm = () => {
   const { triggerTooltip } = useTooltip();
 
   const createActivation = async (organization: OrganizationWithReferents) => {
+    setLoading(true);
     const response = await simplifyAxios(
       Api.AttributeAuthority.upsertOrganization(organization)
     );
@@ -59,7 +60,6 @@ const CreateActivationForm = () => {
           ...values,
           keyOrganizationFiscalCode: values.organizationFiscalCode
         };
-        setLoading(true);
         void createActivation(newValues);
       }}
       isSubmitting={loading}
