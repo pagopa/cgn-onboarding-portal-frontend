@@ -9,6 +9,7 @@ import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
 import { OrganizationWithReferents } from "../../../api/generated_backoffice";
 import CenteredLoading from "../../CenteredLoading";
 import ActivationForm from "../ActivationForm";
+import { normalizeAxiosResponse } from "../../../utils/normalizeAxiosResponse";
 
 const emptyInitialValues: OrganizationWithReferents = {
   keyOrganizationFiscalCode: "",
@@ -37,26 +38,27 @@ const CreateActivationForm = () => {
     });
   };
 
-  const createActivation = async (organization: OrganizationWithReferents) =>
-    await tryCatch(
-      () => Api.AttributeAuthority.upsertOrganization(organization),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => {
-          setSubmitting(false);
-          throwErrorTooltip(
-            "Errore durante la creazione dell'operatore, controllare i dati e riprovare"
-          );
-        },
-        () => {
-          setSubmitting(false);
-          history.push(ADMIN_PANEL_ACCESSI);
-        }
-      )
-      .run();
+  const createActivation = async (organization: OrganizationWithReferents) => {
+    setSubmitting(true);
+    const response = await normalizeAxiosResponse(
+      Api.AttributeAuthority.upsertOrganization(organization)
+    );
+    setSubmitting(false);
+    if (response.status === 200) {
+      history.push(ADMIN_PANEL_ACCESSI);
+    } else if (
+      response.status === 400 &&
+      response.data === "CANNOT_BIND_MORE_THAN_TEN_ORGANIZATIONS"
+    ) {
+      throwErrorTooltip(
+        "Gli utenti indicati possono gestire un numero massimo di 10 operatori. Controlla e riprova."
+      );
+    } else {
+      throwErrorTooltip(
+        "Errore durante la modifica dell'operatore, controllare i dati e riprovare"
+      );
+    }
+  };
 
   const getActivation = async () =>
     await tryCatch(
@@ -92,13 +94,7 @@ const CreateActivationForm = () => {
     <ActivationForm
       enableReinitialize={true}
       initialValues={initialValues}
-      onSubmit={values => {
-        const newValues: OrganizationWithReferents = {
-          ...values
-        };
-        setSubmitting(true);
-        void createActivation(newValues);
-      }}
+      onSubmit={createActivation}
       isSubmitting={submitting}
       canChangeEntityType={false}
     />
