@@ -22,6 +22,7 @@ import {
   Profile
 } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
+import { normalizeAxiosResponse } from "../../utils/normalizeAxiosResponse";
 import PublishModal from "./PublishModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
 import UnpublishModal from "./UnpublishModal";
@@ -113,21 +114,23 @@ const Discounts = () => {
       )
       .run();
 
-  const testDiscount = async (discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.testDiscount(agreement.id, discountId),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        _ =>
-          throwErrorTooltip(
-            "Errore durante la richiesta di test dell'opportunità"
-          ),
-        () => void getDiscounts()
-      )
-      .run();
+  const testDiscount = async (discountId: string) => {
+    const response = await normalizeAxiosResponse(
+      Api.Discount.testDiscount(agreement.id, discountId)
+    );
+    if (response.status === 200 || response.status === 204) {
+      void getDiscounts();
+    } else if (
+      response.status === 400 &&
+      response.data === "CANNOT_PROCEED_WITH_EXPIRED_DISCOUNT"
+    ) {
+      throwErrorTooltip(
+        "Le date di validità dell'opportunità sono scadute. Aggiorna le date e riprova."
+      );
+    } else {
+      throwErrorTooltip("Errore durante la richiesta di test dell'opportunità");
+    }
+  };
 
   const getProfile = async (agreementId: string) =>
     await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
