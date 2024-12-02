@@ -1,19 +1,15 @@
 import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
-import { useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { Field } from "formik";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
 import CustomErrorMessage from "../../CustomErrorMessage";
-import chainAxios from "../../../../utils/chainAxios";
 import FormField from "../../FormField";
 import bucketTemplate from "../../../../templates/test-codes.csv";
-import { BucketCodeLoadStatus, EntityType } from "../../../../api/generated";
-import { RootState } from "../../../../store/store";
+import { BucketCodeLoadStatus } from "../../../../api/generated";
+import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
 
 type Props = {
   label: string;
@@ -68,46 +64,72 @@ Props) => {
 
   const addFile = async (files: any) => {
     setUploadingDoc(true);
-    await tryCatch(
-      () =>
-        Api.Bucket.uploadBucket(agreementId, files[0], {
-          onUploadProgress: (event: any) => {
-            setUploadProgress(Math.round((100 * event.loaded) / event.total));
-          }
-        }),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => {
-          setUploadingDoc(false);
-          setUploadProgress(0);
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Caricamento del file fallito"
-          });
-        },
-        data => {
-          setFieldValue(
-            hasIndex
-              ? `discounts[${index}].lastBucketCodeLoadUid`
-              : "lastBucketCodeLoadUid",
-            data.uid
-          );
-          setFieldValue(
-            hasIndex
-              ? `discounts[${index}].lastBucketCodeLoadFileName`
-              : "lastBucketCodeLoadFileName",
-            files[0].name
-          );
-          setCurrentDoc({ name: files[0].name });
-          setUploadingDoc(false);
-          setUploadProgress(0);
-          setCanUploadFile(false);
+    const response = await normalizeAxiosResponse(
+      Api.Bucket.uploadBucket(agreementId, files[0], {
+        onUploadProgress: (event: any) => {
+          setUploadProgress(Math.round((100 * event.loaded) / event.total));
         }
-      )
-      .run();
+      })
+    );
+    if (response.status === 200 || response.status === 204) {
+      setFieldValue(
+        hasIndex
+          ? `discounts[${index}].lastBucketCodeLoadUid`
+          : "lastBucketCodeLoadUid",
+        response.data.uid
+      );
+      setFieldValue(
+        hasIndex
+          ? `discounts[${index}].lastBucketCodeLoadFileName`
+          : "lastBucketCodeLoadFileName",
+        files[0].name
+      );
+      setCurrentDoc({ name: files[0].name });
+      setCanUploadFile(false);
+    } else if (
+      response.status === 400 &&
+      response.data === "CSV_NAME_OR_EXTENSION_NOT_VALID"
+    ) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text:
+          "Il formato del documento non è valido. Carica un documento CSV e riprova."
+      });
+    } else if (
+      response.status === 400 &&
+      response.data === "MAX_ALLOWED_BUCKET_CODE_LENGTH_NOT_RESPECTED"
+    ) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Ogni codice della lista non deve superare i 20 caratteri"
+      });
+    } else if (
+      response.status === 400 &&
+      response.data ===
+        "BUCKET_CODES_MUST_BE_ALPHANUM_WITH_AT_LEAST_ONE_DIGIT_AND_CHAR"
+    ) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text:
+          "Ogni codice della lista deve avere almeno un numero e una lettera."
+      });
+    } else if (
+      response.status === 400 &&
+      response.data === "CANNOT_LOAD_BUCKET_FOR_NOT_RESPECTED_MINIMUM_BOUND"
+    ) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text:
+          "La lista caricata deve contenere almeno 10000 codici. Carica un'altra lista e riprova."
+      });
+    } else {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Caricamento del file fallito"
+      });
+    }
+    setUploadingDoc(false);
+    setUploadProgress(0);
   };
 
   const loadStatus =
@@ -115,9 +137,6 @@ Props) => {
       ? formValues.discounts[index].lastBucketCodeLoadStatus
       : formValues.lastBucketCodeLoadStatus;
 
-  const entityType = useSelector(
-    (state: RootState) => state.agreement.value?.entityType
-  );
   return (
     <FormField
       htmlFor="lastBucketCodeLoadUid"
