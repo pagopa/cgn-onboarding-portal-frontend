@@ -51,7 +51,7 @@ const CreateActivationForm = () => {
       response.data === "CANNOT_BIND_MORE_THAN_TEN_ORGANIZATIONS"
     ) {
       throwErrorTooltip(
-        "Gli utenti indicati possono gestire un numero massimo di 10 operatori. Controlla e riprova."
+        "Uno o più utenti abilitati gestiscono già 10 operatori e non possono gestirne altri. Controlla e riprova."
       );
     } else {
       throwErrorTooltip(

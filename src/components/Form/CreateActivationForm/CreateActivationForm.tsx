@@ -40,7 +40,7 @@ const CreateActivationForm = () => {
       triggerTooltip({
         severity: Severity.DANGER,
         text:
-          "Gli utenti indicati possono gestire un numero massimo di 10 operatori. Controlla e riprova."
+          "Uno o più utenti abilitati gestiscono già 10 operatori e non possono gestirne altri. Controlla e riprova."
       });
     } else {
       triggerTooltip({
