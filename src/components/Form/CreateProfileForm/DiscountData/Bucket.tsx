@@ -88,44 +88,16 @@ Props) => {
       setCanUploadFile(false);
     } else if (
       response.status === 400 &&
-      response.data === "CSV_NAME_OR_EXTENSION_NOT_VALID"
+      (response.data as string) in ERROR_MESSAGES
     ) {
       triggerTooltip({
         severity: Severity.DANGER,
-        text:
-          "Il formato del documento non è valido. Carica un documento CSV e riprova."
-      });
-    } else if (
-      response.status === 400 &&
-      response.data === "MAX_ALLOWED_BUCKET_CODE_LENGTH_NOT_RESPECTED"
-    ) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: "Ogni codice della lista non deve superare i 20 caratteri"
-      });
-    } else if (
-      response.status === 400 &&
-      response.data ===
-        "BUCKET_CODES_MUST_BE_ALPHANUM_WITH_AT_LEAST_ONE_DIGIT_AND_CHAR"
-    ) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text:
-          "Ogni codice della lista deve avere almeno un numero e una lettera."
-      });
-    } else if (
-      response.status === 400 &&
-      response.data === "CANNOT_LOAD_BUCKET_FOR_NOT_RESPECTED_MINIMUM_BOUND"
-    ) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text:
-          "La lista caricata deve contenere almeno 10000 codici. Carica un'altra lista e riprova."
+        text: ERROR_MESSAGES[response.data as keyof typeof ERROR_MESSAGES]
       });
     } else {
       triggerTooltip({
         severity: Severity.DANGER,
-        text: "Caricamento del file fallito"
+        text: ERROR_MESSAGES.DEFAULT
       });
     }
     setUploadingDoc(false);
@@ -270,3 +242,15 @@ const checkMemoization = (
 const Bucket = React.memo(BucketComponent, checkMemoization);
 
 export default Bucket;
+
+const ERROR_MESSAGES = {
+  CSV_NAME_OR_EXTENSION_NOT_VALID:
+    "Il formato del documento non è valido. Carica un documento CSV e riprova.",
+  MAX_ALLOWED_BUCKET_CODE_LENGTH_NOT_RESPECTED:
+    "Ogni codice della lista non deve superare i 20 caratteri.",
+  BUCKET_CODES_MUST_BE_ALPHANUM_WITH_AT_LEAST_ONE_DIGIT_AND_CHAR:
+    "Ogni codice della lista deve avere almeno un numero e una lettera.",
+  CANNOT_LOAD_BUCKET_FOR_NOT_RESPECTED_MINIMUM_BOUND:
+    "La lista caricata deve contenere almeno 10000 codici. Carica un'altra lista e riprova.",
+  DEFAULT: "Caricamento del file fallito."
+};
