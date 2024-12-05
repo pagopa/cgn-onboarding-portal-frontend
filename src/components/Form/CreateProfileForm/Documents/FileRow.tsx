@@ -9,6 +9,7 @@ import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
 import { Document } from "../../../../api/generated";
 import { formatDate } from "../../../../utils/dates";
+import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
 import DeleteDocument from "./DeleteDocument";
 
 type Props = {
@@ -71,33 +72,32 @@ const FileRow = ({
 
   const addFile = async (files: any) => {
     setLoadingDoc(true);
-    await tryCatch(
-      () =>
-        Api.Document.uploadDocument(agreementId, type, files[0], {
-          onUploadProgress: (event: any) => {
-            setUploadProgress(Math.round((100 * event.loaded) / event.total));
-          }
-        }),
-      toError
-    )
-      .fold(
-        () => {
-          setLoadingDoc(false);
-          setUploadProgress(0);
-        },
-        response => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          response.status
-            ? getFiles()
-            : triggerTooltip({
-                severity: Severity.DANGER,
-                text: "Caricamento del file fallito"
-              });
-          setLoadingDoc(false);
-          setUploadProgress(0);
+    const response = await normalizeAxiosResponse(
+      Api.Document.uploadDocument(agreementId, type, files[0], {
+        onUploadProgress: (event: any) => {
+          setUploadProgress(Math.round((100 * event.loaded) / event.total));
         }
-      )
-      .run();
+      })
+    );
+    if (response.status === 200) {
+      getFiles();
+    } else if (
+      response.status === 400 &&
+      response.data === "PDF_NAME_OR_EXTENSION_NOT_VALID"
+    ) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text:
+          "Il formato del documento non è valido. Carica un documento PDF e riprova."
+      });
+    } else {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Caricamento del file fallito"
+      });
+    }
+    setLoadingDoc(false);
+    setUploadProgress(0);
   };
 
   const deleteFile = async () =>
@@ -171,6 +171,7 @@ const FileRow = ({
                       type="file"
                       hidden
                       ref={refFile}
+                      accept="application/pdf"
                       onChange={() => addFile(refFile.current.files)}
                     />
                   </Button>

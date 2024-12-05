@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormSection from "../../FormSection";
@@ -9,7 +7,7 @@ import { setImage } from "../../../../store/agreement/agreementSlice";
 import PlusIcon from "../../../../assets/icons/plus.svg";
 import { RootState } from "../../../../store/store";
 import Api from "../../../../api/index";
-import chainAxios from "../../../../utils/chainAxios";
+import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
 
 const FooterDescription = (
   <p className="text-base font-weight-normal text-gray">
@@ -41,46 +39,43 @@ const ProfileImage = () => {
     }
   }, []);
 
-  const getImageErrorCodeDescription = (imageErrorCode: string) => {
+  const getImageErrorCodeDescription = (imageErrorCode: unknown) => {
     switch (imageErrorCode) {
-      case "IMAGE_SIZE_EXCEEDED":
-        return "La dimensione dell'immagine non è valida. L'immagine deve pesare al massimo 5mb. ";
-      case "INVALID_DIMENSION":
-        return "Le dimensioni dell'immagine non sono valide. L'immagine dev'essere minimo 800x600px.";
-      case "INVALID_IMAGE_TYPE":
-        return "Il formato dell'immagine non è valido. L'immagine dev'essere di formato JPG o PNG.";
+      case "IMAGE_NAME_OR_EXTENSION_NOT_VALID":
+        return "Il formato dell'immagine non è valido. Carica un'immagine JPG o PNG e riprova.";
+      case "IMAGE_DIMENSION_NOT_VALID":
+        return "L'immagine ha dimensioni non valide. Ridimensiona l'immagine e riprova.";
       default:
         return "Errore durante il caricamento dell'immagine, riprovare in seguito o cambiare immagine";
     }
   };
 
-  const uploadImage = async (image: any) =>
-    await tryCatch(
-      () => Api.Agreement.uploadImage(agreement.id, image[0]),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        (error: any) => {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: getImageErrorCodeDescription(error?.response?.data)
-          });
-          setLoading(false);
-          setImageRefreshTimestamp(Date.now());
-        },
-        response => {
-          if (response?.imageUrl) {
-            dispatch(
-              setImage(`${process.env.BASE_IMAGE_PATH}/${response.imageUrl}`)
-            );
-          }
-          setLoading(false);
-          setImageRefreshTimestamp(Date.now());
-        }
-      )
-      .run();
+  const uploadImage = async (image: any) => {
+    setLoading(true);
+    const response = await normalizeAxiosResponse(
+      Api.Agreement.uploadImage(agreement.id, image[0])
+    );
+    if (response.status === 200 || response.status === 204) {
+      if (response.data?.imageUrl) {
+        dispatch(
+          setImage(`${process.env.BASE_IMAGE_PATH}/${response.data.imageUrl}`)
+        );
+      }
+    } else if (response.status === 400) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: getImageErrorCodeDescription(response.data)
+      });
+    } else {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: getImageErrorCodeDescription(undefined)
+      });
+    }
+    setLoading(false);
+    setImageRefreshTimestamp(Date.now());
+  };
+
   const [imageRefreshTimestamp, setImageRefreshTimestamp] = useState(
     Date.now()
   );
@@ -113,8 +108,8 @@ const ProfileImage = () => {
                     name="profileImage"
                     id="profileImage"
                     ref={imageInput}
+                    accept="image/png, image/jpeg"
                     onChange={() => {
-                      setLoading(true);
                       void uploadImage(imageInput.current.files);
                     }}
                     style={{ display: "none" }}
@@ -132,11 +127,10 @@ const ProfileImage = () => {
                     type="file"
                     name="profileImage"
                     id="profileImage"
-                    className="upload
-                pictures-wall"
+                    className="upload pictures-wall"
                     ref={imageInput}
+                    accept="image/png, image/jpeg"
                     onChange={() => {
-                      setLoading(true);
                       void uploadImage(imageInput.current.files);
                     }}
                   />
