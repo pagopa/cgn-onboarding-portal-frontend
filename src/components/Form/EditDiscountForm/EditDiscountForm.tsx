@@ -30,6 +30,7 @@ import FormField from "../FormField";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../utils/constants";
+import { normalizeAxiosResponse } from "../../../utils/normalizeAxiosResponse";
 
 const emptyInitialValues = {
   name: "",
@@ -58,26 +59,6 @@ const EditDiscountForm = () => {
   const [profile, setProfile] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
-  const entityType = agreement.entityType;
-
-  const chainAxios = (response: AxiosResponse) =>
-    fromPredicate(
-      (_: AxiosResponse) => _.status === 200 || _.status === 204,
-      (r: AxiosResponse) =>
-        r.status === 409
-          ? new Error("Upload codici ancora in corso")
-          : new Error(
-              "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
-            )
-    )(response);
-
-  const throwErrorTooltip = (e: string) => {
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text: e
-    });
-  };
-
   const checkStaticCode =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
@@ -101,18 +82,33 @@ const EditDiscountForm = () => {
       creationDate,
       ...updatedDiscount
     } = discount;
-    await tryCatch(
-      () =>
-        Api.Discount.updateDiscount(agreementId, discountId, updatedDiscount),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        e => throwErrorTooltip(e.message),
-        () => history.push(DASHBOARD)
-      )
-      .run();
+    const response = await normalizeAxiosResponse(
+      Api.Discount.updateDiscount(agreementId, discountId, updatedDiscount)
+    );
+    if (response.status === 200 || response.status === 204) {
+      history.push(DASHBOARD);
+    } else if (response.status === 409) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Upload codici ancora in corso"
+      });
+    } else if (
+      response.status === 400 &&
+      response.data ===
+        "CANNOT_UPDATE_DISCOUNT_BUCKET_WHILE_PROCESSING_IS_RUNNING"
+    ) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text:
+          "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
+      });
+    } else {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text:
+          "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
+      });
+    }
   };
 
   const getDiscount = async (agreementId: string) =>
