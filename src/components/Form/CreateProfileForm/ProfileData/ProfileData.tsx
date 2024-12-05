@@ -7,7 +7,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import Api from "../../../../api";
-import { Profile } from "../../../../api/generated";
+import {
+  CreateProfile,
+  Profile,
+  UpdateProfile
+} from "../../../../api/generated";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import chainAxios from "../../../../utils/chainAxios";
@@ -19,6 +23,7 @@ import {
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -102,16 +107,23 @@ const ProfileData = ({
     });
   };
 
-  const createProfile = async (discount: any) =>
-    await tryCatch(
-      () => Api.Profile.createProfile(agreement.id, discount),
-      toError
-    )
-      .chain(chainAxios)
-      .fold(throwErrorTooltip, () => handleNext())
-      .run();
+  const createProfile = async (discount: CreateProfile) => {
+    const response = await normalizeAxiosResponse(
+      Api.Profile.createProfile(agreement.id, discount)
+    );
+    if (response.status === 200 || response.status === 204) {
+      handleNext();
+    } else if (
+      response.status === 400 &&
+      response.data === "PROFILE_ALREADY_EXISTS_FOR_AGREEMENT_PROVIDED"
+    ) {
+      await updateProfile(discount);
+    } else {
+      throwErrorTooltip();
+    }
+  };
 
-  const updateProfile = async (discount: any) => {
+  const updateProfile = async (discount: UpdateProfile) => {
     await tryCatch(
       () => Api.Profile.updateProfile(agreement.id, discount),
       toError
