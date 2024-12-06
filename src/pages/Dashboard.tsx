@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { AgreementState as AgreementStateType } from "../api/generated";
 import AgreementState from "../components/AgreementState/AgreementState";
 import Layout from "../components/Layout/Layout";
-import Container from "../components/Container/Container";
+import { ContainerFluid } from "../components/Container/Container";
 import Introduction from "../components/Introduction/Introduction";
 import Discounts from "../components/Discounts/Discounts";
 import Profile from "../components/Profile/Profile";
@@ -42,8 +42,8 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <Container className="mt-10 mb-20">
-        <div className="col-7 offset-1">
+      <ContainerFluid className="mt-10 mb-20">
+        <div className="col-9">
           <Introduction
             name={`${user.name} ${user.family_name}`}
             handleClick={handleClick}
@@ -53,7 +53,7 @@ const Dashboard = () => {
           {selectedTab()}
         </div>
         {hasStateSection(AgreementStateType.ApprovedAgreement) && (
-          <div className="col-3">
+          <div className="col-3 ">
             <AgreementState
               state={agreement.state}
               startDate={agreement.startDate}
@@ -61,7 +61,7 @@ const Dashboard = () => {
             />
           </div>
         )}
-      </Container>
+      </ContainerFluid>
     </Layout>
   );
 };
