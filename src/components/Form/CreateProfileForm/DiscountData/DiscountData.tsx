@@ -412,6 +412,7 @@ const DiscountData = ({
                               ? "Lista di codici statici"
                               : "API"
                           }
+                          isLandingPage={checkLanding}
                           index={index}
                           formValues={values}
                           setFieldValue={setFieldValue}
