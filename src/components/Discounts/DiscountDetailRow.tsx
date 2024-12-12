@@ -367,6 +367,20 @@ Props) => {
               label="EYCA"
               value={row.original.visibleOnEyca ? "Sì" : "No"}
             />
+            {row.original.eycaLandingPageUrl && (
+              <ProfileItem
+                label="Link EYCA"
+                value={
+                  <a
+                    href={row.original.eycaLandingPageUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {row.original.eycaLandingPageUrl}
+                  </a>
+                }
+              />
+            )}
           </tbody>
         </table>
         {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
