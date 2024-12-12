@@ -413,8 +413,6 @@ const DiscountData = ({
                               : "API"
                           }
                           index={index}
-                          formValues={values}
-                          setFieldValue={setFieldValue}
                         />
                       )}
                       {values.discounts.length - 1 === index && (

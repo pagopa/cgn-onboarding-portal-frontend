@@ -1,85 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import { Field } from "formik";
-import { Button, FormGroup } from "design-react-kit";
-import { useSelector } from "react-redux";
-import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { FormGroup } from "design-react-kit";
 import FormField from "../../FormField";
-import { RootState } from "../../../../store/store";
-import { EntityType } from "../../../../api/generated";
+import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
   isEycaSupported: boolean;
   discountOption: string;
   index?: number;
-  formValues?: any;
-  setFieldValue?: any;
 };
 
-type EycaAlertModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
-
-const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
-  <Modal isOpen={isOpen} toggle={onClose} size="md">
-    <ModalHeader toggle={onClose}>Circuito Eyca</ModalHeader>
-    <ModalBody>
-      Grazie per la tua scelta! <br />
-      Sarai contattato dal Dipartimento per definire i dettagli dell’adesione.
-    </ModalBody>
-    <ModalFooter className="d-flex flex-column">
-      <Button color="primary" onClick={onClose} style={{ width: "100%" }}>
-        Ho capito!
-      </Button>
-    </ModalFooter>
-  </Modal>
-);
-
-/* eslint-disable sonarjs/cognitive-complexity */
-const EnrollToEyca = ({
-  index,
-  formValues,
-  setFieldValue,
-  isEycaSupported,
-  discountOption
-}: Props) => {
+const EnrollToEyca = ({ index, isEycaSupported, discountOption }: Props) => {
   const hasIndex = index !== undefined;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [checkBoxValue, setCheckboxValue] = useState(
-    (index !== undefined
-      ? formValues.discounts[index].visibleOnEyca
-      : formValues.visibleOnEyca) ?? false
-  );
-
-  const openModal = (val: any) => {
-    setCheckboxValue(val);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setFieldValue(
-      hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`,
-      checkBoxValue
-    );
-    setIsModalOpen(false);
-  };
-
-  const entityType = useSelector(
-    (state: RootState) => state.agreement.value.entityType
-  );
 
   return (
     <>
       <FormField
-        htmlFor={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
+        htmlFor={hasIndex ? `eycaLandingPageUrl${index}` : "eycaLandingPageUrl"}
         isTitleHeading
         title="Vuoi che questa opportunità sia visibile su EYCA?"
         description={
           isEycaSupported ? (
             <>
-              Ti informiamo che se accetti il codice statico sarà pubblicato
-              anche sul portale del circuito EYCA. <br />
-              Per maggiori informazioni, consultare la{" "}
+              Se vuoi che questa opportunità sia visibile anche sul portale di
+              EYCA, ti consigliamo di inserire una URL della landing page in
+              inglese da cui potranno accedere esclusivamente i beneficiari di
+              EYCA. Per maggiori informazioni, consulta la{" "}
               <a
                 className="font-weight-semibold"
                 href="https://docs.pagopa.it/carta-giovani-nazionale"
@@ -88,6 +34,7 @@ const EnrollToEyca = ({
               >
                 Documentazione tecnica
               </a>
+              .
             </>
           ) : (
             <>
@@ -109,36 +56,24 @@ const EnrollToEyca = ({
       >
         <FormGroup check tag="div" className="mt-4">
           <Field
-            id={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
+            id="eycaLandingPageUrl"
             name={
-              hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`
+              hasIndex
+                ? `discounts[${index}].eycaLandingPageUrl`
+                : "eycaLandingPageUrl"
             }
-            type="checkbox"
-            onChange={(e: any) => {
-              const value = e.target.value === "true";
-              if (isEycaSupported || value) {
-                setFieldValue(
-                  hasIndex
-                    ? `discounts[${index}].visibleOnEyca`
-                    : `visibleOnEyca`,
-                  !value
-                );
-                return;
-              }
-              openModal(!value);
-            }}
+            placeholder="Inserisci indirizzo (completo di protocollo http o https)"
+            type="text"
           />
-          <Label
-            check
-            for={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
-            tag="label"
-          >
-            Sì, voglio che questa opportunità sia valida anche per il circuito
-            EYCA
-          </Label>
+          <CustomErrorMessage
+            name={
+              hasIndex
+                ? `discounts[${index}].eycaLandingPageUrl`
+                : "eycaLandingPageUrl"
+            }
+          />
         </FormGroup>
       </FormField>
-      <EycaAlertModal isOpen={isModalOpen} onClose={closeModal} />
     </>
   );
 };

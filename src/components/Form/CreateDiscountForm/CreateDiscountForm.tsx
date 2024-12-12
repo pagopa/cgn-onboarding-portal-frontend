@@ -224,8 +224,6 @@ const CreateDiscountForm = () => {
                     ? "Lista di codici statici"
                     : "API"
                 }
-                formValues={values}
-                setFieldValue={setFieldValue}
               />
             )}
             <div className="mt-10">

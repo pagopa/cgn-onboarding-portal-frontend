@@ -307,8 +307,6 @@ const EditDiscountForm = () => {
                       ? "Lista di codici statici"
                       : "API"
                   }
-                  formValues={values}
-                  setFieldValue={setFieldValue}
                 />
               )}
               {initialValues.state !== "draft" && (

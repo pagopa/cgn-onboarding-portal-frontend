@@ -229,7 +229,20 @@ const Discount = ({
         label="Data ultima modifica"
         value={format(new Date(discount.lastUpateDate), "dd/MM/yyyy")}
       />
-      <Item label="EYCA" value={discount.visibleOnEyca ? "Sì" : "No"} />
+      {discount.eycaLandingPageUrl && (
+        <Item
+          label="Link EYCA"
+          value={
+            <a
+              href={discount.eycaLandingPageUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {discount.eycaLandingPageUrl}
+            </a>
+          }
+        />
+      )}
       {suspendMode ? (
         <div className="mt-10">
           <h6 className="text-gray">Aggiungi una nota</h6>
