@@ -46,7 +46,9 @@ const emptyInitialValues = {
   condition: "",
   condition_en: "",
   condition_de: "-",
-  staticCode: ""
+  staticCode: "",
+  visibleOnEyca: false,
+  eycaLandingPageUrl: undefined
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -206,6 +208,9 @@ const EditDiscountForm = () => {
           );
           const newValues = {
             ...values,
+            visibleOnEyca: values.eycaLandingPageUrl
+              ? true
+              : values.visibleOnEyca,
             name: withNormalizedSpaces(values.name),
             name_en: withNormalizedSpaces(values.name_en),
             name_de: "-",
@@ -307,6 +312,7 @@ const EditDiscountForm = () => {
                       ? "Lista di codici statici"
                       : "API"
                   }
+                  isLandingPage={checkLanding}
                   formValues={values}
                   setFieldValue={setFieldValue}
                 />
