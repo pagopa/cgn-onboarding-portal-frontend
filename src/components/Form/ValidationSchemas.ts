@@ -228,6 +228,7 @@ export const discountDataValidationSchema = (
       }),
       visibleOnEyca: Yup.boolean(),
       eycaLandingPageUrl: Yup.string()
+        .nullable()
         .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
         .when("landingPageUrl", checkEycaLandingDifferentFromLandingPageUrl)
     },
@@ -326,6 +327,7 @@ export const discountsListDataValidationSchema = (
           }),
           visibleOnEyca: Yup.boolean(),
           eycaLandingPageUrl: Yup.string()
+            .nullable()
             .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
             .when("landingPageUrl", checkEycaLandingDifferentFromLandingPageUrl)
         },
