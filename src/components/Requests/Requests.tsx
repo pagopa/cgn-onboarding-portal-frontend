@@ -17,6 +17,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
+import { omit } from "lodash";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import { Agreements } from "../../api/generated_backoffice";
@@ -90,7 +91,7 @@ const Requests = () => {
         Header: () => null,
         id: "expander",
         Cell: ({ row }: { row: UseExpandedRowProps<Row> }) => (
-          <span {...row.getToggleRowExpandedProps()}>
+          <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
             {row.isExpanded ? (
               <Icon icon="it-expand" color="primary" />
             ) : (
@@ -212,7 +213,10 @@ const Requests = () => {
                 prepareRow(row);
                 return (
                   <React.Fragment key={row.getRowProps().key}>
-                    <tr className="cursor-pointer">
+                    <tr
+                      className="cursor-pointer"
+                      onClick={() => row.toggleRowExpanded()}
+                    >
                       {row.cells.map((cell, i) => (
                         <td
                           className={`
@@ -221,6 +225,11 @@ const Requests = () => {
                           px-3 py-2 border-bottom text-sm
                           `}
                           {...cell.getCellProps()}
+                          style={
+                            cell.column.id === "expander"
+                              ? { width: "calc(32px + 0.75rem * 2)" }
+                              : {}
+                          }
                           key={i}
                         >
                           {cell.render("Cell")}

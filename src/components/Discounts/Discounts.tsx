@@ -354,7 +354,10 @@ const Discounts = () => {
               prepareRow(row);
               return (
                 <React.Fragment key={row.getRowProps().key}>
-                  <tr>
+                  <tr
+                    className="cursor-pointer"
+                    onClick={() => row.toggleRowExpanded()}
+                  >
                     {row.cells.map((cell, i) => (
                       // eslint-disable-next-line react/jsx-key
                       <td
@@ -364,6 +367,12 @@ const Discounts = () => {
                         px-3 py-2 border-bottom text-sm
                         `}
                         {...cell.getCellProps()}
+                        key={i}
+                        style={
+                          cell.column.id === "expander"
+                            ? { width: "calc(32px + 0.75rem * 2)" }
+                            : {}
+                        }
                       >
                         {cell.render("Cell")}
                       </td>

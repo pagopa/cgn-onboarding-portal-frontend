@@ -12,6 +12,7 @@ import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
 import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
+import { omit } from "lodash";
 import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
 import {
@@ -25,7 +26,6 @@ import {
   getEntityTypeLabel,
   makeOrganizationStatusReadable
 } from "../../utils/strings";
-import { EntityType } from "../../api/generated_backoffice";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
@@ -137,7 +137,7 @@ const OperatorActivations = () => {
         Header: () => null,
         id: "expander",
         Cell: ({ row }: { row: UseExpandedRowProps<Row> }) => (
-          <span {...row.getToggleRowExpandedProps()}>
+          <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
             {row.isExpanded ? (
               <Icon icon="it-expand" color="primary" />
             ) : (
@@ -263,6 +263,11 @@ const OperatorActivations = () => {
                           px-3 py-2 border-bottom text-sm
                           `}
                           {...cell.getCellProps()}
+                          style={
+                            cell.column.id === "expander"
+                              ? { width: "calc(32px + 0.75rem * 2)" }
+                              : {}
+                          }
                           key={i}
                         >
                           {cell.render("Cell")}

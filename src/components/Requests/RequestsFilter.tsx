@@ -72,7 +72,7 @@ const RequestsFilter = ({
               </h2>
             )}
 
-            <div className="d-flex justify-content-end flex-grow-1">
+            <div className="d-flex justify-content-end flex-grow-1 flex-wrap">
               <DateModal
                 requestDateFrom={values.requestDateFrom}
                 requestDateTo={values.requestDateTo}
