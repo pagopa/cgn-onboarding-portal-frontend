@@ -124,6 +124,22 @@ export const ProfileDataValidationSchema = Yup.object().shape({
   })
 });
 
+/**
+ * Check if Eyca Landing Page URL is different from Discount URL
+ */
+export const checkEycaLandingDifferentFromLandingPageUrl = (
+  landingPageUrl: string,
+  schema: any
+) => {
+  if (landingPageUrl) {
+    return schema.notOneOf(
+      [landingPageUrl],
+      "L'url della EYCA non può essere uguale all'url della landing page"
+    );
+  }
+  return schema;
+};
+
 export const discountDataValidationSchema = (
   staticCheck: boolean,
   landingCheck?: boolean,
@@ -210,7 +226,11 @@ export const discountDataValidationSchema = (
         then: Yup.string().required(REQUIRED_FIELD),
         otherwise: Yup.string()
       }),
-      visibleOnEyca: Yup.boolean()
+      visibleOnEyca: Yup.boolean(),
+      eycaLandingPageUrl: Yup.string()
+        .nullable()
+        .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+        .when("landingPageUrl", checkEycaLandingDifferentFromLandingPageUrl)
     },
     [
       ["description", "description_en"],
@@ -305,7 +325,11 @@ export const discountsListDataValidationSchema = (
             then: Yup.string().required(REQUIRED_FIELD),
             otherwise: Yup.string()
           }),
-          visibleOnEyca: Yup.boolean()
+          visibleOnEyca: Yup.boolean(),
+          eycaLandingPageUrl: Yup.string()
+            .nullable()
+            .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+            .when("landingPageUrl", checkEycaLandingDifferentFromLandingPageUrl)
         },
         [
           ["description", "description_en"],
