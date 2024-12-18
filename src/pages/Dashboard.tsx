@@ -42,7 +42,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <ContainerFluid className="mt-10 mb-20">
+      <ContainerFluid className="mt-10 mb-20" maxWidth="972px">
         <div className="col-9">
           <Introduction
             name={`${user.name} ${user.family_name}`}

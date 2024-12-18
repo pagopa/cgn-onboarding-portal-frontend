@@ -3,6 +3,7 @@ import React from "react";
 type Props = {
   className?: string;
   children: any;
+  maxWidth?: string;
 };
 
 const Container = ({ className = "", children }: Props) => (
@@ -11,9 +12,9 @@ const Container = ({ className = "", children }: Props) => (
   </div>
 );
 
-export function ContainerFluid({ className = "", children }: Props) {
+export function ContainerFluid({ className = "", maxWidth, children }: Props) {
   return (
-    <div className="container-fluid" style={{ maxWidth: "1200px" }}>
+    <div className="container-fluid" style={{ maxWidth }}>
       <div className={`${className} row variable-gutters`}>{children}</div>
     </div>
   );

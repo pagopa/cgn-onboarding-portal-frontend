@@ -39,7 +39,7 @@ const AdminPanel = () => {
 
   return (
     <Layout>
-      <ContainerFluid className="mt-10 mb-20">
+      <ContainerFluid className="mt-10 mb-20" maxWidth="1200px">
         <div className="col-12">
           <IntroductionAdmin
             name={user.name?.replace(".", " ")}
