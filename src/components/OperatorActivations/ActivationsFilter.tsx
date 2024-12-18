@@ -61,7 +61,10 @@ const ActivationsFilter = ({
               </h2>
             )}
 
-            <div className="d-flex justify-content-end flex-grow-1">
+            <div
+              className="d-flex justify-content-end flex-grow-1 flex-wrap"
+              style={{ gap: "12px" }}
+            >
               <Field
                 id="searchQuery"
                 name="searchQuery"
