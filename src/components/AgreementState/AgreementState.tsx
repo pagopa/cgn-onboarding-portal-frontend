@@ -48,8 +48,11 @@ const AgreementState = ({ state, startDate, endDate }: Props) => (
       {state === AgreementStateType.PendingAgreement && <Hourglass />}
     </div>
     {state === AgreementStateType.ApprovedAgreement && (
-      <div className="d-flex flex-row justify-content-between pb-10">
-        <DateLabel className="mr-6" title="Data di inizio" date={startDate} />
+      <div
+        className="d-flex flex-row justify-content-around pb-10 flex-wrap"
+        style={{ width: "100%" }}
+      >
+        <DateLabel title="Data di inizio" date={startDate} />
         <DateLabel title="Data di fine" date={endDate} />
       </div>
     )}

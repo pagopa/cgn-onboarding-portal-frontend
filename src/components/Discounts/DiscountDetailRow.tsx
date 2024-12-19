@@ -8,7 +8,6 @@ import {
   BucketCodeLoadStatus,
   Discount,
   DiscountState,
-  EntityType,
   Profile
 } from "../../api/generated";
 import EditIcon from "../../assets/icons/edit.svg";
@@ -32,6 +31,7 @@ type Props = {
   onDelete: () => void;
   onTest: () => void;
   profile?: Profile;
+  maxPublishedDiscountsReached: boolean;
 };
 
 export const getDiscountComponent = (state: DiscountState) => {
@@ -146,7 +146,8 @@ const DiscountDetailRow = ({
   onPublish,
   onUnpublish,
   onDelete,
-  onTest
+  onTest,
+  maxPublishedDiscountsReached
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
 Props) => {
   const history = useHistory();
@@ -227,7 +228,7 @@ Props) => {
             color="primary"
             tag="button"
             onClick={onPublish}
-            disabled={!canPublishAfterTest}
+            disabled={!canPublishAfterTest || maxPublishedDiscountsReached}
           >
             <span>Pubblica</span>
           </Button>
@@ -367,6 +368,20 @@ Props) => {
               label="EYCA"
               value={row.original.visibleOnEyca ? "Sì" : "No"}
             />
+            {row.original.eycaLandingPageUrl && (
+              <ProfileItem
+                label="Link EYCA"
+                value={
+                  <a
+                    href={row.original.eycaLandingPageUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {row.original.eycaLandingPageUrl}
+                  </a>
+                }
+              />
+            )}
           </tbody>
         </table>
         {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}

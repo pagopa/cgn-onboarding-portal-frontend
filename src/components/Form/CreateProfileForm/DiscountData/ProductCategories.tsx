@@ -20,7 +20,11 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
     ? `discounts[${index}].productCategories`
     : `productCategories`;
 
-  const nameLabelStyle = { fontWeight: 700, marginRight: "5px" };
+  const nameLabelStyle = {
+    fontWeight: 700,
+    marginRight: "5px",
+    marginBottom: 0
+  };
 
   const isCheckboxDisabled = (category: ProductCategory) =>
     selectedCategories &&
@@ -42,7 +46,12 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
             value={categoryKey}
             type="checkbox"
           />
-          <Label check for={`${name}.${categoryKey}`} tag="label">
+          <Label
+            check
+            for={`${name}.${categoryKey}`}
+            tag="label"
+            style={{ height: "auto" }}
+          >
             <div className="row ml-1">
               <p style={nameLabelStyle}>
                 {categoriesMap(entityType)[categoryKey as ProductCategory].name}{" "}

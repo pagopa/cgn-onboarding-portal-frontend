@@ -258,6 +258,11 @@ const Discounts = () => {
     visibleColumns
   } = useTable({ columns, data }, useSortBy, useExpanded);
 
+  const MAX_PUBLISHED_DISCOUNTS = 5;
+  const maxPublishedDiscountsReached =
+    discounts.filter(discount => discount.state === "published").length >=
+    MAX_PUBLISHED_DISCOUNTS;
+
   return (
     <div>
       <div>
@@ -315,11 +320,44 @@ const Discounts = () => {
         >
           <TableHeader headerGroups={headerGroups} />
           <tbody {...getTableBodyProps()}>
+            {maxPublishedDiscountsReached && (
+              <tr>
+                <td
+                  colSpan={5}
+                  style={{ padding: "24px 32px" }}
+                  className="border-bottom"
+                >
+                  <div
+                    style={{
+                      borderRadius: "4px",
+                      borderLeft: "4px solid #FFCB46",
+                      padding: "16px",
+                      gap: "16px",
+                      boxShadow:
+                        "0px 1px 10px 0px #002B551A, 0px 4px 5px 0px #002B550D, 0px 2px 4px -1px #002B551A"
+                    }}
+                    className="d-flex flex-row align-items-center"
+                  >
+                    <Icon
+                      icon="it-warning-circle"
+                      style={{ fill: "#FFCB46" }}
+                    />
+                    <div style={{ fontSize: "16px", fontWeight: 600 }}>
+                      Hai raggiunto il numero massimo di opportunità pubblicate
+                      nello stesso momento
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            )}
             {rows.map(row => {
               prepareRow(row);
               return (
                 <React.Fragment key={row.getRowProps().key}>
-                  <tr>
+                  <tr
+                    className="cursor-pointer"
+                    onClick={() => row.toggleRowExpanded()}
+                  >
                     {row.cells.map((cell, i) => (
                       // eslint-disable-next-line react/jsx-key
                       <td
@@ -329,6 +367,12 @@ const Discounts = () => {
                         px-3 py-2 border-bottom text-sm
                         `}
                         {...cell.getCellProps()}
+                        key={i}
+                        style={
+                          cell.column.id === "expander"
+                            ? { width: "calc(32px + 0.75rem * 2)" }
+                            : {}
+                        }
                       >
                         {cell.render("Cell")}
                       </td>
@@ -358,6 +402,9 @@ const Discounts = () => {
                               setSelectedDiscount(row.original.id);
                               toggleTestModal();
                             }}
+                            maxPublishedDiscountsReached={
+                              maxPublishedDiscountsReached
+                            }
                           />
                         }
                       </td>

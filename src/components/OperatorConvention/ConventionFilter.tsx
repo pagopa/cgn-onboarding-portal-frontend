@@ -134,7 +134,10 @@ const ConventionFilter = ({
               </h2>
             )}
 
-            <div className="d-flex justify-content-end flex-grow-1">
+            <div
+              className="d-flex justify-content-end flex-grow-1 flex-wrap"
+              style={{ rowGap: "0.75rem" }}
+            >
               <DateModal
                 lastUpdateDateFrom={values.lastUpdateDateFrom}
                 lastUpdateDateTo={values.lastUpdateDateTo}
@@ -158,32 +161,34 @@ const ConventionFilter = ({
                 }}
                 style={{ maxWidth: "275px" }}
               />
-              <Button
-                className="ml-5 btn-sm"
-                color="primary"
-                tag="button"
-                onClick={getExport}
-                disabled={downloadingAgreements}
-              >
-                {downloadingAgreements ? (
-                  <CenteredLoading />
-                ) : (
-                  <span>Export convenzioni</span>
-                )}
-              </Button>
-              <Button
-                className="ml-5 btn-sm"
-                color="primary"
-                tag="button"
-                onClick={getExportEyca}
-                disabled={downloadingEyca}
-              >
-                {downloadingEyca ? (
-                  <CenteredLoading />
-                ) : (
-                  <span>Export EYCA</span>
-                )}
-              </Button>
+              <div>
+                <Button
+                  className="ml-5 btn-sm"
+                  color="primary"
+                  tag="button"
+                  onClick={getExport}
+                  disabled={downloadingAgreements}
+                >
+                  {downloadingAgreements ? (
+                    <CenteredLoading />
+                  ) : (
+                    <span>Export convenzioni</span>
+                  )}
+                </Button>
+                <Button
+                  className="ml-5 btn-sm"
+                  color="primary"
+                  tag="button"
+                  onClick={getExportEyca}
+                  disabled={downloadingEyca}
+                >
+                  {downloadingEyca ? (
+                    <CenteredLoading />
+                  ) : (
+                    <span>Export EYCA</span>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </Form>

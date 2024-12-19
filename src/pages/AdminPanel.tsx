@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
 import Layout from "../components/Layout/Layout";
-import Container from "../components/Container/Container";
+import { ContainerFluid } from "../components/Container/Container";
 import IntroductionAdmin from "../components/Introduction/IntroductionAdmin";
 import Requests from "../components/Requests/Requests";
 import OperatorConvention from "../components/OperatorConvention/OperatorConvention";
@@ -39,7 +39,7 @@ const AdminPanel = () => {
 
   return (
     <Layout>
-      <Container className="mt-10 mb-20">
+      <ContainerFluid className="mt-10 mb-20" maxWidth="1200px">
         <div className="col-12">
           <IntroductionAdmin
             name={user.name?.replace(".", " ")}
@@ -48,7 +48,7 @@ const AdminPanel = () => {
           />
           {selectedTab()}
         </div>
-      </Container>
+      </ContainerFluid>
     </Layout>
   );
 };
