@@ -11,6 +11,7 @@ import { toError } from "fp-ts/lib/Either";
 import { compareAsc, format } from "date-fns";
 import { AxiosResponse } from "axios";
 import { constNull } from "fp-ts/lib/function";
+import { omit } from "lodash";
 import Api from "../../api/index";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
@@ -236,7 +237,7 @@ const Discounts = () => {
         Header: () => null,
         id: "expander",
         Cell: ({ row }: any) => (
-          <span {...row.getToggleRowExpandedProps()}>
+          <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
             {row.isExpanded ? (
               <Icon icon="it-expand" color="primary" />
             ) : (
