@@ -266,17 +266,19 @@ Props) => {
             title="Questa opportunità è stata sospesa"
             body={
               <React.Fragment>
-                {row.original.suspendedReasonMessage}
-                <button
-                  className="btn btn-link font-weight-bold p-0 my-2"
-                  onClick={() => {
-                    history.push(
-                      `/admin/operatori/agevolazioni/modifica/${row.original.id}`
-                    );
-                  }}
-                >
-                  Modifica opportunità
-                </button>
+                <div>{row.original.suspendedReasonMessage}</div>
+                <div>
+                  <button
+                    className="btn btn-link font-weight-bold p-0 my-2"
+                    onClick={() => {
+                      history.push(
+                        `/admin/operatori/agevolazioni/modifica/${row.original.id}`
+                      );
+                    }}
+                  >
+                    Modifica opportunità
+                  </button>
+                </div>
               </React.Fragment>
             }
           />
