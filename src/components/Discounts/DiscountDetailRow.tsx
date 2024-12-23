@@ -264,7 +264,21 @@ Props) => {
           <Callout
             type={"danger"}
             title="Questa opportunità è stata sospesa"
-            body={row.original.suspendedReasonMessage}
+            body={
+              <React.Fragment>
+                {row.original.suspendedReasonMessage}
+                <button
+                  className="btn btn-link font-weight-bold p-0 my-2"
+                  onClick={() => {
+                    history.push(
+                      `/admin/operatori/agevolazioni/modifica/${row.original.id}`
+                    );
+                  }}
+                >
+                  Modifica opportunità
+                </button>
+              </React.Fragment>
+            }
           />
         )}
         {row.original.lastBucketCodeLoadUid !== null &&

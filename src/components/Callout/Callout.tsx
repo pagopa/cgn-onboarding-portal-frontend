@@ -8,7 +8,7 @@ const styles: Record<string, CSSProperties> = {
     borderRadius: "4px",
     border: "1px solid #FFFF",
     borderLeftWidth: "4px",
-    padding: "1rem 1rem",
+    padding: "16px",
     marginBottom: "1rem"
   }
 };
@@ -19,7 +19,7 @@ type Props = {
   type: CalloutType;
   title: string;
   children?: React.ReactNode;
-  body?: string;
+  body?: React.ReactNode;
 };
 
 const getColorByType = (type: CalloutType) => {
@@ -37,14 +37,16 @@ const getColorByType = (type: CalloutType) => {
 const Callout = ({ title, body, type, children }: Props) => (
   <div
     style={{ ...styles.container, borderLeftColor: getColorByType(type) }}
-    className="row bg-white"
+    className="bg-white"
   >
-    <div className="col-1">
-      <Icon icon="it-warning-circle" style={{ fill: getColorByType(type) }} />
-    </div>
-    <div className="col">
-      <h6>{title}</h6>
-      {body && <p style={{ color: "#5C6F82" }}>{body}</p>}
+    <div className="row align-items-center">
+      <div className="col-1">
+        <Icon icon="it-warning-circle" style={{ fill: getColorByType(type) }} />
+      </div>
+      <div className="col">
+        <div style={{ fontWeight: 600, fontSize: "16px" }}>{title}</div>
+        {body && <div style={{ color: "#5C6F82" }}>{body}</div>}
+      </div>
     </div>
     {children}
   </div>
