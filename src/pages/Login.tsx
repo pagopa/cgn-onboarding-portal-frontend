@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "design-react-kit";
+import { Button, Icon } from "design-react-kit";
 import { useLocation } from "react-router-dom";
 import { setCookie } from "../utils/cookie";
 import Layout from "../components/Layout/Layout";
@@ -57,6 +57,16 @@ const Login = () => {
                   <CgnLogo />
                 </div>
               </div>
+              {MAINTENANCE_BANNER && (
+                <div className="mt-8">
+                  {MAINTENANCE_BANNER === "short-downtime" && (
+                    <Alert title="Il portale è in manutenzione, tornerà operativo a breve" />
+                  )}
+                  {MAINTENANCE_BANNER === "long-downtime" && (
+                    <Alert title="Il portale è in manutenzione. Se riscontri qualche problema, riprova più tardi" />
+                  )}
+                </div>
+              )}
               <div className="mt-14 row variable-gutters">
                 <div className="col">
                   <h2 className="h3 text-dark-blue">Sei un operatore?</h2>
@@ -113,3 +123,33 @@ const Login = () => {
 };
 
 export default Login;
+
+const MAINTENANCE_BANNER: undefined | "short-downtime" | "long-downtime" =
+  "short-downtime";
+
+function Alert({ title }: { title: string }) {
+  return (
+    <div
+      style={{
+        borderLeft: "4px solid #FFCB46",
+        backgroundColor: "#fffaec",
+        borderRadius: "4px",
+        display: "flex",
+        padding: "16px",
+        gap: "16px",
+        alignItems: "center"
+      }}
+    >
+      <Icon icon="it-warning-circle" />
+      <div
+        style={{
+          fontSize: "16px",
+          fontWeight: 400,
+          lineHeight: "21px"
+        }}
+      >
+        {title}
+      </div>
+    </div>
+  );
+}
