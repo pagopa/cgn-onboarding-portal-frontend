@@ -1,15 +1,11 @@
 import { useHistory, useParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import React, { useCallback, useEffect, useState } from "react";
 import { Severity, useTooltip } from "../../../context/tooltip";
-import Api from "../../../api/backoffice";
-import chainAxios from "../../../utils/chainAxios";
+import { remoteData } from "../../../api/common";
 import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
 import { OrganizationWithReferents } from "../../../api/generated_backoffice";
 import CenteredLoading from "../../CenteredLoading";
 import ActivationForm from "../ActivationForm";
-import { normalizeAxiosResponse } from "../../../utils/normalizeAxiosResponse";
 
 const emptyInitialValues: OrganizationWithReferents = {
   keyOrganizationFiscalCode: "",
@@ -24,69 +20,62 @@ const emptyInitialValues: OrganizationWithReferents = {
 const CreateActivationForm = () => {
   const { operatorFiscalCode } = useParams<{ operatorFiscalCode: string }>();
   const history = useHistory();
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [initialValues, setInitialValues] = useState<OrganizationWithReferents>(
     emptyInitialValues
   );
   const { triggerTooltip } = useTooltip();
 
-  const throwErrorTooltip = (message: string) => {
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text: message
-    });
-  };
+  const throwErrorTooltip = useCallback(
+    (message: string) => {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: message
+      });
+    },
+    [triggerTooltip]
+  );
 
-  const createActivation = async (organization: OrganizationWithReferents) => {
-    setSubmitting(true);
-    const response = await normalizeAxiosResponse(
-      Api.AttributeAuthority.upsertOrganization(organization)
-    );
-    setSubmitting(false);
-    if (response.status === 200) {
-      history.push(ADMIN_PANEL_ACCESSI);
-    } else if (
-      response.status === 400 &&
-      response.data === "CANNOT_BIND_MORE_THAN_TEN_ORGANIZATIONS"
-    ) {
-      throwErrorTooltip(
-        "Uno o più utenti abilitati gestiscono già 10 operatori e non possono gestirne altri. Controlla e riprova."
-      );
-    } else {
-      throwErrorTooltip(
-        "Errore durante la modifica dell'operatore, controllare i dati e riprovare"
-      );
-    }
-  };
-
-  const getActivation = async () =>
-    await tryCatch(
-      () => Api.AttributeAuthority.getOrganization(operatorFiscalCode),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => {
-          setLoading(false);
+  const createActivationMutation = remoteData.Backoffice.AttributeAuthority.upsertOrganization.useMutation(
+    {
+      onSuccess() {
+        history.push(ADMIN_PANEL_ACCESSI);
+      },
+      async onError(error) {
+        if (
+          error.status === 400 &&
+          error.response?.data === "CANNOT_BIND_MORE_THAN_TEN_ORGANIZATIONS"
+        ) {
           throwErrorTooltip(
-            "Errore durante la richiesta di dettaglio dell'operatore, riprovare"
+            "Uno o più utenti abilitati gestiscono già 10 operatori e non possono gestirne altri. Controlla e riprova."
           );
-        },
-        (data: OrganizationWithReferents) => {
-          setLoading(false);
-          setInitialValues(data);
+        } else {
+          throwErrorTooltip(
+            "Errore durante la modifica dell'operatore, controllare i dati e riprovare"
+          );
         }
-      )
-      .run();
+      }
+    }
+  );
+  const createActivation = (organization: OrganizationWithReferents) => {
+    createActivationMutation.mutate({ body: organization });
+  };
 
+  const getActivationQuery = remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery(
+    {
+      keyOrganizationFiscalCode: operatorFiscalCode
+    }
+  );
   useEffect(() => {
-    setLoading(true);
-    void getActivation();
-  }, []);
+    if (getActivationQuery.error) {
+      throwErrorTooltip(
+        "Errore durante la richiesta di dettaglio dell'operatore, riprovare"
+      );
+    } else if (getActivationQuery.data) {
+      setInitialValues(getActivationQuery.data);
+    }
+  }, [getActivationQuery.data, getActivationQuery.error, throwErrorTooltip]);
 
-  if (loading) {
+  if (getActivationQuery.isLoading) {
     return <CenteredLoading />;
   }
 
@@ -95,7 +84,7 @@ const CreateActivationForm = () => {
       enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={createActivation}
-      isSubmitting={submitting}
+      isSubmitting={createActivationMutation.isLoading}
       canChangeEntityType={false}
     />
   );

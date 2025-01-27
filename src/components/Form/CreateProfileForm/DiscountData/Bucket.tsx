@@ -65,11 +65,17 @@ Props) => {
   const addFile = async (files: any) => {
     setUploadingDoc(true);
     const response = await normalizeAxiosResponse(
-      Api.Bucket.uploadBucket(agreementId, files[0], {
-        onUploadProgress: (event: any) => {
-          setUploadProgress(Math.round((100 * event.loaded) / event.total));
+      Api.Bucket.uploadBucket(
+        {
+          agreementId,
+          document: files[0]
+        },
+        {
+          onUploadProgress: (event: any) => {
+            setUploadProgress(Math.round((100 * event.loaded) / event.total));
+          }
         }
-      })
+      )
     );
     if (response.status === 200 || response.status === 204) {
       setFieldValue(

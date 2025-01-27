@@ -1,10 +1,8 @@
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
-import { toError } from "fp-ts/lib/Either";
 import { useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useMemo, useState } from "react";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 import {
   ApprovedAgreementDiscount,
   ApprovedAgreementProfile
@@ -14,7 +12,6 @@ import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
-import { EntityType } from "../../api/generated";
 import { RootState } from "../../store/store";
 import BucketCodeModal from "./BucketCodeModal";
 import { getBadgeStatus } from "./ConventionDetails";
@@ -46,82 +43,70 @@ const Discount = ({
 
   const toggleBucketModal = () => setIsBucketModalOpen(!isBucketModalOpen);
 
-  const postSuspendDiscount = async () =>
-    await tryCatch(
-      () =>
-        Api.Discount.suspendDiscount(agreementId, discount.id, {
-          reasonMessage: suspendMessage
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => {
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text:
-              "La sospensione dell'opportunità è stata effettuata con successo.",
-            title: "sospensione effettuata"
-          });
-          reloadDetails();
-        }
-      )
-      .run();
-
+  const suspendDiscountMutation = remoteData.Backoffice.Discount.suspendDiscount.useMutation(
+    {
+      onSuccess() {
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text:
+            "La sospensione dell'opportunità è stata effettuata con successo.",
+          title: "sospensione effettuata"
+        });
+        reloadDetails();
+      }
+    }
+  );
   const suspendDiscount = () => {
-    void postSuspendDiscount();
+    suspendDiscountMutation.mutate({
+      agreementId,
+      discountId: discount.id,
+      suspension: {
+        reasonMessage: suspendMessage
+      }
+    });
   };
 
-  const postRejectTestDiscount = async () =>
-    await tryCatch(
-      () =>
-        Api.Discount.setDiscountTestFailed(agreementId, discount.id, {
-          reasonMessage: rejectMessage
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => {
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text:
-              "La motivazione del fallimento del test dell'opportunità è stata inviata con successo.",
-            title: "Test respinto"
-          });
-          reloadDetails();
-        }
-      )
-      .run();
-
+  const rejectDiscountMutation = remoteData.Backoffice.Discount.setDiscountTestFailed.useMutation(
+    {
+      onSuccess() {
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text:
+            "La motivazione del fallimento del test dell'opportunità è stata inviata con successo.",
+          title: "Test respinto"
+        });
+        reloadDetails();
+      }
+    }
+  );
   const rejectTest = () => {
-    void postRejectTestDiscount();
+    rejectDiscountMutation.mutate({
+      agreementId,
+      discountId: discount.id,
+      failure: {
+        reasonMessage: rejectMessage
+      }
+    });
   };
 
-  const postApproveTestDiscount = async () =>
-    await tryCatch(
-      () => Api.Discount.setDiscountTestPassed(agreementId, discount.id),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => {
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text:
-              "L'opportunità ha superato il test ed è pronta per essere pubblicata dall'operatore",
-            title: "Test superato"
-          });
-          reloadDetails();
-        }
-      )
-      .run();
-
+  const approveDiscountMutation = remoteData.Backoffice.Discount.setDiscountTestPassed.useMutation(
+    {
+      onSuccess() {
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text:
+            "L'opportunità ha superato il test ed è pronta per essere pubblicata dall'operatore",
+          title: "Test superato"
+        });
+        reloadDetails();
+      }
+    }
+  );
   const approveTest = () => {
-    void postApproveTestDiscount();
+    approveDiscountMutation.mutate({
+      agreementId,
+      discountId: discount.id
+    });
   };
 
   const isSuspended = useMemo(() => discount.state === "suspended", [discount]);

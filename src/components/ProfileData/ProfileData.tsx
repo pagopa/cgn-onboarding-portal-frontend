@@ -1,36 +1,25 @@
-import { toError } from "fp-ts/lib/Either";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Api from "../../api/index";
+import { remoteData } from "../../api/common";
 import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileDataItem from "./ProfileDataItem";
 
 const ProfileData = () => {
-  const [profile, setProfile] = useState<any>(null);
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        newProfile => setProfile(newProfile)
-      )
-      .run();
+  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
+    agreementId: agreement.id
+  });
+  const profile = profileQuery.data;
 
   const getImage = () =>
     agreement &&
     agreement.imageUrl?.includes(process.env.BASE_IMAGE_PATH as string)
       ? agreement.imageUrl
       : `${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`;
-
-  useEffect(() => {
-    void getProfile(agreement.id);
-  }, []);
 
   return (
     <>
@@ -53,9 +42,13 @@ const ProfileData = () => {
                   value={profile.description}
                   value_en={profile.description_en}
                 />
-                {profile.salesChannel.websiteUrl && (
+                {// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                profile.salesChannel.websiteUrl && (
                   <ProfileDataItem
                     label="Sito web"
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     value={profile.salesChannel.websiteUrl}
                   />
                 )}

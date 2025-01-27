@@ -1,15 +1,10 @@
 import { format } from "date-fns";
 import React, { useState } from "react";
-import { Button, Icon } from "design-react-kit";
+import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import {
-  EntityType,
-  OrganizationWithReferents
-} from "../../api/generated_backoffice";
+import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import CenteredLoading from "../CenteredLoading";
 import { getEntityTypeLabel } from "../../utils/strings";
@@ -22,37 +17,28 @@ type Props = {
 
 const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
   const history = useHistory();
-  const [isLoading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { triggerTooltip } = useTooltip();
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const deleteActivation = async (keyOrganizationFiscalCode: string) =>
-    await tryCatch(
-      () =>
-        Api.AttributeAuthority.deleteOrganization(keyOrganizationFiscalCode),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => {
-          setLoading(false);
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Rimozione dell'operatore fallita"
-          });
-        },
-        () => {
-          setLoading(false);
-          getActivations();
-        }
-      )
-      .run();
-
+  const deleteActivationMutation = remoteData.Backoffice.AttributeAuthority.deleteOrganization.useMutation(
+    {
+      onSuccess() {
+        getActivations();
+      },
+      onError() {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "Rimozione dell'operatore fallita"
+        });
+      }
+    }
+  );
   const askDeleteOrganization = () => {
-    setLoading(true);
-    void deleteActivation(operator.keyOrganizationFiscalCode);
+    void deleteActivationMutation.mutate({
+      keyOrganizationFiscalCode: operator.keyOrganizationFiscalCode
+    });
   };
 
   return (
@@ -114,7 +100,11 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           tag="button"
           onClick={toggleModal}
         >
-          {isLoading ? <CenteredLoading /> : <span> Rimuovi </span>}
+          {deleteActivationMutation.isLoading ? (
+            <CenteredLoading />
+          ) : (
+            <span> Rimuovi </span>
+          )}
         </Button>
         <Button
           className="mr-4 btn-sm"

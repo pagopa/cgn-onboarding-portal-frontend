@@ -1,18 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Row, usePagination, useSortBy, useTable } from "react-table";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { Button } from "design-react-kit";
 import { format } from "date-fns";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading";
 import {
-  ApprovedAgreement,
-  ApprovedAgreements
+  AgreementApiGetApprovedAgreementsRequest,
+  ApprovedAgreement
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
-import { DiscountState, EntityType } from "../../api/generated";
+import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
@@ -20,44 +18,22 @@ import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorConvention = () => {
   const pageSize = 20;
-  const [conventions, setConventions] = useState<ApprovedAgreements>();
-  const [loading, setLoading] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [selectedConvention, setSelectedConvention] = useState<
     ApprovedAgreement | undefined
   >();
   const refForm = useRef<any>(null);
 
-  const getConventionsApi = async (params?: any) =>
-    await tryCatch(
-      () =>
-        Api.Agreement.getApprovedAgreements(
-          params.profileFullName,
-          params.lastUpdateDateFrom,
-          params.lastUpdateDateTo,
-          pageSize,
-          params.page,
-          params.sortColumn,
-          params.sortDirection
-        ),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setLoading(false);
-          setConventions(response);
-        }
-      )
-      .run();
-
-  const getConventions = (params?: any) => {
-    setLoading(true);
-    void getConventionsApi(params);
-  };
-
-  const entityType = selectedConvention?.entityType;
+  const [params, setParams] = useState<
+    AgreementApiGetApprovedAgreementsRequest
+  >({});
+  const conventionsQuery = remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(
+    {
+      ...params,
+      pageSize
+    }
+  );
+  const conventions = conventionsQuery.data;
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
   const columns = useMemo(
@@ -163,7 +139,7 @@ const OperatorConvention = () => {
         onClose={() => {
           setShowDetails(false);
           setSelectedConvention(undefined);
-          getConventions({});
+          setParams({});
         }}
       />
     );
@@ -181,8 +157,8 @@ const OperatorConvention = () => {
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <ConventionFilter refForm={refForm} getConventions={getConventions} />
-      {loading ? (
+      <ConventionFilter refForm={refForm} getConventions={setParams} />
+      {conventionsQuery.isLoading ? (
         <CenteredLoading />
       ) : (
         <>
@@ -246,7 +222,7 @@ const OperatorConvention = () => {
                   className="mt-3"
                   onClick={() => {
                     refForm.current?.resetForm();
-                    getConventions({});
+                    setParams({});
                   }}
                 >
                   Reimposta Tutto

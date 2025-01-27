@@ -1,20 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import { Form, Formik } from "formik";
 import * as array from "fp-ts/lib/Array";
-import { toError } from "fp-ts/lib/Either";
-import { tryCatch } from "fp-ts/lib/TaskEither";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
-import Api from "../../../../api";
-import {
-  CreateProfile,
-  Profile,
-  UpdateProfile
-} from "../../../../api/generated";
+import { remoteData } from "../../../../api/common";
+import { CreateProfile, UpdateProfile } from "../../../../api/generated";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
-import chainAxios from "../../../../utils/chainAxios";
 import { EmptyAddresses } from "../../../../utils/form_types";
 import {
   withNormalizedSpaces,
@@ -23,7 +16,6 @@ import {
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -91,9 +83,6 @@ const ProfileData = ({
   const user = useSelector((state: RootState) => state.user.data);
   const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
   const { triggerTooltip } = useTooltip();
-  const [loading, setLoading] = useState(true);
-  const [geolocationToken, setGeolocationToken] = useState<any>();
-  const [existingProfile, setExistingProfile] = useState<Profile | undefined>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -107,108 +96,92 @@ const ProfileData = ({
     });
   };
 
-  const createProfile = async (discount: CreateProfile) => {
-    const response = await normalizeAxiosResponse(
-      Api.Profile.createProfile(agreement.id, discount)
-    );
-    if (response.status === 200 || response.status === 204) {
-      handleNext();
-    } else if (
-      response.status === 400 &&
-      response.data === "PROFILE_ALREADY_EXISTS_FOR_AGREEMENT_PROVIDED"
-    ) {
-      await updateProfile(discount);
-    } else {
-      throwErrorTooltip();
+  const createProfileMutation = remoteData.Index.Profile.createProfile.useMutation(
+    {
+      async onError(error, variables) {
+        if (
+          error.status === 400 &&
+          error.response?.data ===
+            "PROFILE_ALREADY_EXISTS_FOR_AGREEMENT_PROVIDED"
+        ) {
+          editProfile(variables.profile);
+        } else {
+          throwErrorTooltip();
+        }
+      },
+      onSuccess() {
+        handleNext();
+      }
     }
+  );
+  const createProfile = (profile: CreateProfile) => {
+    createProfileMutation.mutate({ agreementId: agreement.id, profile });
   };
 
-  const updateProfile = async (discount: UpdateProfile) => {
-    await tryCatch(
-      () => Api.Profile.updateProfile(agreement.id, discount),
-      toError
-    )
-      .chain(chainAxios)
-      .fold(throwErrorTooltip, () => {
+  const editProfileMutation = remoteData.Index.Profile.updateProfile.useMutation(
+    {
+      onError() {
+        throwErrorTooltip();
+      },
+      onSuccess() {
         onUpdate();
         handleNext();
-      })
-      .run();
+      }
+    }
+  );
+  const editProfile = (profile: UpdateProfile) => {
+    editProfileMutation.mutate({ agreementId: agreement.id, profile });
   };
 
-  const submitProfile = () => (isCompleted ? updateProfile : createProfile);
-
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        (profile: Profile) => {
-          setExistingProfile(profile);
-          const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
-          setInitialValues({
-            ...profile,
-            name: cleanedIfNameIsBlank(profile.name),
-            name_en: cleanedIfNameIsBlank(profile.name_en),
-            name_de: "-",
-            description: withNormalizedSpaces(profile.description),
-            description_en: withNormalizedSpaces(profile.description_en),
-            description_de: "-",
-            salesChannel:
-              profile.salesChannel.channelType === "OfflineChannel" ||
-              profile.salesChannel.channelType === "BothChannels"
-                ? {
-                    ...profile.salesChannel,
-                    addresses: !array.isEmpty(
-                      (profile.salesChannel as any).addresses
-                    )
-                      ? (profile.salesChannel as any).addresses.map(
-                          (address: any) => {
-                            const addressSplit = address.fullAddress
-                              .split(",")
-                              .map((item: string) => item.trim());
-                            return {
-                              street: addressSplit[0],
-                              city: addressSplit[1],
-                              district: addressSplit[2],
-                              zipCode: addressSplit[3],
-                              value: address.fullAddress,
-                              label: address.fullAddress
-                            };
-                          }
-                        )
-                      : [
-                          {
-                            fullAddress: ""
-                          }
-                        ]
-                  }
-                : profile.salesChannel,
-            hasDifferentFullName: !!profile.name
-          });
-          setLoading(false);
-        }
-      )
-      .run();
-
-  const getGeolocationToken = async () =>
-    await tryCatch(() => Api.GeolocationToken.getGeolocationToken(), toError)
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        token => setGeolocationToken(token.token)
-      )
-      .run();
-
+  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
+    agreementId: agreement.id
+  });
   useEffect(() => {
-    if (isCompleted) {
-      setLoading(true);
-      void getProfile(agreement.id);
-    } else {
-      setLoading(false);
+    const profile = profileQuery.data;
+    if (profile) {
+      const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
+      setInitialValues({
+        ...profile,
+        name: cleanedIfNameIsBlank(profile.name),
+        name_en: cleanedIfNameIsBlank(profile.name_en),
+        name_de: "-",
+        description: withNormalizedSpaces(profile.description),
+        description_en: withNormalizedSpaces(profile.description_en),
+        description_de: "-",
+        salesChannel:
+          profile.salesChannel.channelType === "OfflineChannel" ||
+          profile.salesChannel.channelType === "BothChannels"
+            ? {
+                ...profile.salesChannel,
+                addresses: !array.isEmpty(
+                  (profile.salesChannel as any).addresses
+                )
+                  ? (profile.salesChannel as any).addresses.map(
+                      (address: any) => {
+                        const addressSplit = address.fullAddress
+                          .split(",")
+                          .map((item: string) => item.trim());
+                        return {
+                          street: addressSplit[0],
+                          city: addressSplit[1],
+                          district: addressSplit[2],
+                          zipCode: addressSplit[3],
+                          value: address.fullAddress,
+                          label: address.fullAddress
+                        };
+                      }
+                    )
+                  : [
+                      {
+                        fullAddress: ""
+                      }
+                    ]
+              }
+            : profile.salesChannel,
+        hasDifferentFullName: !!profile.name
+      });
     }
-    void getGeolocationToken();
-  }, []);
+  }, [profileQuery.data]);
 
   const getSalesChannel = (salesChannel: any) => {
     switch (salesChannel.channelType) {
@@ -251,9 +224,11 @@ const ProfileData = ({
     }
   };
   const entityType = agreement.entityType;
-  if (loading) {
+
+  if (profileQuery.isLoading) {
     return <CenteredLoading />;
   }
+
   return (
     <Formik
       enableReinitialize
@@ -271,7 +246,7 @@ const ProfileData = ({
       onSubmit={values => {
         const { hasDifferentFullName, ...profile } = values;
         const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
-        void submitProfile()({
+        const profileData = {
           ...profile,
           name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
           name_en: !hasDifferentFullName
@@ -284,20 +259,22 @@ const ProfileData = ({
           description_en: withNormalizedSpaces(profile.description_en),
           description_de: withNormalizedSpaces(profile.description_de),
           ...getSalesChannel(profile.salesChannel)
-        });
+        };
+        if (isCompleted) {
+          void editProfile(profileData);
+        } else {
+          void createProfile(profileData);
+        }
       }}
     >
-      {({ values, setFieldValue }) => (
+      {() => (
         <Form autoComplete="off">
           <FormContainer className="mb-20">
             <ProfileInfo entityType={entityType} />
             <ReferentData entityType={entityType} />
             <ProfileImage />
             <ProfileDescription />
-            <SalesChannels
-              entityType={entityType}
-              // geolocationToken={geolocationToken}
-            >
+            <SalesChannels entityType={entityType}>
               <OperatorDataButtons
                 onBack={handleBack}
                 isEnabled={!!agreement.imageUrl}

@@ -53,7 +53,10 @@ const ProfileImage = () => {
   const uploadImage = async (image: any) => {
     setLoading(true);
     const response = await normalizeAxiosResponse(
-      Api.Agreement.uploadImage(agreement.id, image[0])
+      Api.Agreement.uploadImage({
+        agreementId: agreement.id,
+        image: image[0]
+      })
     );
     if (response.status === 200 || response.status === 204) {
       if (response.data?.imageUrl) {

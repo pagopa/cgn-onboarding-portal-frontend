@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Button } from "design-react-kit";
 import { useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
-import Api from "../../../../api";
+import { remoteData } from "../../../../api/common";
 import { RootState } from "../../../../store/store";
 import { Documents, EntityType } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
@@ -23,57 +21,52 @@ const Documents = ({
   isCompleted
 }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [loading, setLoading] = useState(true);
-  const [documents, setDocuments] = useState<Documents>({ items: [] });
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const getFiles = async () =>
-    await tryCatch(() => Api.Document.getDocuments(agreement.id), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setDocuments(response);
-          setLoading(false);
-        }
-      )
-      .run();
+  const documentsQuery = remoteData.Index.Document.getDocuments.useQuery({
+    agreementId: agreement.id
+  });
+  const documents = useMemo(() => documentsQuery.data?.items ?? [], [
+    documentsQuery.data?.items
+  ]);
 
-  const requireApproval = () => {
-    void Api.Agreement.requestApproval(agreement.id)
-      .then(() => setShowRequireApproval(true))
-      .catch(() =>
+  const requireApprovalMutation = remoteData.Index.Agreement.requestApproval.useMutation(
+    {
+      onSuccess() {
+        setShowRequireApproval(true);
+      },
+      onError() {
         triggerTooltip({
           severity: Severity.DANGER,
           text:
             "Errore durante l'invio della richiesta di approvazione, riprovare in seguito"
-        })
-      );
+        });
+      }
+    }
+  );
+  const requireApproval = () => {
+    requireApprovalMutation.mutate({ agreementId: agreement.id });
   };
 
   const getUploadedDoc = (type: string) =>
-    documents.items.find(d => d.documentType === type);
+    documents.find(d => d.documentType === type);
 
   const entityType = agreement.entityType;
 
   const allUploaded = (() => {
     switch (entityType) {
       case EntityType.Private:
-        return documents.items.length === 2;
+        return documents.length === 2;
       case EntityType.PublicAdministration:
-        return documents.items.length === 1;
+        return documents.length === 1;
     }
   })();
 
-  useEffect(() => {
-    void getFiles();
-  }, []);
-
-  if (loading) {
+  if (documentsQuery.isLoading) {
     return <CenteredLoading />;
   }
 
@@ -88,7 +81,7 @@ const Documents = ({
           compilazione prima di procedere.
         </p>
         <FileRow
-          getFiles={getFiles}
+          getFiles={() => documentsQuery.refetch()}
           uploadedDoc={getUploadedDoc("agreement")}
           type="agreement"
           label="Convenzione"
@@ -96,7 +89,7 @@ const Documents = ({
         />
         {entityType === EntityType.Private && (
           <FileRow
-            getFiles={getFiles}
+            getFiles={() => documentsQuery.refetch()}
             uploadedDoc={getUploadedDoc("adhesion_request")}
             type="adhesion_request"
             label="Domanda di adesione alla CGN"

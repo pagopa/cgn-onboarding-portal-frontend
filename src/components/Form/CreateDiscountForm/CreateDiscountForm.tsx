@@ -1,17 +1,14 @@
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { Form, Formik } from "formik";
-import { toError } from "fp-ts/lib/Either";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import Api from "../../../api";
-import { CreateDiscount, EntityType } from "../../../api/generated";
+import { remoteData } from "../../../api/common";
+import { CreateDiscount } from "../../../api/generated";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
-import chainAxios from "../../../utils/chainAxios";
 import {
   withNormalizedSpaces,
   clearIfReferenceIsBlank
@@ -51,11 +48,7 @@ const emptyInitialValues = {
 const CreateDiscountForm = () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<any>();
   const { triggerTooltip } = useTooltip();
-
-  const entityType = agreement.entityType;
 
   const throwErrorTooltip = () => {
     triggerTooltip({
@@ -65,53 +58,47 @@ const CreateDiscountForm = () => {
     });
   };
 
+  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
+    agreementId: agreement.id
+  });
+  const profile = profileQuery.data;
+
   const checkStaticCode =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     profile?.salesChannel?.discountCodeType === "Static";
 
   const checkLanding =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     profile?.salesChannel?.discountCodeType === "LandingPage";
 
   const checkBucket =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     profile?.salesChannel?.discountCodeType === "Bucket";
+
+  const createDiscountMutation = remoteData.Index.Discount.createDiscount.useMutation(
+    {
+      onSuccess() {
+        history.push(DASHBOARD);
+      },
+      onError() {
+        throwErrorTooltip();
+      }
+    }
+  );
 
   const createDiscount = async (
     agreementId: string,
     discount: CreateDiscount
-  ) =>
-    await tryCatch(
-      () => Api.Discount.createDiscount(agreementId, discount),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(throwErrorTooltip, () => history.push(DASHBOARD))
-      .run();
-
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        profile => {
-          setProfile({
-            ...profile,
-            hasDifferentFullName: !!profile.name
-          });
-          setLoading(false);
-        }
-      )
-      .run();
-
-  useEffect(() => {
-    setLoading(true);
-    void getProfile(agreement.id);
-  }, []);
+  ) => createDiscountMutation.mutate({ agreementId, discount });
 
   return (
     <Formik

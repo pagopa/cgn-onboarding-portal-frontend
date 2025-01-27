@@ -1,6 +1,7 @@
 import { hot } from "react-hot-loader";
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { setCookie, getCookie } from "./utils/cookie";
 import { setUser } from "./store/user/userSlice";
 import CenteredLoading from "./components/CenteredLoading/CenteredLoading";
@@ -11,6 +12,7 @@ import "./styles/bootstrap-italia-custom.scss";
 import "./styles/react-datepicker.css";
 import "typeface-titillium-web";
 import { RootState } from "./store/store";
+import { queryClient } from "./api/common";
 
 function App() {
   const dispatch = useDispatch();
@@ -39,10 +41,14 @@ function App() {
     return <SelectCompany token={token} />;
   }
 
-  return loading ? (
-    <CenteredLoading />
-  ) : (
-    <RouterConfig user={user} userType={type} />
+  if (loading) {
+    return <CenteredLoading />;
+  }
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterConfig user={user} userType={type} />
+    </QueryClientProvider>
   );
 }
 

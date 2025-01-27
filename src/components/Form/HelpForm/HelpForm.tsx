@@ -1,8 +1,6 @@
 import React from "react";
 import { Field, Form, Formik } from "formik";
 import { useHistory } from "react-router-dom";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { useSelector } from "react-redux";
 import FormSection from "../FormSection";
 import InputField from "../FormField";
@@ -11,16 +9,10 @@ import {
   notLoggedHelpValidationSchema
 } from "../ValidationSchemas";
 import { RootState } from "../../../store/store";
-import {
-  EntityType,
-  HelpRequest,
-  HelpRequestCategoryEnum
-} from "../../../api/generated";
-import Api from "../../../api";
+import { EntityType, HelpRequestCategoryEnum } from "../../../api/generated";
+import { remoteData } from "../../../api/common";
 import { getCookie } from "../../../utils/cookie";
 import InputFieldMultiple from "../InputFieldMultiple";
-import NotLoggedHelpApi from "../../../api/public";
-import { HelpRequest as NotLoggedHelpRequest } from "../../../api/generated_public";
 import CustomErrorMessage from "../CustomErrorMessage";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import FormButtons from "./HelpFormButtons";
@@ -85,21 +77,23 @@ const HelpForm = () => {
       text: "C'è stato un errore durante la sottomissione del form"
     });
 
-  const createLoggedHelp = async (agreementId: string, help: HelpRequest) =>
-    await tryCatch(() => Api.Help.sendHelpRequest(agreementId, help), toError)
-      .map(response => response.data)
-      .fold(onErrorTooltip, () => history.goBack())
-      .run();
+  const createLoggedHelpMutation = remoteData.Index.Help.sendHelpRequest.useMutation(
+    {
+      onSuccess() {
+        history.goBack();
+      },
+      onError: onErrorTooltip
+    }
+  );
 
-  const createNotLoggedHelp = async (help: NotLoggedHelpRequest) => {
-    await tryCatch(
-      () => NotLoggedHelpApi.NotLoggedHelp.sendHelpRequest(help),
-      toError
-    )
-      .map(response => response.data)
-      .fold(onErrorTooltip, () => history.goBack())
-      .run();
-  };
+  const createNotLoggedHelpMutation = remoteData.Public.Help.sendHelpRequest.useMutation(
+    {
+      onSuccess() {
+        history.goBack();
+      },
+      onError: onErrorTooltip
+    }
+  );
 
   const hasTopicDropdown = (category: string): boolean =>
     category === HelpRequestCategoryEnum.DataFilling ||
@@ -117,9 +111,12 @@ const HelpForm = () => {
       onSubmit={(values: any) => {
         const { confirmEmailAddress, ...newValues } = values;
         if (token) {
-          void createLoggedHelp(agreement.id, values);
+          createLoggedHelpMutation.mutate({
+            agreementId: agreement.id,
+            helpRequest: values
+          });
         } else {
-          void createNotLoggedHelp(newValues);
+          createNotLoggedHelpMutation.mutate({ helpRequest: newValues });
         }
       }}
     >

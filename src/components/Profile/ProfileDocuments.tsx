@@ -1,45 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Icon, LinkList, LinkListItem } from "design-react-kit";
 import { useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import Api from "../../api";
+import { remoteData } from "../../api/common";
 import { formatDate } from "../../utils/dates";
 import { EntityType } from "../../api/generated";
 import { RootState } from "../../store/store";
 
 const ProfileDocuments = () => {
-  const [agreementDocument, setAgreementDocument] = useState<any>();
-  const [manifestationDocument, setManifestationDocument] = useState<any>();
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
-  const getDocuments = async (agreementId: string) =>
-    await tryCatch(() => Api.Document.getDocuments(agreementId), toError)
-      .map(response => response.data.items)
-      .fold(
-        () => void 0,
-        documents => {
-          setAgreementDocument(
-            documents.find(
-              document =>
-                document.documentType === "backoffice_agreement" ||
-                document.documentType === "agreement"
-            )
-          );
-          setManifestationDocument(
-            documents.find(
-              document =>
-                document.documentType === "backoffice_adhesion_request" ||
-                document.documentType === "adhesion_request"
-            )
-          );
-        }
-      )
-      .run();
-
-  useEffect(() => {
-    void getDocuments(agreement.id);
-  }, []);
+  const documentsQuery = remoteData.Index.Document.getDocuments.useQuery({
+    agreementId: agreement.id
+  });
+  const agreementDocument = documentsQuery.data?.items.find(
+    document =>
+      document.documentType === "backoffice_agreement" ||
+      document.documentType === "agreement"
+  );
+  const manifestationDocument = documentsQuery.data?.items.find(
+    document =>
+      document.documentType === "backoffice_adhesion_request" ||
+      document.documentType === "adhesion_request"
+  );
 
   const entityType = agreement.entityType;
 

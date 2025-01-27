@@ -13,14 +13,12 @@ import {
   usePagination,
   useSortBy
 } from "react-table";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import { omit } from "lodash";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading";
-import { Agreements } from "../../api/generated_backoffice";
+import { AgreementApiGetAgreementsRequest } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import RequestFilter from "./RequestsFilter";
@@ -30,40 +28,18 @@ import RequestsDetails from "./RequestsDetails";
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const Requests = () => {
   const pageSize = 20;
-  const [agreements, setAgreements] = useState<Agreements>();
-  const [loading, setLoading] = useState(false);
+  const [extraLoading, setExtraLoading] = useState(false);
   const refForm = useRef<any>(null);
 
-  const getAgreementsApi = async (params?: any) =>
-    await tryCatch(
-      () =>
-        Api.Agreement.getAgreements(
-          params.states,
-          params.assignee,
-          params.profileFullName,
-          params.requestDateFrom,
-          params.requestDateTo,
-          pageSize,
-          params.page,
-          params.sortColumn,
-          params.sortDirection
-        ),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setAgreements(response);
-          setLoading(false);
-        }
-      )
-      .run();
+  const [agreementsQueryParams, setAgreementsQueryParams] = useState<
+    AgreementApiGetAgreementsRequest
+  >({});
+  const agreementsQuery = remoteData.Backoffice.Agreement.getAgreements.useQuery(
+    { ...agreementsQueryParams, pageSize }
+  );
+  const agreements = agreementsQuery.data;
 
-  const getAgreements = (params?: any) => {
-    setLoading(true);
-    void getAgreementsApi(params);
-  };
+  const isLoading = agreementsQuery.isSuccess || extraLoading;
 
   const data = useMemo(() => agreements?.items || [], [agreements]);
   const columns = useMemo(
@@ -109,7 +85,7 @@ const Requests = () => {
       <RequestsDetails
         updateList={() => refForm.current?.submitForm()}
         original={original}
-        setLoading={setLoading}
+        setLoading={setExtraLoading}
       />
     ),
     [agreements]
@@ -185,8 +161,11 @@ const Requests = () => {
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <RequestFilter getAgreements={getAgreements} refForm={refForm} />
-      {loading ? (
+      <RequestFilter
+        getAgreements={setAgreementsQueryParams}
+        refForm={refForm}
+      />
+      {isLoading ? (
         <CenteredLoading />
       ) : (
         <>
@@ -259,7 +238,7 @@ const Requests = () => {
                   className="mt-3"
                   onClick={() => {
                     refForm.current?.resetForm();
-                    getAgreements({});
+                    setAgreementsQueryParams({});
                   }}
                 >
                   Reimposta Tutto

@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 import { RootState } from "../../store/store";
 import { useTooltip, Severity } from "../../context/tooltip";
 import { Agreement, EntityType } from "../../api/generated_backoffice";
@@ -35,61 +33,55 @@ const RequestsDetails = ({
     `${user.given_name} ${user.family_name}` ===
     (original as any).assignee?.fullName;
 
-  const approveAgreementApi = async () =>
-    await tryCatch(() => Api.Agreement.approveAgreement(original.id), toError)
-      .fold(
-        () => setLoading(false),
-        response => {
-          if (response.status === 204) {
-            updateList();
-            triggerTooltip({
-              severity: Severity.SUCCESS,
-              text:
-                "La richiesta di convenzione è stata validata con successo.",
-              title: "Validazione Effettuata"
-            });
-          } else {
-            triggerTooltip({
-              severity: Severity.DANGER,
-              text: "Errore durante la validazione"
-            });
-          }
-          setLoading(false);
-        }
-      )
-      .run();
-
+  const approveAgreementMutation = remoteData.Backoffice.Agreement.approveAgreement.useMutation(
+    {
+      onError() {
+        setLoading(false);
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "Errore durante la validazione"
+        });
+      },
+      onSuccess() {
+        setLoading(false);
+        updateList();
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text: "La richiesta di convenzione è stata validata con successo.",
+          title: "Validazione Effettuata"
+        });
+      }
+    }
+  );
   const approveAgreement = () => {
     setLoading(true);
-    void approveAgreementApi();
+    void approveAgreementMutation.mutate({ agreementId: original.id });
   };
 
-  const rejectAgreementApi = async () =>
-    await tryCatch(
-      () =>
-        Api.Agreement.rejectAgreement(original.id, {
-          reasonMessage: rejectMessage
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        () => {
-          setLoading(false);
-          updateList();
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text: "La richiesta di convenzione è stata rifiutata con successo.",
-            title: "Rifiuto inviato"
-          });
-        }
-      )
-      .run();
-
+  const rejectAgreementMutation = remoteData.Backoffice.Agreement.rejectAgreement.useMutation(
+    {
+      onError() {
+        setLoading(false);
+      },
+      onSuccess() {
+        setLoading(false);
+        updateList();
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text: "La richiesta di convenzione è stata rifiutata con successo.",
+          title: "Rifiuto inviato"
+        });
+      }
+    }
+  );
   const rejectAgreement = () => {
     setLoading(true);
-    void rejectAgreementApi();
+    void rejectAgreementMutation.mutate({
+      agreementId: original.id,
+      refusal: {
+        reasonMessage: rejectMessage
+      }
+    });
   };
 
   return (

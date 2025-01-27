@@ -7,7 +7,8 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:sonarjs/recommended",
     "prettier",
-    "prettier/@typescript-eslint"
+    "prettier/@typescript-eslint",
+    "plugin:react-hooks/recommended"
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
