@@ -1,5 +1,3 @@
-src/components/Discounts/Discounts.tsx
-src/components/Discounts/ImportationStatus.tsx
 src/components/Form/CreateActivationForm/CreateActivationForm.tsx
 src/components/Form/CreateDiscountForm/CreateDiscountForm.tsx
 src/components/Form/CreateProfileForm/DiscountData/Bucket.tsx
@@ -10,8 +8,6 @@ src/components/Form/CreateProfileForm/ProfileData/ProfileData.tsx
 src/components/Form/CreateProfileForm/ProfileData/ProfileImage.tsx
 src/components/Form/CreateProfileForm/ProfileData/SalesChannels.tsx
 src/components/Form/EditActivationForm/EditActivationForm.tsx
-src/components/Form/EditDiscountForm/EditDiscountForm.tsx
-src/components/Form/HelpForm/HelpForm.tsx
 src/components/OperatorActivations/OperatorActivationDetail.tsx
 src/components/OperatorActivations/OperatorActivations.tsx
 src/components/OperatorConvention/BucketCodeModal.tsx

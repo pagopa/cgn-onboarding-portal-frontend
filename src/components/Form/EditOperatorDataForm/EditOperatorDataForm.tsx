@@ -186,6 +186,7 @@ const EditOperatorForm = (variant: "edit-data" | "edit-profile") => () => {
 
   return (
     <Formik
+      enableReinitialize
       initialValues={{
         ...initialValues,
         salesChannel: {

@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { Form, Formik } from "formik";
 import { fromNullable } from "fp-ts/lib/Option";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { AxiosError } from "axios";
@@ -133,10 +133,6 @@ const EditDiscountForm = () => {
   const { discountId } = useParams<any>();
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [initialValues, setInitialValues] = useState<any>({
-    ...discountEmptyInitialValues
-  });
-  const { triggerTooltip } = useTooltip();
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
@@ -164,44 +160,45 @@ const EditDiscountForm = () => {
     agreementId: agreement.id,
     discountId
   });
-  useEffect(() => {
-    const discount = discountQuery.data;
-    if (discount) {
-      const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
-        discount.description
-      );
-      const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
-        discount.condition
-      );
-      setInitialValues({
-        ...discount,
-        name: withNormalizedSpaces(discount.name),
-        name_en: withNormalizedSpaces(discount.name_en),
-        name_de: "-",
-        description: cleanedIfDescriptionIsBlank(discount.description),
-        description_en: cleanedIfDescriptionIsBlank(discount.description_en),
-        description_de: "-",
-        condition: cleanedIfConditionIsBlank(discount.condition),
-        condition_en: cleanedIfConditionIsBlank(discount.condition_en),
-        condition_de: "-",
-        discountUrl: fromNullable(discount.discountUrl).toUndefined(),
-        startDate: new Date(discount.startDate),
-        endDate: new Date(discount.endDate),
-        landingPageReferrer: fromNullable(
-          discount.landingPageReferrer
-        ).toUndefined(),
-        landingPageUrl: fromNullable(discount.landingPageUrl).toUndefined(),
-        discount: fromNullable(discount.discount).toUndefined(),
-        staticCode: fromNullable(discount.staticCode).toUndefined(),
-        lastBucketCodeLoadUid: fromNullable(
-          discount.lastBucketCodeLoadUid
-        ).toUndefined(),
-        lastBucketCodeLoadFileName: fromNullable(
-          discount.lastBucketCodeLoadFileName
-        ).toUndefined()
-      });
+  const discount = discountQuery.data;
+  const initialValues = useMemo(() => {
+    if (!discount) {
+      return discountEmptyInitialValues;
     }
-  }, [discountQuery.data]);
+    const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
+      discount.description
+    );
+    const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
+      discount.condition
+    );
+    return {
+      ...discount,
+      name: withNormalizedSpaces(discount.name),
+      name_en: withNormalizedSpaces(discount.name_en),
+      name_de: "-",
+      description: cleanedIfDescriptionIsBlank(discount.description),
+      description_en: cleanedIfDescriptionIsBlank(discount.description_en),
+      description_de: "-",
+      condition: cleanedIfConditionIsBlank(discount.condition),
+      condition_en: cleanedIfConditionIsBlank(discount.condition_en),
+      condition_de: "-",
+      discountUrl: fromNullable(discount.discountUrl).toUndefined(),
+      startDate: new Date(discount.startDate),
+      endDate: new Date(discount.endDate),
+      landingPageReferrer: fromNullable(
+        discount.landingPageReferrer
+      ).toUndefined(),
+      landingPageUrl: fromNullable(discount.landingPageUrl).toUndefined(),
+      discount: fromNullable(discount.discount).toUndefined(),
+      staticCode: fromNullable(discount.staticCode).toUndefined(),
+      lastBucketCodeLoadUid: fromNullable(
+        discount.lastBucketCodeLoadUid
+      ).toUndefined(),
+      lastBucketCodeLoadFileName: fromNullable(
+        discount.lastBucketCodeLoadFileName
+      ).toUndefined()
+    };
+  }, [discount]);
 
   const isLoading = profileQuery.isLoading || discountQuery.isLoading;
 
@@ -229,11 +226,7 @@ const EditDiscountForm = () => {
         {({ values, setFieldValue }) => (
           <Form autoComplete="off">
             <FormSection hasIntroduction>
-              <DiscountInfo
-                formValues={values}
-                setFieldValue={setFieldValue}
-                entityType={agreement.entityType}
-              />
+              <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
               <FormField
                 htmlFor="productCategories"
                 isTitleHeading
@@ -314,7 +307,7 @@ const EditDiscountForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
-              {initialValues.state !== "draft" && (
+              {discount?.state !== "draft" && (
                 <div className="mt-10">
                   <Button
                     className="px-14 mr-4"
@@ -335,7 +328,7 @@ const EditDiscountForm = () => {
                   </Button>
                 </div>
               )}
-              {initialValues.state === "draft" && (
+              {discount?.state === "draft" && (
                 <div className="mt-10">
                   <Button
                     className="px-14 mr-4"
