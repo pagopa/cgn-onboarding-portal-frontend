@@ -28,31 +28,18 @@ import FormField from "../../FormField";
 import FormSection from "../../FormSection";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import { remoteData } from "../../../../api/common";
+import {
+  discountEmptyInitialValues,
+  getDiscountTypeChecks,
+  useUpdateDiscountMutationOnError
+} from "../../EditDiscountForm/EditDiscountForm";
 import Bucket from "./Bucket";
 import DiscountUrl from "./DiscountUrl";
 import EnrollToEyca from "./EnrollToEyca";
 import LandingPage from "./LandingPage";
 
 const emptyInitialValues = {
-  discounts: [
-    {
-      name: "",
-      name_en: "",
-      name_de: "-",
-      description: "",
-      description_en: "",
-      description_de: "-",
-      startDate: "",
-      endDate: "",
-      discount: "",
-      discountUrl: "",
-      productCategories: [],
-      condition: "",
-      condition_en: "",
-      condition_de: "-",
-      staticCode: ""
-    }
-  ]
+  discounts: [{ ...discountEmptyInitialValues }]
 };
 
 type Props = {
@@ -80,26 +67,9 @@ const DiscountData = ({
   });
   const profile = profileQuery.data;
 
-  const checkStaticCode =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Static";
-
-  const checkLanding =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "LandingPage";
-
-  const checkBucket =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Bucket";
+  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
+    profile
+  );
 
   const createDiscountMutation = remoteData.Index.Discount.createDiscount.useMutation(
     {
@@ -125,36 +95,14 @@ const DiscountData = ({
   const createDiscount = (agreementId: string, discount: CreateDiscount) =>
     createDiscountMutation.mutate({ agreementId, discount });
 
+  const updateDiscountMutationOnError = useUpdateDiscountMutationOnError();
   const updateDiscountMutation = remoteData.Index.Discount.updateDiscount.useMutation(
     {
       onSuccess() {
         onUpdate();
         handleNext();
       },
-      async onError(error) {
-        if (error.status === 409) {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Upload codici ancora in corso"
-          });
-        } else if (
-          error.status === 400 &&
-          error.response?.data ===
-            "CANNOT_UPDATE_DISCOUNT_BUCKET_WHILE_PROCESSING_IS_RUNNING"
-        ) {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text:
-              "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
-          });
-        } else {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text:
-              "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
-          });
-        }
-      }
+      onError: updateDiscountMutationOnError
     }
   );
 

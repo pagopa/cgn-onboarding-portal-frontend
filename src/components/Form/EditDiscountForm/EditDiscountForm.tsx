@@ -5,6 +5,7 @@ import { fromNullable } from "fp-ts/lib/Option";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+import { AxiosError } from "axios";
 import { remoteData } from "../../../api/common";
 import { Discount, ProductCategory } from "../../../api/generated";
 import { Severity, useTooltip } from "../../../context/tooltip";
@@ -27,8 +28,9 @@ import FormField from "../FormField";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../utils/constants";
+import { Profile } from "../../../api/generated";
 
-const emptyInitialValues = {
+export const discountEmptyInitialValues = {
   name: "",
   name_en: "",
   name_de: "-",
@@ -44,22 +46,11 @@ const emptyInitialValues = {
   condition_de: "-",
   staticCode: "",
   visibleOnEyca: false,
-  eycaLandingPageUrl: undefined
+  eycaLandingPageUrl: undefined,
+  discountUrl: ""
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const EditDiscountForm = () => {
-  const { discountId } = useParams<any>();
-  const history = useHistory();
-  const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
-  const { triggerTooltip } = useTooltip();
-
-  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
-    agreementId: agreement.id
-  });
-  const profile = profileQuery.data;
-
+export function getDiscountTypeChecks(profile: Profile | undefined) {
   const checkStaticCode =
     (profile?.salesChannel?.channelType === "OnlineChannel" ||
       profile?.salesChannel?.channelType === "BothChannels") &&
@@ -81,35 +72,88 @@ const EditDiscountForm = () => {
     // @ts-ignore
     profile?.salesChannel?.discountCodeType === "Bucket";
 
+  return { checkStaticCode, checkLanding, checkBucket };
+}
+
+export function useUpdateDiscountMutationOnError() {
+  const { triggerTooltip } = useTooltip();
+  return (error: AxiosError<unknown, unknown>) => {
+    if (error.status === 409) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Upload codici ancora in corso"
+      });
+    } else if (
+      error.status === 400 &&
+      error.response?.data ===
+        "CANNOT_UPDATE_DISCOUNT_BUCKET_WHILE_PROCESSING_IS_RUNNING"
+    ) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text:
+          "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
+      });
+    } else {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text:
+          "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
+      });
+    }
+  };
+}
+
+export function sanitizeDiscountFormValues(values: any) {
+  const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
+    values.description
+  );
+  const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(values.condition);
+  return {
+    ...values,
+    visibleOnEyca: values.eycaLandingPageUrl ? true : values.visibleOnEyca,
+    name: withNormalizedSpaces(values.name),
+    name_en: withNormalizedSpaces(values.name_en),
+    name_de: "-",
+    description: cleanedIfDescriptionIsBlank(values.description),
+    description_en: cleanedIfDescriptionIsBlank(values.description_en),
+    description_de: cleanedIfDescriptionIsBlank(values.description_de),
+    condition: cleanedIfConditionIsBlank(values.condition),
+    condition_en: cleanedIfConditionIsBlank(values.condition_en),
+    condition_de: cleanedIfConditionIsBlank(values.condition_de),
+    productCategories: values.productCategories.filter((pc: any) =>
+      Object.values(ProductCategory).includes(pc)
+    ),
+    startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
+    endDate: format(new Date(values.endDate), "yyyy-MM-dd")
+  };
+}
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const EditDiscountForm = () => {
+  const { discountId } = useParams<any>();
+  const history = useHistory();
+  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const [initialValues, setInitialValues] = useState<any>({
+    ...discountEmptyInitialValues
+  });
+  const { triggerTooltip } = useTooltip();
+
+  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
+    agreementId: agreement.id
+  });
+  const profile = profileQuery.data;
+
+  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
+    profile
+  );
+
+  const updateDiscountMutationOnError = useUpdateDiscountMutationOnError();
   const updateDiscountMutation = remoteData.Index.Discount.updateDiscount.useMutation(
     {
       onSuccess() {
         history.push(DASHBOARD);
       },
-      async onError(error) {
-        if (error.status === 409) {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Upload codici ancora in corso"
-          });
-        } else if (
-          error.status === 400 &&
-          error.response?.data ===
-            "CANNOT_UPDATE_DISCOUNT_BUCKET_WHILE_PROCESSING_IS_RUNNING"
-        ) {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text:
-              "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
-          });
-        } else {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text:
-              "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
-          });
-        }
-      }
+      onError: updateDiscountMutationOnError
     }
   );
   const updateDiscount = (agreementId: string, discount: Discount) => {
@@ -178,32 +222,7 @@ const EditDiscountForm = () => {
           )
         }
         onSubmit={values => {
-          const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
-            values.description
-          );
-          const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
-            values.condition
-          );
-          const newValues = {
-            ...values,
-            visibleOnEyca: values.eycaLandingPageUrl
-              ? true
-              : values.visibleOnEyca,
-            name: withNormalizedSpaces(values.name),
-            name_en: withNormalizedSpaces(values.name_en),
-            name_de: "-",
-            description: cleanedIfDescriptionIsBlank(values.description),
-            description_en: cleanedIfDescriptionIsBlank(values.description_en),
-            description_de: cleanedIfDescriptionIsBlank(values.description_de),
-            condition: cleanedIfConditionIsBlank(values.condition),
-            condition_en: cleanedIfConditionIsBlank(values.condition_en),
-            condition_de: cleanedIfConditionIsBlank(values.condition_de),
-            productCategories: values.productCategories.filter((pc: any) =>
-              Object.values(ProductCategory).includes(pc)
-            ),
-            startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-            endDate: format(new Date(values.endDate), "yyyy-MM-dd")
-          };
+          const newValues = sanitizeDiscountFormValues(values);
           void updateDiscount(agreement.id, newValues);
         }}
       >

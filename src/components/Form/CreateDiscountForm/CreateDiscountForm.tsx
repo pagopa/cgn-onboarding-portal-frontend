@@ -25,24 +25,11 @@ import FormField from "../FormField";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../utils/constants";
-
-const emptyInitialValues = {
-  name: "",
-  name_en: "",
-  name_de: "-",
-  description: "",
-  description_en: "",
-  description_de: "-",
-  startDate: "",
-  endDate: "",
-  productCategories: [],
-  condition: "",
-  condition_en: "",
-  condition_de: "-",
-  staticCode: "",
-  visibleOnEyca: false,
-  eycaLandingPageUrl: undefined
-};
+import {
+  discountEmptyInitialValues,
+  getDiscountTypeChecks,
+  sanitizeDiscountFormValues
+} from "../EditDiscountForm/EditDiscountForm";
 
 /* eslint-disable sonarjs/cognitive-complexity */
 const CreateDiscountForm = () => {
@@ -50,39 +37,14 @@ const CreateDiscountForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const { triggerTooltip } = useTooltip();
 
-  const throwErrorTooltip = () => {
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text:
-        "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
-    });
-  };
-
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
   });
   const profile = profileQuery.data;
 
-  const checkStaticCode =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Static";
-
-  const checkLanding =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "LandingPage";
-
-  const checkBucket =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Bucket";
+  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
+    profile
+  );
 
   const createDiscountMutation = remoteData.Index.Discount.createDiscount.useMutation(
     {
@@ -90,7 +52,11 @@ const CreateDiscountForm = () => {
         history.push(DASHBOARD);
       },
       onError() {
-        throwErrorTooltip();
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text:
+            "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
+        });
       }
     }
   );
@@ -102,34 +68,12 @@ const CreateDiscountForm = () => {
 
   return (
     <Formik
-      initialValues={emptyInitialValues}
+      initialValues={{ ...discountEmptyInitialValues, discount: undefined }}
       validationSchema={() =>
         discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
       }
       onSubmit={values => {
-        const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
-          values.description
-        );
-        const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
-          values.condition
-        );
-        const newValues = {
-          ...values,
-          visibleOnEyca: values.eycaLandingPageUrl
-            ? true
-            : values.visibleOnEyca,
-          name: withNormalizedSpaces(values.name),
-          name_en: withNormalizedSpaces(values.name_en),
-          name_de: "-",
-          description: cleanedIfDescriptionIsBlank(values.description),
-          description_en: cleanedIfDescriptionIsBlank(values.description_en),
-          description_de: cleanedIfDescriptionIsBlank(values.description_de),
-          condition: cleanedIfConditionIsBlank(values.condition),
-          condition_en: cleanedIfConditionIsBlank(values.condition_en),
-          condition_de: cleanedIfConditionIsBlank(values.condition_de),
-          startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-          endDate: format(new Date(values.endDate), "yyyy-MM-dd")
-        };
+        const newValues = sanitizeDiscountFormValues(values);
         void createDiscount(agreement.id, newValues);
       }}
     >
