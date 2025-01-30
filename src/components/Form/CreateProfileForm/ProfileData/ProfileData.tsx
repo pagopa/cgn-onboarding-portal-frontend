@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import { Form, Formik } from "formik";
 import * as array from "fp-ts/lib/Array";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../../../api/common";

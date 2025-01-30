@@ -99,7 +99,6 @@ const getView = (
   getConventionDetails: () => void,
   agreement: ApprovedAgreement
 ) => {
-  const entityType = agreement.entityType;
   if (details) {
     if (view.includes("agevolazione")) {
       const discount =

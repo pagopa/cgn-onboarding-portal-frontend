@@ -1,9 +1,6 @@
 import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { EntityType } from "../../api/generated";
 
 type Props = {
   isOpen: any;
@@ -11,10 +8,7 @@ type Props = {
   unpublish: any;
 };
 
-const UnpublishModal = ({ isOpen, toggle, unpublish }: Props) => {
-  const entityType = useSelector(
-    (state: RootState) => state.agreement.value.entityType
-  );
+function UnpublishModal({ isOpen, toggle, unpublish }: Props) {
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Sospendi opportunità</ModalHeader>
@@ -45,6 +39,6 @@ const UnpublishModal = ({ isOpen, toggle, unpublish }: Props) => {
       </ModalFooter>
     </Modal>
   );
-};
+}
 
 export default UnpublishModal;

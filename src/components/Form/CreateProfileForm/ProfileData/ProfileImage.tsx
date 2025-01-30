@@ -37,7 +37,7 @@ const ProfileImage = () => {
         setImage(`${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`)
       );
     }
-  }, []);
+  }, [agreement.imageUrl, dispatch]);
 
   const getImageErrorCodeDescription = (imageErrorCode: unknown) => {
     switch (imageErrorCode) {

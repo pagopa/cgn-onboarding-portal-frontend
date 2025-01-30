@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Column, useExpanded, useSortBy, useTable } from "react-table";
 import { Button, Icon } from "design-react-kit";
@@ -33,12 +33,15 @@ const Discounts = () => {
   const [selectedPublish, setSelectedPublish] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
-  const throwErrorTooltip = (e: string) => {
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text: e
-    });
-  };
+  const throwErrorTooltip = useCallback(
+    (e: string) => {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: e
+      });
+    },
+    [triggerTooltip]
+  );
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
@@ -52,7 +55,7 @@ const Discounts = () => {
     if (discountsQuery.error) {
       throwErrorTooltip("Errore nel caricamento delle opportunità");
     }
-  }, []);
+  }, [discountsQuery.error, throwErrorTooltip]);
   const discounts = useMemo(() => discountsQuery.data?.items ?? [], [
     discountsQuery.data?.items
   ]);

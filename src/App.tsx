@@ -31,7 +31,7 @@ function App() {
     if (token) {
       dispatch(setUser(token));
     }
-  }, []);
+  }, [dispatch, hash, token]);
 
   if (!token) {
     return <Login />;

@@ -9,7 +9,7 @@ import {
   notLoggedHelpValidationSchema
 } from "../ValidationSchemas";
 import { RootState } from "../../../store/store";
-import { EntityType, HelpRequestCategoryEnum } from "../../../api/generated";
+import { HelpRequestCategoryEnum } from "../../../api/generated";
 import { remoteData } from "../../../api/common";
 import { getCookie } from "../../../utils/cookie";
 import InputFieldMultiple from "../InputFieldMultiple";
@@ -36,7 +36,7 @@ const notLoggedInitialValues = {
   recaptchaToken: ""
 };
 
-const topics = (entityType: EntityType | undefined) => [
+const topics = () => [
   {
     key: "DataFilling",
     items: [
@@ -99,8 +99,6 @@ const HelpForm = () => {
     category === HelpRequestCategoryEnum.DataFilling ||
     category === HelpRequestCategoryEnum.Discounts ||
     category === HelpRequestCategoryEnum.Documents;
-
-  const entityType = agreement.entityType;
 
   return (
     <Formik
@@ -243,7 +241,7 @@ const HelpForm = () => {
                 <div>
                   <Field className="select" name="topic" as="select">
                     <>
-                      {topics(entityType)
+                      {topics()
                         .find(topic => topic.key === values.category)
                         ?.items.map(item => (
                           <option key={item} value={item}>

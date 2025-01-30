@@ -1,9 +1,5 @@
 import { fromNullable } from "fp-ts/lib/Option";
-import {
-  ProductCategory,
-  EntityType as EntityTypeA,
-  EntityType
-} from "../api/generated";
+import { ProductCategory, EntityType as EntityTypeA } from "../api/generated";
 import {
   OrganizationStatus,
   EntityType as EntityTypeB
@@ -14,9 +10,7 @@ type CategoryElement = {
   description: string;
 };
 
-export function categoriesMap(
-  entityType: EntityType | undefined
-): Record<ProductCategory, CategoryElement> {
+export function categoriesMap(): Record<ProductCategory, CategoryElement> {
   return {
     CultureAndEntertainment: {
       name: "Cultura e tempo libero",
@@ -75,13 +69,10 @@ export const makeOrganizationStatusReadable = (status: OrganizationStatus) =>
   fromNullable(organizationStatusMap[status]).fold("", s => s);
 
 export const makeProductCategoriesString = (
-  productCategories: Array<ProductCategory>,
-  entityType: EntityType | undefined
+  productCategories: Array<ProductCategory>
 ): Array<string | undefined> =>
   productCategories.map(pc =>
-    categoriesMap(entityType)[pc]
-      ? categoriesMap(entityType)[pc].name
-      : undefined
+    categoriesMap()[pc] ? categoriesMap()[pc].name : undefined
   );
 
 export const formatPercentage = (discountValue: number | undefined) =>

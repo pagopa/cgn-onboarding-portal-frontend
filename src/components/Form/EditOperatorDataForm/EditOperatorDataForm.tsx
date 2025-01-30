@@ -203,7 +203,7 @@ const EditOperatorForm = (variant: "edit-data" | "edit-profile") => () => {
         void editProfile(profileData);
       }}
     >
-      {({ values, setFieldValue }) => {
+      {() => {
         switch (variant) {
           case "edit-data":
             return (

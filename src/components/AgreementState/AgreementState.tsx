@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Icon } from "design-react-kit";
+import { Badge } from "design-react-kit";
 import { format } from "date-fns";
 import Hourglass from "../../assets/icons/hourglass.svg";
 import { AgreementState as AgreementStateType } from "../../api/generated";

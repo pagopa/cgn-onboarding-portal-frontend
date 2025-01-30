@@ -34,7 +34,7 @@ export const agreementSlice = createSlice({
     }
   },
   extraReducers: builder => {
-    builder.addCase(createAgreement.pending, (state, action) => {
+    builder.addCase(createAgreement.pending, state => {
       state.loading = true;
     });
     builder.addCase(createAgreement.fulfilled, (state, action) => {
@@ -43,7 +43,7 @@ export const agreementSlice = createSlice({
       }
       state.loading = false;
     });
-    builder.addCase(createAgreement.rejected, (state, action) => {
+    builder.addCase(createAgreement.rejected, state => {
       state.loading = false;
     });
   }

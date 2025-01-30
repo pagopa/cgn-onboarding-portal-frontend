@@ -51,9 +51,6 @@ const EnrollToEyca = ({
       : formValues.visibleOnEyca) ?? false
   );
 
-  const discountDetails =
-    index !== undefined ? formValues.discounts[index] : formValues;
-
   const openModal = (val: any) => {
     setCheckboxValue(val);
     setIsModalOpen(true);

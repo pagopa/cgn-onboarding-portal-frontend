@@ -1,6 +1,5 @@
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
-import { useSelector } from "react-redux";
 import React, { useState } from "react";
 import { remoteData } from "../../api/common";
 import {
@@ -12,7 +11,6 @@ import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
-import { RootState } from "../../store/store";
 import BucketCodeModal from "./BucketCodeModal";
 import { getBadgeStatus } from "./ConventionDetails";
 import Item from "./Item";
@@ -34,10 +32,6 @@ const Discount = ({
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [isBucketModalOpen, setIsBucketModalOpen] = useState(false);
-
-  const entityType = useSelector(
-    (state: RootState) => state.agreement.value?.entityType
-  );
 
   const { triggerTooltip } = useTooltip();
 
@@ -140,8 +134,7 @@ const Discount = ({
         <div className="col-4 text-gray">Categorie merceologiche</div>
         <div className="col-8">
           {makeProductCategoriesString(
-            discount.productCategories,
-            entityType
+            discount.productCategories
           ).map((productCategory, index) =>
             productCategory ? <p key={index}>{productCategory}</p> : null
           )}

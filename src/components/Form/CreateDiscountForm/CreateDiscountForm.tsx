@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { Form, Formik } from "formik";
 import React from "react";
@@ -9,10 +8,6 @@ import { CreateDiscount } from "../../../api/generated";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
-import {
-  withNormalizedSpaces,
-  clearIfReferenceIsBlank
-} from "../../../utils/strings";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -80,11 +75,7 @@ const CreateDiscountForm = () => {
       {({ values, setFieldValue, isSubmitting }) => (
         <Form autoComplete="off">
           <FormSection hasIntroduction>
-            <DiscountInfo
-              formValues={values}
-              setFieldValue={setFieldValue}
-              entityType={agreement.entityType}
-            />
+            <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
             <FormField
               htmlFor="productCategories"
               isTitleHeading

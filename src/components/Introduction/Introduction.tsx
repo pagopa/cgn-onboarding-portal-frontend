@@ -2,16 +2,14 @@ import React from "react";
 import { Nav } from "design-react-kit";
 import NavItem from "../NavItem";
 import CgnLogo from "../Logo/CgnLogo";
-import { EntityType } from "../../api/generated";
 
 type Props = {
   name: string;
   activeTab: number;
   handleClick: any;
-  entityType: EntityType | undefined;
 };
 
-const Introduction = ({ name, activeTab, handleClick, entityType }: Props) => (
+const Introduction = ({ name, activeTab, handleClick }: Props) => (
   <section className="bg-white text-left">
     <div className="px-8 pt-10">
       <div className="row">

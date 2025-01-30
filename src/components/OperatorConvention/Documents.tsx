@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Document } from "../../api/generated_backoffice";
 import DocumentIcon from "../../assets/icons/document.svg";
 
-const Document = ({ doc, i }: { doc: Document; i: number }) => {
+const Document = ({ doc }: { doc: Document }) => {
   const label =
     doc.documentType === "Agreement"
       ? "Convenzione"
@@ -32,7 +32,7 @@ const Documents = ({ documents }: { documents: Array<Document> }) => (
   <div>
     <h5 className="mb-7 font-weight-bold">Documenti</h5>
     {documents.map((doc, i) => (
-      <Document key={i} doc={doc} i={i} />
+      <Document key={i} doc={doc} />
     ))}
   </div>
 );

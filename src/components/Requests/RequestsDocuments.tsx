@@ -1,7 +1,5 @@
 import React, { useRef } from "react";
 import { Button, Icon } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import DocumentIcon from "../../assets/icons/document.svg";
 import DocumentSuccess from "../../assets/icons/document-success.svg";
 import CenteredLoading from "../CenteredLoading";
