@@ -18,9 +18,7 @@ src/components/OperatorConvention/BucketCodeModal.tsx
 src/components/OperatorConvention/ConventionDetails.tsx
 src/components/OperatorConvention/Discount.tsx
 src/components/OperatorConvention/OperatorConvention.tsx
-src/components/Profile/Profile.tsx
 src/components/Profile/ProfileApiToken.tsx
-src/components/Profile/ProfileDocuments.tsx
 src/components/Requests/AssignRequest.tsx
 src/components/Requests/Requests.tsx
 src/components/Requests/RequestsDetails.tsx
