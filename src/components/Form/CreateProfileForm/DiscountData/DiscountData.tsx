@@ -180,7 +180,8 @@ const DiscountData = ({
     deleteDiscountMutation.mutate({ agreementId, discountId });
   };
 
-  const isLoading = profileQuery.isLoading || discountsQuery.isLoading;
+  const isLoading =
+    profileQuery.isLoading || (isCompleted ? discountsQuery.isLoading : false);
 
   if (isLoading) {
     return <CenteredLoading />;

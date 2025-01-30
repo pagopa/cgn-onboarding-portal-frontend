@@ -2,8 +2,6 @@ src/components/Form/CreateActivationForm/CreateActivationForm.tsx
 src/components/Form/CreateDiscountForm/CreateDiscountForm.tsx
 src/components/Form/CreateProfileForm/DiscountData/Bucket.tsx
 src/components/Form/CreateProfileForm/DiscountData/DiscountData.tsx
-src/components/Form/CreateProfileForm/Documents/Documents.tsx
-src/components/Form/CreateProfileForm/Documents/FileRow.tsx
 src/components/Form/CreateProfileForm/ProfileData/SalesChannels.tsx
 src/components/Form/EditActivationForm/EditActivationForm.tsx
 src/components/OperatorActivations/OperatorActivationDetail.tsx
