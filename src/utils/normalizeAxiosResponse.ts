@@ -1,5 +1,8 @@
 import { AxiosError, AxiosResponse } from "axios";
 
+type StatusCodeOk = 200 | 201 | 204;
+type StatusCodeKo = 400 | 403 | 404 | 409 | 404 | 500;
+
 /**
  * given a result of an ajax call, returns a promise that always resolves, see return type
  * this mimics Future<Either<Err, Res>> composition (like in functional languages) that is more practical and conserves error type
@@ -7,8 +10,6 @@ import { AxiosError, AxiosResponse } from "axios";
  * types generated are unfortunately not complete and wrong in some cases
  * @deprecated
  */
-type StatusCodeOk = 200 | 201 | 204;
-type StatusCodeKo = 400 | 403 | 404 | 409 | 404 | 500;
 export async function normalizeAxiosResponse<Data>(
   axiosOutcome: Promise<AxiosResponse<Data, unknown>>
 ): Promise<
