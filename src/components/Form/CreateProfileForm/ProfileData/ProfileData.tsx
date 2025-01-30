@@ -1,14 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import { Form, Formik } from "formik";
 import * as array from "fp-ts/lib/Array";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../../../api/common";
 import { CreateProfile, UpdateProfile } from "../../../../api/generated";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
-import { EmptyAddresses } from "../../../../utils/form_types";
 import {
   withNormalizedSpaces,
   clearIfReferenceIsBlank
@@ -45,9 +44,6 @@ const ProfileData = ({
 }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const user = useSelector((state: RootState) => state.user.data);
-  const [initialValues, setInitialValues] = useState<any>({
-    ...profileDefaultInitialValues
-  });
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {
@@ -102,52 +98,51 @@ const ProfileData = ({
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
   });
-  useEffect(() => {
-    const profile = profileQuery.data;
-    if (profile) {
-      const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
-      setInitialValues({
-        ...profile,
-        name: cleanedIfNameIsBlank(profile.name),
-        name_en: cleanedIfNameIsBlank(profile.name_en),
-        name_de: "-",
-        description: withNormalizedSpaces(profile.description),
-        description_en: withNormalizedSpaces(profile.description_en),
-        description_de: "-",
-        salesChannel:
-          profile.salesChannel.channelType === "OfflineChannel" ||
-          profile.salesChannel.channelType === "BothChannels"
-            ? {
-                ...profile.salesChannel,
-                addresses: !array.isEmpty(
-                  (profile.salesChannel as any).addresses
-                )
-                  ? (profile.salesChannel as any).addresses.map(
-                      (address: any) => {
-                        const addressSplit = address.fullAddress
-                          .split(",")
-                          .map((item: string) => item.trim());
-                        return {
-                          street: addressSplit[0],
-                          city: addressSplit[1],
-                          district: addressSplit[2],
-                          zipCode: addressSplit[3],
-                          value: address.fullAddress,
-                          label: address.fullAddress
-                        };
-                      }
-                    )
-                  : [
-                      {
-                        fullAddress: ""
-                      }
-                    ]
-              }
-            : profile.salesChannel,
-        hasDifferentFullName: !!profile.name
-      });
+  const profile = profileQuery.data;
+  const initialValues = useMemo(() => {
+    if (!profile) {
+      return { ...profileDefaultInitialValues };
     }
-  }, [profileQuery.data]);
+    const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
+    return {
+      ...profile,
+      name: cleanedIfNameIsBlank(profile.name),
+      name_en: cleanedIfNameIsBlank(profile.name_en),
+      name_de: "-",
+      description: withNormalizedSpaces(profile.description),
+      description_en: withNormalizedSpaces(profile.description_en),
+      description_de: "-",
+      salesChannel:
+        profile.salesChannel.channelType === "OfflineChannel" ||
+        profile.salesChannel.channelType === "BothChannels"
+          ? {
+              ...profile.salesChannel,
+              addresses: !array.isEmpty((profile.salesChannel as any).addresses)
+                ? (profile.salesChannel as any).addresses.map(
+                    (address: any) => {
+                      const addressSplit = address.fullAddress
+                        .split(",")
+                        .map((item: string) => item.trim());
+                      return {
+                        street: addressSplit[0],
+                        city: addressSplit[1],
+                        district: addressSplit[2],
+                        zipCode: addressSplit[3],
+                        value: address.fullAddress,
+                        label: address.fullAddress
+                      };
+                    }
+                  )
+                : [
+                    {
+                      fullAddress: ""
+                    }
+                  ]
+            }
+          : profile.salesChannel,
+      hasDifferentFullName: !!profile.name
+    };
+  }, [profile]);
 
   const entityType = agreement.entityType;
 

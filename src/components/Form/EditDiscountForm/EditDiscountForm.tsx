@@ -163,7 +163,7 @@ const EditDiscountForm = () => {
   const discount = discountQuery.data;
   const initialValues = useMemo(() => {
     if (!discount) {
-      return discountEmptyInitialValues;
+      return { ...discountEmptyInitialValues };
     }
     const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
       discount.description

@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { useSelector } from "react-redux";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { remoteData } from "../../api/common";
 import {
   ApprovedAgreementDiscount,
@@ -109,15 +109,12 @@ const Discount = ({
     });
   };
 
-  const isSuspended = useMemo(() => discount.state === "suspended", [discount]);
-  const isBucketCode = useMemo(
-    () =>
-      profile.salesChannel.channelType !== "OfflineChannel" &&
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      profile.salesChannel?.discountCodeType === "Bucket",
-    [profile]
-  );
+  const isSuspended = discount.state === "suspended";
+  const isBucketCode =
+    profile.salesChannel.channelType !== "OfflineChannel" &&
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    profile.salesChannel?.discountCodeType === "Bucket";
 
   return (
     <div>
