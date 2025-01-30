@@ -25,7 +25,7 @@ import { UpdateProfile } from "../../../api/generated";
 // WARNING: this file is 90% duplicated with src/components/Form/CreateProfileForm/ProfileData/ProfileData.tsx
 // any changes here should be reflected there as well
 
-const defaultSalesChannel = {
+export const defaultSalesChannel = {
   channelType: "",
   websiteUrl: "",
   discountCodeType: "",
@@ -33,7 +33,7 @@ const defaultSalesChannel = {
   addresses: [{ street: "", zipCode: "", city: "", district: "" }]
 };
 
-const defaultInitialValues = {
+export const profileDefaultInitialValues = {
   fullName: "",
   hasDifferentFullName: false,
   name: "",
@@ -59,12 +59,62 @@ const defaultInitialValues = {
   salesChannel: defaultSalesChannel
 };
 
+export function getSalesChannel(salesChannel: any) {
+  switch (salesChannel.channelType) {
+    case "OnlineChannel":
+      const { addresses, ...OnlineChannel } = salesChannel;
+      return OnlineChannel;
+    case "OfflineChannel":
+      const { websiteUrl, discountCodeType, ...OfflineChannel } = salesChannel;
+      return {
+        ...OfflineChannel,
+        addresses:
+          EmptyAddresses.is(OfflineChannel.addresses) ||
+          OfflineChannel.allNationalAddresses
+            ? []
+            : OfflineChannel.addresses.map((add: any) => ({
+                fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                coordinates: add.coordinates
+              }))
+      };
+    case "BothChannels":
+      return {
+        ...salesChannel,
+        addresses:
+          EmptyAddresses.is(salesChannel.addresses) ||
+          salesChannel.allNationalAddresses
+            ? []
+            : salesChannel.addresses.map((add: any) => ({
+                fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
+                coordinates: add.coordinates
+              }))
+      };
+  }
+}
+
+export function sanitizeProfileFromValues(values: any) {
+  const { hasDifferentFullName, ...profile } = values;
+  const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
+  return {
+    ...profile,
+    name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
+    name_en: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name_en),
+    name_de: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name_de),
+    description: withNormalizedSpaces(profile.description),
+    description_en: withNormalizedSpaces(profile.description_en),
+    description_de: withNormalizedSpaces(profile.description_de),
+    salesChannel: getSalesChannel(profile.salesChannel)
+  };
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditOperatorForm = (variant: "edit-data" | "edit-profile") => () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const user = useSelector((state: RootState) => state.user.data);
-  const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
+  const [initialValues, setInitialValues] = useState<any>({
+    ...profileDefaultInitialValues
+  });
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
@@ -119,43 +169,6 @@ const EditOperatorForm = (variant: "edit-data" | "edit-profile") => () => {
     }
   }, [profileQuery.data]);
 
-  const getSalesChannel = (salesChannel: any) => {
-    switch (salesChannel.channelType) {
-      case "OnlineChannel":
-        const { addresses, ...OnlineChannel } = salesChannel;
-        return OnlineChannel;
-      case "OfflineChannel":
-        const {
-          websiteUrl,
-          discountCodeType,
-          ...OfflineChannel
-        } = salesChannel;
-        return {
-          ...OfflineChannel,
-          addresses:
-            EmptyAddresses.is(OfflineChannel.addresses) ||
-            OfflineChannel.allNationalAddresses
-              ? []
-              : OfflineChannel.addresses.map((add: any) => ({
-                  fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
-                  coordinates: add.coordinates
-                }))
-        };
-      case "BothChannels":
-        return {
-          ...salesChannel,
-          addresses:
-            EmptyAddresses.is(salesChannel.addresses) ||
-            salesChannel.allNationalAddresses
-              ? []
-              : salesChannel.addresses.map((add: any) => ({
-                  fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
-                  coordinates: add.coordinates
-                }))
-        };
-    }
-  };
-
   const editProfileMutation = remoteData.Index.Profile.updateProfile.useMutation(
     {
       onSuccess() {
@@ -187,22 +200,8 @@ const EditOperatorForm = (variant: "edit-data" | "edit-profile") => () => {
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
-        const { hasDifferentFullName, ...profile } = values;
-        const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
-        void editProfile({
-          ...profile,
-          name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
-          name_en: !hasDifferentFullName
-            ? ""
-            : cleanedIfNameIsBlank(profile.name_en),
-          name_de: !hasDifferentFullName
-            ? ""
-            : cleanedIfNameIsBlank(profile.name_de),
-          description: withNormalizedSpaces(profile.description),
-          description_en: withNormalizedSpaces(profile.description_en),
-          description_de: withNormalizedSpaces(profile.description_de),
-          salesChannel: { ...getSalesChannel(profile.salesChannel) }
-        });
+        const profileData = sanitizeProfileFromValues(values);
+        void editProfile(profileData);
       }}
     >
       {({ values, setFieldValue }) => {

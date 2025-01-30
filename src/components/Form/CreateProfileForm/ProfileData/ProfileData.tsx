@@ -16,6 +16,11 @@ import {
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import {
+  defaultSalesChannel,
+  profileDefaultInitialValues,
+  sanitizeProfileFromValues
+} from "../../EditOperatorDataForm/EditOperatorDataForm";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -24,47 +29,6 @@ import SalesChannels from "./SalesChannels";
 
 // WARNING: this file is 90% duplicated with src/components/Form/EditOperatorDataForm/EditOperatorDataForm.tsx
 // any changes here should be reflected there as well
-
-const defaultSalesChannel = {
-  channelType: "",
-  websiteUrl: "",
-  discountCodeType: "",
-  allNationalAddresses: false,
-  addresses: [
-    {
-      street: "",
-      zipCode: "",
-      city: "",
-      district: ""
-    }
-  ]
-};
-
-const defaultInitialValues = {
-  fullName: "",
-  hasDifferentFullName: false,
-  name: "",
-  name_en: "",
-  name_de: "-",
-  pecAddress: "",
-  taxCodeOrVat: "",
-  legalOffice: "",
-  telephoneNumber: "",
-  legalRepresentativeFullName: "",
-  legalRepresentativeTaxCode: "",
-  referent: {
-    firstName: "",
-    lastName: "",
-    role: "",
-    emailAddress: "",
-    telephoneNumber: ""
-  },
-  secondaryReferents: [],
-  description: "",
-  description_en: "",
-  description_de: "-",
-  salesChannel: defaultSalesChannel
-};
 
 type Props = {
   isCompleted: boolean;
@@ -81,7 +45,9 @@ const ProfileData = ({
 }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const user = useSelector((state: RootState) => state.user.data);
-  const [initialValues, setInitialValues] = useState<any>(defaultInitialValues);
+  const [initialValues, setInitialValues] = useState<any>({
+    ...profileDefaultInitialValues
+  });
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {
@@ -183,46 +149,6 @@ const ProfileData = ({
     }
   }, [profileQuery.data]);
 
-  const getSalesChannel = (salesChannel: any) => {
-    switch (salesChannel.channelType) {
-      case "OnlineChannel":
-        const { addresses, ...OnlineChannel } = salesChannel;
-        return OnlineChannel;
-      case "OfflineChannel":
-        const {
-          websiteUrl,
-          discountCodeType,
-          ...OfflineChannel
-        } = salesChannel;
-        return {
-          salesChannel: {
-            ...OfflineChannel,
-            addresses:
-              EmptyAddresses.is(OfflineChannel.addresses) ||
-              OfflineChannel.allNationalAddresses
-                ? []
-                : OfflineChannel.addresses.map((add: any) => ({
-                    fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
-                    coordinates: add.coordinates
-                  }))
-          }
-        };
-      case "BothChannels":
-        return {
-          salesChannel: {
-            ...salesChannel,
-            addresses:
-              EmptyAddresses.is(salesChannel.addresses) ||
-              salesChannel.allNationalAddresses
-                ? []
-                : salesChannel.addresses.map((add: any) => ({
-                    fullAddress: `${add.street}, ${add.city}, ${add.district}, ${add.zipCode}`,
-                    coordinates: add.coordinates
-                  }))
-          }
-        };
-    }
-  };
   const entityType = agreement.entityType;
 
   if (profileQuery.isLoading) {
@@ -244,22 +170,7 @@ const ProfileData = ({
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {
-        const { hasDifferentFullName, ...profile } = values;
-        const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
-        const profileData = {
-          ...profile,
-          name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
-          name_en: !hasDifferentFullName
-            ? ""
-            : cleanedIfNameIsBlank(profile.name_en),
-          name_de: !hasDifferentFullName
-            ? ""
-            : cleanedIfNameIsBlank(profile.name_de),
-          description: withNormalizedSpaces(profile.description),
-          description_en: withNormalizedSpaces(profile.description_en),
-          description_de: withNormalizedSpaces(profile.description_de),
-          ...getSalesChannel(profile.salesChannel)
-        };
+        const profileData = sanitizeProfileFromValues(values);
         if (isCompleted) {
           void editProfile(profileData);
         } else {
