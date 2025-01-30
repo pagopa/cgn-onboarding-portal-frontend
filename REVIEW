@@ -11,7 +11,6 @@ src/components/Form/CreateProfileForm/ProfileData/ProfileImage.tsx
 src/components/Form/CreateProfileForm/ProfileData/SalesChannels.tsx
 src/components/Form/EditActivationForm/EditActivationForm.tsx
 src/components/Form/EditDiscountForm/EditDiscountForm.tsx
-src/components/Form/EditOperatorDataForm/EditOperatorDataForm.tsx
 src/components/Form/HelpForm/HelpForm.tsx
 src/components/OperatorActivations/OperatorActivationDetail.tsx
 src/components/OperatorActivations/OperatorActivations.tsx
