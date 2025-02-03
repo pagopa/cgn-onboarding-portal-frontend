@@ -1,5 +1,5 @@
 import { useHistory, useParams } from "react-router-dom";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { remoteData } from "../../../api/common";
 import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
@@ -20,9 +20,6 @@ const emptyInitialValues: OrganizationWithReferents = {
 const CreateActivationForm = () => {
   const { operatorFiscalCode } = useParams<{ operatorFiscalCode: string }>();
   const history = useHistory();
-  const [initialValues, setInitialValues] = useState<OrganizationWithReferents>(
-    emptyInitialValues
-  );
   const { triggerTooltip } = useTooltip();
 
   const throwErrorTooltip = useCallback(
@@ -70,10 +67,10 @@ const CreateActivationForm = () => {
       throwErrorTooltip(
         "Errore durante la richiesta di dettaglio dell'operatore, riprovare"
       );
-    } else if (getActivationQuery.data) {
-      setInitialValues(getActivationQuery.data);
     }
   }, [getActivationQuery.data, getActivationQuery.error, throwErrorTooltip]);
+
+  const initialValues = getActivationQuery.data ?? emptyInitialValues;
 
   if (getActivationQuery.isLoading) {
     return <CenteredLoading />;
