@@ -127,7 +127,7 @@ const OperatorActivations = () => {
         )
       }
     ],
-    [operators]
+    []
   );
 
   const data: Array<OrganizationWithReferentsAndStatus> = useMemo(
@@ -259,7 +259,7 @@ const OperatorActivations = () => {
                         <td colSpan={visibleColumns.length}>
                           <OperatorActivationDetail
                             operator={row.original}
-                            getActivations={() => setParams({})}
+                            getActivations={() => operatorsQuery.refetch()}
                           />
                         </td>
                       </tr>
