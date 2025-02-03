@@ -25,17 +25,19 @@ type VariablesOf<AxiosParams extends any[]> = AxiosParams extends [
   ? V
   : undefined;
 
+type QueryKeyType<Params> = [string, string, string, Params];
+
 type ReactQueryHelpers<Params, Result> = {
   method(params: Params): Promise<Result>;
-  queryKey(params: Params): [string, Params];
-  queryFn({ queryKey }: { queryKey: [string, Params] }): Promise<Result>;
+  queryKey(params: Params): QueryKeyType<Params>;
+  queryFn({ queryKey }: { queryKey: QueryKeyType<Params> }): Promise<Result>;
   mutationFn(params: Params): Promise<Result>;
   invalidateQueries(params: Partial<Params>): void;
   queryOptions(
     params: Params
   ): {
-    queryKey: [string, Params];
-    queryFn({ queryKey }: { queryKey: [string, Params] }): Promise<Result>;
+    queryKey: QueryKeyType<Params>;
+    queryFn({ queryKey }: { queryKey: QueryKeyType<Params> }): Promise<Result>;
   };
   useQuery(
     params: Params,
@@ -53,7 +55,7 @@ type ReactQueryHelpers<Params, Result> = {
 };
 
 function makeReactQuery<AxiosParams extends any[], Result>(
-  methodName: string,
+  methodName: [string, string, string],
   axiosMethod: (
     ...params: AxiosParams
   ) => Promise<AxiosResponse<Result, unknown>>
@@ -67,9 +69,9 @@ function makeReactQuery<AxiosParams extends any[], Result>(
       return response.data;
     },
     queryKey(params) {
-      return [methodName, params] as [string, VariablesOf<AxiosParams>];
+      return [...methodName, params] as QueryKeyType<VariablesOf<AxiosParams>>;
     },
-    queryFn({ queryKey: [, params] }) {
+    queryFn({ queryKey: [, , , params] }) {
       return self.method(params);
     },
     mutationFn(params) {
@@ -106,6 +108,8 @@ function makeReactQuery<AxiosParams extends any[], Result>(
 function makeReactQueries<
   Methods extends Record<string, (...params: any) => Promise<any>>
 >(
+  queryKeyNameLevel1: string,
+  queryKeyNameLevel2: string,
   methods: Methods
 ): {
   [M in keyof Methods]: ReactQueryHelpers<
@@ -116,7 +120,10 @@ function makeReactQueries<
   return Object.fromEntries(
     Object.keys(Object.getPrototypeOf(methods)).map(methodName => [
       methodName,
-      makeReactQuery(methodName, (...args) => methods[methodName](...args))
+      makeReactQuery(
+        [queryKeyNameLevel1, queryKeyNameLevel2, methodName],
+        (...args) => methods[methodName](...args)
+      )
     ])
   ) as any;
 }
@@ -130,6 +137,7 @@ function mapApiMethods<
     };
   }
 >(
+  queryKeyNameLevel1: string,
   obj: Obj
 ): {
   [K in keyof Obj]: {
@@ -142,13 +150,13 @@ function mapApiMethods<
   return Object.fromEntries(
     Object.entries(obj as any).map(([key, value]) => [
       key,
-      makeReactQueries(value as any)
+      makeReactQueries(queryKeyNameLevel1, key, value as any)
     ])
   ) as any;
 }
 
 export const remoteData = {
-  Index: mapApiMethods(IndexApi),
-  Backoffice: mapApiMethods(BackofficeApi),
-  Public: mapApiMethods(PublicApi)
+  Index: mapApiMethods("Index", IndexApi),
+  Backoffice: mapApiMethods("Backoffice", BackofficeApi),
+  Public: mapApiMethods("Public", PublicApi)
 };

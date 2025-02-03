@@ -28,18 +28,19 @@ import RequestsDetails from "./RequestsDetails";
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const Requests = () => {
   const pageSize = 20;
-  const [extraLoading, setExtraLoading] = useState(false);
+  const [isLoadingExtra, setIsLoadingExtra] = useState(false);
   const refForm = useRef<any>(null);
 
   const [agreementsQueryParams, setAgreementsQueryParams] = useState<
     AgreementApiGetAgreementsRequest
   >({});
   const agreementsQuery = remoteData.Backoffice.Agreement.getAgreements.useQuery(
-    { ...agreementsQueryParams, pageSize }
+    { ...agreementsQueryParams, pageSize },
+    { keepPreviousData: true, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
   );
   const agreements = agreementsQuery.data;
 
-  const isLoading = agreementsQuery.isSuccess || extraLoading;
+  const isLoading = agreementsQuery.isLoading || isLoadingExtra;
 
   const data = useMemo(() => agreements?.items || [], [agreements]);
   const columns = useMemo(
@@ -85,10 +86,10 @@ const Requests = () => {
       <RequestsDetails
         updateList={() => refForm.current?.submitForm()}
         original={original}
-        setLoading={setExtraLoading}
+        setLoading={setIsLoadingExtra}
       />
     ),
-    [agreements]
+    []
   );
 
   const {

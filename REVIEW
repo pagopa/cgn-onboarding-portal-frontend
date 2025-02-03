@@ -7,8 +7,4 @@ src/components/OperatorConvention/ConventionDetails.tsx
 src/components/OperatorConvention/Discount.tsx
 src/components/OperatorConvention/OperatorConvention.tsx
 src/components/Profile/ProfileApiToken.tsx
-src/components/Requests/AssignRequest.tsx
-src/components/Requests/Requests.tsx
-src/components/Requests/RequestsDetails.tsx
-src/components/Requests/RequestsDocuments.tsx
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
@@ -35,36 +35,29 @@ const RequestsDetails = ({
 
   const approveAgreementMutation = remoteData.Backoffice.Agreement.approveAgreement.useMutation(
     {
-      onError() {
-        setLoading(false);
-        triggerTooltip({
-          severity: Severity.DANGER,
-          text: "Errore durante la validazione"
-        });
-      },
       onSuccess() {
-        setLoading(false);
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,
           text: "La richiesta di convenzione è stata validata con successo.",
           title: "Validazione Effettuata"
         });
+      },
+      onError() {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "Errore durante la validazione"
+        });
       }
     }
   );
   const approveAgreement = () => {
-    setLoading(true);
     void approveAgreementMutation.mutate({ agreementId: original.id });
   };
 
   const rejectAgreementMutation = remoteData.Backoffice.Agreement.rejectAgreement.useMutation(
     {
-      onError() {
-        setLoading(false);
-      },
       onSuccess() {
-        setLoading(false);
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,
@@ -75,7 +68,6 @@ const RequestsDetails = ({
     }
   );
   const rejectAgreement = () => {
-    setLoading(true);
     void rejectAgreementMutation.mutate({
       agreementId: original.id,
       refusal: {
@@ -83,6 +75,16 @@ const RequestsDetails = ({
       }
     });
   };
+
+  useEffect(() => {
+    setLoading(
+      approveAgreementMutation.isLoading || rejectAgreementMutation.isLoading
+    );
+  }, [
+    approveAgreementMutation.isLoading,
+    rejectAgreementMutation.isLoading,
+    setLoading
+  ]);
 
   return (
     <section className="px-6 py-4 bg-white">

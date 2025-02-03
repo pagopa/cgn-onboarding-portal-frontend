@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { remoteData } from "../../api/common";
@@ -20,18 +20,17 @@ const AssignRequest = ({
     {
       onSuccess() {
         updateList();
-        setLoading(false);
-      },
-      onError() {
-        setLoading(false);
       }
     }
   );
 
   const assignAgreements = () => {
-    setLoading(true);
     assignAgreementsMutation.mutate({ agreementId: original.id });
   };
+
+  useEffect(() => {
+    setLoading(assignAgreementsMutation.isLoading);
+  }, [assignAgreementsMutation.isLoading, setLoading]);
 
   const checkAssign = () =>
     original.state === "PendingAgreement"
