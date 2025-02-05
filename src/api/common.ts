@@ -15,7 +15,13 @@ import PublicApi from "./public";
 import BackofficeApi from "./backoffice";
 import IndexApi from "./index";
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: process.env.NODE_ENV === "production"
+    }
+  }
+});
 
 type VariablesOf<AxiosParams extends any[]> = AxiosParams extends [
   RawAxiosRequestConfig?

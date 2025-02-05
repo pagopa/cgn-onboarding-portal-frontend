@@ -40,6 +40,7 @@ const Discount = ({
   const suspendDiscountMutation = remoteData.Backoffice.Discount.suspendDiscount.useMutation(
     {
       onSuccess() {
+        setSuspendMode(false);
         triggerTooltip({
           severity: Severity.SUCCESS,
           text:
@@ -63,6 +64,7 @@ const Discount = ({
   const rejectDiscountMutation = remoteData.Backoffice.Discount.setDiscountTestFailed.useMutation(
     {
       onSuccess() {
+        setRejectMode(false);
         triggerTooltip({
           severity: Severity.SUCCESS,
           text:

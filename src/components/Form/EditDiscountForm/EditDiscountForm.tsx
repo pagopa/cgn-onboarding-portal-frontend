@@ -323,6 +323,7 @@ const EditDiscountForm = () => {
                     className="px-14 mr-4"
                     color="primary"
                     tag="button"
+                    disabled={updateDiscountMutation.isLoading}
                   >
                     Salva
                   </Button>
@@ -344,6 +345,7 @@ const EditDiscountForm = () => {
                     color="primary"
                     outline
                     tag="button"
+                    disabled={updateDiscountMutation.isLoading}
                   >
                     Salva
                   </Button>

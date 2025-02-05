@@ -107,7 +107,7 @@ const getView = (
         return (
           <Discount
             reloadDetails={getConventionDetails}
-            agreementId={agreement?.agreementId || ""}
+            agreementId={agreement?.agreementId ?? ""}
             discount={discount}
             profile={details.profile}
           />
