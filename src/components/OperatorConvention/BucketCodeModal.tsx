@@ -24,7 +24,7 @@ const BucketCodeModal = ({
     },
     { enabled: isOpen }
   );
-  const bucketCode = buckeCodeQuery.data?.code ?? "";
+  const bucketCode = buckeCodeQuery.data?.code || "";
 
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
