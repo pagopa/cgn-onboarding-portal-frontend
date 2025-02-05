@@ -36,6 +36,7 @@ const RequestsDetails = ({
   const approveAgreementMutation = remoteData.Backoffice.Agreement.approveAgreement.useMutation(
     {
       onSuccess() {
+        setLoading(false);
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,
@@ -44,6 +45,7 @@ const RequestsDetails = ({
         });
       },
       onError() {
+        setLoading(false);
         triggerTooltip({
           severity: Severity.DANGER,
           text: "Errore durante la validazione"
@@ -58,12 +60,16 @@ const RequestsDetails = ({
   const rejectAgreementMutation = remoteData.Backoffice.Agreement.rejectAgreement.useMutation(
     {
       onSuccess() {
+        setLoading(false);
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,
           text: "La richiesta di convenzione è stata rifiutata con successo.",
           title: "Rifiuto inviato"
         });
+      },
+      onError() {
+        setLoading(false);
       }
     }
   );

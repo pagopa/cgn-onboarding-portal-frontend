@@ -95,9 +95,14 @@ const ProfileData = ({
     editProfileMutation.mutate({ agreementId: agreement.id, profile });
   };
 
-  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
-    agreementId: agreement.id
-  });
+  const profileQuery = remoteData.Index.Profile.getProfile.useQuery(
+    {
+      agreementId: agreement.id
+    },
+    {
+      enabled: isCompleted
+    }
+  );
   const profile = profileQuery.data;
   const initialValues = useMemo(() => {
     if (!profile) {
@@ -146,7 +151,9 @@ const ProfileData = ({
 
   const entityType = agreement.entityType;
 
-  if (profileQuery.isLoading) {
+  const isLoading = isCompleted && profileQuery.isLoading;
+
+  if (isLoading) {
     return <CenteredLoading />;
   }
 
