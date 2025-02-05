@@ -106,23 +106,6 @@ const SalesChannels = ({ entityType, children }: Props) => {
                       />
                     )}
                   {formValues.salesChannel?.allNationalAddresses === false && (
-                    // <div className="mt-10 row">
-                    //   <div className="col-7">
-                    //     <AsyncSelect
-                    //       placeholder="Inserisci indirizzo"
-                    //       cacheOptions
-                    //       loadOptions={autocomplete}
-                    //       noOptionsMessage={() => "Nessun risultato"}
-                    //       value={formValues.salesChannel.addresses[index]}
-                    //       onChange={(e: any) =>
-                    //         setFieldValue(
-                    //           `salesChannel.addresses[${index}]`,
-                    //           e
-                    //         )
-                    //       }
-                    //     />
-                    //   </div>
-                    // </div>
                     <>
                       <div className="mt-10 row">
                         <div className="col-7">
