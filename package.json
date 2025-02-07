@@ -27,6 +27,10 @@
     "generate-local:api_public": "openapi-generator-cli generate -i ./src/api/api_public.yaml -g typescript-axios -o ./src/api/generated_public",
     "generate": "npm-run-all generate:*",
     "generate-local": "npm-run-all generate-local:*",
+    "download-master-to-local:api": "curl https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/openapi.yaml -o ./src/api/api.yaml",
+    "download-master-to-local:api_backoffice": "curl https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/backoffice/openapi.yaml -o ./src/api/api_backoffice.yaml",
+    "download-master-to-local:api_public": "curl https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/public.yaml -o ./src/api/api_public.yaml",
+    "download-master-to-local": "npm-run-all download-master-to-local:*",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\""
   },
   "dependencies": {
