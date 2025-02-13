@@ -218,18 +218,9 @@ const CreateDiscountForm = () => {
                 setFieldValue={setFieldValue}
               />
             )}
-            {(profile?.salesChannel?.channelType === "OnlineChannel" ||
-              profile?.salesChannel?.channelType === "BothChannels") && (
+            {profile && (
               <EnrollToEyca
-                isEycaSupported={checkStaticCode}
-                discountOption={
-                  checkLanding
-                    ? "Landing Page"
-                    : checkBucket
-                    ? "Lista di codici statici"
-                    : "API"
-                }
-                isLandingPage={checkLanding}
+                profile={profile}
                 formValues={values}
                 setFieldValue={setFieldValue}
               />
