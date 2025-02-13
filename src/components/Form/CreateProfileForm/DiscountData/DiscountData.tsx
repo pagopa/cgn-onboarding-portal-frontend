@@ -399,20 +399,9 @@ const DiscountData = ({
                           setFieldValue={setFieldValue}
                         />
                       )}
-                      {(profile?.salesChannel?.channelType ===
-                        "OnlineChannel" ||
-                        profile?.salesChannel?.channelType ===
-                          "BothChannels") && (
+                      {profile && (
                         <EnrollToEyca
-                          isEycaSupported={checkStaticCode}
-                          discountOption={
-                            checkLanding
-                              ? "Landing Page"
-                              : checkBucket
-                              ? "Lista di codici statici"
-                              : "API"
-                          }
-                          isLandingPage={checkLanding}
+                          profile={profile}
                           index={index}
                           formValues={values}
                           setFieldValue={setFieldValue}
