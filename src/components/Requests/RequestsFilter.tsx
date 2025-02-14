@@ -1,5 +1,9 @@
 import React from "react";
 import { Form, Formik, Field } from "formik";
+import {
+  AgreementApiGetAgreementsRequest,
+  GetAgreementsAssigneeEnum
+} from "../../api/generated_backoffice";
 import DateModal from "./DateModal";
 import StateModal from "./StateModal";
 
@@ -8,7 +12,7 @@ interface FilterFormValues {
   requestDateFrom: Date | undefined;
   requestDateTo: Date | undefined;
   states: string | undefined;
-  assignee: string | undefined;
+  assignee: GetAgreementsAssigneeEnum | undefined;
   page: number;
 }
 
@@ -16,7 +20,7 @@ const RequestsFilter = ({
   getAgreements,
   refForm
 }: {
-  getAgreements: (params: any) => void;
+  getAgreements: (params: AgreementApiGetAgreementsRequest) => void;
   refForm: any;
 }) => {
   // eslint-disable-next-line functional/no-let
@@ -43,11 +47,17 @@ const RequestsFilter = ({
         if (params.states?.includes("AssignedAgreement")) {
           const splitFilter = params.states?.split("AssignedAgreement");
           // eslint-disable-next-line functional/immutable-data
-          params.assignee = splitFilter[splitFilter.length - 1];
+          params.assignee = splitFilter[
+            splitFilter.length - 1
+          ] as GetAgreementsAssigneeEnum;
           // eslint-disable-next-line functional/immutable-data
           params.states = "AssignedAgreement";
         }
-        getAgreements(params);
+        getAgreements({
+          ...params,
+          requestDateFrom: params.requestDateFrom?.toISOString(),
+          requestDateTo: params.requestDateTo?.toISOString()
+        });
       }}
     >
       {({ values, submitForm, setFieldValue, resetForm, dirty }) => (

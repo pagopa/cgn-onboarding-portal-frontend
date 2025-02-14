@@ -1,11 +1,13 @@
 import { fromNullable } from "fp-ts/lib/Option";
-import { fromOption } from "fp-ts/lib/Either";
 import React, {
   useContext,
   createContext,
   useState,
   ReactElement,
-  ReactChildren
+  ReactChildren,
+  useCallback,
+  useRef,
+  useMemo
 } from "react";
 
 export interface TooltipContextProps {
@@ -46,29 +48,31 @@ function TooltipProvider({ children }: ProviderProps): ReactElement {
     TooltipProviderState
   >(initialState);
 
-  // eslint-disable-next-line functional/no-let
-  let timeout: any = null;
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
   const closeTooltip = (): void => {
     openTooltip(false);
-    if (timeout) {
-      clearTimeout(timeout);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
   };
 
-  const triggerTooltip = (tooltip: TooltipProviderState): void => {
+  const triggerTooltip = useCallback((tooltip: TooltipProviderState): void => {
     openTooltip(true);
     setTooltip(tooltip);
-    if (timeout) {
-      clearTimeout(timeout);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
-    timeout = setTimeout(() => {
+    // eslint-disable-next-line functional/immutable-data
+    timeoutRef.current = setTimeout(() => {
       openTooltip(false);
     }, 5000);
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({ triggerTooltip }), [triggerTooltip]);
 
   return (
-    <TooltipContext.Provider value={{ triggerTooltip }}>
+    <TooltipContext.Provider value={contextValue}>
       {children}
       {open && (
         <div className="fixed-bottom mr-6" style={{ left: "auto" }}>

@@ -6,21 +6,14 @@ import DatePicker from "react-datepicker";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import DateInputComponent from "../../DateInputComponent";
 import InputField from "../../FormField";
-import { EntityType } from "../../../../api/generated";
 
 type Props = {
   formValues?: any;
   setFieldValue?: any;
   index?: number;
-  entityType: EntityType | undefined;
 };
 
-const DiscountInfo = ({
-  formValues,
-  setFieldValue,
-  index,
-  entityType
-}: Props) => {
+const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
   const hasIndex = index !== undefined;
 
   const dateFrom = hasIndex

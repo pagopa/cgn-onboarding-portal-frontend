@@ -1,9 +1,7 @@
 import React from "react";
 import { Button } from "design-react-kit";
-import { useSelector } from "react-redux";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { EntityType, Profile } from "../../api/generated";
-import { RootState } from "../../store/store";
+import { Profile } from "../../api/generated";
 
 type Props = {
   isOpen: any;
@@ -12,10 +10,7 @@ type Props = {
   profile?: Profile;
 };
 
-const PublishModal = ({ isOpen, toggle, publish, profile }: Props) => {
-  const entityType = useSelector(
-    (state: RootState) => state.agreement.value.entityType
-  );
+function PublishModal({ isOpen, toggle, publish, profile }: Props) {
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Pubblica opportunità</ModalHeader>
@@ -46,6 +41,6 @@ const PublishModal = ({ isOpen, toggle, publish, profile }: Props) => {
       </ModalFooter>
     </Modal>
   );
-};
+}
 
 export default PublishModal;

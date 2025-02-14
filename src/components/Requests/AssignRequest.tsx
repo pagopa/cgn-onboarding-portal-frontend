@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 
 const AssignRequest = ({
   assignedToMe,
@@ -18,21 +16,21 @@ const AssignRequest = ({
 }) => {
   const [isOpen, toggleAssign] = useState(false);
 
-  const assignAgreementsApi = async () =>
-    await tryCatch(() => Api.Agreement.assignAgreement(original.id), toError)
-      .fold(
-        () => setLoading(false),
-        () => {
-          updateList();
-          setLoading(false);
-        }
-      )
-      .run();
+  const assignAgreementsMutation = remoteData.Backoffice.Agreement.assignAgreement.useMutation(
+    {
+      onSuccess() {
+        updateList();
+      }
+    }
+  );
 
   const assignAgreements = () => {
-    setLoading(true);
-    void assignAgreementsApi();
+    assignAgreementsMutation.mutate({ agreementId: original.id });
   };
+
+  useEffect(() => {
+    setLoading(assignAgreementsMutation.isLoading);
+  }, [assignAgreementsMutation.isLoading, setLoading]);
 
   const checkAssign = () =>
     original.state === "PendingAgreement"

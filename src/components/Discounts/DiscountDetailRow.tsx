@@ -3,7 +3,6 @@ import { Badge, Button, Icon } from "design-react-kit";
 import React, { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Row } from "react-table";
-import { useSelector } from "react-redux";
 import {
   BucketCodeLoadStatus,
   Discount,
@@ -18,7 +17,6 @@ import {
   makeProductCategoriesString
 } from "../../utils/strings";
 import Callout from "../Callout/Callout";
-import { RootState } from "../../store/store";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
 import ImportationStatus from "./ImportationStatus";
@@ -246,10 +244,6 @@ Props) => {
     </div>
   );
 
-  const entityType = useSelector(
-    (state: RootState) => state.agreement.value?.entityType
-  );
-
   return (
     <>
       <section className="px-6 py-4 bg-white">
@@ -334,8 +328,7 @@ Props) => {
               </td>
               <td className={`border-bottom-0`}>
                 {makeProductCategoriesString(
-                  row.original.productCategories,
-                  entityType
+                  row.original.productCategories
                 ).map((productCategory, index) =>
                   productCategory ? <p key={index}>{productCategory}</p> : null
                 )}

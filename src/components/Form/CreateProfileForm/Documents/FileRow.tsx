@@ -10,6 +10,7 @@ import DocumentSuccess from "../../../../assets/icons/document-success.svg";
 import { Document } from "../../../../api/generated";
 import { formatDate } from "../../../../utils/dates";
 import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
+import { remoteData } from "../../../../api/common";
 import DeleteDocument from "./DeleteDocument";
 
 type Props = {
@@ -41,15 +42,21 @@ const FileRow = ({
     setLoadingTemplate(true);
     await tryCatch(
       () =>
-        Api.DocumentTemplate.downloadDocumentTemplate(agreementId, type, {
-          headers: {
-            "Content-Type": "application/pdf"
+        Api.DocumentTemplate.downloadDocumentTemplate(
+          {
+            agreementId,
+            documentType: type
           },
-          responseType: "arraybuffer",
-          onDownloadProgress: (event: any) => {
-            setUploadProgress(Math.round((100 * event.loaded) / event.total));
+          {
+            headers: {
+              "Content-Type": "application/pdf"
+            },
+            responseType: "arraybuffer",
+            onDownloadProgress: (event: any) => {
+              setUploadProgress(Math.round((100 * event.loaded) / event.total));
+            }
           }
-        }),
+        ),
       toError
     )
       .map(response => response.data)
@@ -73,11 +80,18 @@ const FileRow = ({
   const addFile = async (files: any) => {
     setLoadingDoc(true);
     const response = await normalizeAxiosResponse(
-      Api.Document.uploadDocument(agreementId, type, files[0], {
-        onUploadProgress: (event: any) => {
-          setUploadProgress(Math.round((100 * event.loaded) / event.total));
+      Api.Document.uploadDocument(
+        {
+          agreementId,
+          documentType: type,
+          document: files[0]
+        },
+        {
+          onUploadProgress: (event: any) => {
+            setUploadProgress(Math.round((100 * event.loaded) / event.total));
+          }
         }
-      })
+      )
     );
     if (response.status === 200) {
       getFiles();
@@ -100,16 +114,16 @@ const FileRow = ({
     setUploadProgress(0);
   };
 
-  const deleteFile = async () =>
-    await tryCatch(
-      () => Api.Document.deleteDocument(agreementId, type),
-      toError
-    )
-      .fold(
-        () => void 0,
-        () => getFiles()
-      )
-      .run();
+  const deleteFileMutation = remoteData.Index.Document.deleteDocument.useMutation(
+    {
+      onSuccess() {
+        getFiles();
+      }
+    }
+  );
+  const deleteFile = () => {
+    deleteFileMutation.mutate({ agreementId, documentType: type });
+  };
 
   return (
     <div className="border-bottom py-8">

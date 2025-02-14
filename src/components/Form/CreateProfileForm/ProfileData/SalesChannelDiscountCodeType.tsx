@@ -19,9 +19,7 @@ const SalesChannelDiscountCodeType = ({
   const formikContext = useFormikContext<Values>();
   const formValues = formikContext.values;
   const formikContextSetFieldValue = formikContext.setFieldValue;
-  const updateSalesChannelType = (channelType: SalesChannelType) => (
-    event: React.MouseEvent<HTMLInputElement>
-  ) => {
+  const updateSalesChannelType = (channelType: SalesChannelType) => () => {
     formikContext.setFieldValue("salesChannel.channelType", channelType);
   };
   // here we are using an effect because there is more code that uses channelType attribute on the form for checks

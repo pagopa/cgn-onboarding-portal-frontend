@@ -1,9 +1,6 @@
 import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { EntityType } from "../../api/generated";
 
 type Props = {
   isOpen: boolean;
@@ -11,10 +8,7 @@ type Props = {
   onDelete: () => void;
 };
 
-const DeleteModal = ({ isOpen, toggle, onDelete }: Props) => {
-  const entityType = useSelector(
-    (state: RootState) => state.agreement.value.entityType
-  );
+function DeleteModal({ isOpen, toggle, onDelete }: Props) {
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Rimuovi operatore</ModalHeader>
@@ -46,6 +40,6 @@ const DeleteModal = ({ isOpen, toggle, onDelete }: Props) => {
       </ModalFooter>
     </Modal>
   );
-};
+}
 
 export default DeleteModal;

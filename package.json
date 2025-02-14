@@ -19,12 +19,12 @@
     "test:coverage": "jest --passWithNoTests --coverage --coverageReporters=cobertura",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
-    "generate:api": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/openapi.yaml -g typescript-axios -o ./src/api/generated",
-    "generate-local:api": "openapi-generator-cli generate -i ./src/api/api.yaml -g typescript-axios -o ./src/api/generated",
-    "generate:api_backoffice": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/backoffice/openapi.yaml -g typescript-axios -o ./src/api/generated_backoffice",
-    "generate-local:api_backoffice": "openapi-generator-cli generate -i ./src/api/api_backoffice.yaml -g typescript-axios -o ./src/api/generated_backoffice",
-    "generate:api_public": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/public.yaml -g typescript-axios -o ./src/api/generated_public",
-    "generate-local:api_public": "openapi-generator-cli generate -i ./src/api/api_public.yaml -g typescript-axios -o ./src/api/generated_public",
+    "generate:api": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/openapi.yaml -g typescript-axios -o ./src/api/generated --additional-properties useSingleRequestParameter=true",
+    "generate-local:api": "openapi-generator-cli generate -i ./src/api/api.yaml -g typescript-axios -o ./src/api/generated --additional-properties useSingleRequestParameter=true",
+    "generate:api_backoffice": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/backoffice/openapi.yaml -g typescript-axios -o ./src/api/generated_backoffice --additional-properties useSingleRequestParameter=true",
+    "generate-local:api_backoffice": "openapi-generator-cli generate -i ./src/api/api_backoffice.yaml -g typescript-axios -o ./src/api/generated_backoffice --additional-properties useSingleRequestParameter=true",
+    "generate:api_public": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/public.yaml -g typescript-axios -o ./src/api/generated_public --additional-properties useSingleRequestParameter=true",
+    "generate-local:api_public": "openapi-generator-cli generate -i ./src/api/api_public.yaml -g typescript-axios -o ./src/api/generated_public --additional-properties useSingleRequestParameter=true",
     "generate": "npm-run-all generate:*",
     "generate-local": "npm-run-all generate-local:*",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\""
@@ -32,7 +32,8 @@
   "dependencies": {
     "@azure/msal-browser": "^2.14.1",
     "@reduxjs/toolkit": "^1.5.1",
-    "axios": "^0.28.0",
+    "@tanstack/react-query": "^4.0.0",
+    "axios": "^1.7.9",
     "bootstrap": "^4.5.3",
     "bootstrap-italia": "^1.4.3",
     "classnames": "^2.2.6",
@@ -50,7 +51,7 @@
     "jwt-decode": "^3.1.2",
     "node-sass": "^7.0.1",
     "path": "^0.12.7",
-    "react": ">=16.4.1",
+    "react": "^16.8.0",
     "react-datepicker": "^3.8.0",
     "react-dom": "^17.0.1",
     "react-google-recaptcha": "^2.1.0",
@@ -71,7 +72,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.2.6",
+    "@openapitools/openapi-generator-cli": "^2.15.3",
     "@pagopa/danger-custom-rules": "^2.0.3",
     "@pagopa/eslint-config": "^1.1.1",
     "@pagopa/openapi-codegen-ts": "9.0.0",
@@ -97,13 +98,14 @@
     "danger-plugin-digitalcitizenship": "^1.0.0",
     "dotenv": "^8.2.0",
     "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react-hooks": "^5.1.0",
     "jest": "^26.6.3",
     "npm-run-all": "^4.1.5",
     "parcel": "^1.12.3",
     "sass": "^1.32.13",
     "shx": "^0.3.3",
     "ts-jest": "^26.5.4",
-    "typescript": "^4.1.2"
+    "typescript": "^5.7.3"
   },
   "resolutions": {
     "fp-ts": "1.17.4",

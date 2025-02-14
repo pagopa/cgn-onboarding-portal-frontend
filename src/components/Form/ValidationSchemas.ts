@@ -14,7 +14,6 @@ const PRODUCT_CATEGORIES_ONE = "Selezionare almeno una categoria merceologica";
 const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche`;
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
-const INCORRECT_PHONE_NUMBER = "Il numero di telefono inserito non è corretto";
 
 const URL_REGEXP = /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/g;
 

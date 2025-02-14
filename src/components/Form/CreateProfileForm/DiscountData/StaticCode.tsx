@@ -1,6 +1,5 @@
 import React from "react";
 import { Field } from "formik";
-import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
