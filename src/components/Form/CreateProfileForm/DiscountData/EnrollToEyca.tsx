@@ -5,6 +5,8 @@ import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import FormField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import {
+  BothChannels,
+  OnlineChannel,
   DiscountCodeType,
   Profile,
   SalesChannelType
@@ -37,24 +39,17 @@ const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
   </Modal>
 );
 
-declare module "../../../../api/generated" {
-  interface SalesChannel {
-    discountCodeType: this["channelType"] extends SalesChannelType.OfflineChannel
-      ? undefined
-      : DiscountCodeType;
-  }
-}
-
 /* eslint-disable sonarjs/cognitive-complexity */
 const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
   if (profile.salesChannel.channelType === SalesChannelType.OfflineChannel) {
     return null;
   }
+  const salesChannel = profile.salesChannel as OnlineChannel | BothChannels;
   const isEycaSupported =
-    profile.salesChannel.discountCodeType === DiscountCodeType.Static ||
-    profile.salesChannel.discountCodeType === DiscountCodeType.Bucket;
+    salesChannel.discountCodeType === DiscountCodeType.Static ||
+    salesChannel.discountCodeType === DiscountCodeType.Bucket;
   const discountOption = () => {
-    switch (profile.salesChannel.discountCodeType) {
+    switch (salesChannel.discountCodeType) {
       case DiscountCodeType.LandingPage:
         return "Landing Page";
       case DiscountCodeType.Static:
@@ -86,7 +81,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
     setIsModalOpen(false);
   };
 
-  if (profile.salesChannel.discountCodeType !== DiscountCodeType.LandingPage) {
+  if (salesChannel.discountCodeType !== DiscountCodeType.LandingPage) {
     return (
       <>
         <FormField
