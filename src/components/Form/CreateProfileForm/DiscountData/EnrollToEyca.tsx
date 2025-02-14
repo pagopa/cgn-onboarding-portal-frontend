@@ -4,11 +4,14 @@ import { Button, FormGroup } from "design-react-kit";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import FormField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
+import {
+  DiscountCodeType,
+  Profile,
+  SalesChannelType
+} from "../../../../api/generated";
 
 type Props = {
-  isEycaSupported: boolean;
-  discountOption: string;
-  isLandingPage?: boolean;
+  profile: Profile;
   index?: number;
   formValues?: any;
   setFieldValue?: any;
@@ -34,15 +37,34 @@ const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
   </Modal>
 );
 
+declare module "../../../../api/generated" {
+  interface SalesChannel {
+    discountCodeType: this["channelType"] extends SalesChannelType.OfflineChannel
+      ? undefined
+      : DiscountCodeType;
+  }
+}
+
 /* eslint-disable sonarjs/cognitive-complexity */
-const EnrollToEyca = ({
-  index,
-  formValues,
-  setFieldValue,
-  isEycaSupported,
-  isLandingPage,
-  discountOption
-}: Props) => {
+const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
+  if (profile.salesChannel.channelType === SalesChannelType.OfflineChannel) {
+    return null;
+  }
+  const isEycaSupported =
+    profile.salesChannel.discountCodeType === DiscountCodeType.Static ||
+    profile.salesChannel.discountCodeType === DiscountCodeType.Bucket;
+  const discountOption = () => {
+    switch (profile.salesChannel.discountCodeType) {
+      case DiscountCodeType.LandingPage:
+        return "Landing Page";
+      case DiscountCodeType.Static:
+        return "Codice statico";
+      case DiscountCodeType.Bucket:
+        return "Lista di codici statici";
+      case DiscountCodeType.Api:
+        return "API";
+    }
+  };
   const hasIndex = index !== undefined;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkBoxValue, setCheckboxValue] = useState(
@@ -50,9 +72,6 @@ const EnrollToEyca = ({
       ? formValues.discounts[index].visibleOnEyca
       : formValues.visibleOnEyca) ?? false
   );
-
-  const discountDetails =
-    index !== undefined ? formValues.discounts[index] : formValues;
 
   const openModal = (val: any) => {
     setCheckboxValue(val);
@@ -67,7 +86,7 @@ const EnrollToEyca = ({
     setIsModalOpen(false);
   };
 
-  if (!isLandingPage) {
+  if (profile.salesChannel.discountCodeType !== DiscountCodeType.LandingPage) {
     return (
       <>
         <FormField
@@ -77,8 +96,9 @@ const EnrollToEyca = ({
           description={
             isEycaSupported ? (
               <>
-                Ti informiamo che se accetti il codice statico sarà pubblicato
-                anche sul portale del circuito EYCA. <br />
+                L&apos;opportunità sarà pubblicata anche sul portale del
+                circuito EYCA e sarà accessibile da parte dei beneficiari EYCA.{" "}
+                <br />
                 Per maggiori informazioni, consultare la{" "}
                 <a
                   className="font-weight-semibold"
