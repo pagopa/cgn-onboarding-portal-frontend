@@ -39,7 +39,7 @@ import EnrollToEyca from "./EnrollToEyca";
 import LandingPage from "./LandingPage";
 
 const emptyInitialValues = {
-  discounts: [{ ...discountEmptyInitialValues }]
+  discounts: [discountEmptyInitialValues]
 };
 
 type Props = {
