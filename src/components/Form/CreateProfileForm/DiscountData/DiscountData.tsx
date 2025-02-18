@@ -223,8 +223,8 @@ const DiscountData = ({
                 condition_de: clearIfReferenceIsBlank(discount.condition)(
                   discount.condition_de
                 ),
-                productCategories: discount.productCategories.filter(
-                  (pc: any) => Object.values(ProductCategory).includes(pc)
+                productCategories: discount.productCategories.filter(pc =>
+                  Object.values(ProductCategory).includes(pc)
                 ),
                 startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
                 endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
