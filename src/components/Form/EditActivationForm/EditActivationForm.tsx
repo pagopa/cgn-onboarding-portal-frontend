@@ -57,22 +57,24 @@ const CreateActivationForm = () => {
     createActivationMutation.mutate({ body: organization });
   };
 
-  const getActivationQuery = remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery(
-    {
-      keyOrganizationFiscalCode: operatorFiscalCode
-    }
-  );
+  const {
+    data,
+    error,
+    isLoading
+  } = remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery({
+    keyOrganizationFiscalCode: operatorFiscalCode
+  });
   useEffect(() => {
-    if (getActivationQuery.error) {
+    if (error) {
       throwErrorTooltip(
         "Errore durante la richiesta di dettaglio dell'operatore, riprovare"
       );
     }
-  }, [getActivationQuery.data, getActivationQuery.error, throwErrorTooltip]);
+  }, [data, error, throwErrorTooltip]);
 
-  const initialValues = getActivationQuery.data ?? emptyInitialValues;
+  const initialValues = data ?? emptyInitialValues;
 
-  if (getActivationQuery.isLoading) {
+  if (isLoading) {
     return <CenteredLoading />;
   }
 
