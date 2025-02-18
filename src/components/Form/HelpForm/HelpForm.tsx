@@ -107,14 +107,14 @@ const HelpForm = () => {
         token ? loggedHelpValidationSchema : notLoggedHelpValidationSchema
       }
       onSubmit={(values: any) => {
-        const { confirmEmailAddress, ...newValues } = values;
+        const { confirmEmailAddress, ...helpRequest } = values;
         if (token) {
           createLoggedHelpMutation.mutate({
             agreementId: agreement.id,
             helpRequest: values
           });
         } else {
-          createNotLoggedHelpMutation.mutate({ helpRequest: newValues });
+          createNotLoggedHelpMutation.mutate({ helpRequest });
         }
       }}
     >
