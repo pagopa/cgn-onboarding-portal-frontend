@@ -4,9 +4,9 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Profile } from "../../api/generated";
 
 type Props = {
-  isOpen: any;
-  toggle: any;
-  publish: any;
+  isOpen: boolean;
+  toggle(): void;
+  publish(): void;
   profile?: Profile;
 };
 
