@@ -54,7 +54,7 @@ const RequestsDetails = ({
     }
   );
   const approveAgreement = () => {
-    void approveAgreementMutation.mutate({ agreementId: original.id });
+    approveAgreementMutation.mutate({ agreementId: original.id });
   };
 
   const rejectAgreementMutation = remoteData.Backoffice.Agreement.rejectAgreement.useMutation(
