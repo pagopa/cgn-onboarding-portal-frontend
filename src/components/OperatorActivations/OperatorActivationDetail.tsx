@@ -36,7 +36,7 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
     }
   );
   const askDeleteOrganization = () => {
-    void deleteActivationMutation.mutate({
+    deleteActivationMutation.mutate({
       keyOrganizationFiscalCode: operator.keyOrganizationFiscalCode
     });
   };
