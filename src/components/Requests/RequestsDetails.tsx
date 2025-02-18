@@ -74,7 +74,7 @@ const RequestsDetails = ({
     }
   );
   const rejectAgreement = () => {
-    void rejectAgreementMutation.mutate({
+    rejectAgreementMutation.mutate({
       agreementId: original.id,
       refusal: {
         reasonMessage: rejectMessage
