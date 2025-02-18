@@ -3,6 +3,7 @@ import { Button, Icon, Progress } from "design-react-kit";
 import { saveAs } from "file-saver";
 import { tryCatch } from "fp-ts/lib/TaskEither";
 import { toError } from "fp-ts/lib/Either";
+import { AxiosProgressEvent } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import DocumentIcon from "../../../../assets/icons/document.svg";
 import Api from "../../../../api";
@@ -21,21 +22,23 @@ type Props = {
   agreementId: string;
 };
 
-const FileRow = ({
-  type,
-  label,
-  uploadedDoc,
-  getFiles,
-  agreementId
-}: Props) => {
-  const refFile = useRef<any>();
+const FileRow = (
+  { type, label, uploadedDoc, getFiles, agreementId }: Props // eslint-disable-next-line sonarjs/cognitive-complexity
+) => {
+  const refFile = useRef<HTMLInputElement>(null);
   const [loadingTemplate, setLoadingTemplate] = useState(false);
   const [loadingDoc, setLoadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const { triggerTooltip } = useTooltip();
 
   const handleClick = () => {
-    refFile.current.click();
+    refFile.current?.click();
+  };
+
+  const onUploadProgress = (event: AxiosProgressEvent) => {
+    setUploadProgress(
+      Math.round((100 * event.loaded) / (event.total ?? Infinity))
+    );
   };
 
   const getTemplates = async () => {
@@ -52,9 +55,7 @@ const FileRow = ({
               "Content-Type": "application/pdf"
             },
             responseType: "arraybuffer",
-            onDownloadProgress: (event: any) => {
-              setUploadProgress(Math.round((100 * event.loaded) / event.total));
-            }
+            onDownloadProgress: onUploadProgress
           }
         ),
       toError
@@ -77,7 +78,7 @@ const FileRow = ({
       .run();
   };
 
-  const addFile = async (files: any) => {
+  const addFile = async (files: FileList) => {
     setLoadingDoc(true);
     const response = await normalizeAxiosResponse(
       Api.Document.uploadDocument(
@@ -87,9 +88,7 @@ const FileRow = ({
           document: files[0]
         },
         {
-          onUploadProgress: (event: any) => {
-            setUploadProgress(Math.round((100 * event.loaded) / event.total));
-          }
+          onUploadProgress
         }
       )
     );
@@ -186,7 +185,11 @@ const FileRow = ({
                       hidden
                       ref={refFile}
                       accept="application/pdf"
-                      onChange={() => addFile(refFile.current.files)}
+                      onChange={() => {
+                        if (refFile.current?.files) {
+                          void addFile(refFile.current.files);
+                        }
+                      }}
                     />
                   </Button>
                 </>
