@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/array-type */
-
 import {
   QueryClient,
   UseQueryOptions,
@@ -23,7 +21,7 @@ export const queryClient = new QueryClient({
   }
 });
 
-type VariablesOf<AxiosParams extends any[]> = AxiosParams extends [
+type VariablesOf<AxiosParams extends Array<any>> = AxiosParams extends [
   RawAxiosRequestConfig?
 ]
   ? undefined
@@ -60,7 +58,7 @@ type ReactQueryHelpers<Params, Result> = {
   ): UseMutationResult<Result, AxiosError<unknown>, Params>;
 };
 
-function makeReactQuery<AxiosParams extends any[], Result>(
+function makeReactQuery<AxiosParams extends Array<any>, Result>(
   methodName: [string, string, string],
   axiosMethod: (
     ...params: AxiosParams
@@ -138,7 +136,7 @@ function mapApiMethods<
   Obj extends {
     [K in keyof Obj]: {
       [I in keyof Obj[K]]: (
-        ...params: any[]
+        ...params: Array<any>
       ) => Promise<AxiosResponse<any, any>>;
     };
   }
