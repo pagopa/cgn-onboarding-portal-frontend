@@ -233,9 +233,9 @@ const DiscountData = ({
         };
         newValues.discounts.forEach((discount: Discount) => {
           if (isCompleted && discount.id) {
-            void updateDiscount(agreement.id, discount);
+            updateDiscount(agreement.id, discount);
           } else {
-            void createDiscount(agreement.id, discount);
+            createDiscount(agreement.id, discount);
           }
         });
       }}
@@ -257,7 +257,7 @@ const DiscountData = ({
                       handleClose={() => {
                         if (index >= 1) {
                           if (isCompleted) {
-                            void deleteDiscount(agreement.id, discount.id);
+                            deleteDiscount(agreement.id, discount.id);
                           }
                           arrayHelpers.remove(index);
                         }
