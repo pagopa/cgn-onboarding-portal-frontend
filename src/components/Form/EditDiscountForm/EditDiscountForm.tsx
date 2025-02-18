@@ -51,23 +51,24 @@ export const discountEmptyInitialValues = {
 };
 
 export function getDiscountTypeChecks(profile: Profile | undefined) {
+  const onlineOrBoth =
+    profile?.salesChannel?.channelType === "OnlineChannel" ||
+    profile?.salesChannel?.channelType === "BothChannels";
+
   const checkStaticCode =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
+    onlineOrBoth &&
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     profile?.salesChannel?.discountCodeType === "Static";
 
   const checkLanding =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
+    onlineOrBoth &&
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     profile?.salesChannel?.discountCodeType === "LandingPage";
 
   const checkBucket =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
+    onlineOrBoth &&
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     profile?.salesChannel?.discountCodeType === "Bucket";
