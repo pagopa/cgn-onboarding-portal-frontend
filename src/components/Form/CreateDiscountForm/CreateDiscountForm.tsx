@@ -26,7 +26,6 @@ import {
   sanitizeDiscountFormValues
 } from "../EditDiscountForm/EditDiscountForm";
 
-/* eslint-disable sonarjs/cognitive-complexity */
 const CreateDiscountForm = () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
