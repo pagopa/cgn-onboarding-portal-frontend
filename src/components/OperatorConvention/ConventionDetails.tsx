@@ -145,12 +145,15 @@ const ConventionDetails = ({
 }) => {
   const [view, setView] = useState("dati_operatore");
 
-  const detailsQuery = remoteData.Backoffice.Agreement.getApprovedAgreement.useQuery(
-    { agreementId: agreement?.agreementId || "" }
-  );
-  const details = detailsQuery.data;
+  const {
+    data: details,
+    isLoading,
+    refetch
+  } = remoteData.Backoffice.Agreement.getApprovedAgreement.useQuery({
+    agreementId: agreement?.agreementId || ""
+  });
 
-  return detailsQuery.isLoading ? (
+  return isLoading ? (
     <div className="mt-2 px-8 py-10 bg-white">
       <CenteredLoading />
     </div>
@@ -224,7 +227,7 @@ const ConventionDetails = ({
         </div>
         <div className="col-8 p-0">
           <div className="ml-1 px-8 py-10 bg-white">
-            {getView(details, view, () => detailsQuery.refetch(), agreement)}
+            {getView(details, view, () => refetch(), agreement)}
           </div>
         </div>
       </div>
