@@ -3,9 +3,9 @@ import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 type Props = {
-  isOpen: any;
-  toggle: any;
-  unpublish: any;
+  isOpen: boolean;
+  toggle(): void;
+  unpublish(): void;
 };
 
 function UnpublishModal({ isOpen, toggle, unpublish }: Props) {
