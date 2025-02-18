@@ -3,9 +3,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Column, useExpanded, useSortBy, useTable } from "react-table";
-import { Button, Icon } from "design-react-kit";
+import { Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { compareAsc, format } from "date-fns";
 import { omit } from "lodash";
 import { remoteData } from "../../api/common";
@@ -15,22 +14,23 @@ import { Severity, useTooltip } from "../../context/tooltip";
 import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
+import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
 import UnpublishModal from "./UnpublishModal";
 import TestModal from "./TestModal";
 
 const Discounts = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [selectedDiscount, setSelectedDiscount] = useState<any>();
-  const [publishModal, setPublishModal] = useState(false);
-  const [unpublishModal, setUnpublishModal] = useState(false);
-  const [testModal, setTestModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
-  const toggleDeleteModal = () => setDeleteModal(!deleteModal);
-  const togglePublishModal = () => setPublishModal(!publishModal);
-  const toggleUnpublishModal = () => setUnpublishModal(!unpublishModal);
-  const toggleTestModal = () => setTestModal(!testModal);
-  const [selectedPublish, setSelectedPublish] = useState<any>();
+  const [selectedDiscountAction, setSelectedDiscountAction] = useState<{
+    action: "publish" | "unpublish" | "test" | "delete";
+    discountId: string;
+  }>();
+  const closeActionModal = () => setSelectedDiscountAction(undefined);
+  const publishModal = selectedDiscountAction?.action === "publish";
+  const unpublishModal = selectedDiscountAction?.action === "unpublish";
+  const testModal = selectedDiscountAction?.action === "test";
+  const deleteModal = selectedDiscountAction?.action === "delete";
+
   const { triggerTooltip } = useTooltip();
 
   const throwErrorTooltip = useCallback(
@@ -76,10 +76,10 @@ const Discounts = () => {
       }
     }
   );
-  const deleteDiscount = () => {
+  const deleteDiscount = (discountId: string) => {
     deleteDiscountMutation.mutate({
       agreementId: agreement.id,
-      discountId: selectedDiscount
+      discountId
     });
   };
 
@@ -150,35 +150,6 @@ const Discounts = () => {
     });
   };
 
-  const isVisible = (state: any, startDate: any, endDate: any) => {
-    const today = new Date();
-    return (
-      state === "published" &&
-      (compareAsc(today, new Date(startDate)) === 1 ||
-        compareAsc(today, new Date(startDate)) === 0) &&
-      (compareAsc(new Date(endDate), today) === 1 ||
-        compareAsc(new Date(endDate), today) === 0)
-    );
-  };
-
-  const getVisibleComponent = (isVisible: boolean) => {
-    if (isVisible) {
-      return (
-        <span className="d-flex flex-row align-items-center">
-          <Icon icon="it-password-visible" size="sm" className="mr-1" />
-          <span className="text-base font-weight-normal text-gray">SI</span>
-        </span>
-      );
-    } else {
-      return (
-        <span className="d-flex flex-row align-items-center">
-          <Icon icon="it-password-invisible" size="sm" className="mr-1" />
-          <span className="text-base font-weight-normal text-gray">NO</span>
-        </span>
-      );
-    }
-  };
-
   const entityType = agreement.entityType;
 
   const columns: Array<Column<Discount>> = useMemo(
@@ -227,13 +198,7 @@ const Discounts = () => {
       {
         Header: "Visibile",
         Cell({ row }) {
-          return getVisibleComponent(
-            isVisible(
-              row.original.state,
-              row.original.startDate,
-              row.original.endDate
-            )
-          );
+          return <IsVisible discount={row.original} />;
         },
         disableSortBy: true
       },
@@ -275,48 +240,41 @@ const Discounts = () => {
       <div>
         <PublishModal
           isOpen={publishModal}
-          toggle={togglePublishModal}
-          publish={() => publishDiscount(selectedPublish)}
+          toggle={closeActionModal}
+          publish={() => {
+            if (selectedDiscountAction) {
+              publishDiscount(selectedDiscountAction.discountId);
+            }
+          }}
           profile={profile}
         />
         <UnpublishModal
           isOpen={unpublishModal}
-          toggle={toggleUnpublishModal}
-          unpublish={() => unpublishDiscount(selectedDiscount)}
+          toggle={closeActionModal}
+          unpublish={() => {
+            if (selectedDiscountAction) {
+              unpublishDiscount(selectedDiscountAction.discountId);
+            }
+          }}
         />
         <TestModal
           isOpen={testModal}
-          toggle={toggleTestModal}
-          testRequest={() => testDiscount(selectedDiscount)}
+          toggle={closeActionModal}
+          testRequest={() => {
+            if (selectedDiscountAction) {
+              testDiscount(selectedDiscountAction.discountId);
+            }
+          }}
         />
-        <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
-          <ModalHeader toggle={toggleDeleteModal}>
-            Elimina opportunità
-          </ModalHeader>
-          <ModalBody>
-            Sei sicuro di voler eliminare questa opportunità?
-          </ModalBody>
-          <ModalFooter className="d-flex flex-column">
-            <Button
-              color="primary"
-              onClick={() => {
-                void deleteDiscount();
-                toggleDeleteModal();
-              }}
-              style={{ width: "100%" }}
-            >
-              Elimina
-            </Button>{" "}
-            <Button
-              color="primary"
-              outline
-              onClick={toggleDeleteModal}
-              style={{ width: "100%" }}
-            >
-              Annulla
-            </Button>
-          </ModalFooter>
-        </Modal>
+        <DeleteModal
+          isOpen={deleteModal}
+          onToggle={closeActionModal}
+          onDelete={() => {
+            if (selectedDiscountAction) {
+              deleteDiscount(selectedDiscountAction.discountId);
+            }
+          }}
+        />
       </div>
       {(agreement.state === AgreementState.ApprovedAgreement ||
         entityType === EntityType.Private) && (
@@ -394,20 +352,28 @@ const Discounts = () => {
                             agreement={agreement}
                             profile={profile}
                             onPublish={() => {
-                              setSelectedPublish(row.original.id);
-                              togglePublishModal();
+                              setSelectedDiscountAction({
+                                action: "publish",
+                                discountId: row.original.id
+                              });
                             }}
                             onUnpublish={() => {
-                              setSelectedDiscount(row.original.id);
-                              toggleUnpublishModal();
+                              setSelectedDiscountAction({
+                                action: "unpublish",
+                                discountId: row.original.id
+                              });
                             }}
                             onDelete={() => {
-                              setSelectedDiscount(row.original.id);
-                              toggleDeleteModal();
+                              setSelectedDiscountAction({
+                                action: "delete",
+                                discountId: row.original.id
+                              });
                             }}
                             onTest={() => {
-                              setSelectedDiscount(row.original.id);
-                              toggleTestModal();
+                              setSelectedDiscountAction({
+                                action: "test",
+                                discountId: row.original.id
+                              });
                             }}
                             maxPublishedDiscountsReached={
                               maxPublishedDiscountsReached
@@ -466,3 +432,28 @@ const Discounts = () => {
 };
 
 export default Discounts;
+
+function IsVisible({ discount }: { discount: Discount }) {
+  const today = new Date();
+  const isVisible =
+    discount.state === "published" &&
+    (compareAsc(today, new Date(discount.startDate)) === 1 ||
+      compareAsc(today, new Date(discount.startDate)) === 0) &&
+    (compareAsc(new Date(discount.endDate), today) === 1 ||
+      compareAsc(new Date(discount.endDate), today) === 0);
+  if (isVisible) {
+    return (
+      <span className="d-flex flex-row align-items-center">
+        <Icon icon="it-password-visible" size="sm" className="mr-1" />
+        <span className="text-base font-weight-normal text-gray">SI</span>
+      </span>
+    );
+  } else {
+    return (
+      <span className="d-flex flex-row align-items-center">
+        <Icon icon="it-password-invisible" size="sm" className="mr-1" />
+        <span className="text-base font-weight-normal text-gray">NO</span>
+      </span>
+    );
+  }
+}
