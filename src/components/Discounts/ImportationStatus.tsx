@@ -133,34 +133,38 @@ const ImportationStatus = ({
     }
   }, [onPollingComplete, progress]);
 
-  return shouldBeRendered ? (
-    loadingProgressQuery.isLoading ? (
-      <CenteredLoading />
-    ) : (
-      <div style={styles.container} className="row bg-white">
-        <div className="col-1">
-          <Icon icon="it-warning-circle" style={{ fill: "#EA7614" }} />
-        </div>
-        <div className="col">
-          <h6>{title}</h6>
-          <p style={{ color: "#5C6F82" }}>{body}</p>
-        </div>
-        {(status === BucketCodeLoadStatus.Pending ||
-          status === BucketCodeLoadStatus.Running) && (
-          <div className="col-12">
-            <div className="pt-3">
-              <Progress
-                value={progress}
-                label="progresso"
-                role="progressbar"
-                tag="div"
-              />
-            </div>
-          </div>
-        )}
+  if (!shouldBeRendered) {
+    return null;
+  }
+
+  if (loadingProgressQuery.isLoading) {
+    return <CenteredLoading />;
+  }
+
+  return (
+    <div style={styles.container} className="row bg-white">
+      <div className="col-1">
+        <Icon icon="it-warning-circle" style={{ fill: "#EA7614" }} />
       </div>
-    )
-  ) : null;
+      <div className="col">
+        <h6>{title}</h6>
+        <p style={{ color: "#5C6F82" }}>{body}</p>
+      </div>
+      {(status === BucketCodeLoadStatus.Pending ||
+        status === BucketCodeLoadStatus.Running) && (
+        <div className="col-12">
+          <div className="pt-3">
+            <Progress
+              value={progress}
+              label="progresso"
+              role="progressbar"
+              tag="div"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ImportationStatus;
