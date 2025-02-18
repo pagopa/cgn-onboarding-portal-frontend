@@ -41,16 +41,17 @@ const OperatorActivations = () => {
   const refForm = useRef<any>(null);
 
   const [params, setParams] = useState<GetOrgsParams>();
-  const operatorsQuery = remoteData.Backoffice.AttributeAuthority.getOrganizations.useQuery(
-    {
-      searchQuery: params?.searchQuery,
-      page: params?.page,
-      pageSize: PAGE_SIZE,
-      sortBy: params?.sortColumn,
-      sortDirection: params?.sortDirection
-    }
-  );
-  const operators = operatorsQuery.data;
+  const {
+    data: operators,
+    isLoading,
+    refetch
+  } = remoteData.Backoffice.AttributeAuthority.getOrganizations.useQuery({
+    searchQuery: params?.searchQuery,
+    page: params?.page,
+    pageSize: PAGE_SIZE,
+    sortBy: params?.sortColumn,
+    sortDirection: params?.sortDirection
+  });
 
   const columns: Array<Column<OrganizationWithReferentsAndStatus>> = useMemo(
     () => [
@@ -204,7 +205,7 @@ const OperatorActivations = () => {
   return (
     <section className="mt-2 px-8 py-10 bg-white">
       <ActivationsFilter refForm={refForm} getActivations={setParams} />
-      {operatorsQuery.isLoading ? (
+      {isLoading ? (
         <CenteredLoading />
       ) : (
         <>
@@ -259,7 +260,7 @@ const OperatorActivations = () => {
                         <td colSpan={visibleColumns.length}>
                           <OperatorActivationDetail
                             operator={row.original}
-                            getActivations={() => operatorsQuery.refetch()}
+                            getActivations={() => refetch()}
                           />
                         </td>
                       </tr>
