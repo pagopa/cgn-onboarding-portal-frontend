@@ -13,10 +13,9 @@ import ProfileApiToken from "./ProfileApiToken";
 const Profile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
-  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
+  const { data: profile } = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
   });
-  const profile = profileQuery.data;
 
   const hasProfileApiToken = () =>
     agreement.state === "ApprovedAgreement" &&
