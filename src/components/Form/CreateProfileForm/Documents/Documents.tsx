@@ -33,6 +33,7 @@ const Documents = ({
   const documents = useMemo(() => documentsQuery.data?.items ?? [], [
     documentsQuery.data?.items
   ]);
+  const getFiles = () => documentsQuery.refetch();
 
   const requireApprovalMutation = remoteData.Index.Agreement.requestApproval.useMutation(
     {
@@ -81,7 +82,7 @@ const Documents = ({
           compilazione prima di procedere.
         </p>
         <FileRow
-          getFiles={() => documentsQuery.refetch()}
+          getFiles={getFiles}
           uploadedDoc={getUploadedDoc("agreement")}
           type="agreement"
           label="Convenzione"
@@ -89,7 +90,7 @@ const Documents = ({
         />
         {entityType === EntityType.Private && (
           <FileRow
-            getFiles={() => documentsQuery.refetch()}
+            getFiles={getFiles}
             uploadedDoc={getUploadedDoc("adhesion_request")}
             type="adhesion_request"
             label="Domanda di adesione alla CGN"
