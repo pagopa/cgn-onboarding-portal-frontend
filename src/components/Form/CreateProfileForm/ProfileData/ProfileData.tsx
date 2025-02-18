@@ -174,9 +174,9 @@ const ProfileData = ({
       onSubmit={values => {
         const profileData = sanitizeProfileFromValues(values);
         if (isCompleted) {
-          void editProfile(profileData);
+          editProfile(profileData);
         } else {
-          void createProfile(profileData);
+          createProfile(profileData);
         }
       }}
     >
