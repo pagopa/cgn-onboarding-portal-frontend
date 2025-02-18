@@ -10,10 +10,9 @@ import ProfileDataItem from "./ProfileDataItem";
 const ProfileData = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
-  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
+  const { data: profile } = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
   });
-  const profile = profileQuery.data;
 
   const getImage = () =>
     agreement &&
