@@ -31,7 +31,7 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
 
   return (
     <>
-      {Object.keys(categoriesMap()).map((categoryKey, i) => (
+      {Object.keys(categoriesMap).map((categoryKey, i) => (
         <FormGroup check tag="div" className="mt-4" key={i}>
           <Field
             id={`${name}.${categoryKey}`}
@@ -48,9 +48,9 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
           >
             <div className="row ml-1">
               <p style={nameLabelStyle}>
-                {categoriesMap()[categoryKey as ProductCategory].name}{" "}
+                {categoriesMap[categoryKey as ProductCategory].name}{" "}
               </p>{" "}
-              {categoriesMap()[categoryKey as ProductCategory].description}
+              {categoriesMap[categoryKey as ProductCategory].description}
             </div>
           </Label>
         </FormGroup>
