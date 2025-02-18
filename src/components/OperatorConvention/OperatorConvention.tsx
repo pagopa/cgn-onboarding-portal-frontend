@@ -27,13 +27,13 @@ const OperatorConvention = () => {
   const [params, setParams] = useState<
     AgreementApiGetApprovedAgreementsRequest
   >({});
-  const conventionsQuery = remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(
-    {
-      ...params,
-      pageSize
-    }
-  );
-  const conventions = conventionsQuery.data;
+  const {
+    data: conventions,
+    isLoading
+  } = remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery({
+    ...params,
+    pageSize
+  });
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
   const columns = useMemo(
@@ -158,7 +158,7 @@ const OperatorConvention = () => {
   return (
     <section className="mt-2 px-8 py-10 bg-white">
       <ConventionFilter refForm={refForm} getConventions={setParams} />
-      {conventionsQuery.isLoading ? (
+      {isLoading ? (
         <CenteredLoading />
       ) : (
         <>
