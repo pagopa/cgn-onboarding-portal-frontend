@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { Form, Formik } from "formik";
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -107,8 +105,11 @@ export function sanitizeProfileFromValues(values: any) {
   };
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const EditOperatorForm = (variant: "edit-data" | "edit-profile") => () => {
+export const EditOperatorForm = ({
+  variant
+}: {
+  variant: "edit-data" | "edit-profile";
+}) => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const user = useSelector((state: RootState) => state.user.data);
@@ -237,9 +238,6 @@ const EditOperatorForm = (variant: "edit-data" | "edit-profile") => () => {
     </Formik>
   );
 };
-
-export const EditOperatorDataForm = EditOperatorForm("edit-data");
-export const EditProfileForm = EditOperatorForm("edit-profile");
 
 export function OperatorDataButtons({
   isEnabled,
