@@ -1,13 +1,12 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import CalendarIcon from "../../assets/icons/calendar.svg";
 
 type Props = {
-  ref: any;
   value: string;
   onClick: () => void;
 };
 
-const DateInputComponent = (props: Props): React.ReactElement => (
+const DateInputComponent = forwardRef<HTMLInputElement, Props>((props, ref) => (
   <div className="form-group">
     <div className="input-group">
       <div className="input-group-prepend">
@@ -24,12 +23,13 @@ const DateInputComponent = (props: Props): React.ReactElement => (
         placeholder="dd-mm-yy"
         onClick={props.onClick}
         defaultValue={props.value}
+        ref={ref}
       />
     </div>
     <small id="date-input-description" className="form-text text-muted">
       gg/mm/aaaa
     </small>
   </div>
-);
+));
 
 export default DateInputComponent;
