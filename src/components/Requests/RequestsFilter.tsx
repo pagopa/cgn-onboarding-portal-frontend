@@ -42,22 +42,22 @@ const RequestsFilter = ({
       onSubmit={values => {
         const params = {
           ...values,
-          profileFullName: values.profileFullName || undefined
+          profileFullName: values.profileFullName || undefined,
+          requestDateFrom: values.requestDateFrom?.toISOString(),
+          requestDateTo: values.requestDateTo?.toISOString()
         };
         if (params.states?.includes("AssignedAgreement")) {
           const splitFilter = params.states?.split("AssignedAgreement");
-          // eslint-disable-next-line functional/immutable-data
-          params.assignee = splitFilter[
-            splitFilter.length - 1
-          ] as GetAgreementsAssigneeEnum;
-          // eslint-disable-next-line functional/immutable-data
-          params.states = "AssignedAgreement";
+          getAgreements({
+            ...params,
+            assignee: splitFilter[
+              splitFilter.length - 1
+            ] as GetAgreementsAssigneeEnum,
+            states: "AssignedAgreement"
+          });
+        } else {
+          getAgreements(params);
         }
-        getAgreements({
-          ...params,
-          requestDateFrom: params.requestDateFrom?.toISOString(),
-          requestDateTo: params.requestDateTo?.toISOString()
-        });
       }}
     >
       {({ values, submitForm, setFieldValue, resetForm, dirty }) => (
