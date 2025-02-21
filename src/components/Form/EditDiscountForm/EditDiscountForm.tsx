@@ -8,7 +8,11 @@ import { useHistory, useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 import { remoteData } from "../../../api/common";
 import { Discount, ProductCategory } from "../../../api/generated";
-import { Severity, useTooltip } from "../../../context/tooltip";
+import {
+  Severity,
+  TooltipContextProps,
+  useTooltip
+} from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
 import {
@@ -76,8 +80,9 @@ export function getDiscountTypeChecks(profile: Profile | undefined) {
   return { checkStaticCode, checkLanding, checkBucket };
 }
 
-export function useUpdateDiscountMutationOnError() {
-  const { triggerTooltip } = useTooltip();
+export function updateDiscountMutationOnError({
+  triggerTooltip
+}: TooltipContextProps) {
   return (error: AxiosError<unknown, unknown>) => {
     if (error.status === 409) {
       triggerTooltip({
@@ -144,13 +149,14 @@ const EditDiscountForm = () => {
     profile
   );
 
-  const updateDiscountMutationOnError = useUpdateDiscountMutationOnError();
+  const tooltip = useTooltip();
+
   const updateDiscountMutation = remoteData.Index.Discount.updateDiscount.useMutation(
     {
       onSuccess() {
         history.push(DASHBOARD);
       },
-      onError: updateDiscountMutationOnError
+      onError: updateDiscountMutationOnError(tooltip)
     }
   );
   const updateDiscount = (agreementId: string, discount: Discount) => {
