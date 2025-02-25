@@ -1,0 +1,5 @@
+set -e
+
+npm run prebuild
+
+npm run lint
