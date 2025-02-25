@@ -1,6 +1,6 @@
 {
   "name": "cgn-onboarding-portal-frontend",
-  "version": "3.29.2",
+  "version": "3.31.0",
   "license": "MIT",
   "scripts": {
     "start:prod": "cross-env NODE_ENV=production parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
@@ -8,7 +8,7 @@
     "start:dev": "cross-env NODE_ENV=dev parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
     "start:local": "cross-env NODE_ENV=local parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
     "prebuild": "npm-run-all prebuild:*",
-    "prebuild:generate": "npm-run-all generate:*",
+    "prebuild:generate": "yarn run generate",
     "prebuild:clean": "shx rm -rf dist",
     "prebuild:tsc": "tsc --noEmit",
     "build": "parcel build src/index.html --out-dir dist --public-url /",
@@ -19,14 +19,7 @@
     "test:coverage": "jest --passWithNoTests --coverage --coverageReporters=cobertura",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
-    "generate:api": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/openapi.yaml -g typescript-axios -o ./src/api/generated --additional-properties useSingleRequestParameter=true",
-    "generate-local:api": "openapi-generator-cli generate -i ./src/api/api.yaml -g typescript-axios -o ./src/api/generated --additional-properties useSingleRequestParameter=true",
-    "generate:api_backoffice": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/backoffice/openapi.yaml -g typescript-axios -o ./src/api/generated_backoffice --additional-properties useSingleRequestParameter=true",
-    "generate-local:api_backoffice": "openapi-generator-cli generate -i ./src/api/api_backoffice.yaml -g typescript-axios -o ./src/api/generated_backoffice --additional-properties useSingleRequestParameter=true",
-    "generate:api_public": "openapi-generator-cli generate -i https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/master/openapi/public.yaml -g typescript-axios -o ./src/api/generated_public --additional-properties useSingleRequestParameter=true",
-    "generate-local:api_public": "openapi-generator-cli generate -i ./src/api/api_public.yaml -g typescript-axios -o ./src/api/generated_public --additional-properties useSingleRequestParameter=true",
-    "generate": "npm-run-all generate:*",
-    "generate-local": "npm-run-all generate-local:*",
+    "generate": "./generate-openapi.sh",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\""
   },
   "dependencies": {

@@ -4,11 +4,16 @@ import { Button, FormGroup } from "design-react-kit";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import FormField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
+import {
+  BothChannels,
+  OnlineChannel,
+  DiscountCodeType,
+  Profile,
+  SalesChannelType
+} from "../../../../api/generated";
 
 type Props = {
-  isEycaSupported: boolean;
-  discountOption: string;
-  isLandingPage?: boolean;
+  profile: Profile;
   index?: number;
   formValues?: any;
   setFieldValue?: any;
@@ -35,14 +40,26 @@ const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
 );
 
 /* eslint-disable sonarjs/cognitive-complexity */
-const EnrollToEyca = ({
-  index,
-  formValues,
-  setFieldValue,
-  isEycaSupported,
-  isLandingPage,
-  discountOption
-}: Props) => {
+const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
+  if (profile.salesChannel.channelType === SalesChannelType.OfflineChannel) {
+    return null;
+  }
+  const salesChannel = profile.salesChannel as OnlineChannel | BothChannels;
+  const isEycaSupported =
+    salesChannel.discountCodeType === DiscountCodeType.Static ||
+    salesChannel.discountCodeType === DiscountCodeType.Bucket;
+  const discountOption = () => {
+    switch (salesChannel.discountCodeType) {
+      case DiscountCodeType.LandingPage:
+        return "Landing Page";
+      case DiscountCodeType.Static:
+        return "Codice statico";
+      case DiscountCodeType.Bucket:
+        return "Lista di codici statici";
+      case DiscountCodeType.Api:
+        return "API";
+    }
+  };
   const hasIndex = index !== undefined;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkBoxValue, setCheckboxValue] = useState(
@@ -64,7 +81,7 @@ const EnrollToEyca = ({
     setIsModalOpen(false);
   };
 
-  if (!isLandingPage) {
+  if (salesChannel.discountCodeType !== DiscountCodeType.LandingPage) {
     return (
       <>
         <FormField
@@ -74,8 +91,9 @@ const EnrollToEyca = ({
           description={
             isEycaSupported ? (
               <>
-                Ti informiamo che se accetti il codice statico sarà pubblicato
-                anche sul portale del circuito EYCA. <br />
+                L&apos;opportunità sarà pubblicata anche sul portale del
+                circuito EYCA e sarà accessibile da parte dei beneficiari EYCA.{" "}
+                <br />
                 Per maggiori informazioni, consultare la{" "}
                 <a
                   className="font-weight-semibold"
