@@ -48,7 +48,6 @@ const Dashboard = () => {
             name={`${user.name} ${user.family_name}`}
             handleClick={handleClick}
             activeTab={tab}
-            entityType={agreement.entityType}
           />
           {selectedTab()}
         </div>

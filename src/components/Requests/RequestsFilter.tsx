@@ -1,5 +1,9 @@
 import React from "react";
 import { Form, Formik, Field } from "formik";
+import {
+  AgreementApiGetAgreementsRequest,
+  GetAgreementsAssigneeEnum
+} from "../../api/generated_backoffice";
 import DateModal from "./DateModal";
 import StateModal from "./StateModal";
 
@@ -8,7 +12,7 @@ interface FilterFormValues {
   requestDateFrom: Date | undefined;
   requestDateTo: Date | undefined;
   states: string | undefined;
-  assignee: string | undefined;
+  assignee: GetAgreementsAssigneeEnum | undefined;
   page: number;
 }
 
@@ -16,7 +20,7 @@ const RequestsFilter = ({
   getAgreements,
   refForm
 }: {
-  getAgreements: (params: any) => void;
+  getAgreements: (params: AgreementApiGetAgreementsRequest) => void;
   refForm: any;
 }) => {
   // eslint-disable-next-line functional/no-let
@@ -38,16 +42,22 @@ const RequestsFilter = ({
       onSubmit={values => {
         const params = {
           ...values,
-          profileFullName: values.profileFullName || undefined
+          profileFullName: values.profileFullName || undefined,
+          requestDateFrom: values.requestDateFrom?.toISOString(),
+          requestDateTo: values.requestDateTo?.toISOString()
         };
         if (params.states?.includes("AssignedAgreement")) {
           const splitFilter = params.states?.split("AssignedAgreement");
-          // eslint-disable-next-line functional/immutable-data
-          params.assignee = splitFilter[splitFilter.length - 1];
-          // eslint-disable-next-line functional/immutable-data
-          params.states = "AssignedAgreement";
+          getAgreements({
+            ...params,
+            assignee: splitFilter[
+              splitFilter.length - 1
+            ] as GetAgreementsAssigneeEnum,
+            states: "AssignedAgreement"
+          });
+        } else {
+          getAgreements(params);
         }
-        getAgreements(params);
       }}
     >
       {({ values, submitForm, setFieldValue, resetForm, dirty }) => (

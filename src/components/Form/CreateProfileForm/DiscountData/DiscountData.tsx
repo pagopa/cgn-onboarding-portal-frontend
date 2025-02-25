@@ -1,18 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { AxiosResponse } from "axios";
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { FieldArray, Form, Formik } from "formik";
-import { toError } from "fp-ts/lib/Either";
 import { fromNullable } from "fp-ts/lib/Option";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
-import Api from "../../../../api";
 import {
   CreateDiscount,
   Discount,
-  Discounts,
   ProductCategory
 } from "../../../../api/generated";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
@@ -32,32 +27,19 @@ import FormContainer from "../../FormContainer";
 import FormField from "../../FormField";
 import FormSection from "../../FormSection";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
-import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
+import { remoteData } from "../../../../api/common";
+import {
+  discountEmptyInitialValues,
+  getDiscountTypeChecks,
+  updateDiscountMutationOnError
+} from "../../EditDiscountForm/EditDiscountForm";
 import Bucket from "./Bucket";
 import DiscountUrl from "./DiscountUrl";
 import EnrollToEyca from "./EnrollToEyca";
 import LandingPage from "./LandingPage";
 
 const emptyInitialValues = {
-  discounts: [
-    {
-      name: "",
-      name_en: "",
-      name_de: "-",
-      description: "",
-      description_en: "",
-      description_de: "-",
-      startDate: "",
-      endDate: "",
-      discount: "",
-      discountUrl: "",
-      productCategories: [],
-      condition: "",
-      condition_en: "",
-      condition_de: "-",
-      staticCode: ""
-    }
-  ]
+  discounts: [discountEmptyInitialValues]
 };
 
 type Props = {
@@ -75,62 +57,55 @@ const DiscountData = ({
 }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const { triggerTooltip } = useTooltip();
-  const [initialValues, setInitialValues] = useState<any>(emptyInitialValues);
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<any>();
-
-  const chainAxios = (response: AxiosResponse) =>
-    fromPredicate(
-      (_: AxiosResponse) => _.status === 200 || _.status === 204,
-      (r: AxiosResponse) =>
-        r.status === 409
-          ? new Error("Upload codici ancora in corso")
-          : new Error(
-              "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
-            )
-    )(response);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const throwErrorTooltip = () => {
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text:
-        "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
-    });
-  };
+  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
+    agreementId: agreement.id
+  });
+  const profile = profileQuery.data;
 
-  const checkStaticCode =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    profile?.salesChannel?.discountCodeType === "Static";
+  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
+    profile
+  );
 
-  const checkLanding =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    profile?.salesChannel?.discountCodeType === "LandingPage";
+  const createDiscountMutation = remoteData.Index.Discount.createDiscount.useMutation(
+    {
+      onSuccess() {
+        handleNext();
+      },
+      onError(error) {
+        if (error.status === 409) {
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text: "Upload codici ancora in corso"
+          });
+        } else {
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text:
+              "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
+          });
+        }
+      }
+    }
+  );
+  const createDiscount = (agreementId: string, discount: CreateDiscount) =>
+    createDiscountMutation.mutate({ agreementId, discount });
 
-  const checkBucket =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    profile?.salesChannel?.discountCodeType === "Bucket";
+  const updateDiscountMutation = remoteData.Index.Discount.updateDiscount.useMutation(
+    {
+      onSuccess() {
+        onUpdate();
+        handleNext();
+      },
+      onError: updateDiscountMutationOnError({ triggerTooltip })
+    }
+  );
 
-  const createDiscount = async (
-    agreementId: string,
-    discount: CreateDiscount
-  ) =>
-    await tryCatch(
-      () => Api.Discount.createDiscount(agreementId, discount),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(throwErrorTooltip, () => handleNext())
-      .run();
-
-  const updateDiscount = async (agreementId: string, discount: Discount) => {
+  const updateDiscount = (agreementId: string, discount: Discount) => {
     const {
       id,
       agreementId: agId,
@@ -138,119 +113,76 @@ const DiscountData = ({
       creationDate,
       ...updatedDiscount
     } = discount;
-    const response = await normalizeAxiosResponse(
-      Api.Discount.updateDiscount(agreementId, discount.id, updatedDiscount)
-    );
-    if (response.status === 200 || response.status === 204) {
-      handleNext();
-    } else if (response.status === 409) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: "Upload codici ancora in corso"
-      });
-    } else if (
-      response.status === 400 &&
-      response.data ===
-        "CANNOT_UPDATE_DISCOUNT_BUCKET_WHILE_PROCESSING_IS_RUNNING"
-    ) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text:
-          "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
-      });
-    } else {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text:
-          "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
-      });
-    }
+    updateDiscountMutation.mutate({
+      agreementId,
+      discountId: discount.id,
+      discount: updatedDiscount
+    });
   };
 
-  const getDiscounts = async (agreementId: string) =>
-    await tryCatch(() => Api.Discount.getDiscounts(agreementId), toError)
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        (discounts: Discounts) => {
-          setInitialValues({
-            discounts: discounts.items.map((discount: Discount) => ({
-              ...discount,
-              name: withNormalizedSpaces(discount.name),
-              name_en: withNormalizedSpaces(discount.name_en),
-              name_de: "-",
-              description: clearIfReferenceIsBlank(discount.description)(
-                discount.description
-              ),
-              description_en: clearIfReferenceIsBlank(discount.description)(
-                discount.description_en
-              ),
-              description_de: "-",
-              condition: clearIfReferenceIsBlank(discount.condition)(
-                discount.condition
-              ),
-              condition_en: clearIfReferenceIsBlank(discount.condition)(
-                discount.condition_en
-              ),
-              condition_de: "-",
-              discountUrl: fromNullable(discount.discountUrl).toUndefined(),
-              startDate: new Date(discount.startDate),
-              endDate: new Date(discount.endDate),
-              landingPageReferrer: fromNullable(
-                discount.landingPageReferrer
-              ).toUndefined(),
-              landingPageUrl: fromNullable(
-                discount.landingPageUrl
-              ).toUndefined(),
-              discount: fromNullable(discount.discount).toUndefined(),
-              staticCode: fromNullable(discount.staticCode).toUndefined(),
-              lastBucketCodeLoadUid: fromNullable(
-                discount.lastBucketCodeLoadUid
-              ).toUndefined(),
-              lastBucketCodeLoadFileName: fromNullable(
-                discount.lastBucketCodeLoadFileName
-              ).toUndefined()
-            }))
-          });
-          setLoading(false);
-        }
-      )
-      .run();
-
-  const deleteDiscount = async (agreementId: string, discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.deleteDiscount(agreementId, discountId),
-      toError
-    ).run();
-
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        profile => {
-          setProfile({
-            ...profile,
-            hasDifferentFullName: !!profile.name
-          });
-          setLoading(false);
-        }
-      )
-      .run();
-
-  useEffect(() => {
-    if (isCompleted) {
-      setLoading(true);
-      void getDiscounts(agreement.id);
-    } else {
-      setLoading(false);
+  const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery(
+    {
+      agreementId: agreement.id
+    },
+    {
+      enabled: isCompleted
     }
-    void getProfile(agreement.id);
-  }, []);
+  );
 
-  if (loading) {
+  const initialValues = useMemo(() => {
+    if (discountsQuery.data) {
+      return {
+        discounts: discountsQuery.data.items.map((discount: Discount) => ({
+          ...discount,
+          name: withNormalizedSpaces(discount.name),
+          name_en: withNormalizedSpaces(discount.name_en),
+          name_de: "-",
+          description: clearIfReferenceIsBlank(discount.description)(
+            discount.description
+          ),
+          description_en: clearIfReferenceIsBlank(discount.description)(
+            discount.description_en
+          ),
+          description_de: "-",
+          condition: clearIfReferenceIsBlank(discount.condition)(
+            discount.condition
+          ),
+          condition_en: clearIfReferenceIsBlank(discount.condition)(
+            discount.condition_en
+          ),
+          condition_de: "-",
+          discountUrl: fromNullable(discount.discountUrl).toUndefined(),
+          startDate: new Date(discount.startDate),
+          endDate: new Date(discount.endDate),
+          landingPageReferrer: fromNullable(
+            discount.landingPageReferrer
+          ).toUndefined(),
+          landingPageUrl: fromNullable(discount.landingPageUrl).toUndefined(),
+          discount: fromNullable(discount.discount).toUndefined(),
+          staticCode: fromNullable(discount.staticCode).toUndefined(),
+          lastBucketCodeLoadUid: fromNullable(
+            discount.lastBucketCodeLoadUid
+          ).toUndefined(),
+          lastBucketCodeLoadFileName: fromNullable(
+            discount.lastBucketCodeLoadFileName
+          ).toUndefined()
+        }))
+      };
+    } else {
+      return emptyInitialValues;
+    }
+  }, [discountsQuery.data]);
+
+  const deleteDiscountMutation = remoteData.Index.Discount.deleteDiscount.useMutation();
+
+  const deleteDiscount = (agreementId: string, discountId: string) => {
+    deleteDiscountMutation.mutate({ agreementId, discountId });
+  };
+
+  const isLoading =
+    profileQuery.isLoading || (isCompleted ? discountsQuery.isLoading : false);
+
+  if (isLoading) {
     return <CenteredLoading />;
   }
 
@@ -265,41 +197,44 @@ const DiscountData = ({
       )}
       onSubmit={values => {
         const newValues: { discounts: ReadonlyArray<Discount> } = {
-          discounts: values.discounts.map((discount: CreateDiscount) => ({
-            ...discount,
-            name: withNormalizedSpaces(discount.name),
-            name_en: withNormalizedSpaces(discount.name_en),
-            name_de: "-",
-            description: clearIfReferenceIsBlank(discount.description)(
-              discount.description
-            ),
-            description_en: clearIfReferenceIsBlank(discount.description)(
-              discount.description_en
-            ),
-            description_de: clearIfReferenceIsBlank(discount.description)(
-              discount.description_de
-            ),
-            condition: clearIfReferenceIsBlank(discount.condition)(
-              discount.condition
-            ),
-            condition_en: clearIfReferenceIsBlank(discount.condition)(
-              discount.condition_en
-            ),
-            condition_de: clearIfReferenceIsBlank(discount.condition)(
-              discount.condition_de
-            ),
-            productCategories: discount.productCategories.filter((pc: any) =>
-              Object.values(ProductCategory).includes(pc)
-            ),
-            startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
-            endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
-          }))
+          discounts: values.discounts.map(
+            discount =>
+              ({
+                ...discount,
+                name: withNormalizedSpaces(discount.name),
+                name_en: withNormalizedSpaces(discount.name_en),
+                name_de: "-",
+                description: clearIfReferenceIsBlank(discount.description)(
+                  discount.description
+                ),
+                description_en: clearIfReferenceIsBlank(discount.description)(
+                  discount.description_en
+                ),
+                description_de: clearIfReferenceIsBlank(discount.description)(
+                  discount.description_de
+                ),
+                condition: clearIfReferenceIsBlank(discount.condition)(
+                  discount.condition
+                ),
+                condition_en: clearIfReferenceIsBlank(discount.condition)(
+                  discount.condition_en
+                ),
+                condition_de: clearIfReferenceIsBlank(discount.condition)(
+                  discount.condition_de
+                ),
+                productCategories: discount.productCategories.filter(pc =>
+                  Object.values(ProductCategory).includes(pc)
+                ),
+                startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
+                endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
+              } as Discount)
+          )
         };
         newValues.discounts.forEach((discount: Discount) => {
           if (isCompleted && discount.id) {
-            void updateDiscount(agreement.id, discount).then(() => onUpdate());
+            updateDiscount(agreement.id, discount);
           } else {
-            void createDiscount(agreement.id, discount);
+            createDiscount(agreement.id, discount);
           }
         });
       }}
@@ -321,7 +256,7 @@ const DiscountData = ({
                       handleClose={() => {
                         if (index >= 1) {
                           if (isCompleted) {
-                            void deleteDiscount(agreement.id, discount.id);
+                            deleteDiscount(agreement.id, discount.id);
                           }
                           arrayHelpers.remove(index);
                         }
@@ -331,7 +266,6 @@ const DiscountData = ({
                         formValues={values}
                         setFieldValue={setFieldValue}
                         index={index}
-                        entityType={agreement.entityType}
                       />
                       <FormField
                         htmlFor="productCategories"

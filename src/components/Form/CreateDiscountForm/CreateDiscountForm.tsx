@@ -1,21 +1,13 @@
-import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { Form, Formik } from "formik";
-import { toError } from "fp-ts/lib/Either";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import Api from "../../../api";
-import { CreateDiscount, EntityType } from "../../../api/generated";
+import { remoteData } from "../../../api/common";
+import { CreateDiscount } from "../../../api/generated";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
-import chainAxios from "../../../utils/chainAxios";
-import {
-  withNormalizedSpaces,
-  clearIfReferenceIsBlank
-} from "../../../utils/strings";
 import Bucket from "../CreateProfileForm/DiscountData/Bucket";
 import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
@@ -28,132 +20,61 @@ import FormField from "../FormField";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../utils/constants";
+import {
+  discountEmptyInitialValues,
+  getDiscountTypeChecks,
+  sanitizeDiscountFormValues
+} from "../EditDiscountForm/EditDiscountForm";
 
-const emptyInitialValues = {
-  name: "",
-  name_en: "",
-  name_de: "-",
-  description: "",
-  description_en: "",
-  description_de: "-",
-  startDate: "",
-  endDate: "",
-  productCategories: [],
-  condition: "",
-  condition_en: "",
-  condition_de: "-",
-  staticCode: "",
-  visibleOnEyca: false,
-  eycaLandingPageUrl: undefined
-};
-
-/* eslint-disable sonarjs/cognitive-complexity */
 const CreateDiscountForm = () => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<any>();
   const { triggerTooltip } = useTooltip();
 
-  const entityType = agreement.entityType;
+  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
+    agreementId: agreement.id
+  });
+  const profile = profileQuery.data;
 
-  const throwErrorTooltip = () => {
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text:
-        "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
-    });
-  };
+  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
+    profile
+  );
 
-  const checkStaticCode =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    profile?.salesChannel?.discountCodeType === "Static";
-
-  const checkLanding =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    profile?.salesChannel?.discountCodeType === "LandingPage";
-
-  const checkBucket =
-    (profile?.salesChannel?.channelType === "OnlineChannel" ||
-      profile?.salesChannel?.channelType === "BothChannels") &&
-    profile?.salesChannel?.discountCodeType === "Bucket";
+  const createDiscountMutation = remoteData.Index.Discount.createDiscount.useMutation(
+    {
+      onSuccess() {
+        history.push(DASHBOARD);
+      },
+      onError() {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text:
+            "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
+        });
+      }
+    }
+  );
 
   const createDiscount = async (
     agreementId: string,
     discount: CreateDiscount
-  ) =>
-    await tryCatch(
-      () => Api.Discount.createDiscount(agreementId, discount),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(throwErrorTooltip, () => history.push(DASHBOARD))
-      .run();
-
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        profile => {
-          setProfile({
-            ...profile,
-            hasDifferentFullName: !!profile.name
-          });
-          setLoading(false);
-        }
-      )
-      .run();
-
-  useEffect(() => {
-    setLoading(true);
-    void getProfile(agreement.id);
-  }, []);
+  ) => createDiscountMutation.mutate({ agreementId, discount });
 
   return (
     <Formik
-      initialValues={emptyInitialValues}
+      initialValues={{ ...discountEmptyInitialValues, discount: undefined }}
       validationSchema={() =>
         discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
       }
       onSubmit={values => {
-        const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
-          values.description
-        );
-        const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
-          values.condition
-        );
-        const newValues = {
-          ...values,
-          visibleOnEyca: values.eycaLandingPageUrl
-            ? true
-            : values.visibleOnEyca,
-          name: withNormalizedSpaces(values.name),
-          name_en: withNormalizedSpaces(values.name_en),
-          name_de: "-",
-          description: cleanedIfDescriptionIsBlank(values.description),
-          description_en: cleanedIfDescriptionIsBlank(values.description_en),
-          description_de: cleanedIfDescriptionIsBlank(values.description_de),
-          condition: cleanedIfConditionIsBlank(values.condition),
-          condition_en: cleanedIfConditionIsBlank(values.condition_en),
-          condition_de: cleanedIfConditionIsBlank(values.condition_de),
-          startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-          endDate: format(new Date(values.endDate), "yyyy-MM-dd")
-        };
+        const newValues = sanitizeDiscountFormValues(values);
         void createDiscount(agreement.id, newValues);
       }}
     >
       {({ values, setFieldValue, isSubmitting }) => (
         <Form autoComplete="off">
           <FormSection hasIntroduction>
-            <DiscountInfo
-              formValues={values}
-              setFieldValue={setFieldValue}
-              entityType={agreement.entityType}
-            />
+            <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
             <FormField
               htmlFor="productCategories"
               isTitleHeading
