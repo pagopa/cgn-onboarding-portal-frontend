@@ -31,7 +31,7 @@ import { remoteData } from "../../../../api/common";
 import {
   discountEmptyInitialValues,
   getDiscountTypeChecks,
-  useUpdateDiscountMutationOnError
+  updateDiscountMutationOnError
 } from "../../EditDiscountForm/EditDiscountForm";
 import Bucket from "./Bucket";
 import DiscountUrl from "./DiscountUrl";
@@ -95,14 +95,13 @@ const DiscountData = ({
   const createDiscount = (agreementId: string, discount: CreateDiscount) =>
     createDiscountMutation.mutate({ agreementId, discount });
 
-  const updateDiscountMutationOnError = useUpdateDiscountMutationOnError();
   const updateDiscountMutation = remoteData.Index.Discount.updateDiscount.useMutation(
     {
       onSuccess() {
         onUpdate();
         handleNext();
       },
-      onError: updateDiscountMutationOnError
+      onError: updateDiscountMutationOnError({ triggerTooltip })
     }
   );
 
