@@ -42,7 +42,7 @@ const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
 /* eslint-disable sonarjs/cognitive-complexity */
 const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
   if (profile.salesChannel.channelType === SalesChannelType.OfflineChannel) {
-    return null;
+        return null;
   }
   const salesChannel = profile.salesChannel as OnlineChannel | BothChannels;
   const isEycaSupported =
