@@ -1,6 +1,6 @@
 set -e
 
-yarn lint-staged
-
 yarn prebuild
+
+yarn lint-staged
 
