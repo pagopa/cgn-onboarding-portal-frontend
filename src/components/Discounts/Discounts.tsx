@@ -1,188 +1,157 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Column, useExpanded, useSortBy, useTable } from "react-table";
-import { Button, Icon } from "design-react-kit";
+import { Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { fromPredicate, tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { compareAsc, format } from "date-fns";
-import { AxiosResponse } from "axios";
-import { constNull } from "fp-ts/lib/function";
 import { omit } from "lodash";
-import Api from "../../api/index";
+import { remoteData } from "../../api/common";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
-import {
-  AgreementState,
-  Discount,
-  EntityType,
-  Profile
-} from "../../api/generated";
+import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
-import { normalizeAxiosResponse } from "../../utils/normalizeAxiosResponse";
 import PublishModal from "./PublishModal";
+import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
 import UnpublishModal from "./UnpublishModal";
 import TestModal from "./TestModal";
 
-const chainAxios = (response: AxiosResponse) =>
-  fromPredicate(
-    (_: AxiosResponse) => _.status === 200 || _.status === 204,
-    (r: AxiosResponse) =>
-      r.status === 409
-        ? new Error("Upload codici ancora in corso")
-        : new Error("Errore durante la pubblicazione dell'opportunità")
-  )(response);
-
 const Discounts = () => {
-  const [profile, setProfile] = useState<Profile>();
-  const [discounts, setDiscounts] = useState<ReadonlyArray<Discount>>([]);
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [selectedDiscount, setSelectedDiscount] = useState<any>();
-  const [publishModal, setPublishModal] = useState(false);
-  const [unpublishModal, setUnpublishModal] = useState(false);
-  const [testModal, setTestModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
-  const toggleDeleteModal = () => setDeleteModal(!deleteModal);
-  const togglePublishModal = () => setPublishModal(!publishModal);
-  const toggleUnpublishModal = () => setUnpublishModal(!unpublishModal);
-  const toggleTestModal = () => setTestModal(!testModal);
-  const [selectedPublish, setSelectedPublish] = useState<any>();
+  const [selectedDiscountAction, setSelectedDiscountAction] = useState<{
+    action: "publish" | "unpublish" | "test" | "delete";
+    discountId: string;
+  }>();
+  const closeActionModal = () => setSelectedDiscountAction(undefined);
+  const publishModal = selectedDiscountAction?.action === "publish";
+  const unpublishModal = selectedDiscountAction?.action === "unpublish";
+  const testModal = selectedDiscountAction?.action === "test";
+  const deleteModal = selectedDiscountAction?.action === "delete";
+
   const { triggerTooltip } = useTooltip();
 
-  const throwErrorTooltip = (e: string) => {
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text: e
+  const throwErrorTooltip = useCallback(
+    (e: string) => {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: e
+      });
+    },
+    [triggerTooltip]
+  );
+
+  const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
+    agreementId: agreement.id
+  });
+  const profile = profileQuery.data;
+
+  const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery({
+    agreementId: agreement.id
+  });
+  useEffect(() => {
+    if (discountsQuery.error) {
+      throwErrorTooltip("Errore nel caricamento delle opportunità");
+    }
+  }, [discountsQuery.error, throwErrorTooltip]);
+  const discounts = useMemo(() => discountsQuery.data?.items ?? [], [
+    discountsQuery.data?.items
+  ]);
+  const invalidateDiscountsQuery = (
+    data: unknown,
+    { agreementId }: { agreementId: string }
+  ) => {
+    remoteData.Index.Discount.getDiscounts.invalidateQueries({
+      agreementId
     });
   };
 
-  const getDiscounts = async () =>
-    await tryCatch(() => Api.Discount.getDiscounts(agreement.id), toError)
-      .map(response => response.data.items)
-      .fold(
-        _ => throwErrorTooltip("Errore nel caricamento delle opportunità"),
-        discounts => setDiscounts(discounts)
-      )
-      .run();
+  const deleteDiscountMutation = remoteData.Index.Discount.deleteDiscount.useMutation(
+    {
+      onSuccess: invalidateDiscountsQuery,
+      onError() {
+        throwErrorTooltip("Errore nella cancellazione dell'opportunità");
+      }
+    }
+  );
+  const deleteDiscount = (discountId: string) => {
+    deleteDiscountMutation.mutate({
+      agreementId: agreement.id,
+      discountId
+    });
+  };
 
-  const deleteDiscount = async () =>
-    await tryCatch(
-      () => Api.Discount.deleteDiscount(agreement.id, selectedDiscount),
-      toError
-    )
-      .fold(
-        _ => throwErrorTooltip("Errore nella cancellazione dell'opportunità"),
-        () =>
-          setDiscounts(
-            discounts.filter(
-              (discount: any) => discount.id !== selectedDiscount
-            )
-          )
-      )
-      .run();
+  const publishDiscountMutation = remoteData.Index.Discount.publishDiscount.useMutation(
+    {
+      onSuccess: invalidateDiscountsQuery,
+      onError(error) {
+        if (error.status === 409) {
+          throwErrorTooltip("Upload codici ancora in corso");
+        } else {
+          throwErrorTooltip("Errore durante la pubblicazione dell'opportunità");
+        }
+      }
+    }
+  );
+  const publishDiscount = (discountId: string) => {
+    publishDiscountMutation.mutate({
+      agreementId: agreement.id,
+      discountId
+    });
+  };
 
-  const publishDiscount = async (discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.publishDiscount(agreement.id, discountId),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        e => throwErrorTooltip(e.message),
-        () => void getDiscounts()
-      )
-      .run();
-
-  const unpublishDiscount = async (discountId: string) =>
-    await tryCatch(
-      () => Api.Discount.unpublishDiscount(agreement.id, discountId),
-      toError
-    )
-      .chain(chainAxios)
-      .map(response => response.data)
-      .fold(
-        _ =>
+  const unpublishDiscountMutation = remoteData.Index.Discount.unpublishDiscount.useMutation(
+    {
+      onSuccess: invalidateDiscountsQuery,
+      onError(error) {
+        if (error.status === 409) {
+          throwErrorTooltip("Upload codici ancora in corso");
+        } else {
           throwErrorTooltip(
             "Errore durante la richiesta di cambio di stato dell'opportunità"
-          ),
-        () => void getDiscounts()
-      )
-      .run();
-
-  const testDiscount = async (discountId: string) => {
-    const response = await normalizeAxiosResponse(
-      Api.Discount.testDiscount(agreement.id, discountId)
-    );
-    if (response.status === 200 || response.status === 204) {
-      void getDiscounts();
-    } else if (
-      response.status === 400 &&
-      response.data === "CANNOT_PROCEED_WITH_EXPIRED_DISCOUNT"
-    ) {
-      throwErrorTooltip(
-        "Le date di validità dell'opportunità sono scadute. Aggiorna le date e riprova."
-      );
-    } else {
-      throwErrorTooltip("Errore durante la richiesta di test dell'opportunità");
-    }
-  };
-
-  const getProfile = async (agreementId: string) =>
-    await tryCatch(() => Api.Profile.getProfile(agreementId), toError)
-      .map(response => response.data)
-      .fold(
-        () => {
-          constNull();
-        },
-        profile => {
-          setProfile(profile);
+          );
         }
-      )
-      .run();
-
-  const isVisible = (state: any, startDate: any, endDate: any) => {
-    const today = new Date();
-    return (
-      state === "published" &&
-      (compareAsc(today, new Date(startDate)) === 1 ||
-        compareAsc(today, new Date(startDate)) === 0) &&
-      (compareAsc(new Date(endDate), today) === 1 ||
-        compareAsc(new Date(endDate), today) === 0)
-    );
-  };
-
-  const getVisibleComponent = (isVisible: boolean) => {
-    if (isVisible) {
-      return (
-        <span className="d-flex flex-row align-items-center">
-          <Icon icon="it-password-visible" size="sm" className="mr-1" />
-          <span className="text-base font-weight-normal text-gray">SI</span>
-        </span>
-      );
-    } else {
-      return (
-        <span className="d-flex flex-row align-items-center">
-          <Icon icon="it-password-invisible" size="sm" className="mr-1" />
-          <span className="text-base font-weight-normal text-gray">NO</span>
-        </span>
-      );
+      }
     }
+  );
+
+  const unpublishDiscount = (discountId: string) => {
+    unpublishDiscountMutation.mutate({
+      agreementId: agreement.id,
+      discountId
+    });
   };
 
-  useEffect(() => {
-    void getDiscounts();
-    void getProfile(agreement.id);
-  }, []);
+  const testDiscountMutation = remoteData.Index.Discount.testDiscount.useMutation(
+    {
+      onSuccess: invalidateDiscountsQuery,
+      async onError(error) {
+        if (
+          error.status === 400 &&
+          error.response?.data === "CANNOT_PROCEED_WITH_EXPIRED_DISCOUNT"
+        ) {
+          throwErrorTooltip(
+            "Le date di validità dell'opportunità sono scadute. Aggiorna le date e riprova."
+          );
+        } else {
+          throwErrorTooltip(
+            "Errore durante la richiesta di test dell'opportunità"
+          );
+        }
+      }
+    }
+  );
+  const testDiscount = (discountId: string) => {
+    testDiscountMutation.mutate({
+      agreementId: agreement.id,
+      discountId
+    });
+  };
 
   const entityType = agreement.entityType;
 
-  const data = useMemo(() => [...discounts], [discounts]);
   const columns: Array<Column<Discount>> = useMemo(
     () => [
       {
@@ -212,39 +181,41 @@ const Discounts = () => {
       {
         Header: "Aggiunta il",
         accessor: "startDate",
-        Cell: ({ row }: any) =>
-          format(new Date(row.values.startDate), "dd/MM/yyyy")
+        Cell({ row }) {
+          return (
+            <span>{format(new Date(row.values.startDate), "dd/MM/yyyy")}</span>
+          );
+        }
       },
       {
         Header: "Stato",
         accessor: "state",
-        Cell: ({ row }: any) => getDiscountComponent(row.values.state),
+        Cell({ row }) {
+          return <span>{getDiscountComponent(row.values.state)}</span>;
+        },
         disableSortBy: true
       },
       {
         Header: "Visibile",
-        Cell: ({ row }: any) =>
-          getVisibleComponent(
-            isVisible(
-              row.original.state,
-              row.original.startDate,
-              row.original.endDate
-            )
-          ),
+        Cell({ row }) {
+          return <IsVisible discount={row.original} />;
+        },
         disableSortBy: true
       },
       {
         Header: () => null,
         id: "expander",
-        Cell: ({ row }: any) => (
-          <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
-            {row.isExpanded ? (
-              <Icon icon="it-expand" color="primary" />
-            ) : (
-              <Icon icon="it-collapse" color="primary" />
-            )}
-          </span>
-        )
+        Cell({ row }) {
+          return (
+            <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
+              {row.isExpanded ? (
+                <Icon icon="it-expand" color="primary" />
+              ) : (
+                <Icon icon="it-collapse" color="primary" />
+              )}
+            </span>
+          );
+        }
       }
     ],
     []
@@ -257,7 +228,7 @@ const Discounts = () => {
     rows,
     prepareRow,
     visibleColumns
-  } = useTable({ columns, data }, useSortBy, useExpanded);
+  } = useTable<Discount>({ columns, data: discounts }, useSortBy, useExpanded);
 
   const MAX_PUBLISHED_DISCOUNTS = 5;
   const maxPublishedDiscountsReached =
@@ -269,48 +240,41 @@ const Discounts = () => {
       <div>
         <PublishModal
           isOpen={publishModal}
-          toggle={togglePublishModal}
-          publish={() => publishDiscount(selectedPublish)}
+          toggle={closeActionModal}
+          publish={() => {
+            if (selectedDiscountAction) {
+              publishDiscount(selectedDiscountAction.discountId);
+            }
+          }}
           profile={profile}
         />
         <UnpublishModal
           isOpen={unpublishModal}
-          toggle={toggleUnpublishModal}
-          unpublish={() => unpublishDiscount(selectedDiscount)}
+          toggle={closeActionModal}
+          unpublish={() => {
+            if (selectedDiscountAction) {
+              unpublishDiscount(selectedDiscountAction.discountId);
+            }
+          }}
         />
         <TestModal
           isOpen={testModal}
-          toggle={toggleTestModal}
-          testRequest={() => testDiscount(selectedDiscount)}
+          toggle={closeActionModal}
+          testRequest={() => {
+            if (selectedDiscountAction) {
+              testDiscount(selectedDiscountAction.discountId);
+            }
+          }}
         />
-        <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
-          <ModalHeader toggle={toggleDeleteModal}>
-            Elimina opportunità
-          </ModalHeader>
-          <ModalBody>
-            Sei sicuro di voler eliminare questa opportunità?
-          </ModalBody>
-          <ModalFooter className="d-flex flex-column">
-            <Button
-              color="primary"
-              onClick={() => {
-                void deleteDiscount();
-                toggleDeleteModal();
-              }}
-              style={{ width: "100%" }}
-            >
-              Elimina
-            </Button>{" "}
-            <Button
-              color="primary"
-              outline
-              onClick={toggleDeleteModal}
-              style={{ width: "100%" }}
-            >
-              Annulla
-            </Button>
-          </ModalFooter>
-        </Modal>
+        <DeleteModal
+          isOpen={deleteModal}
+          onToggle={closeActionModal}
+          onDelete={() => {
+            if (selectedDiscountAction) {
+              deleteDiscount(selectedDiscountAction.discountId);
+            }
+          }}
+        />
       </div>
       {(agreement.state === AgreementState.ApprovedAgreement ||
         entityType === EntityType.Private) && (
@@ -388,20 +352,28 @@ const Discounts = () => {
                             agreement={agreement}
                             profile={profile}
                             onPublish={() => {
-                              setSelectedPublish(row.original.id);
-                              togglePublishModal();
+                              setSelectedDiscountAction({
+                                action: "publish",
+                                discountId: row.original.id
+                              });
                             }}
                             onUnpublish={() => {
-                              setSelectedDiscount(row.original.id);
-                              toggleUnpublishModal();
+                              setSelectedDiscountAction({
+                                action: "unpublish",
+                                discountId: row.original.id
+                              });
                             }}
                             onDelete={() => {
-                              setSelectedDiscount(row.original.id);
-                              toggleDeleteModal();
+                              setSelectedDiscountAction({
+                                action: "delete",
+                                discountId: row.original.id
+                              });
                             }}
                             onTest={() => {
-                              setSelectedDiscount(row.original.id);
-                              toggleTestModal();
+                              setSelectedDiscountAction({
+                                action: "test",
+                                discountId: row.original.id
+                              });
                             }}
                             maxPublishedDiscountsReached={
                               maxPublishedDiscountsReached
@@ -419,7 +391,7 @@ const Discounts = () => {
       )}
       {agreement.state === AgreementState.ApprovedAgreement ? (
         <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
-          {data.length === 0 && (
+          {discounts.length === 0 && (
             <div className="text-center text-gray pb-10">
               Non è presente nessuna opportunità.
             </div>
@@ -460,3 +432,28 @@ const Discounts = () => {
 };
 
 export default Discounts;
+
+function IsVisible({ discount }: { discount: Discount }) {
+  const today = new Date();
+  const isVisible =
+    discount.state === "published" &&
+    (compareAsc(today, new Date(discount.startDate)) === 1 ||
+      compareAsc(today, new Date(discount.startDate)) === 0) &&
+    (compareAsc(new Date(discount.endDate), today) === 1 ||
+      compareAsc(new Date(discount.endDate), today) === 0);
+  if (isVisible) {
+    return (
+      <span className="d-flex flex-row align-items-center">
+        <Icon icon="it-password-visible" size="sm" className="mr-1" />
+        <span className="text-base font-weight-normal text-gray">SI</span>
+      </span>
+    );
+  } else {
+    return (
+      <span className="d-flex flex-row align-items-center">
+        <Icon icon="it-password-invisible" size="sm" className="mr-1" />
+        <span className="text-base font-weight-normal text-gray">NO</span>
+      </span>
+    );
+  }
+}

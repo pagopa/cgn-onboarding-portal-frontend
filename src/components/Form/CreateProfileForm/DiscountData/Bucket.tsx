@@ -28,7 +28,7 @@ const BucketComponent = ({
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
 Props) => {
   const hasIndex = index !== undefined;
-  const refFile = useRef<any>();
+  const refFile = useRef<HTMLInputElement>(null);
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [currentDoc, setCurrentDoc] = useState<{ name: string } | undefined>(
@@ -38,7 +38,7 @@ Props) => {
   const { triggerTooltip } = useTooltip();
 
   const handleClick = () => {
-    refFile.current.click();
+    refFile.current?.click();
   };
 
   useEffect(() => {
@@ -62,14 +62,20 @@ Props) => {
     );
   }, [formValues, index]);
 
-  const addFile = async (files: any) => {
+  const addFile = async (files: FileList) => {
     setUploadingDoc(true);
     const response = await normalizeAxiosResponse(
-      Api.Bucket.uploadBucket(agreementId, files[0], {
-        onUploadProgress: (event: any) => {
-          setUploadProgress(Math.round((100 * event.loaded) / event.total));
+      Api.Bucket.uploadBucket(
+        {
+          agreementId,
+          document: files[0]
+        },
+        {
+          onUploadProgress: (event: any) => {
+            setUploadProgress(Math.round((100 * event.loaded) / event.total));
+          }
         }
-      })
+      )
     );
     if (response.status === 200 || response.status === 204) {
       setFieldValue(
@@ -184,7 +190,11 @@ Props) => {
                 accept="text/csv"
                 hidden
                 ref={refFile}
-                onChange={() => addFile(refFile.current.files)}
+                onChange={() => {
+                  if (refFile.current?.files) {
+                    void addFile(refFile.current.files);
+                  }
+                }}
               />
             </Button>
           )}

@@ -1,5 +1,4 @@
 import React from "react";
-import Field from "formik";
 import VisibleIcon from "../../assets/icons/visible.svg";
 
 type Props = {

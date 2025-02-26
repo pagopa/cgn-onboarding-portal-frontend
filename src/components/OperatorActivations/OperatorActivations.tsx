@@ -8,15 +8,12 @@ import {
   UseExpandedRowProps,
   useExpanded
 } from "react-table";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
 import { omit } from "lodash";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading";
 import {
-  Organizations,
   OrganizationStatus,
   OrganizationWithReferentsAndStatus
 } from "../../api/generated_backoffice";
@@ -41,36 +38,20 @@ export type GetOrgsParams = {
 };
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorActivations = () => {
-  const [operators, setOperators] = useState<Organizations>();
-  const [loading, setLoading] = useState(false);
   const refForm = useRef<any>(null);
 
-  const getActivationsApi = async (params?: GetOrgsParams) =>
-    await tryCatch(
-      () =>
-        Api.AttributeAuthority.getOrganizations(
-          params?.searchQuery,
-          params?.page,
-          PAGE_SIZE,
-          params?.sortColumn,
-          params?.sortDirection
-        ),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setLoading(false);
-          setOperators(response);
-        }
-      )
-      .run();
-
-  const getActivations = (params?: GetOrgsParams) => {
-    setLoading(true);
-    void getActivationsApi(params);
-  };
+  const [params, setParams] = useState<GetOrgsParams>();
+  const {
+    data: operators,
+    isLoading,
+    refetch
+  } = remoteData.Backoffice.AttributeAuthority.getOrganizations.useQuery({
+    searchQuery: params?.searchQuery,
+    page: params?.page,
+    pageSize: PAGE_SIZE,
+    sortBy: params?.sortColumn,
+    sortDirection: params?.sortDirection
+  });
 
   const columns: Array<Column<OrganizationWithReferentsAndStatus>> = useMemo(
     () => [
@@ -147,7 +128,7 @@ const OperatorActivations = () => {
         )
       }
     ],
-    [operators]
+    []
   );
 
   const data: Array<OrganizationWithReferentsAndStatus> = useMemo(
@@ -223,8 +204,8 @@ const OperatorActivations = () => {
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <ActivationsFilter refForm={refForm} getActivations={getActivations} />
-      {loading ? (
+      <ActivationsFilter refForm={refForm} getActivations={setParams} />
+      {isLoading ? (
         <CenteredLoading />
       ) : (
         <>
@@ -279,7 +260,7 @@ const OperatorActivations = () => {
                         <td colSpan={visibleColumns.length}>
                           <OperatorActivationDetail
                             operator={row.original}
-                            getActivations={getActivations}
+                            getActivations={() => refetch()}
                           />
                         </td>
                       </tr>
@@ -300,7 +281,7 @@ const OperatorActivations = () => {
                   className="mt-3"
                   onClick={() => {
                     refForm.current?.resetForm();
-                    getActivations({});
+                    setParams({});
                   }}
                 >
                   Reimposta Tutto

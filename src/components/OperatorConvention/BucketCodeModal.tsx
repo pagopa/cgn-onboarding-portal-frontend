@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading";
 
 type Props = {
@@ -19,30 +17,16 @@ const BucketCodeModal = ({
   agreementId,
   discountId
 }: Props) => {
-  const [bucketCode, setBucketCode] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const getBucketCode = async () =>
-    await tryCatch(
-      () => Api.Discount.getDiscountBucketCode(agreementId, discountId),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setIsLoading(false),
-        bucket => {
-          setIsLoading(false);
-          setBucketCode(bucket.code);
-        }
-      )
-      .run();
-
-  useEffect(() => {
-    setIsLoading(true);
-    if (isOpen) {
-      void getBucketCode();
-    }
-  }, [isOpen]);
+  const {
+    data: bucketCode = "",
+    isLoading
+  } = remoteData.Backoffice.Discount.getDiscountBucketCode.useQuery(
+    {
+      agreementId,
+      discountId
+    },
+    { enabled: isOpen }
+  );
 
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
