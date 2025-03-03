@@ -1,0 +1,6 @@
+set -e
+
+yarn prebuild
+
+yarn lint-staged
+
