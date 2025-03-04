@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { Button, Icon } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import DocumentIcon from "../../assets/icons/document.svg";
 import DocumentSuccess from "../../assets/icons/document-success.svg";
 import CenteredLoading from "../CenteredLoading";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 import {
   Agreement,
   Document,
@@ -130,77 +128,50 @@ const RequestDocuments = ({
   assignedToMe: boolean;
   setCheckAllDocs: (state: boolean) => void;
 }) => {
-  const [documents, setDocuments] = useState<Array<Document>>();
-  const [loading, setLoading] = useState(false);
+  const documentsQuery = remoteData.Backoffice.Document.getDocuments.useQuery({
+    agreementId: original.id
+  });
+  const documents = documentsQuery.data;
 
-  const getDocumentsApi = async () =>
-    await tryCatch(() => Api.Document.getDocuments(original.id), toError)
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setLoading(false);
-          setDocuments(response);
-        }
-      )
-      .run();
-
-  const getDocuments = () => {
-    if (!loading) {
-      setLoading(true);
+  const uploadDocumentMutation = remoteData.Backoffice.Document.uploadDocument.useMutation(
+    {
+      onSuccess() {
+        setCheckAllDocs(true);
+        void documentsQuery.refetch();
+      }
     }
-    void getDocumentsApi();
-  };
-
-  const uploadDocumentApi = async (documentType: DocumentType, file: File) =>
-    await tryCatch(
-      () => Api.Document.uploadDocument(original.id, documentType, file),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        () => {
-          getDocuments();
-          setLoading(false);
-          setCheckAllDocs(true);
-        }
-      )
-      .run();
-
+  );
   const uploadDocument = (documentType: DocumentType, file: File) => {
-    setLoading(true);
-    void uploadDocumentApi(documentType, file);
+    uploadDocumentMutation.mutate({
+      agreementId: original.id,
+      documentType,
+      document: file
+    });
   };
 
-  const deleteDocumentApi = async (documentType: DocumentType) =>
-    await tryCatch(
-      () => Api.Document.deleteDocument(original.id, documentType),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        () => {
-          setLoading(false);
-          getDocuments();
-        }
-      )
-      .run();
-
-  const deleteDocument = async (documentType: DocumentType) => {
-    setLoading(true);
-    void deleteDocumentApi(documentType);
+  const deleteDocumentMutation = remoteData.Backoffice.Document.deleteDocument.useMutation(
+    {
+      onSuccess() {
+        void documentsQuery.refetch();
+      }
+    }
+  );
+  const deleteDocument = (documentType: DocumentType) => {
+    void deleteDocumentMutation.mutate({
+      agreementId: original.id,
+      documentType
+    });
   };
 
-  useEffect(() => {
-    getDocuments();
-  }, []);
+  const isLoading =
+    documentsQuery.isLoading ||
+    uploadDocumentMutation.isLoading ||
+    deleteDocumentMutation.isLoading;
 
   return (
     <>
       <h1 className="h5 font-weight-bold text-dark-blue mb-5">Documenti</h1>
-      {loading ? (
+      {isLoading ? (
         <CenteredLoading />
       ) : (
         original.documents?.map((doc, i) => {

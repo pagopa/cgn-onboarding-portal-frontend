@@ -1,11 +1,9 @@
-import React, { CSSProperties, useEffect, useMemo, useState } from "react";
+import React, { CSSProperties, useCallback, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Icon, Progress } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { BucketCodeLoadStatus } from "../../api/generated";
 import { Severity, useTooltip } from "../../context/tooltip";
-import Api from "../../api";
+import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading";
 
 type Props = {
@@ -87,99 +85,86 @@ const getRenderAttributesByState = (
   }
 };
 
-const ImportationStatus = (props: Props) => {
-  const [isLoading, setIsLoading] = useState(
-    props.status === BucketCodeLoadStatus.Running ||
-      props.status === BucketCodeLoadStatus.Pending
-  );
-  const [progress, setProgress] = useState(0);
-  const [pollStarted, setPollStarted] = useState(false);
-  const shouldBeRendered = props.status !== BucketCodeLoadStatus.Finished;
+const ImportationStatus = ({
+  onPollingComplete,
+  status,
+  agreementId,
+  discountId
+}: Props) => {
+  const shouldBeRendered = status !== BucketCodeLoadStatus.Finished;
 
   const { title, body } = useMemo(
-    () => getRenderAttributesByState(props.status, props.discountId),
-    [props.status, props.discountId]
+    () => getRenderAttributesByState(status, discountId),
+    [status, discountId]
   );
 
   const { triggerTooltip } = useTooltip();
 
-  const throwErrorTooltip = (e: string) => {
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text: e
-    });
-  };
+  const throwErrorTooltip = useCallback(
+    (e: string) => {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: e
+      });
+    },
+    [triggerTooltip]
+  );
 
-  const getCodesStatus = async () =>
-    await tryCatch(
-      () =>
-        Api.DiscountBucketLoadingProgress.getDiscountBucketCodeLoadingProgess(
-          props.agreementId,
-          props.discountId
-        ),
-      toError
-    )
-      .map(response => response.data.percent)
-      .fold(
-        _ => {
-          throwErrorTooltip(
-            "Errore nel recuperare lo stato di caricamento codici"
-          );
-          setIsLoading(false);
-        },
-        p => {
-          setIsLoading(false);
-          setProgress(Math.round(p * 100) / 100);
-        }
-      )
-      .run();
+  const loadingProgressQuery = remoteData.Index.DiscountBucketLoadingProgress.getDiscountBucketCodeLoadingProgess.useQuery(
+    { agreementId, discountId },
+    {
+      enabled:
+        status === BucketCodeLoadStatus.Pending ||
+        status === BucketCodeLoadStatus.Running,
+      refetchInterval: 5000
+    }
+  );
+  useEffect(() => {
+    if (loadingProgressQuery.error) {
+      throwErrorTooltip("Errore nel recuperare lo stato di caricamento codici");
+    }
+  }, [loadingProgressQuery.error, throwErrorTooltip]);
+  const progress =
+    Math.round((loadingProgressQuery.data?.percent ?? 0) * 100) / 100;
 
   useEffect(() => {
-    if (
-      props.status === BucketCodeLoadStatus.Pending ||
-      props.status === BucketCodeLoadStatus.Running
-    ) {
-      void getCodesStatus();
-      const timer = setInterval(getCodesStatus, 5000);
-      setPollStarted(true);
-      if (progress === 100) {
-        props.onPollingComplete();
-        clearInterval(timer);
-      }
-
-      return () => clearInterval(timer);
+    if (progress === 100) {
+      onPollingComplete();
     }
-  }, [props.status, progress]);
+  }, [onPollingComplete, progress]);
 
-  return shouldBeRendered ? (
-    isLoading ? (
-      <CenteredLoading />
-    ) : (
-      <div style={styles.container} className="row bg-white">
-        <div className="col-1">
-          <Icon icon="it-warning-circle" style={{ fill: "#EA7614" }} />
-        </div>
-        <div className="col">
-          <h6>{title}</h6>
-          <p style={{ color: "#5C6F82" }}>{body}</p>
-        </div>
-        {(props.status === BucketCodeLoadStatus.Pending ||
-          props.status === BucketCodeLoadStatus.Running) &&
-          pollStarted && (
-            <div className="col-12">
-              <div className="pt-3">
-                <Progress
-                  value={progress}
-                  label="progresso"
-                  role="progressbar"
-                  tag="div"
-                />
-              </div>
-            </div>
-          )}
+  if (!shouldBeRendered) {
+    return null;
+  }
+
+  if (loadingProgressQuery.isLoading) {
+    return <CenteredLoading />;
+  }
+
+  return (
+    <div style={styles.container} className="row bg-white">
+      <div className="col-1">
+        <Icon icon="it-warning-circle" style={{ fill: "#EA7614" }} />
       </div>
-    )
-  ) : null;
+      <div className="col">
+        <h6>{title}</h6>
+        <p style={{ color: "#5C6F82" }}>{body}</p>
+      </div>
+      {(status === BucketCodeLoadStatus.Pending ||
+        status === BucketCodeLoadStatus.Running) && (
+        <div className="col-12">
+          <div className="pt-3">
+            <Progress
+              value={progress}
+              label="progresso"
+              role="progressbar"
+              tag="div"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ImportationStatus;

@@ -1,6 +1,6 @@
 {
   "name": "cgn-onboarding-portal-frontend",
-  "version": "3.31.0",
+  "version": "3.32.0",
   "license": "MIT",
   "scripts": {
     "start:prod": "cross-env NODE_ENV=production parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
@@ -20,12 +20,14 @@
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
     "generate": "./generate-openapi.sh",
-    "prettify": "prettier --write \"./**/*.{ts,tsx}\""
+    "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
+    "prepare": "husky"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.14.1",
     "@reduxjs/toolkit": "^1.5.1",
-    "axios": "^0.28.0",
+    "@tanstack/react-query": "^4.0.0",
+    "axios": "^1.7.9",
     "bootstrap": "^4.5.3",
     "bootstrap-italia": "^1.4.3",
     "classnames": "^2.2.6",
@@ -43,7 +45,7 @@
     "jwt-decode": "^3.1.2",
     "node-sass": "^7.0.1",
     "path": "^0.12.7",
-    "react": ">=16.4.1",
+    "react": "^16.8.0",
     "react-datepicker": "^3.8.0",
     "react-dom": "^17.0.1",
     "react-google-recaptcha": "^2.1.0",
@@ -64,7 +66,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.2.6",
+    "@openapitools/openapi-generator-cli": "^2.15.3",
     "@pagopa/danger-custom-rules": "^2.0.3",
     "@pagopa/eslint-config": "^1.1.1",
     "@pagopa/openapi-codegen-ts": "9.0.0",
@@ -90,13 +92,16 @@
     "danger-plugin-digitalcitizenship": "^1.0.0",
     "dotenv": "^8.2.0",
     "eslint-plugin-prettier": "^3.3.1",
+    "husky": "^9.1.7",
+    "eslint-plugin-react-hooks": "^5.1.0",
     "jest": "^26.6.3",
+    "lint-staged": "^15.4.3",
     "npm-run-all": "^4.1.5",
     "parcel": "^1.12.3",
     "sass": "^1.32.13",
     "shx": "^0.3.3",
     "ts-jest": "^26.5.4",
-    "typescript": "^4.1.2"
+    "typescript": "^5.7.3"
   },
   "resolutions": {
     "fp-ts": "1.17.4",

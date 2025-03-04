@@ -41,6 +41,13 @@ const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
 
 /* eslint-disable sonarjs/cognitive-complexity */
 const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
+  const hasIndex = index !== undefined;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [checkBoxValue, setCheckboxValue] = useState(
+    (index !== undefined
+      ? formValues.discounts[index].visibleOnEyca
+      : formValues.visibleOnEyca) ?? false
+  );
   if (profile.salesChannel.channelType === SalesChannelType.OfflineChannel) {
     return null;
   }
@@ -60,13 +67,6 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
         return "API";
     }
   };
-  const hasIndex = index !== undefined;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [checkBoxValue, setCheckboxValue] = useState(
-    (index !== undefined
-      ? formValues.discounts[index].visibleOnEyca
-      : formValues.visibleOnEyca) ?? false
-  );
 
   const openModal = (val: any) => {
     setCheckboxValue(val);

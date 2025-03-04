@@ -1,5 +1,4 @@
 import React from "react";
-import Field from "formik";
 import { FormGroup } from "design-react-kit";
 import { Label } from "reactstrap";
 

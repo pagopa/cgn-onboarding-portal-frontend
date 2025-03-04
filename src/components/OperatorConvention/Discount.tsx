@@ -1,10 +1,7 @@
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
-import { toError } from "fp-ts/lib/Either";
-import { useSelector } from "react-redux";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import React, { useMemo, useState } from "react";
-import Api from "../../api/backoffice";
+import React, { useState } from "react";
+import { remoteData } from "../../api/common";
 import {
   ApprovedAgreementDiscount,
   ApprovedAgreementProfile
@@ -14,8 +11,6 @@ import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
-import { EntityType } from "../../api/generated";
-import { RootState } from "../../store/store";
 import BucketCodeModal from "./BucketCodeModal";
 import { getBadgeStatus } from "./ConventionDetails";
 import Item from "./Item";
@@ -38,101 +33,84 @@ const Discount = ({
   const [rejectMessage, setRejectMessage] = useState("");
   const [isBucketModalOpen, setIsBucketModalOpen] = useState(false);
 
-  const entityType = useSelector(
-    (state: RootState) => state.agreement.value?.entityType
-  );
-
   const { triggerTooltip } = useTooltip();
 
   const toggleBucketModal = () => setIsBucketModalOpen(!isBucketModalOpen);
 
-  const postSuspendDiscount = async () =>
-    await tryCatch(
-      () =>
-        Api.Discount.suspendDiscount(agreementId, discount.id, {
-          reasonMessage: suspendMessage
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => {
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text:
-              "La sospensione dell'opportunità è stata effettuata con successo.",
-            title: "sospensione effettuata"
-          });
-          reloadDetails();
-        }
-      )
-      .run();
-
-  const suspendDiscount = () => {
-    void postSuspendDiscount();
-  };
-
-  const postRejectTestDiscount = async () =>
-    await tryCatch(
-      () =>
-        Api.Discount.setDiscountTestFailed(agreementId, discount.id, {
-          reasonMessage: rejectMessage
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => {
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text:
-              "La motivazione del fallimento del test dell'opportunità è stata inviata con successo.",
-            title: "Test respinto"
-          });
-          reloadDetails();
-        }
-      )
-      .run();
-
-  const rejectTest = () => {
-    void postRejectTestDiscount();
-  };
-
-  const postApproveTestDiscount = async () =>
-    await tryCatch(
-      () => Api.Discount.setDiscountTestPassed(agreementId, discount.id),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => void 0,
-        () => {
-          triggerTooltip({
-            severity: Severity.SUCCESS,
-            text:
-              "L'opportunità ha superato il test ed è pronta per essere pubblicata dall'operatore",
-            title: "Test superato"
-          });
-          reloadDetails();
-        }
-      )
-      .run();
-
-  const approveTest = () => {
-    void postApproveTestDiscount();
-  };
-
-  const isSuspended = useMemo(() => discount.state === "suspended", [discount]);
-  const isBucketCode = useMemo(
-    () =>
-      profile.salesChannel.channelType !== "OfflineChannel" &&
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      profile.salesChannel?.discountCodeType === "Bucket",
-    [profile]
+  const suspendDiscountMutation = remoteData.Backoffice.Discount.suspendDiscount.useMutation(
+    {
+      onSuccess() {
+        setSuspendMode(false);
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text:
+            "La sospensione dell'opportunità è stata effettuata con successo.",
+          title: "sospensione effettuata"
+        });
+        reloadDetails();
+      }
+    }
   );
+  const suspendDiscount = () => {
+    suspendDiscountMutation.mutate({
+      agreementId,
+      discountId: discount.id,
+      suspension: {
+        reasonMessage: suspendMessage
+      }
+    });
+  };
+
+  const rejectDiscountMutation = remoteData.Backoffice.Discount.setDiscountTestFailed.useMutation(
+    {
+      onSuccess() {
+        setRejectMode(false);
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text:
+            "La motivazione del fallimento del test dell'opportunità è stata inviata con successo.",
+          title: "Test respinto"
+        });
+        reloadDetails();
+      }
+    }
+  );
+  const rejectTest = () => {
+    rejectDiscountMutation.mutate({
+      agreementId,
+      discountId: discount.id,
+      failure: {
+        reasonMessage: rejectMessage
+      }
+    });
+  };
+
+  const approveDiscountMutation = remoteData.Backoffice.Discount.setDiscountTestPassed.useMutation(
+    {
+      onSuccess() {
+        triggerTooltip({
+          severity: Severity.SUCCESS,
+          text:
+            "L'opportunità ha superato il test ed è pronta per essere pubblicata dall'operatore",
+          title: "Test superato"
+        });
+        reloadDetails();
+      }
+    }
+  );
+  const approveTest = () => {
+    approveDiscountMutation.mutate({
+      agreementId,
+      discountId: discount.id
+    });
+  };
+
+  const isSuspended = discount.state === "suspended";
+  const isBucketCode =
+    profile.salesChannel.channelType !== "OfflineChannel" &&
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    profile.salesChannel?.discountCodeType === "Bucket";
 
   return (
     <div>
@@ -158,8 +136,7 @@ const Discount = ({
         <div className="col-4 text-gray">Categorie merceologiche</div>
         <div className="col-8">
           {makeProductCategoriesString(
-            discount.productCategories,
-            entityType
+            discount.productCategories
           ).map((productCategory, index) =>
             productCategory ? <p key={index}>{productCategory}</p> : null
           )}

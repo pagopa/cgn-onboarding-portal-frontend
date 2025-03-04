@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import React, { useState } from "react";
 import cx from "classnames";
 import { Icon } from "design-react-kit";
 import { format } from "date-fns";
-import Api from "../../api/backoffice";
+import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading";
 import {
   ApprovedAgreementDetail,
-  ApprovedAgreement,
-  EntityType
+  ApprovedAgreement
 } from "../../api/generated_backoffice";
 import { DiscountState } from "../../api/generated";
 import Documents from "./Documents";
@@ -102,7 +99,6 @@ const getView = (
   getConventionDetails: () => void,
   agreement: ApprovedAgreement
 ) => {
-  const entityType = agreement.entityType;
   if (details) {
     if (view.includes("agevolazione")) {
       const discount =
@@ -111,7 +107,7 @@ const getView = (
         return (
           <Discount
             reloadDetails={getConventionDetails}
-            agreementId={agreement?.agreementId || ""}
+            agreementId={agreement?.agreementId ?? ""}
             discount={discount}
             profile={details.profile}
           />
@@ -147,39 +143,17 @@ const ConventionDetails = ({
   agreement: ApprovedAgreement;
   onClose: () => void;
 }) => {
-  const [loading, setLoading] = useState(true);
-  const [details, setDetails] = useState<ApprovedAgreementDetail>();
   const [view, setView] = useState("dati_operatore");
 
-  const getConventionDetailsApi = async () =>
-    await tryCatch(
-      () => Api.Agreement.getApprovedAgreement(agreement?.agreementId || ""),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => setLoading(false),
-        response => {
-          setDetails(response);
-          setLoading(false);
-        }
-      )
-      .run();
+  const {
+    data: details,
+    isLoading,
+    refetch
+  } = remoteData.Backoffice.Agreement.getApprovedAgreement.useQuery({
+    agreementId: agreement?.agreementId || ""
+  });
 
-  const getConventionDetails = () => {
-    if (!loading) {
-      setLoading(true);
-    }
-    void getConventionDetailsApi();
-  };
-
-  useEffect(() => {
-    getConventionDetails();
-  }, []);
-
-  const entityType = agreement.entityType;
-
-  return loading ? (
+  return isLoading ? (
     <div className="mt-2 px-8 py-10 bg-white">
       <CenteredLoading />
     </div>
@@ -253,7 +227,7 @@ const ConventionDetails = ({
         </div>
         <div className="col-8 p-0">
           <div className="ml-1 px-8 py-10 bg-white">
-            {getView(details, view, getConventionDetails, agreement)}
+            {getView(details, view, () => refetch(), agreement)}
           </div>
         </div>
       </div>

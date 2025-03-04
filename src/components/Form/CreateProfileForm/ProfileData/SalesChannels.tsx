@@ -1,15 +1,10 @@
 import React from "react";
 import { Field, FieldArray, useFormikContext } from "formik";
-import { Button, Icon } from "design-react-kit";
-// import AsyncSelect from "react-select/async";
-// import Axios from "axios";
-// import { tryCatch } from "fp-ts/lib/TaskEither";
-// import { toError } from "fp-ts/lib/Either";
+import { Icon } from "design-react-kit";
 import { InferType } from "yup";
 import FormSection from "../../FormSection";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import CustomErrorMessage from "../../CustomErrorMessage";
-// import chainAxios from "../../../../utils/chainAxios";
 import ToggleField from "../../ToggleField";
 import InputFieldMultiple from "../../InputFieldMultiple";
 import { EntityType, SalesChannelType } from "../../../../api/generated";
@@ -17,7 +12,6 @@ import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 import SalesChannelDiscountCodeType from "./SalesChannelDiscountCodeType";
 
 type Props = {
-  // geolocationToken: string;
   entityType: EntityType | undefined;
   children?: React.ReactNode;
 };
@@ -33,36 +27,6 @@ const SalesChannels = ({ entityType, children }: Props) => {
   const hasWebsite =
     hasOnlineOrBothChannels || entityType === EntityType.PublicAdministration;
   return (
-    // const autocomplete = async (q: any) =>
-    //   await tryCatch(
-    //     () =>
-    //       Axios.get("https://geocode.search.hereapi.com/v1/geocode", {
-    //         params: {
-    //           apiKey: geolocationToken,
-    //           q,
-    //           lang: "it",
-    //           in: "countryCode:ITA"
-    //         }
-    //       }),
-    //     toError
-    //   )
-    //     .chain(chainAxios)
-    //     .map((response: any) => response.data)
-    //     .fold(
-    //       () => [{ value: "", label: "" }],
-    //       profile =>
-    //         profile.items.map((item: any) => ({
-    //           value: item.title,
-    //           label: item.title,
-    //           fullAddress: item.title,
-    //           coordinates: {
-    //             latitude: item.position.lat,
-    //             longitude: item.position.lng
-    //           }
-    //         }))
-    //     )
-    //     .run();
-
     <>
       <SalesChannelDiscountCodeType entityType={entityType} />
       <FieldArray
@@ -142,23 +106,6 @@ const SalesChannels = ({ entityType, children }: Props) => {
                       />
                     )}
                   {formValues.salesChannel?.allNationalAddresses === false && (
-                    // <div className="mt-10 row">
-                    //   <div className="col-7">
-                    //     <AsyncSelect
-                    //       placeholder="Inserisci indirizzo"
-                    //       cacheOptions
-                    //       loadOptions={autocomplete}
-                    //       noOptionsMessage={() => "Nessun risultato"}
-                    //       value={formValues.salesChannel.addresses[index]}
-                    //       onChange={(e: any) =>
-                    //         setFieldValue(
-                    //           `salesChannel.addresses[${index}]`,
-                    //           e
-                    //         )
-                    //       }
-                    //     />
-                    //   </div>
-                    // </div>
                     <>
                       <div className="mt-10 row">
                         <div className="col-7">
