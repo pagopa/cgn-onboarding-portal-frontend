@@ -14,7 +14,8 @@ export const axiosInstance = axios.create({
   headers: {
     Authorization: `Bearer ${token}`,
     Accept: "application/json",
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "X-CGN-USER-ROLE": "ROLE_ADMIN"
   }
 });
 
