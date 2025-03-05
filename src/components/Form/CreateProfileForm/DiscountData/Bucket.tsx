@@ -31,9 +31,8 @@ Props) => {
   const refFile = useRef<HTMLInputElement>(null);
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [currentDoc, setCurrentDoc] = useState<{ name: string } | undefined>(
-    undefined
-  );
+  const [currentDoc, setCurrentDoc] =
+    useState<{ name: string } | undefined>(undefined);
   const [canUploadFile, setCanUploadFile] = useState(true);
   const { triggerTooltip } = useTooltip();
 
@@ -262,5 +261,10 @@ const ERROR_MESSAGES = {
     "Ogni codice della lista deve avere almeno un numero e una lettera.",
   CANNOT_LOAD_BUCKET_FOR_NOT_RESPECTED_MINIMUM_BOUND:
     "La lista caricata deve contenere almeno 10000 codici. Carica un'altra lista e riprova.",
+  BUCKET_CODES_MUST_BE_ALPHANUM_WITH_AT_LEAST_ONE_DIGIT_AND_ONE_CHAR:
+    "Ogni codice della lista deve avere almeno un numero e una lettera",
+  NOT_ALLOWED_SPECIAL_CHARS:
+    "Sono ammessi solo caratteri alfanumerici e il trattino (-)",
+  ONE_OR_MORE_CODES_ARE_NOT_VALID: "Uno o più codici non sono validi",
   DEFAULT: "Caricamento del file fallito."
 };
