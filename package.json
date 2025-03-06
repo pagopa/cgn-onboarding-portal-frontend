@@ -11,7 +11,7 @@
     "prebuild:generate": "yarn run generate",
     "prebuild:clean": "shx rm -rf dist",
     "prebuild:tsc": "tsc --noEmit",
-    "build": "parcel build src/index.html --out-dir dist --public-url /",
+    "build": "parcel build src/index.html --log-level 5 --out-dir dist --public-url /",
     "build:prod": "cross-env NODE_ENV=production yarn run build",
     "build:uat": "cross-env NODE_ENV=uat yarn run build",
     "build:dev": "cross-env NODE_ENV=dev yarn run build",
