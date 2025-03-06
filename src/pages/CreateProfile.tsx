@@ -130,7 +130,7 @@ export default CreateProfile;
 function getSteps(entityType: EntityType | undefined) {
   const guideStep = {
     key: "Guide",
-    label: "Documentazione"
+    label: "Leggi la documentazione"
   };
   const profileStep = {
     key: "Profile",
@@ -138,7 +138,7 @@ function getSteps(entityType: EntityType | undefined) {
   };
   const discountStep = {
     key: "Discount",
-    label: "Dati opportunità"
+    label: "Opportunità"
   };
   const documentStep = {
     key: "Document",
