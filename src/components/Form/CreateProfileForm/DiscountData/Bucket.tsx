@@ -2,6 +2,7 @@ import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
 import { Field } from "formik";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { useMutation } from "@tanstack/react-query";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
@@ -29,11 +30,9 @@ const BucketComponent = ({
 Props) => {
   const hasIndex = index !== undefined;
   const refFile = useRef<HTMLInputElement>(null);
-  const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [currentDoc, setCurrentDoc] = useState<{ name: string } | undefined>(
-    undefined
-  );
+  const [currentDoc, setCurrentDoc] =
+    useState<{ name: string } | undefined>(undefined);
   const [canUploadFile, setCanUploadFile] = useState(true);
   const { triggerTooltip } = useTooltip();
 
@@ -41,79 +40,76 @@ Props) => {
     refFile.current?.click();
   };
 
+  const loadStatus =
+    index !== undefined
+      ? formValues.discounts[index].lastBucketCodeLoadStatus
+      : formValues.lastBucketCodeLoadStatus;
+
+  const documentName =
+    index !== undefined
+      ? formValues.discounts[index].lastBucketCodeLoadFileName
+      : formValues.lastBucketCodeLoadFileName;
+
   useEffect(() => {
-    const documentName =
-      index !== undefined
-        ? formValues.discounts[index].lastBucketCodeLoadFileName
-        : formValues.lastBucketCodeLoadFileName;
-
-    const importStatus =
-      index !== undefined
-        ? formValues.discounts[index].lastBucketCodeLoadStatus
-        : formValues.lastBucketCodeLoadStatus;
-
     if (NonEmptyString.is(documentName)) {
       setCurrentDoc({ name: documentName });
     }
 
     setCanUploadFile(
-      importStatus !== BucketCodeLoadStatus.Running &&
-        importStatus !== BucketCodeLoadStatus.Pending
+      loadStatus !== BucketCodeLoadStatus.Running &&
+        loadStatus !== BucketCodeLoadStatus.Pending
     );
-  }, [formValues, index]);
+  }, [documentName, loadStatus, index]);
 
-  const addFile = async (files: FileList) => {
-    setUploadingDoc(true);
-    const response = await normalizeAxiosResponse(
-      Api.Bucket.uploadBucket(
-        {
-          agreementId,
-          document: files[0]
-        },
-        {
-          onUploadProgress: (event: any) => {
-            setUploadProgress(Math.round((100 * event.loaded) / event.total));
+  const uploadBucketMutation = useMutation({
+    async mutationFn({ file }: { file: File }) {
+      const response = await normalizeAxiosResponse(
+        Api.Bucket.uploadBucket(
+          {
+            agreementId,
+            document: file
+          },
+          {
+            onUploadProgress(event) {
+              setUploadProgress(
+                Math.round((100 * event.loaded) / (event.total ?? Infinity))
+              );
+            }
           }
-        }
-      )
-    );
-    if (response.status === 200 || response.status === 204) {
-      setFieldValue(
-        hasIndex
-          ? `discounts[${index}].lastBucketCodeLoadUid`
-          : "lastBucketCodeLoadUid",
-        response.data.uid
+        )
       );
-      setFieldValue(
-        hasIndex
-          ? `discounts[${index}].lastBucketCodeLoadFileName`
-          : "lastBucketCodeLoadFileName",
-        files[0].name
-      );
-      setCurrentDoc({ name: files[0].name });
-      setCanUploadFile(false);
-    } else if (
-      response.status === 400 &&
-      (response.data as string) in ERROR_MESSAGES
-    ) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: ERROR_MESSAGES[response.data as keyof typeof ERROR_MESSAGES]
-      });
-    } else {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: ERROR_MESSAGES.DEFAULT
-      });
+      if (response.status === 200 || response.status === 204) {
+        setFieldValue(
+          hasIndex
+            ? `discounts[${index}].lastBucketCodeLoadUid`
+            : "lastBucketCodeLoadUid",
+          response.data.uid
+        );
+        setFieldValue(
+          hasIndex
+            ? `discounts[${index}].lastBucketCodeLoadFileName`
+            : "lastBucketCodeLoadFileName",
+          file.name
+        );
+        setCurrentDoc({ name: file.name });
+        setCanUploadFile(false);
+      } else if (
+        response.status === 400 &&
+        (response.data as string) in ERROR_MESSAGES
+      ) {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: ERROR_MESSAGES[response.data as keyof typeof ERROR_MESSAGES]
+        });
+      } else {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: ERROR_MESSAGES.DEFAULT
+        });
+      }
+      setUploadProgress(0);
     }
-    setUploadingDoc(false);
-    setUploadProgress(0);
-  };
-
-  const loadStatus =
-    index !== undefined
-      ? formValues.discounts[index].lastBucketCodeLoadStatus
-      : formValues.lastBucketCodeLoadStatus;
+  });
 
   return (
     <FormField
@@ -157,7 +153,7 @@ Props) => {
               <i>{label}</i>
             )}
           </div>
-          {!uploadingDoc && canUploadFile && (
+          {!uploadBucketMutation.isLoading && canUploadFile && (
             <Button
               color="primary"
               icon
@@ -191,15 +187,16 @@ Props) => {
                 hidden
                 ref={refFile}
                 onChange={() => {
-                  if (refFile.current?.files) {
-                    void addFile(refFile.current.files);
+                  const file = refFile.current?.files?.[0];
+                  if (file) {
+                    void uploadBucketMutation.mutate({ file });
                   }
                 }}
               />
             </Button>
           )}
         </div>
-        {uploadingDoc && (
+        {uploadBucketMutation.isLoading && (
           <div className="pt-3">
             <Progress
               value={uploadProgress}
@@ -262,5 +259,10 @@ const ERROR_MESSAGES = {
     "Ogni codice della lista deve avere almeno un numero e una lettera.",
   CANNOT_LOAD_BUCKET_FOR_NOT_RESPECTED_MINIMUM_BOUND:
     "La lista caricata deve contenere almeno 10000 codici. Carica un'altra lista e riprova.",
+  BUCKET_CODES_MUST_BE_ALPHANUM_WITH_AT_LEAST_ONE_DIGIT_AND_ONE_CHAR:
+    "Ogni codice della lista deve avere almeno un numero e una lettera.",
+  NOT_ALLOWED_SPECIAL_CHARS:
+    "Sono ammessi solo caratteri alfanumerici e il trattino (-). Non sono ammessi altri caratteri speciali.",
+  ONE_OR_MORE_CODES_ARE_NOT_VALID: "Uno o più codici non sono validi",
   DEFAULT: "Caricamento del file fallito."
 };
