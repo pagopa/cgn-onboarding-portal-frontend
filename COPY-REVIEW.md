@@ -12,12 +12,12 @@ https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=46
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=3651-1053&t=WoPCkdjdduzpA0SF-4
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=3651-1059&t=WoPCkdjdduzpA0SF-4
 
+[x] creazione/edit opportunita con landing page
+https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4703-67033&t=WoPCkdjdduzpA0SF-4
+
 [ ] creazione/modifica opportunita, onboarding e dopo
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4699-66952&t=WoPCkdjdduzpA0SF-4
 in più tutti i riquadri gialli
-
-[ ] creazione/edit opportunita con landing page
-https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4703-67033&t=WoPCkdjdduzpA0SF-4
 
 [ ] ultimo step onboarding
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4703-67018&t=WoPCkdjdduzpA0SF-4
