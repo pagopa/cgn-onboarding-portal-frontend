@@ -117,7 +117,7 @@ const SalesChannelDiscountCodeType = ({
               : implementerò sul mio portale di e-commerce le integrazioni
               tecniche necessarie a validare i codici inseriti dai beneficiari,
               chiamando le API messe a disposizione da PagoPA per verificare la
-              validità dei codici in tempo reale.
+              validità dei codici in tempo reale. L’indirizzo è facoltativo.
             </span>
           </label>
         </div>
@@ -142,7 +142,7 @@ const SalesChannelDiscountCodeType = ({
                 Con codice statico
               </a>
               : assocerò ad ogni opportunità un codice statico che verrà letto e
-              accettato dai miei sistemi
+              accettato dai miei sistemi. L’indirizzo è facoltativo.
             </span>
           </label>
         </div>
@@ -169,7 +169,8 @@ const SalesChannelDiscountCodeType = ({
               : assocerò ad ogni opportunità una lista di codici statici che
               verranno letti e accettati dai miei sistemi e che mi impegno a
               caricare periodicamente, consapevole del fatto che, se si
-              esaurissero, l’opportunità sarebbe sospesa
+              esaurissero, l’opportunità sarebbe sospesa. L’indirizzo è
+              facoltativo.
             </span>
           </label>
         </div>
@@ -194,7 +195,8 @@ const SalesChannelDiscountCodeType = ({
                 Con link a landing page
               </a>
               : fornirò per ogni opportunità un link con cui il cittadino che
-              accede proveniendo da IO potrà usufruire degli sconti
+              accede proveniendo da IO potrà usufruire degli sconti. L’indirizzo
+              è facoltativo.
             </span>
           </label>
         </div>
@@ -218,7 +220,6 @@ const SalesChannelDiscountCodeType = ({
               >
                 Sede fisica
               </a>
-
               {(() => {
                 switch (entityType) {
                   default:
@@ -226,7 +227,7 @@ const SalesChannelDiscountCodeType = ({
                     return (
                       <>
                         : indicherò una sede fisica dove il cittadino potrà
-                        usufruire dell’opportunità
+                        usufruire dell’opportunità. L’indirizzo è obbligatorio.
                       </>
                     );
                 }

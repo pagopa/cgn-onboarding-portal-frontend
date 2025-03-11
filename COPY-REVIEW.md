@@ -8,10 +8,8 @@ https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=36
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=3687-35569&t=WoPCkdjdduzpA0SF-4
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4638-66443&t=WoPCkdjdduzpA0SF-4
 
-[ ] oboarding operatore tab dati operatore
+[x] oboarding operatore tab dati operatore
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=3651-1053&t=WoPCkdjdduzpA0SF-4
-
-[ ] oboarding operatore tab dati operatore
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=3651-1059&t=WoPCkdjdduzpA0SF-4
 
 [ ] creazione/modifica opportunita, onboarding e dopo
