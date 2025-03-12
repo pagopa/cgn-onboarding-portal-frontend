@@ -18,7 +18,7 @@ https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=47
 [x] ultimo step onboarding
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4703-67018&t=WoPCkdjdduzpA0SF-4
 
-[ ] operatorte con richiesta convenzione inviata ma non ancora approvata
+[x] operatorte con richiesta convenzione inviata ma non ancora approvata
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4703-67027&t=WoPCkdjdduzpA0SF-4
 
 [ ] creazione/modifica opportunita, onboarding e dopo

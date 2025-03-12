@@ -58,8 +58,9 @@ const AgreementState = ({ state, startDate, endDate }: Props) => (
     )}
     {state === AgreementStateType.PendingAgreement && (
       <p className="text-sm text-center text-gray">
-        La vostra richiesta è in attesa di approvazione; riceverete una e-mail
-        non appena sarà approvata.
+        La tua richiesta è in attesa di approvazione.
+        <br />
+        Il referente riceverà una e-mail appena sarà approvata.
       </p>
     )}
   </section>
