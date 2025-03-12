@@ -30,24 +30,25 @@ const Documents = ({
   const documentsQuery = remoteData.Index.Document.getDocuments.useQuery({
     agreementId: agreement.id
   });
-  const documents = useMemo(
-    () => documentsQuery.data?.items ?? [],
-    [documentsQuery.data?.items]
-  );
+  const documents = useMemo(() => documentsQuery.data?.items ?? [], [
+    documentsQuery.data?.items
+  ]);
   const getFiles = () => documentsQuery.refetch();
 
-  const requireApprovalMutation =
-    remoteData.Index.Agreement.requestApproval.useMutation({
+  const requireApprovalMutation = remoteData.Index.Agreement.requestApproval.useMutation(
+    {
       onSuccess() {
         setShowRequireApproval(true);
       },
       onError() {
         triggerTooltip({
           severity: Severity.DANGER,
-          text: "Errore durante l'invio della richiesta di approvazione, riprovare in seguito"
+          text:
+            "Errore durante l'invio della richiesta di approvazione, riprovare in seguito"
         });
       }
-    });
+    }
+  );
   const requireApproval = () => {
     requireApprovalMutation.mutate({ agreementId: agreement.id });
   };
@@ -76,7 +77,12 @@ const Documents = ({
         <p className="text-base font-weight-normal text-black">
           Per inviare la richiesta di convenzione, scarica e firma digitalmente
           in{" "}
-          <a href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/il-convenzionamento/firma-della-convenzione">
+          <a
+            className="font-weight-semibold"
+            target="_blank"
+            rel="noreferrer"
+            href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/il-convenzionamento/firma-della-convenzione"
+          >
             modalità PAdES
           </a>{" "}
           i documenti. Una volta fatto, carica i documenti firmati in{" "}

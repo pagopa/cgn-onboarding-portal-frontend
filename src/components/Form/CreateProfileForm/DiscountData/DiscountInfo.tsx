@@ -38,17 +38,24 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
     ? formValues.discounts[index as number].endDate
     : formValues.endDate;
 
-  const { checkBucket, checkLanding, checkStaticCode } =
-    getDiscountTypeChecks(profile);
+  const { checkBucket, checkLanding, checkStaticCode } = getDiscountTypeChecks(
+    profile
+  );
 
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
   return (
     <>
+      <h1
+        className="h4 font-weight-bold text-dark-blue"
+        style={{ margin: "-1.5rem 0" }}
+      >
+        Dati dell’opportunità
+      </h1>
       <InputField
         htmlFor="name"
         title="Nome opportunità"
-        description="Inserire un breve testo che descriva il tipo di opportunità offerta (max 100 caratteri)"
+        description="Inserisci un breve testo che descriva il tipo di opportunità offerta (max 100 caratteri)"
         isVisible
         required
       >
@@ -86,7 +93,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
       <InputField
         htmlFor="description"
         title="Descrizione opportunità"
-        description="Se necessario, inserire una descrizione più approfondita dell’opportunità (es. Sconto valido per l’acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri"
+        description="Se necessario, inserisci una descrizione più approfondita dell’opportunità - Max 250 caratteri"
         isVisible
       >
         <div className="row">
@@ -100,7 +107,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               name={
                 hasIndex ? `discounts[${index}].description` : "description"
               }
-              placeholder="Inserisci una descrizione"
+              placeholder="Es. Sconto valido per l’acquisto di due ingressi per la stagione di prosa 2021/2022 presso il Teatro Comunale"
               maxLength="250"
               rows="4"
             />
@@ -122,7 +129,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
                   ? `discounts[${index}].description_en`
                   : "description_en"
               }
-              placeholder="Inserisci una descrizione"
+              placeholder="Ex. Discount valid for the purchase of two tickets for the 2021/2022 prose season at the Municipal Theatre"
               maxLength="250"
               rows="4"
             />
@@ -141,7 +148,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           <InputField
             htmlFor="startDate"
             title="Data di inizio dell’opportunità"
-            description="Indicare il giorno e l’ora da cui l’opportunità diventa valida"
+            description="Indica la data e l’ora in cui far iniziare l’opportunità"
             isVisible
             required
           >
@@ -173,7 +180,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           <InputField
             htmlFor="endDate"
             title="Data di fine opportunità"
-            description="Indicare la data e l’ora da cui l’opportunità non è più valida"
+            description="Indica la data e l’ora in cui far finire l’opportunità"
             isVisible
             required
           >
@@ -255,7 +262,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         htmlFor="discountConditions"
         isTitleHeading
         title="Condizioni dell’opportunità"
-        description="Descrivere eventuali limitazioni relative all’opportunità (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
+        description="Descrivi eventuali condizioni d’uso o limitazioni relative all’opportunità - Max 200 caratteri"
         isVisible
       >
         <DiscountConditions index={index} />
@@ -264,7 +271,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         <FormField
           htmlFor="discountUrl"
           title="Link all’opportunità"
-          description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’opportunità"
+          description="Inserisci l’URL del sito o dell’app dove sarà possibile accedere all’opportunità"
           isTitleHeading
           isVisible
         >
@@ -276,7 +283,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           htmlFor="staticCode"
           isTitleHeading
           title="Codice statico"
-          description="Inserire il codice relativo all’opportunità che l’utente dovrà inserire sul vostro portale online"
+          description="Inserisci il codice che l’utente dovrà inserire per usufruire dell’opportunità"
           isVisible
           required
         >
