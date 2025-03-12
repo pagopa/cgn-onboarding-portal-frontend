@@ -15,12 +15,12 @@ https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=36
 [x] creazione/edit opportunita con landing page
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4703-67033&t=WoPCkdjdduzpA0SF-4
 
-[ ] creazione/modifica opportunita, onboarding e dopo
-https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4699-66952&t=WoPCkdjdduzpA0SF-4
-in più tutti i riquadri gialli
-
-[ ] ultimo step onboarding
+[x] ultimo step onboarding
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4703-67018&t=WoPCkdjdduzpA0SF-4
 
 [ ] operatorte con richiesta convenzione inviata ma non ancora approvata
 https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4703-67027&t=WoPCkdjdduzpA0SF-4
+
+[ ] creazione/modifica opportunita, onboarding e dopo
+https://www.figma.com/design/XShwT2jc7MlMX6NLszlx4P/Portale-Esercenti?node-id=4699-66952&t=WoPCkdjdduzpA0SF-4
+in più tutti i riquadri gialli

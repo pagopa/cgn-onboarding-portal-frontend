@@ -30,25 +30,24 @@ const Documents = ({
   const documentsQuery = remoteData.Index.Document.getDocuments.useQuery({
     agreementId: agreement.id
   });
-  const documents = useMemo(() => documentsQuery.data?.items ?? [], [
-    documentsQuery.data?.items
-  ]);
+  const documents = useMemo(
+    () => documentsQuery.data?.items ?? [],
+    [documentsQuery.data?.items]
+  );
   const getFiles = () => documentsQuery.refetch();
 
-  const requireApprovalMutation = remoteData.Index.Agreement.requestApproval.useMutation(
-    {
+  const requireApprovalMutation =
+    remoteData.Index.Agreement.requestApproval.useMutation({
       onSuccess() {
         setShowRequireApproval(true);
       },
       onError() {
         triggerTooltip({
           severity: Severity.DANGER,
-          text:
-            "Errore durante l'invio della richiesta di approvazione, riprovare in seguito"
+          text: "Errore durante l'invio della richiesta di approvazione, riprovare in seguito"
         });
       }
-    }
-  );
+    });
   const requireApproval = () => {
     requireApprovalMutation.mutate({ agreementId: agreement.id });
   };
@@ -75,11 +74,16 @@ const Documents = ({
     <FormContainer className="mb-20">
       <div className="bg-white px-28 py-16">
         <p className="text-base font-weight-normal text-black">
-          Per terminare la richiesta di convenzione scarica e firma digitalmente
-          i documenti, poi ricaricali sul portale.
-          <br /> I documenti sono precompilati con i dati che hai inserito
-          finora, se vuoi effettuare delle modifiche, torna indietro nella
-          compilazione prima di procedere.
+          Per inviare la richiesta di convenzione, scarica e firma digitalmente
+          in{" "}
+          <a href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/il-convenzionamento/firma-della-convenzione">
+            modalità PAdES
+          </a>{" "}
+          i documenti. Una volta fatto, carica i documenti firmati in{" "}
+          <span className="font-weight-bold">formato .pdf</span> sul portale. I
+          documenti sono già compilati con i dati inseriti fino a questo
+          momento. Se desideri apportare delle modifiche, puoi farlo prima di
+          procedere, tornando alla fase di compilazione.
         </p>
         <FileRow
           getFiles={getFiles}
