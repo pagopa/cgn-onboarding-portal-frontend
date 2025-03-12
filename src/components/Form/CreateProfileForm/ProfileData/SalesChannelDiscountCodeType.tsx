@@ -81,15 +81,8 @@ const SalesChannelDiscountCodeType = ({
   }, [formValues]);
   return (
     <FormSection
-      title={(() => {
-        switch (entityType) {
-          case EntityType.Private:
-            return "Modalità di validazione dei codici sconto online";
-          case EntityType.PublicAdministration:
-            return "Modalità di riconoscimento delle opportunità";
-        }
-      })()}
-      description="Le modalità possibili sono definite nella Documentazione Tecnica. Seleziona una delle opzioni disponibili"
+      title={"Gestione delle opportunità per Carta Giovani Nazionale"}
+      description="Le modalità possibili sono definite nella Documentazione Tecnica. Seleziona la modalità principale:"
       required
       isVisible={false}
     >

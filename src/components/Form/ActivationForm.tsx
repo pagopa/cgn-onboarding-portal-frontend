@@ -57,7 +57,7 @@ const ActivationForm = (props: Props) => {
               htmlFor="entityType"
               title="Tipologia di ente"
               required
-              description="La scelta non potra essere modificata in seguito"
+              description="La scelta non potrà essere modificata in seguito"
             >
               <div className="form-check">
                 <Field

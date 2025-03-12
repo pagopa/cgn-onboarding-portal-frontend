@@ -46,12 +46,6 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
 
   return (
     <>
-      <h1
-        className="h4 font-weight-bold text-dark-blue"
-        style={{ margin: "-1.5rem 0" }}
-      >
-        Dati dell’opportunità
-      </h1>
       <InputField
         htmlFor="name"
         title="Nome opportunità"

@@ -6,7 +6,7 @@ import FormSection from "../../FormSection";
 const ProfileDescription = () => (
   <FormSection
     title="Descrizione dell'operatore"
-    description="Inserire una descrizione che spieghi i beni o servizi trattati agli utenti dell'app IO. La descrizione è obbligatoria sia in Italiano che in Inglese - Max 300 caratteri"
+    description="Inserisci una descrizione dei beni o servizi offerti agli utenti tramite app IO. La descrizione è obbligatoria sia in italiano che in inglese - Max 300 caratteri"
     required
     isVisible
   >

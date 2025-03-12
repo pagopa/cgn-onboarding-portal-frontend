@@ -16,11 +16,11 @@ const ProfileInfo = ({ entityType }: Props) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
   return (
-    <FormSection hasIntroduction isVisible={false}>
+    <FormSection hasIntroduction isVisible={false} title="Dati dell’operatore">
       <InputField
         htmlFor="fullName"
         title="Denominazione e ragione sociale Operatore"
-        description="Inserire il nome completo dell'Operatore"
+        description="Inserisci il nome completo dell'Operatore. Sarà visibile in app e nella lista dei partner."
         required
       >
         <Field id="fullName" name="fullName" type="text" disabled />
