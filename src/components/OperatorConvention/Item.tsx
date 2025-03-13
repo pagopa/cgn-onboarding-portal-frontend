@@ -11,7 +11,7 @@ const Item = ({
     <div className="col-4 text-gray">{label}</div>
     <div
       className="col-8"
-      style={{ overflowX: "hidden", textOverflow: "ellipsis" }}
+      style={{ wordBreak: "break-all", whiteSpace: "pre-wrap" }}
     >
       {value}
     </div>
