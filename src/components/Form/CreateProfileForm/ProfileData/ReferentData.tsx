@@ -38,16 +38,11 @@ const Referent = ({
     index !== null ? `secondaryReferents[${index}]` : "referent";
   return (
     <FormSection
-      title={
-        index !== null
-          ? `Referente ${index + 2}`
-          : "Dati e contatti del referente incaricato"
-      }
+      title={index !== null ? `Referente ${index + 2}` : "Dati del referente"}
       description={
-        `Indicare il nome della persona responsabile del programma CGN per conto dell'Operatore. La persona indicata sarà destinataria di tutte le comunicazioni relative alla gestione delle opportunità e, più in generale, all’attuazione della convenzione.` +
-        (index === 0
-          ? `Puoi indicare fino a ${MAX_SECONDARY_REFERENTS} aggiuntivi`
-          : "")
+        index === null
+          ? `Indica il nome della persona che sarà referente primario di Carta Giovani Nazionale per il tuo operatore. Riceverà tutte le comunicazioni che riguardano il programma e la gestione delle opportunità.`
+          : `Indica il nome di un’altra persona che sarà referente di Carta Giovani Nazionale per il tuo operatore. Riceverà tutte le comunicazioni che riguardano il programma e la gestione delle opportunità. Puoi indicarne fino a ${MAX_SECONDARY_REFERENTS} aggiuntivi.`
       }
       isVisible={false}
       hasRemove={showRemove}
@@ -79,15 +74,7 @@ const Referent = ({
       </InputField>
       <InputField
         htmlFor={`${referentFieldId}.role`}
-        title={(() => {
-          switch (entityType) {
-            case EntityType.Private:
-              return "Ruolo all'interno dell'organizzazione";
-            default:
-            case EntityType.PublicAdministration:
-              return "Ruolo all'interno dell'ente";
-          }
-        })()}
+        title="Ruolo all'interno dell'ente"
         required
       >
         <Field

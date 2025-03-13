@@ -17,26 +17,18 @@ import {
   clearIfReferenceIsBlank,
   withNormalizedSpaces
 } from "../../../../utils/strings";
-import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
-import DiscountConditions from "../../CreateProfileForm/DiscountData/DiscountConditions";
-import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
-import ProductCategories from "../../CreateProfileForm/DiscountData/ProductCategories";
-import StaticCode from "../../CreateProfileForm/DiscountData/StaticCode";
+import DiscountInfo, {
+  getDiscountTypeChecks
+} from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import FormContainer from "../../FormContainer";
-import FormField from "../../FormField";
 import FormSection from "../../FormSection";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import { remoteData } from "../../../../api/common";
 import {
   discountEmptyInitialValues,
-  getDiscountTypeChecks,
   updateDiscountMutationOnError
 } from "../../EditDiscountForm/EditDiscountForm";
-import Bucket from "./Bucket";
-import DiscountUrl from "./DiscountUrl";
-import EnrollToEyca from "./EnrollToEyca";
-import LandingPage from "./LandingPage";
 
 const emptyInitialValues = {
   discounts: [discountEmptyInitialValues]
@@ -49,6 +41,12 @@ type Props = {
   onUpdate: () => void;
 };
 
+/**
+ * These are the entry points for forms for discounts. This comment is repeated in every file.
+ * src/components/Form/CreateProfileForm/DiscountData/DiscountData.tsx Used in onboarding process
+ * src/components/Form/CreateDiscountForm/CreateDiscountForm.tsx Used to create new discount once onboarded
+ * src/components/Form/EditDiscountForm/EditDiscountForm.tsx  Used to edit new discount once onboarded
+ */
 const DiscountData = ({
   handleBack,
   handleNext,
@@ -261,86 +259,14 @@ const DiscountData = ({
                           arrayHelpers.remove(index);
                         }
                       }}
+                      title="Dati dell’opportunità"
                     >
                       <DiscountInfo
                         formValues={values}
                         setFieldValue={setFieldValue}
                         index={index}
+                        profile={profile}
                       />
-                      <FormField
-                        htmlFor="productCategories"
-                        isTitleHeading
-                        title="Categorie merceologiche"
-                        description={`Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell'opportunità`}
-                        isVisible
-                        required
-                      >
-                        <ProductCategories
-                          selectedCategories={discount.productCategories}
-                          index={index}
-                        />
-                      </FormField>
-                      <FormField
-                        htmlFor="discountConditions"
-                        isTitleHeading
-                        title="Condizioni dell’opportunità"
-                        description="Descrivere eventuali limitazioni relative all’opportunità (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
-                        isVisible
-                      >
-                        <DiscountConditions index={index} />
-                      </FormField>
-                      {!checkLanding && (
-                        <FormField
-                          htmlFor="discountUrl"
-                          title="Link all’opportunità"
-                          description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’opportunità"
-                          isTitleHeading
-                          isVisible
-                        >
-                          <DiscountUrl index={index} />
-                        </FormField>
-                      )}
-                      {checkStaticCode && (
-                        <FormField
-                          htmlFor="staticCode"
-                          isTitleHeading
-                          title="Codice statico"
-                          description="Inserire il codice relativo all’opportunità che l’utente dovrà inserire sul vostro portale online"
-                          isVisible
-                          required
-                        >
-                          <StaticCode index={index} />
-                        </FormField>
-                      )}
-                      {checkLanding && (
-                        <FormField
-                          htmlFor="landingPage"
-                          isTitleHeading
-                          title="Indirizzo della landing page"
-                          description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’opportunità"
-                          isVisible
-                          required
-                        >
-                          <LandingPage index={index} />
-                        </FormField>
-                      )}
-                      {checkBucket && (
-                        <Bucket
-                          agreementId={agreement.id}
-                          label={"Seleziona un file dal computer"}
-                          index={index}
-                          formValues={values}
-                          setFieldValue={setFieldValue}
-                        />
-                      )}
-                      {profile && (
-                        <EnrollToEyca
-                          profile={profile}
-                          index={index}
-                          formValues={values}
-                          setFieldValue={setFieldValue}
-                        />
-                      )}
                       {values.discounts.length - 1 === index && (
                         <>
                           <div

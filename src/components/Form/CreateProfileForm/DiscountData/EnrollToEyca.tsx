@@ -91,13 +91,13 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
           description={
             isEycaSupported ? (
               <>
-                L&apos;opportunità sarà pubblicata anche sul portale del
-                circuito EYCA e sarà accessibile da parte dei beneficiari EYCA.{" "}
+                L’opportunità sarà pubblicata anche sul portale del circuito
+                EYCA e sarà accessibile da parte dei beneficiari EYCA.
                 <br />
                 Per maggiori informazioni, consultare la{" "}
                 <a
                   className="font-weight-semibold"
-                  href="https://docs.pagopa.it/carta-giovani-nazionale"
+                  href="https://docs.pagopa.it/carta-giovani-nazionale/le-opportunita/riconoscimento-delle-opportunita-ai-titolari-di-eyca"
                   target="_blank"
                   rel="noreferrer"
                 >
