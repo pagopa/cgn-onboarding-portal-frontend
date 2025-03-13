@@ -74,15 +74,7 @@ const Referent = ({
       </InputField>
       <InputField
         htmlFor={`${referentFieldId}.role`}
-        title={(() => {
-          switch (entityType) {
-            case EntityType.Private:
-              return "Ruolo all'interno dell'organizzazione";
-            default:
-            case EntityType.PublicAdministration:
-              return "Ruolo all'interno dell'ente";
-          }
-        })()}
+        title="Ruolo all'interno dell'ente"
         required
       >
         <Field

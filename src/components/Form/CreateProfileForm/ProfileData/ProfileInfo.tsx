@@ -86,15 +86,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="pecAddress"
           name="pecAddress"
           type="email"
-          placeholder={(() => {
-            switch (entityType) {
-              case EntityType.Private:
-                return "Inserisci l'indirizzo pec dell'organizzazione";
-              default:
-              case EntityType.PublicAdministration:
-                return "Inserisci l'indirizzo pec dell'ente";
-            }
-          })()}
+          placeholder="Inserisci l'indirizzo pec dell'ente"
         />
         <CustomErrorMessage name="pecAddress" />
       </InputField>
@@ -103,15 +95,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="legalOffice"
           name="legalOffice"
           type="text"
-          placeholder={(() => {
-            switch (entityType) {
-              case EntityType.Private:
-                return "Inserisci la sede legale dell’organizzazione";
-              default:
-              case EntityType.PublicAdministration:
-                return "Inserisci la sede legale ente";
-            }
-          })()}
+          placeholder="Inserisci la sede legale ente"
         />
         <CustomErrorMessage name="legalOffice" />
       </InputField>
@@ -125,15 +109,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="telephoneNumber"
           name="telephoneNumber"
           type="text"
-          placeholder={(() => {
-            switch (entityType) {
-              case EntityType.Private:
-                return "Inserisci il numero di telefono dell’organizzazione";
-              default:
-              case EntityType.PublicAdministration:
-                return "Inserisci il numero di telefono ente";
-            }
-          })()}
+          placeholder="Inserisci il numero di telefono ente"
         />
         <CustomErrorMessage name="telephoneNumber" />
       </InputField>
@@ -146,15 +122,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="legalRepresentativeFullName"
           name="legalRepresentativeFullName"
           type="text"
-          placeholder={(() => {
-            switch (entityType) {
-              case EntityType.Private:
-                return "Inserisci il nome e cognome del Legale rappresentante dell’organizzazione";
-              default:
-              case EntityType.PublicAdministration:
-                return "Inserisci il nome e cognome del Legale rappresentante ente";
-            }
-          })()}
+          placeholder="Inserisci il nome e cognome del Legale rappresentante ente"
         />
         <CustomErrorMessage name="legalRepresentativeFullName" />
       </InputField>
@@ -169,15 +137,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="legalRepresentativeTaxCode"
           name="legalRepresentativeTaxCode"
           type="text"
-          placeholder={(() => {
-            switch (entityType) {
-              case EntityType.Private:
-                return "Inserisci il Codice fiscale del Legale rappresentante dell’organizzazione";
-              default:
-              case EntityType.PublicAdministration:
-                return "Inserisci il Codice fiscale del Legale rappresentante ente";
-            }
-          })()}
+          placeholder="Inserisci il Codice fiscale del Legale rappresentante ente"
         />
         <CustomErrorMessage name="legalRepresentativeTaxCode" />
       </InputField>
