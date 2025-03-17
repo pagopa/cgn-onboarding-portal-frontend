@@ -18,9 +18,8 @@ import {
   withNormalizedSpaces
 } from "../../../../utils/strings";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
-import DiscountInfo, {
-  getDiscountTypeChecks
-} from "../../CreateProfileForm/DiscountData/DiscountInfo";
+import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
+import { getDiscountTypeChecks } from "../../../../utils/formChecks";
 import FormContainer from "../../FormContainer";
 import FormSection from "../../FormSection";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
@@ -65,12 +64,11 @@ const DiscountData = ({
   });
   const profile = profileQuery.data;
 
-  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
-    profile
-  );
+  const { checkStaticCode, checkLanding, checkBucket } =
+    getDiscountTypeChecks(profile);
 
-  const createDiscountMutation = remoteData.Index.Discount.createDiscount.useMutation(
-    {
+  const createDiscountMutation =
+    remoteData.Index.Discount.createDiscount.useMutation({
       onSuccess() {
         handleNext();
       },
@@ -83,25 +81,22 @@ const DiscountData = ({
         } else {
           triggerTooltip({
             severity: Severity.DANGER,
-            text:
-              "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
+            text: "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
           });
         }
       }
-    }
-  );
+    });
   const createDiscount = (agreementId: string, discount: CreateDiscount) =>
     createDiscountMutation.mutate({ agreementId, discount });
 
-  const updateDiscountMutation = remoteData.Index.Discount.updateDiscount.useMutation(
-    {
+  const updateDiscountMutation =
+    remoteData.Index.Discount.updateDiscount.useMutation({
       onSuccess() {
         onUpdate();
         handleNext();
       },
       onError: updateDiscountMutationOnError({ triggerTooltip })
-    }
-  );
+    });
 
   const updateDiscount = (agreementId: string, discount: Discount) => {
     const {
@@ -171,7 +166,8 @@ const DiscountData = ({
     }
   }, [discountsQuery.data]);
 
-  const deleteDiscountMutation = remoteData.Index.Discount.deleteDiscount.useMutation();
+  const deleteDiscountMutation =
+    remoteData.Index.Discount.deleteDiscount.useMutation();
 
   const deleteDiscount = (agreementId: string, discountId: string) => {
     deleteDiscountMutation.mutate({ agreementId, discountId });

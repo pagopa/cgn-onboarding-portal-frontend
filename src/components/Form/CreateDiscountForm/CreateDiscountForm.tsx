@@ -8,9 +8,8 @@ import { CreateDiscount } from "../../../api/generated";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
-import DiscountInfo, {
-  getDiscountTypeChecks
-} from "../CreateProfileForm/DiscountData/DiscountInfo";
+import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
+import { getDiscountTypeChecks } from "../../../utils/formChecks";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import {

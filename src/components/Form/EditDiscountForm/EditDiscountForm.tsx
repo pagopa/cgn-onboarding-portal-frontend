@@ -20,9 +20,8 @@ import {
   clearIfReferenceIsBlank
 } from "../../../utils/strings";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
-import DiscountInfo, {
-  getDiscountTypeChecks
-} from "../CreateProfileForm/DiscountData/DiscountInfo";
+import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
+import { getDiscountTypeChecks } from "../../../utils/formChecks";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 

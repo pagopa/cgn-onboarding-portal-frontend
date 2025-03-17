@@ -10,6 +10,7 @@ import FormField from "../../FormField";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
 import { Profile } from "../../../../api/generated";
 import { RootState } from "../../../../store/store";
+import { getDiscountTypeChecks } from "../../../../utils/formChecks";
 import ProductCategories from "./ProductCategories";
 import DiscountConditions from "./DiscountConditions";
 import EnrollToEyca from "./EnrollToEyca";
@@ -316,29 +317,3 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
 };
 
 export default DiscountInfo;
-
-export function getDiscountTypeChecks(profile: Profile | undefined) {
-  const onlineOrBoth =
-    profile?.salesChannel?.channelType === "OnlineChannel" ||
-    profile?.salesChannel?.channelType === "BothChannels";
-
-  const checkStaticCode =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Static";
-
-  const checkLanding =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "LandingPage";
-
-  const checkBucket =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Bucket";
-
-  return { checkStaticCode, checkLanding, checkBucket };
-}
