@@ -6,7 +6,6 @@ import DatePicker from "react-datepicker";
 import { useSelector } from "react-redux";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import DateInputComponent from "../../DateInputComponent";
-import InputField from "../../FormField";
 import FormField from "../../FormField";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
 import { Profile } from "../../../../api/generated";
@@ -38,15 +37,14 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
     ? formValues.discounts[index as number].endDate
     : formValues.endDate;
 
-  const { checkBucket, checkLanding, checkStaticCode } = getDiscountTypeChecks(
-    profile
-  );
+  const { checkBucket, checkLanding, checkStaticCode } =
+    getDiscountTypeChecks(profile);
 
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
   return (
     <>
-      <InputField
+      <FormField
         htmlFor="name"
         title="Nome opportunità"
         description="Inserisci un breve testo che descriva il tipo di opportunità offerta (max 100 caratteri)"
@@ -83,8 +81,8 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
             />
           </div>
         </div>
-      </InputField>
-      <InputField
+      </FormField>
+      <FormField
         htmlFor="description"
         title="Descrizione opportunità"
         description="Se necessario, inserisci una descrizione più approfondita dell’opportunità - Max 250 caratteri"
@@ -136,10 +134,10 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
             />
           </div>
         </div>
-      </InputField>
+      </FormField>
       <div className="row">
         <div className="col-5">
-          <InputField
+          <FormField
             htmlFor="startDate"
             title="Data di inizio dell’opportunità"
             description="Indica la data e l’ora in cui far iniziare l’opportunità"
@@ -168,10 +166,10 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
             <CustomErrorMessage
               name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
             />
-          </InputField>
+          </FormField>
         </div>
         <div className="col-5 offset-1">
-          <InputField
+          <FormField
             htmlFor="endDate"
             title="Data di fine opportunità"
             description="Indica la data e l’ora in cui far finire l’opportunità"
@@ -200,10 +198,10 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
             <CustomErrorMessage
               name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
             />
-          </InputField>
+          </FormField>
         </div>
       </div>
-      <InputField
+      <FormField
         htmlFor="discount"
         title="Entità dello sconto"
         description="Se l’opportunità lo prevede, inserire la percentuale (%) di sconto erogata"
@@ -238,7 +236,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].discount` : "discount"}
         />
-      </InputField>
+      </FormField>
       <FormField
         htmlFor="productCategories"
         isTitleHeading
