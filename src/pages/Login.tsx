@@ -127,7 +127,7 @@ export default Login;
 const MAINTENANCE_BANNER:
   | undefined
   | "short-downtime"
-  | "long-downtime" = undefined;
+  | "long-downtime" = "short-downtime;
 
 function Alert({ title }: { title: string }) {
   return (
