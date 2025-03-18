@@ -96,14 +96,12 @@ export function updateDiscountMutationOnError({
     ) {
       triggerTooltip({
         severity: Severity.DANGER,
-        text:
-          "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
+        text: "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
       });
     } else {
       triggerTooltip({
         severity: Severity.DANGER,
-        text:
-          "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
+        text: "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
       });
     }
   };
@@ -116,7 +114,6 @@ export function sanitizeDiscountFormValues(values: any) {
   const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(values.condition);
   return {
     ...values,
-    visibleOnEyca: values.eycaLandingPageUrl ? true : values.visibleOnEyca,
     name: withNormalizedSpaces(values.name),
     name_en: withNormalizedSpaces(values.name_en),
     name_de: "-",
@@ -145,20 +142,18 @@ const EditDiscountForm = () => {
   });
   const profile = profileQuery.data;
 
-  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
-    profile
-  );
+  const { checkStaticCode, checkLanding, checkBucket } =
+    getDiscountTypeChecks(profile);
 
   const tooltip = useTooltip();
 
-  const updateDiscountMutation = remoteData.Index.Discount.updateDiscount.useMutation(
-    {
+  const updateDiscountMutation =
+    remoteData.Index.Discount.updateDiscount.useMutation({
       onSuccess() {
         history.push(DASHBOARD);
       },
       onError: updateDiscountMutationOnError(tooltip)
-    }
-  );
+    });
   const updateDiscount = (agreementId: string, discount: Discount) => {
     updateDiscountMutation.mutate({ agreementId, discountId, discount });
   };
