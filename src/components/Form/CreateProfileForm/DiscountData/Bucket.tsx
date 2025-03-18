@@ -31,9 +31,8 @@ Props) => {
   const refFile = useRef<HTMLInputElement>(null);
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [currentDoc, setCurrentDoc] = useState<{ name: string } | undefined>(
-    undefined
-  );
+  const [currentDoc, setCurrentDoc] =
+    useState<{ name: string } | undefined>(undefined);
   const [canUploadFile, setCanUploadFile] = useState(true);
   const { triggerTooltip } = useTooltip();
 
@@ -122,8 +121,8 @@ Props) => {
       title="Carica la lista di codici sconto"
       description={
         <>
-          Caricare un file .CSV con la lista di almeno 1.000.000 di codici
-          sconto statici relativi all’opportunità.
+          Caricare un file .CSV con la lista di almeno 10.000 di codici sconto
+          statici relativi all’opportunità.
           <br />
           Per maggiori informazioni, consultare la{" "}
           <a
