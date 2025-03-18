@@ -31,12 +31,22 @@ const Requests = () => {
   const [isLoadingExtra, setIsLoadingExtra] = useState(false);
   const refForm = useRef<any>(null);
 
-  const [agreementsQueryParams, setAgreementsQueryParams] = useState<
-    AgreementApiGetAgreementsRequest
-  >({});
-  const agreementsQuery = remoteData.Backoffice.Agreement.getAgreements.useQuery(
-    { ...agreementsQueryParams, pageSize },
-    { keepPreviousData: true, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
+  const [agreementsQueryParams, setAgreementsQueryParams] =
+    useState<AgreementApiGetAgreementsRequest>({});
+  const agreementsQuery =
+    remoteData.Backoffice.Agreement.getAgreements.useQuery(
+      { ...agreementsQueryParams, pageSize },
+      { keepPreviousData: true, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
+    );
+  const updateAgreementsQueryParams = useCallback(
+    (params: AgreementApiGetAgreementsRequest) => {
+      setAgreementsQueryParams(params);
+      remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({
+        ...params,
+        pageSize
+      });
+    },
+    []
   );
   const agreements = agreementsQuery.data;
 
@@ -163,7 +173,7 @@ const Requests = () => {
   return (
     <section className="mt-2 px-8 py-10 bg-white">
       <RequestFilter
-        getAgreements={setAgreementsQueryParams}
+        getAgreements={updateAgreementsQueryParams}
         refForm={refForm}
       />
       {isLoading ? (
