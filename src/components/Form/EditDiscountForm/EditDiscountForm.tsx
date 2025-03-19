@@ -51,7 +51,9 @@ export const discountEmptyInitialValues = {
   staticCode: "",
   visibleOnEyca: false,
   eycaLandingPageUrl: undefined,
-  discountUrl: ""
+  discountUrl: "",
+  lastBucketCodeLoadFileName: undefined,
+  lastBucketCodeLoadUid: undefined
 };
 
 export function getDiscountTypeChecks(profile: Profile | undefined) {
