@@ -17,21 +17,27 @@ const BucketCodeModal = ({
   agreementId,
   discountId
 }: Props) => {
-  const {
-    data: bucketCode = "",
-    isLoading
-  } = remoteData.Backoffice.Discount.getDiscountBucketCode.useQuery(
-    {
-      agreementId,
-      discountId
-    },
-    { enabled: isOpen }
-  );
+  const { data, isLoading, isError } =
+    remoteData.Backoffice.Discount.getDiscountBucketCode.useQuery(
+      {
+        agreementId,
+        discountId
+      },
+      { enabled: isOpen }
+    );
 
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Codice Sconto dalla lista</ModalHeader>
-      <ModalBody>{isLoading ? <CenteredLoading /> : bucketCode}</ModalBody>
+      <ModalBody>
+        {isLoading ? (
+          <CenteredLoading />
+        ) : data?.code && !isError ? (
+          data.code
+        ) : (
+          "Non è stato possibile caricare il codice"
+        )}
+      </ModalBody>
       <ModalFooter className="d-flex flex-column">
         <Button
           color="primary"
