@@ -185,7 +185,7 @@ export const discountDataValidationSchema = (
       productCategories: Yup.array()
         .min(1, PRODUCT_CATEGORIES_ONE)
         .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX)
-        .required(),
+        .required(REQUIRED_FIELD),
       condition: Yup.string().when(["condition_en"], {
         is: (_?: string) => _ && _.length > 0,
         then: Yup.string().required(REQUIRED_FIELD)
@@ -226,10 +226,17 @@ export const discountDataValidationSchema = (
         otherwise: Yup.string()
       }),
       visibleOnEyca: Yup.boolean(),
-      eycaLandingPageUrl: Yup.string()
-        .nullable()
-        .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
-        .when("landingPageUrl", checkEycaLandingDifferentFromLandingPageUrl)
+      eycaLandingPageUrl: Yup.string().when("visibleOnEyca", {
+        is: (visibleOnEyca: boolean) => visibleOnEyca && landingCheck,
+        then: schema =>
+          schema
+            .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+            .when(
+              "landingPageUrl",
+              checkEycaLandingDifferentFromLandingPageUrl
+            ),
+        otherwise: schema => schema.oneOf([undefined, null, ""])
+      })
     },
     [
       ["description", "description_en"],
@@ -244,97 +251,7 @@ export const discountsListDataValidationSchema = (
 ) =>
   Yup.object().shape({
     discounts: Yup.array().of(
-      Yup.object().shape(
-        {
-          name: Yup.string()
-            .max(100)
-            .required(REQUIRED_FIELD),
-          name_en: Yup.string()
-            .max(100)
-            .required(REQUIRED_FIELD),
-          name_de: Yup.string()
-            .max(100)
-            .required(REQUIRED_FIELD),
-          description: Yup.string().when(["description_en"], {
-            is: (_?: string) => _ && _.length > 0,
-            then: Yup.string()
-              .required(REQUIRED_FIELD)
-              .max(250)
-          }),
-          description_en: Yup.string().when(["description"], {
-            is: (_?: string) => _ && _.length > 0,
-            then: Yup.string()
-              .required(REQUIRED_FIELD)
-              .max(250)
-          }),
-          description_de: Yup.string().when(["description"], {
-            is: (_?: string) => _ && _.length > 0,
-            then: Yup.string()
-              .required(REQUIRED_FIELD)
-              .max(250)
-          }),
-          discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
-          startDate: Yup.string().required(REQUIRED_FIELD),
-          endDate: Yup.string().required(REQUIRED_FIELD),
-          productCategories: Yup.array()
-            .min(1, PRODUCT_CATEGORIES_ONE)
-            .required(REQUIRED_FIELD),
-          discount: Yup.number()
-            .typeError(DISCOUNT_RANGE)
-            .integer(DISCOUNT_RANGE)
-            .min(1, DISCOUNT_RANGE)
-            .max(100, DISCOUNT_RANGE)
-            .notRequired(),
-          condition: Yup.string().when(["condition_en"], {
-            is: (_?: string) => _ && _.length > 0,
-            then: Yup.string().required(REQUIRED_FIELD)
-          }),
-          condition_en: Yup.string().when(["condition"], {
-            is: (_?: string) => _ && _.length > 0,
-            then: Yup.string().required(REQUIRED_FIELD)
-          }),
-          condition_de: Yup.string().when(["condition"], {
-            is: (_?: string) => _ && _.length > 0,
-            then: Yup.string().required(REQUIRED_FIELD)
-          }),
-          staticCode: Yup.string().when("condition", {
-            is: () => staticCheck,
-            then: Yup.string().required(REQUIRED_FIELD),
-            otherwise: Yup.string()
-          }),
-          landingPageUrl: Yup.string().when("condition", {
-            is: () => landingCheck,
-            then: Yup.string()
-              .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
-              .required(REQUIRED_FIELD),
-            otherwise: Yup.string()
-          }),
-          landingPageReferrer: Yup.string().when("condition", {
-            is: () => landingCheck,
-            then: Yup.string().required(REQUIRED_FIELD),
-            otherwise: Yup.string()
-          }),
-          lastBucketCodeLoadUid: Yup.string().when("condition", {
-            is: () => bucketCheck,
-            then: Yup.string().required(REQUIRED_FIELD),
-            otherwise: Yup.string()
-          }),
-          lastBucketCodeLoadFileName: Yup.string().when("condition", {
-            is: () => bucketCheck,
-            then: Yup.string().required(REQUIRED_FIELD),
-            otherwise: Yup.string()
-          }),
-          visibleOnEyca: Yup.boolean(),
-          eycaLandingPageUrl: Yup.string()
-            .nullable()
-            .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
-            .when("landingPageUrl", checkEycaLandingDifferentFromLandingPageUrl)
-        },
-        [
-          ["description", "description_en"],
-          ["condition", "condition_en"]
-        ]
-      )
+      discountDataValidationSchema(staticCheck, landingCheck, bucketCheck)
     )
   });
 
