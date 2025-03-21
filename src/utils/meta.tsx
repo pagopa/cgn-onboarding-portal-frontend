@@ -23,7 +23,7 @@ connect-src 'self' ${getAdminLoginUri()} ${
   } https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self';
 frame-src 'self' https://www.google.com;
-img-src 'self' https://assets.cdn.io.italia.it https://cgnonboardingportalpsa.blob.core.windows.net ${fromNullable(
+img-src 'self' https://assets.cdn.io.italia.it https://iopitncgnpeassetsst01.blob.core.windows.net ${fromNullable(
     process.env.BASE_BLOB_PATH
   ).getOrElse("")} ${
     process.env.NODE_ENV !== "production" ? "https://upload.wikimedia.org/" : ""
