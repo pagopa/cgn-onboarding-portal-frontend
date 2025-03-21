@@ -77,8 +77,6 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
   };
 
   useEffect(() => {
-    // TODO sincronizza visible e landing
-
     if (salesChannel.discountCodeType === DiscountCodeType.LandingPage) {
       setFieldValue(
         hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`,
