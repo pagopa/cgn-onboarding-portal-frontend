@@ -3,7 +3,7 @@ import { Field } from "formik";
 import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
-  children?: any;
+  children?: React.ReactNode;
   index?: number;
 };
 
@@ -26,7 +26,7 @@ const LandingPage = ({ children, index }: Props) => {
       />
       <p className="mt-4 text-sm font-weight-normal text-black">
         {
-          "Inserire il valore del parametro referrer da trasmettere alla landing page*"
+          "Inserisci il valore del parametro referrer da trasmettere alla pagina web"
         }
       </p>
       <Field

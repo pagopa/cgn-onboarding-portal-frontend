@@ -10,9 +10,9 @@ const RequestApproval = () => (
       <h1 className="mb-5">Richiesta di convenzione inviata</h1>
       <Hourglass />
       <div className="mt-5 mb-5">
-        La vostra richiesta è in attesa di approvazione.
+        La tua richiesta è in attesa di approvazione.
         <br />
-        Riceverete una e-mail non appena sarà approvata.
+        Il referente riceverà una e-mail appena sarà approvata.
       </div>
       <Link to={DASHBOARD}>
         <Button className="px-14 mr-4" color="primary" outline tag="button">

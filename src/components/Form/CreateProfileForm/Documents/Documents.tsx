@@ -75,11 +75,21 @@ const Documents = ({
     <FormContainer className="mb-20">
       <div className="bg-white px-28 py-16">
         <p className="text-base font-weight-normal text-black">
-          Per terminare la richiesta di convenzione scarica e firma digitalmente
-          i documenti, poi ricaricali sul portale.
-          <br /> I documenti sono precompilati con i dati che hai inserito
-          finora, se vuoi effettuare delle modifiche, torna indietro nella
-          compilazione prima di procedere.
+          Per inviare la richiesta di convenzione, scarica e firma digitalmente
+          in{" "}
+          <a
+            className="font-weight-semibold"
+            target="_blank"
+            rel="noreferrer"
+            href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/il-convenzionamento/firma-della-convenzione"
+          >
+            modalità PAdES
+          </a>{" "}
+          i documenti. Una volta fatto, carica i documenti firmati in{" "}
+          <span className="font-weight-bold">formato .pdf</span> sul portale. I
+          documenti sono già compilati con i dati inseriti fino a questo
+          momento. Se desideri apportare delle modifiche, puoi farlo prima di
+          procedere, tornando alla fase di compilazione.
         </p>
         <FileRow
           getFiles={getFiles}

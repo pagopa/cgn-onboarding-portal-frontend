@@ -44,7 +44,8 @@ const Login = () => {
               <div className="row">
                 <div className="col-9">
                   <h1 className="h2 font-weight-bold text-dark-blue">
-                    Benvenuto sul portale operatori di Carta Giovani Nazionale
+                    Ti diamo il benvenuto sul Portale operatori Carta Giovani
+                    Nazionale
                   </h1>
                   <p className="text-gray">
                     Il portale è il punto unico di richiesta e gestione delle

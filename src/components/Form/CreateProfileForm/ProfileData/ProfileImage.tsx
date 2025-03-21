@@ -12,11 +12,11 @@ import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse
 const FooterDescription = (
   <p className="text-base font-weight-normal text-gray">
     Il file deve avere le seguenti caratteristiche:
-    <br />
-    Dimensione dell&#39;immagine: minimo 800x600px / Dimensione del file:
-    massimo 5Mb
-    <br />
-    Formato del file: JPG, PNG
+    <ul className="pl-4">
+      <li>Dimensione dell’immagine: minimo 800x600px</li>
+      <li>Dimensione del file: massimo 5Mb</li>
+      <li>Formato del file: JPG, PNG</li>
+    </ul>
   </p>
 );
 
@@ -85,7 +85,7 @@ const ProfileImage = () => {
   return (
     <FormSection
       title="Immagine operatore"
-      description="Caricare un'immagine che rappresenti i beni o i servizi trattati dall'Operatore"
+      description="Carica un'immagine che rappresenti i beni o i servizi trattati dall'Operatore"
       footerDescription={FooterDescription}
       isVisible
       required
