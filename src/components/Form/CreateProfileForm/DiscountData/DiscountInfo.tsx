@@ -3,17 +3,31 @@
 import { Field, FieldProps } from "formik";
 import React from "react";
 import DatePicker from "react-datepicker";
+import { useSelector } from "react-redux";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import DateInputComponent from "../../DateInputComponent";
-import InputField from "../../FormField";
+import FormField from "../../FormField";
+import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
+import { Profile } from "../../../../api/generated";
+import { RootState } from "../../../../store/store";
+import { getDiscountTypeChecks } from "../../../../utils/formChecks";
+import ProductCategories from "./ProductCategories";
+import DiscountConditions from "./DiscountConditions";
+import EnrollToEyca from "./EnrollToEyca";
+import Bucket from "./Bucket";
+import LandingPage from "./LandingPage";
+import StaticCode from "./StaticCode";
+import DiscountUrl from "./DiscountUrl";
 
 type Props = {
   formValues?: any;
   setFieldValue?: any;
   index?: number;
+  profile: Profile | undefined;
 };
 
-const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
+// eslint-disable-next-line complexity
+const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
   const hasIndex = index !== undefined;
 
   const dateFrom = hasIndex
@@ -24,12 +38,17 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
     ? formValues.discounts[index as number].endDate
     : formValues.endDate;
 
+  const { checkBucket, checkLanding, checkStaticCode } =
+    getDiscountTypeChecks(profile);
+
+  const agreement = useSelector((state: RootState) => state.agreement.value);
+
   return (
     <>
-      <InputField
+      <FormField
         htmlFor="name"
         title="Nome opportunità"
-        description="Inserire un breve testo che descriva il tipo di opportunità offerta (max 100 caratteri)"
+        description="Inserisci un breve testo che descriva il tipo di opportunità offerta (max 100 caratteri)"
         isVisible
         required
       >
@@ -63,11 +82,11 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
             />
           </div>
         </div>
-      </InputField>
-      <InputField
+      </FormField>
+      <FormField
         htmlFor="description"
         title="Descrizione opportunità"
-        description="Se necessario, inserire una descrizione più approfondita dell'opportunità (es. Sconto valido per l'acquisto di due ingressi alla stagione di prosa 2021/22 presso il Teatro Comunale) - Max 250 caratteri"
+        description="Se necessario, inserisci una descrizione più approfondita dell’opportunità - Max 250 caratteri"
         isVisible
       >
         <div className="row">
@@ -81,7 +100,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
               name={
                 hasIndex ? `discounts[${index}].description` : "description"
               }
-              placeholder="Inserisci una descrizione"
+              placeholder="Es. Sconto valido per l’acquisto di due ingressi per la stagione di prosa 2021/2022 presso il Teatro Comunale"
               maxLength="250"
               rows="4"
             />
@@ -103,7 +122,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
                   ? `discounts[${index}].description_en`
                   : "description_en"
               }
-              placeholder="Inserisci una descrizione"
+              placeholder="Ex. Discount valid for the purchase of two tickets for the 2021/2022 prose season at the Municipal Theatre"
               maxLength="250"
               rows="4"
             />
@@ -116,13 +135,13 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
             />
           </div>
         </div>
-      </InputField>
+      </FormField>
       <div className="row">
         <div className="col-5">
-          <InputField
+          <FormField
             htmlFor="startDate"
-            title="Data di inizio dell'opportunità"
-            description="Indicare il giorno e l’ora da cui l'opportunità diventa valida"
+            title="Data di inizio dell’opportunità"
+            description="Indica la data e l’ora in cui far iniziare l’opportunità"
             isVisible
             required
           >
@@ -148,13 +167,13 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
             <CustomErrorMessage
               name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
             />
-          </InputField>
+          </FormField>
         </div>
         <div className="col-5 offset-1">
-          <InputField
+          <FormField
             htmlFor="endDate"
             title="Data di fine opportunità"
-            description="Indicare la data e l’ora da cui l’opportunità non è più valida"
+            description="Indica la data e l’ora in cui far finire l’opportunità"
             isVisible
             required
           >
@@ -180,13 +199,13 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
             <CustomErrorMessage
               name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
             />
-          </InputField>
+          </FormField>
         </div>
       </div>
-      <InputField
+      <FormField
         htmlFor="discount"
         title="Entità dello sconto"
-        description="Se l'opportunità lo prevede, inserire la percentuale (%) di sconto erogata"
+        description="Se l’opportunità lo prevede, inserire la percentuale (%) di sconto erogata"
         isVisible
       >
         <Field
@@ -218,7 +237,81 @@ const DiscountInfo = ({ formValues, setFieldValue, index }: Props) => {
         <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].discount` : "discount"}
         />
-      </InputField>
+      </FormField>
+      <FormField
+        htmlFor="productCategories"
+        isTitleHeading
+        title="Categorie merceologiche"
+        description={`Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’opportunità`}
+        isVisible
+        required
+      >
+        <ProductCategories
+          selectedCategories={formValues.productCategories}
+          index={index}
+        />
+      </FormField>
+      <FormField
+        htmlFor="discountConditions"
+        isTitleHeading
+        title="Condizioni dell’opportunità"
+        description="Descrivi eventuali condizioni d’uso o limitazioni relative all’opportunità - Max 200 caratteri"
+        isVisible
+      >
+        <DiscountConditions index={index} />
+      </FormField>
+      {!checkLanding && (
+        <FormField
+          htmlFor="discountUrl"
+          title="Link all’opportunità"
+          description="Inserisci l’URL del sito o dell’app dove sarà possibile accedere all’opportunità"
+          isTitleHeading
+          isVisible
+        >
+          <DiscountUrl index={index} />
+        </FormField>
+      )}
+      {checkStaticCode && (
+        <FormField
+          htmlFor="staticCode"
+          isTitleHeading
+          title="Codice statico"
+          description="Inserisci il codice che l’utente dovrà inserire per usufruire dell’opportunità"
+          isVisible
+          required
+        >
+          <StaticCode index={index} />
+        </FormField>
+      )}
+      {checkLanding && (
+        <FormField
+          htmlFor="landingPage"
+          isTitleHeading
+          title="Indirizzo della landing page*"
+          description="Inserisci l’URL della pagina web da cui sarà possibile accedere all’opportunità"
+          isVisible
+          required
+        >
+          <LandingPage index={index} />
+        </FormField>
+      )}
+      {checkBucket && (
+        <Bucket
+          agreementId={agreement.id}
+          label={"Seleziona un file dal computer"}
+          index={index}
+          formValues={formValues}
+          setFieldValue={setFieldValue}
+        />
+      )}
+      {profile && (
+        <EnrollToEyca
+          profile={profile}
+          index={index}
+          formValues={formValues}
+          setFieldValue={setFieldValue}
+        />
+      )}
     </>
   );
 };

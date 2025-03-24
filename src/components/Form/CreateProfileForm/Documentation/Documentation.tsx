@@ -27,14 +27,13 @@ const Documentation = ({
     <FormContainer className="mb-10">
       <div className="bg-white px-28 py-16">
         <h1 className="h4 font-weight-bold text-dark-blue">
-          Benvenuto sul Portale Operatori di Carta Giovani Nazionale
+          Ti diamo il benvenuto sul Portale operatori
         </h1>
         <p className="mt-10 text-base font-weight-normal text-black">
-          Prima di iniziare, prendi visione della Documentazione Tecnica.
-          <br /> Contiene tutte le informazioni circa il processo di Convenzione
-          e le
-          <br /> istruzioni tecniche che descrivono le implementazioni
-          necessarie per aderire.
+          Prima di iniziare, consulta la documentazione tecnica.
+          <br />
+          Contiene tutte le informazioni sulla Convenzione e le istruzioni
+          tecniche utili per richiedere l’adesione.
         </p>
         <div className="mt-4 d-flex flex-row align-items-center">
           <DocumentIcon className="mr-5" />
@@ -49,7 +48,7 @@ const Documentation = ({
           </a>
         </div>
         <p className="mt-8 text-sm font-weight-normal text-gray">
-          Cliccando su Continua, dichiari di aver letto e compreso l’
+          Premendo su Continua, dichiari di aver letto e compreso l’
           <a
             className="font-weight-semibold cursor-pointer"
             href="https://io.italia.it/carta-giovani-nazionale/informativa-operatori"

@@ -20,19 +20,10 @@ import {
   clearIfReferenceIsBlank
 } from "../../../utils/strings";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
-import Bucket from "../CreateProfileForm/DiscountData/Bucket";
-import DiscountConditions from "../CreateProfileForm/DiscountData/DiscountConditions";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
-import DiscountUrl from "../CreateProfileForm/DiscountData/DiscountUrl";
-import EnrollToEyca from "../CreateProfileForm/DiscountData/EnrollToEyca";
-import LandingPage from "../CreateProfileForm/DiscountData/LandingPage";
-import ProductCategories from "../CreateProfileForm/DiscountData/ProductCategories";
-import StaticCode from "../CreateProfileForm/DiscountData/StaticCode";
-import FormField from "../FormField";
+import { getDiscountTypeChecks } from "../../../utils/formChecks";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
-import { MAX_SELECTABLE_CATEGORIES } from "../../../utils/constants";
-import { Profile } from "../../../api/generated";
 
 export const discountEmptyInitialValues = {
   name: "",
@@ -56,32 +47,6 @@ export const discountEmptyInitialValues = {
   lastBucketCodeLoadUid: undefined
 };
 
-export function getDiscountTypeChecks(profile: Profile | undefined) {
-  const onlineOrBoth =
-    profile?.salesChannel?.channelType === "OnlineChannel" ||
-    profile?.salesChannel?.channelType === "BothChannels";
-
-  const checkStaticCode =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Static";
-
-  const checkLanding =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "LandingPage";
-
-  const checkBucket =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Bucket";
-
-  return { checkStaticCode, checkLanding, checkBucket };
-}
-
 export function updateDiscountMutationOnError({
   triggerTooltip
 }: TooltipContextProps) {
@@ -98,14 +63,12 @@ export function updateDiscountMutationOnError({
     ) {
       triggerTooltip({
         severity: Severity.DANGER,
-        text:
-          "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
+        text: "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
       });
     } else {
       triggerTooltip({
         severity: Severity.DANGER,
-        text:
-          "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
+        text: "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
       });
     }
   };
@@ -135,6 +98,12 @@ export function sanitizeDiscountFormValues(values: any) {
   };
 }
 
+/**
+ * These are the entry points for forms for discounts. This comment is repeated in every file.
+ * src/components/Form/CreateProfileForm/DiscountData/DiscountData.tsx Used in onboarding process
+ * src/components/Form/CreateDiscountForm/CreateDiscountForm.tsx Used to create new discount once onboarded
+ * src/components/Form/EditDiscountForm/EditDiscountForm.tsx  Used to edit new discount once onboarded
+ */
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditDiscountForm = () => {
   const { discountId } = useParams<any>();
@@ -146,20 +115,18 @@ const EditDiscountForm = () => {
   });
   const profile = profileQuery.data;
 
-  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
-    profile
-  );
+  const { checkStaticCode, checkLanding, checkBucket } =
+    getDiscountTypeChecks(profile);
 
   const tooltip = useTooltip();
 
-  const updateDiscountMutation = remoteData.Index.Discount.updateDiscount.useMutation(
-    {
+  const updateDiscountMutation =
+    remoteData.Index.Discount.updateDiscount.useMutation({
       onSuccess() {
         history.push(DASHBOARD);
       },
       onError: updateDiscountMutationOnError(tooltip)
-    }
-  );
+    });
   const updateDiscount = (agreementId: string, discount: Discount) => {
     updateDiscountMutation.mutate({ agreementId, discountId, discount });
   };
@@ -234,78 +201,11 @@ const EditDiscountForm = () => {
         {({ values, setFieldValue }) => (
           <Form autoComplete="off">
             <FormSection hasIntroduction>
-              <DiscountInfo formValues={values} setFieldValue={setFieldValue} />
-              <FormField
-                htmlFor="productCategories"
-                isTitleHeading
-                title="Categorie merceologiche"
-                description={`Seleziona al massimo ${MAX_SELECTABLE_CATEGORIES} categorie merceologiche a cui appatengono i beni/servizi oggetto dell’opportunità`}
-                isVisible
-                required
-              >
-                <ProductCategories
-                  selectedCategories={values.productCategories}
-                />
-              </FormField>
-              <FormField
-                htmlFor="discountConditions"
-                isTitleHeading
-                title="Condizioni dell’opportunità"
-                description="Descrivere eventuali limitazioni relative all’opportunità (es. sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro) - Max 200 caratteri"
-                isVisible
-              >
-                <DiscountConditions />
-              </FormField>
-              {!checkLanding && (
-                <FormField
-                  htmlFor="discountUrl"
-                  title="Link all’opportunità"
-                  description="Inserire l’URL di destinazione del sito o dell’app da cui i titolari di CGN potranno accedere all’opportunità"
-                  isTitleHeading
-                  isVisible
-                >
-                  <DiscountUrl />
-                </FormField>
-              )}
-              {checkStaticCode && (
-                <FormField
-                  htmlFor="staticCode"
-                  isTitleHeading
-                  title="Codice statico"
-                  description="Inserire il codice relativo all’opportunità che l’utente dovrà inserire sul vostro portale online"
-                  isVisible
-                  required
-                >
-                  <StaticCode />
-                </FormField>
-              )}
-              {checkLanding && (
-                <FormField
-                  htmlFor="landingPage"
-                  isTitleHeading
-                  title="Indirizzo della landing page"
-                  description="Inserire l’URL della landing page da cui i titolari di CGN potranno accedere all’opportunità"
-                  isVisible
-                  required
-                >
-                  <LandingPage />
-                </FormField>
-              )}
-              {checkBucket && (
-                <Bucket
-                  agreementId={agreement.id}
-                  label={"Seleziona un file dal computer"}
-                  formValues={values}
-                  setFieldValue={setFieldValue}
-                />
-              )}
-              {profile && (
-                <EnrollToEyca
-                  profile={profile}
-                  formValues={values}
-                  setFieldValue={setFieldValue}
-                />
-              )}
+              <DiscountInfo
+                formValues={values}
+                setFieldValue={setFieldValue}
+                profile={profile}
+              />
               {discount?.state !== "draft" && (
                 <div className="mt-10">
                   <Button
