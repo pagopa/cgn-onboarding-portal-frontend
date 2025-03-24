@@ -18,7 +18,7 @@ const DiscountConditions = ({ index }: Props) => {
           as="textarea"
           id="condition"
           name={hasIndex ? `discounts[${index}].condition` : `condition`}
-          placeholder="Inserisci una descrizione"
+          placeholder="Es. Sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro."
           maxLength="200"
           rows="4"
         />
@@ -32,7 +32,7 @@ const DiscountConditions = ({ index }: Props) => {
           as="textarea"
           id="condition_en"
           name={hasIndex ? `discounts[${index}].condition_en` : `condition_en`}
-          placeholder="Type in a description"
+          placeholder="Ex. Discount valid for the purchase of only one prose season ticket at the theatre’s counters "
           maxLength="200"
           rows="4"
         />
