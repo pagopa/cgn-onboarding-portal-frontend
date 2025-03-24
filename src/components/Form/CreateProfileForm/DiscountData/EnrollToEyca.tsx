@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Field } from "formik";
 import { Button, FormGroup } from "design-react-kit";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
@@ -43,14 +43,6 @@ const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
 const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
   const hasIndex = index !== undefined;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [checkBoxValue, setCheckboxValue] = useState(
-    (index !== undefined
-      ? formValues.discounts[index].visibleOnEyca
-      : formValues.visibleOnEyca) ?? false
-  );
-  if (profile.salesChannel.channelType === SalesChannelType.OfflineChannel) {
-    return null;
-  }
   const salesChannel = profile.salesChannel as OnlineChannel | BothChannels;
   const isEycaSupported =
     salesChannel.discountCodeType === DiscountCodeType.Static ||
@@ -68,18 +60,48 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
     }
   };
 
-  const openModal = (val: any) => {
-    setCheckboxValue(val);
+  const visibleOnEyca: boolean | undefined = hasIndex
+    ? formValues.discounts[index].visibleOnEyca
+    : formValues.visibleOnEyca;
+
+  const eycaLandingPageUrl: string | undefined = hasIndex
+    ? formValues.discounts[index].eycaLandingPageUrl
+    : formValues.eycaLandingPageUrl;
+
+  const openModal = () => {
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setFieldValue(
-      hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`,
-      checkBoxValue
-    );
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    if (salesChannel.discountCodeType === DiscountCodeType.LandingPage) {
+      setFieldValue(
+        hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`,
+        (eycaLandingPageUrl ?? "").trim() !== ""
+      );
+    } else {
+      setFieldValue(
+        hasIndex
+          ? `discounts[${index}].eycaLandingPageUrl`
+          : `eycaLandingPageUrl`,
+        ""
+      );
+    }
+  }, [
+    visibleOnEyca,
+    eycaLandingPageUrl,
+    salesChannel.discountCodeType,
+    setFieldValue,
+    hasIndex,
+    index
+  ]);
+
+  if (profile.salesChannel.channelType === SalesChannelType.OfflineChannel) {
+    return null;
+  }
 
   if (salesChannel.discountCodeType !== DiscountCodeType.LandingPage) {
     return (
@@ -130,18 +152,18 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
                 hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`
               }
               type="checkbox"
-              onChange={(e: any) => {
-                const value = e.target.value === "true";
-                if (isEycaSupported || value) {
+              onChange={(event: { target: { checked: boolean } }) => {
+                if (isEycaSupported) {
                   setFieldValue(
                     hasIndex
                       ? `discounts[${index}].visibleOnEyca`
                       : `visibleOnEyca`,
-                    !value
+                    event.target.checked
                   );
-                  return;
+                  if (event.target.checked) {
+                    openModal();
+                  }
                 }
-                openModal(!value);
               }}
             />
             <Label

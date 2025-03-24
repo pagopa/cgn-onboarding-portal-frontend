@@ -42,7 +42,9 @@ export const discountEmptyInitialValues = {
   staticCode: "",
   visibleOnEyca: false,
   eycaLandingPageUrl: undefined,
-  discountUrl: ""
+  discountUrl: "",
+  lastBucketCodeLoadFileName: undefined,
+  lastBucketCodeLoadUid: undefined
 };
 
 export function updateDiscountMutationOnError({
@@ -79,7 +81,6 @@ export function sanitizeDiscountFormValues(values: any) {
   const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(values.condition);
   return {
     ...values,
-    visibleOnEyca: values.eycaLandingPageUrl ? true : values.visibleOnEyca,
     name: withNormalizedSpaces(values.name),
     name_en: withNormalizedSpaces(values.name_en),
     name_de: "-",
