@@ -23,6 +23,7 @@ const DateInputComponent = forwardRef<HTMLInputElement, Props>((props, ref) => (
         placeholder="dd-mm-yy"
         onClick={props.onClick}
         defaultValue={props.value}
+        value={props.value}
         ref={ref}
       />
     </div>

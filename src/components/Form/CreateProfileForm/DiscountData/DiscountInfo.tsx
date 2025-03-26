@@ -20,8 +20,8 @@ import StaticCode from "./StaticCode";
 import DiscountUrl from "./DiscountUrl";
 
 type Props = {
-  formValues?: any;
-  setFieldValue?: any;
+  formValues: Record<string, any>;
+  setFieldValue(name: string, value: any): void;
   index?: number;
   profile: Profile | undefined;
 };
@@ -31,11 +31,11 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
   const hasIndex = index !== undefined;
 
   const dateFrom = hasIndex
-    ? formValues.discounts[index as number].startDate
+    ? formValues.discounts[index].startDate
     : formValues.startDate;
 
   const dateTo = hasIndex
-    ? formValues.discounts[index as number].endDate
+    ? formValues.discounts[index].endDate
     : formValues.endDate;
 
   const { checkBucket, checkLanding, checkStaticCode } =
@@ -156,12 +156,12 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               selectsStart
               startDate={dateFrom}
               endDate={dateTo}
-              onChange={date =>
+              onChange={date => {
                 setFieldValue(
                   hasIndex ? `discounts[${index}].startDate` : "startDate",
                   date
-                )
-              }
+                );
+              }}
               customInput={React.createElement(DateInputComponent)}
             />
             <CustomErrorMessage
