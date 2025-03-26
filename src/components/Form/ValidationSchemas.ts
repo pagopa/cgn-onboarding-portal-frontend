@@ -15,7 +15,8 @@ const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_SELECTABLE_CATEGORI
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
 
-const URL_REGEXP = /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/g;
+const URL_REGEXP =
+  /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/g;
 
 const ReferentValidationSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -146,32 +147,20 @@ export const discountDataValidationSchema = (
 ) =>
   Yup.object().shape(
     {
-      name: Yup.string()
-        .max(100)
-        .required(REQUIRED_FIELD),
-      name_en: Yup.string()
-        .max(100)
-        .required(REQUIRED_FIELD),
-      name_de: Yup.string()
-        .max(100)
-        .required(REQUIRED_FIELD),
+      name: Yup.string().max(100).required(REQUIRED_FIELD),
+      name_en: Yup.string().max(100).required(REQUIRED_FIELD),
+      name_de: Yup.string().max(100).required(REQUIRED_FIELD),
       description: Yup.string().when(["description_en"], {
         is: (_?: string) => _ && _.length > 0,
-        then: Yup.string()
-          .required(REQUIRED_FIELD)
-          .max(250)
+        then: Yup.string().required(REQUIRED_FIELD).max(250)
       }),
       description_en: Yup.string().when(["description"], {
         is: (_?: string) => _ && _.length > 0,
-        then: Yup.string()
-          .required(REQUIRED_FIELD)
-          .max(250)
+        then: Yup.string().required(REQUIRED_FIELD).max(250)
       }),
       description_de: Yup.string().when(["description"], {
         is: (_?: string) => _ && _.length > 0,
-        then: Yup.string()
-          .required(REQUIRED_FIELD)
-          .max(250)
+        then: Yup.string().required(REQUIRED_FIELD).max(250)
       }),
       discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
       startDate: Yup.string().required(REQUIRED_FIELD),
@@ -235,7 +224,7 @@ export const discountDataValidationSchema = (
               "landingPageUrl",
               checkEycaLandingDifferentFromLandingPageUrl
             ),
-        otherwise: schema => schema.oneOf([undefined, null, ""])
+        otherwise: schema => schema.nullable().oneOf([undefined, null, ""])
       })
     },
     [
@@ -326,9 +315,7 @@ export const activationValidationSchema = Yup.object().shape({
   keyOrganizationFiscalCode: Yup.string(),
   organizationFiscalCode: Yup.string().required(REQUIRED_FIELD),
   organizationName: Yup.string().required(REQUIRED_FIELD),
-  pec: Yup.string()
-    .email(INCORRECT_EMAIL_ADDRESS)
-    .required(REQUIRED_FIELD),
+  pec: Yup.string().email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD),
   referents: Yup.array()
     .of(
       Yup.string()
