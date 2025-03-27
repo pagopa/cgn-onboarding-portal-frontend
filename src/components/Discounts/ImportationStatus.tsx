@@ -110,15 +110,16 @@ const ImportationStatus = ({
     [triggerTooltip]
   );
 
-  const loadingProgressQuery = remoteData.Index.DiscountBucketLoadingProgress.getDiscountBucketCodeLoadingProgess.useQuery(
-    { agreementId, discountId },
-    {
-      enabled:
-        status === BucketCodeLoadStatus.Pending ||
-        status === BucketCodeLoadStatus.Running,
-      refetchInterval: 5000
-    }
-  );
+  const loadingProgressQuery =
+    remoteData.Index.DiscountBucketLoadingProgress.getDiscountBucketCodeLoadingProgess.useQuery(
+      { agreementId, discountId },
+      {
+        enabled:
+          status === BucketCodeLoadStatus.Pending ||
+          status === BucketCodeLoadStatus.Running,
+        refetchInterval: 5000
+      }
+    );
   useEffect(() => {
     if (loadingProgressQuery.error) {
       throwErrorTooltip("Errore nel recuperare lo stato di caricamento codici");

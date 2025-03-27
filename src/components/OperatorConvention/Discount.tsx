@@ -37,20 +37,18 @@ const Discount = ({
 
   const toggleBucketModal = () => setIsBucketModalOpen(!isBucketModalOpen);
 
-  const suspendDiscountMutation = remoteData.Backoffice.Discount.suspendDiscount.useMutation(
-    {
+  const suspendDiscountMutation =
+    remoteData.Backoffice.Discount.suspendDiscount.useMutation({
       onSuccess() {
         setSuspendMode(false);
         triggerTooltip({
           severity: Severity.SUCCESS,
-          text:
-            "La sospensione dell'opportunità è stata effettuata con successo.",
+          text: "La sospensione dell'opportunità è stata effettuata con successo.",
           title: "sospensione effettuata"
         });
         reloadDetails();
       }
-    }
-  );
+    });
   const suspendDiscount = () => {
     suspendDiscountMutation.mutate({
       agreementId,
@@ -61,20 +59,18 @@ const Discount = ({
     });
   };
 
-  const rejectDiscountMutation = remoteData.Backoffice.Discount.setDiscountTestFailed.useMutation(
-    {
+  const rejectDiscountMutation =
+    remoteData.Backoffice.Discount.setDiscountTestFailed.useMutation({
       onSuccess() {
         setRejectMode(false);
         triggerTooltip({
           severity: Severity.SUCCESS,
-          text:
-            "La motivazione del fallimento del test dell'opportunità è stata inviata con successo.",
+          text: "La motivazione del fallimento del test dell'opportunità è stata inviata con successo.",
           title: "Test respinto"
         });
         reloadDetails();
       }
-    }
-  );
+    });
   const rejectTest = () => {
     rejectDiscountMutation.mutate({
       agreementId,
@@ -85,19 +81,17 @@ const Discount = ({
     });
   };
 
-  const approveDiscountMutation = remoteData.Backoffice.Discount.setDiscountTestPassed.useMutation(
-    {
+  const approveDiscountMutation =
+    remoteData.Backoffice.Discount.setDiscountTestPassed.useMutation({
       onSuccess() {
         triggerTooltip({
           severity: Severity.SUCCESS,
-          text:
-            "L'opportunità ha superato il test ed è pronta per essere pubblicata dall'operatore",
+          text: "L'opportunità ha superato il test ed è pronta per essere pubblicata dall'operatore",
           title: "Test superato"
         });
         reloadDetails();
       }
-    }
-  );
+    });
   const approveTest = () => {
     approveDiscountMutation.mutate({
       agreementId,
@@ -135,10 +129,9 @@ const Discount = ({
       <div className="row mb-5">
         <div className="col-4 text-gray">Categorie merceologiche</div>
         <div className="col-8">
-          {makeProductCategoriesString(
-            discount.productCategories
-          ).map((productCategory, index) =>
-            productCategory ? <p key={index}>{productCategory}</p> : null
+          {makeProductCategoriesString(discount.productCategories).map(
+            (productCategory, index) =>
+              productCategory ? <p key={index}>{productCategory}</p> : null
           )}
         </div>
       </div>
@@ -153,25 +146,29 @@ const Discount = ({
           }
         />
       )}
-      {// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      profile.salesChannel?.discountCodeType === "API" && (
-        <div className="row mb-5">
-          <div className="col-4 text-gray">
-            Per testare questa opportunità, contatta PagoPA
+      {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        profile.salesChannel?.discountCodeType === "API" && (
+          <div className="row mb-5">
+            <div className="col-4 text-gray">
+              Per testare questa opportunità, contatta PagoPA
+            </div>
           </div>
-        </div>
-      )}
-      {// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      profile.salesChannel?.discountCodeType === "LandingPage" && (
-        <div className="row mb-5">
-          <div className="text-gray">
-            Per testare questa opportunità, usa il Playground CGN presente in
-            app IO
+        )
+      }
+      {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        profile.salesChannel?.discountCodeType === "LandingPage" && (
+          <div className="row mb-5">
+            <div className="text-gray">
+              Per testare questa opportunità, usa il Playground CGN presente in
+              app IO
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
       {discount.staticCode && (
         <Item label="Codice sconto statico" value={discount.staticCode} />
       )}

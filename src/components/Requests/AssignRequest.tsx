@@ -16,13 +16,12 @@ const AssignRequest = ({
 }) => {
   const [isOpen, toggleAssign] = useState(false);
 
-  const assignAgreementsMutation = remoteData.Backoffice.Agreement.assignAgreement.useMutation(
-    {
+  const assignAgreementsMutation =
+    remoteData.Backoffice.Agreement.assignAgreement.useMutation({
       onSuccess() {
         updateList();
       }
-    }
-  );
+    });
 
   const assignAgreements = () => {
     assignAgreementsMutation.mutate({ agreementId: original.id });
