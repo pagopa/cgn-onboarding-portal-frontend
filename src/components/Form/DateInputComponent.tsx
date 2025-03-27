@@ -20,10 +20,15 @@ const DateInputComponent = forwardRef<HTMLInputElement, Props>((props, ref) => (
         className="form-control"
         id="input-group-2"
         name="input-group-2"
-        placeholder="dd-mm-yy"
+        placeholder="gg/mm/aaaa"
         onClick={props.onClick}
-        defaultValue={props.value}
+        value={props.value ?? ""}
+        readOnly
         ref={ref}
+        style={{
+          backgroundColor: "transparent",
+          cursor: "pointer"
+        }}
       />
     </div>
     <small id="date-input-description" className="form-text text-muted">

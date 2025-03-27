@@ -44,7 +44,9 @@ export const discountEmptyInitialValues = {
   eycaLandingPageUrl: undefined,
   discountUrl: "",
   lastBucketCodeLoadFileName: undefined,
-  lastBucketCodeLoadUid: undefined
+  lastBucketCodeLoadUid: undefined,
+  landingPageUrl: "",
+  landingPageReferrer: ""
 };
 
 export function updateDiscountMutationOnError({
