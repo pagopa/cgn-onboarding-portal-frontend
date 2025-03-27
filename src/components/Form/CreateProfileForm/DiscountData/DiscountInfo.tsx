@@ -286,7 +286,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         <FormField
           htmlFor="landingPage"
           isTitleHeading
-          title="Indirizzo della landing page*"
+          title="Indirizzo della landing page"
           description="Inserisci l’URL della pagina web da cui sarà possibile accedere all’opportunità"
           isVisible
           required
