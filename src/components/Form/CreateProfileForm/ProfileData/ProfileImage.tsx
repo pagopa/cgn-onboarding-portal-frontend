@@ -10,14 +10,16 @@ import Api from "../../../../api/index";
 import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
 
 const FooterDescription = (
-  <p className="text-base font-weight-normal text-gray">
-    Il file deve avere le seguenti caratteristiche:
-    <ul className="pl-4">
+  <div>
+    <p className="text-base font-weight-normal text-gray mb-0">
+      Il file deve avere le seguenti caratteristiche:
+    </p>
+    <ul className="pl-4 text-base font-weight-normal text-gray">
       <li>Dimensione dell’immagine: minimo 800x600px</li>
       <li>Dimensione del file: massimo 5Mb</li>
       <li>Formato del file: JPG, PNG</li>
     </ul>
-  </p>
+  </div>
 );
 
 // eslint-disable-next-line sonarjs/cognitive-complexity

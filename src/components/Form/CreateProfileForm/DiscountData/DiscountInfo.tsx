@@ -20,8 +20,8 @@ import StaticCode from "./StaticCode";
 import DiscountUrl from "./DiscountUrl";
 
 type Props = {
-  formValues?: any;
-  setFieldValue?: any;
+  formValues: Record<string, any>;
+  setFieldValue(name: string, value: any): void;
   index?: number;
   profile: Profile | undefined;
 };
@@ -31,11 +31,11 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
   const hasIndex = index !== undefined;
 
   const dateFrom = hasIndex
-    ? formValues.discounts[index as number].startDate
+    ? formValues.discounts[index].startDate
     : formValues.startDate;
 
   const dateTo = hasIndex
-    ? formValues.discounts[index as number].endDate
+    ? formValues.discounts[index].endDate
     : formValues.endDate;
 
   const { checkBucket, checkLanding, checkStaticCode } =
@@ -149,19 +149,19 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               id="startDate"
               name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
               dateFormat="dd/MM/yyyy"
-              placeholderText={"dd-mm-yy"}
               minDate={new Date()}
+              maxDate={dateTo}
               showDisabledMonthNavigation
               selected={dateFrom}
               selectsStart
               startDate={dateFrom}
               endDate={dateTo}
-              onChange={date =>
+              onChange={date => {
                 setFieldValue(
                   hasIndex ? `discounts[${index}].startDate` : "startDate",
                   date
-                )
-              }
+                );
+              }}
               customInput={React.createElement(DateInputComponent)}
             />
             <CustomErrorMessage
@@ -181,13 +181,12 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               id="endDate"
               name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
               dateFormat="dd/MM/yyyy"
-              placeholderText={"dd-mm-yy"}
               showDisabledMonthNavigation
               selected={dateTo}
               selectsEnd
               startDate={dateFrom}
               endDate={dateTo}
-              minDate={dateFrom}
+              minDate={dateFrom || new Date()}
               onChange={date => {
                 setFieldValue(
                   hasIndex ? `discounts[${index}].endDate` : "endDate",
@@ -287,7 +286,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         <FormField
           htmlFor="landingPage"
           isTitleHeading
-          title="Indirizzo della landing page*"
+          title="Indirizzo della landing page"
           description="Inserisci l’URL della pagina web da cui sarà possibile accedere all’opportunità"
           isVisible
           required
