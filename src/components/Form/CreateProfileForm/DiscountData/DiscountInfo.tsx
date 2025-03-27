@@ -149,8 +149,8 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               id="startDate"
               name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
               dateFormat="dd/MM/yyyy"
-              placeholderText={"dd-mm-yy"}
               minDate={new Date()}
+              maxDate={dateTo}
               showDisabledMonthNavigation
               selected={dateFrom}
               selectsStart
@@ -181,13 +181,12 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               id="endDate"
               name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
               dateFormat="dd/MM/yyyy"
-              placeholderText={"dd-mm-yy"}
               showDisabledMonthNavigation
               selected={dateTo}
               selectsEnd
               startDate={dateFrom}
               endDate={dateTo}
-              minDate={dateFrom}
+              minDate={dateFrom || new Date()}
               onChange={date => {
                 setFieldValue(
                   hasIndex ? `discounts[${index}].endDate` : "endDate",
