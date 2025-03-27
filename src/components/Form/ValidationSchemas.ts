@@ -15,9 +15,6 @@ const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_SELECTABLE_CATEGORI
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
 
-const URL_REGEXP =
-  /^([a-z]*:)?\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/g;
-
 const ReferentValidationSchema = Yup.object().shape({
   firstName: Yup.string()
     .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
@@ -83,9 +80,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
       .nullable()
       .when("channelType", {
         is: (val: string) => val === "OnlineChannel" || val === "BothChannels",
-        then: Yup.string()
-          .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
-          .required(REQUIRED_FIELD)
+        then: Yup.string().url(INCORRECT_WEBSITE_URL).required(REQUIRED_FIELD)
       }),
     discountCodeType: Yup.string().when("channelType", {
       is: (val: string) => val === "OnlineChannel" || val === "BothChannels",
@@ -162,7 +157,7 @@ export const discountDataValidationSchema = (
         is: (_?: string) => _ && _.length > 0,
         then: Yup.string().required(REQUIRED_FIELD).max(250)
       }),
-      discountUrl: Yup.string().matches(URL_REGEXP, INCORRECT_WEBSITE_URL),
+      discountUrl: Yup.string().url(INCORRECT_WEBSITE_URL),
       startDate: Yup.string().required(REQUIRED_FIELD),
       endDate: Yup.string().required(REQUIRED_FIELD),
       discount: Yup.number()
@@ -194,9 +189,7 @@ export const discountDataValidationSchema = (
       }),
       landingPageUrl: Yup.string().when("condition", {
         is: () => landingCheck,
-        then: Yup.string()
-          .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
-          .required(REQUIRED_FIELD),
+        then: Yup.string().url(INCORRECT_WEBSITE_URL).required(REQUIRED_FIELD),
         otherwise: Yup.string()
       }),
       landingPageReferrer: Yup.string().when("condition", {
@@ -219,7 +212,7 @@ export const discountDataValidationSchema = (
         is: (visibleOnEyca: boolean) => visibleOnEyca && landingCheck,
         then: schema =>
           schema
-            .matches(URL_REGEXP, INCORRECT_WEBSITE_URL)
+            .url(INCORRECT_WEBSITE_URL)
             .when(
               "landingPageUrl",
               checkEycaLandingDifferentFromLandingPageUrl
