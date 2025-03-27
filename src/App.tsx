@@ -16,9 +16,11 @@ import { queryClient } from "./api/common";
 
 function App() {
   const dispatch = useDispatch();
-  const { data: user, type, loading } = useSelector(
-    (state: RootState) => state.user
-  );
+  const {
+    data: user,
+    type,
+    loading
+  } = useSelector((state: RootState) => state.user);
   const token = getCookie();
   const { hash = "" } = window.location;
 

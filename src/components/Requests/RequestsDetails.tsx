@@ -33,8 +33,8 @@ const RequestsDetails = ({
     `${user.given_name} ${user.family_name}` ===
     (original as any).assignee?.fullName;
 
-  const approveAgreementMutation = remoteData.Backoffice.Agreement.approveAgreement.useMutation(
-    {
+  const approveAgreementMutation =
+    remoteData.Backoffice.Agreement.approveAgreement.useMutation({
       onSuccess() {
         setLoading(false);
         updateList();
@@ -51,14 +51,13 @@ const RequestsDetails = ({
           text: "Errore durante la validazione"
         });
       }
-    }
-  );
+    });
   const approveAgreement = () => {
     approveAgreementMutation.mutate({ agreementId: original.id });
   };
 
-  const rejectAgreementMutation = remoteData.Backoffice.Agreement.rejectAgreement.useMutation(
-    {
+  const rejectAgreementMutation =
+    remoteData.Backoffice.Agreement.rejectAgreement.useMutation({
       onSuccess() {
         setLoading(false);
         updateList();
@@ -71,8 +70,7 @@ const RequestsDetails = ({
       onError() {
         setLoading(false);
       }
-    }
-  );
+    });
   const rejectAgreement = () => {
     rejectAgreementMutation.mutate({
       agreementId: original.id,

@@ -19,21 +19,17 @@ import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
 const OperatorConvention = () => {
   const pageSize = 20;
   const [showDetails, setShowDetails] = useState(false);
-  const [selectedConvention, setSelectedConvention] = useState<
-    ApprovedAgreement | undefined
-  >();
+  const [selectedConvention, setSelectedConvention] =
+    useState<ApprovedAgreement | undefined>();
   const refForm = useRef<any>(null);
 
-  const [params, setParams] = useState<
-    AgreementApiGetApprovedAgreementsRequest
-  >({});
-  const {
-    data: conventions,
-    isLoading
-  } = remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery({
-    ...params,
-    pageSize
-  });
+  const [params, setParams] =
+    useState<AgreementApiGetApprovedAgreementsRequest>({});
+  const { data: conventions, isLoading } =
+    remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery({
+      ...params,
+      pageSize
+    });
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
   const columns = useMemo(

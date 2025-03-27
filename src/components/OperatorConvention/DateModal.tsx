@@ -16,9 +16,8 @@ const DateModal = ({
   setFieldValue: any;
   submitForm: any;
 }) => {
-  const [dateFrom, setDateFrom] = useState<Date | undefined>(
-    lastUpdateDateFrom
-  );
+  const [dateFrom, setDateFrom] =
+    useState<Date | undefined>(lastUpdateDateFrom);
   const [dateTo, setDateTo] = useState<Date | undefined>(lastUpdateDateTo);
   const [isOpenDateModal, setOpenDateModal] = useState(false);
 
