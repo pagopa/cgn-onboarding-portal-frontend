@@ -9,10 +9,10 @@ echo "🔨 compiling..."
 yarn tsc:noemit
 
 # Run lintier
-echo "🧹 runnning linter..."  
+echo "🧹 running linter..."  
 yarn lint-autofix
 # Run prettifier
-echo "🧼 runnning prettier..."
+echo "🧼 running prettier..."
 yarn prettify
 
 # If we have any modified files don't push
