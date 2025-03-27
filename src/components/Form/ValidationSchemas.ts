@@ -80,7 +80,8 @@ export const ProfileDataValidationSchema = Yup.object().shape({
       .nullable()
       .when("channelType", {
         is: (val: string) => val === "OnlineChannel" || val === "BothChannels",
-        then: Yup.string().url(INCORRECT_WEBSITE_URL).required(REQUIRED_FIELD)
+        then: schema =>
+          schema.url(INCORRECT_WEBSITE_URL).required(REQUIRED_FIELD)
       }),
     discountCodeType: Yup.string().when("channelType", {
       is: (val: string) => val === "OnlineChannel" || val === "BothChannels",
@@ -122,7 +123,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
 /**
  * Check if Eyca Landing Page URL is different from Discount URL
  */
-export const checkEycaLandingDifferentFromLandingPageUrl = (
+const checkEycaLandingDifferentFromLandingPageUrl = (
   landingPageUrl: string,
   schema: any
 ) => {
@@ -137,8 +138,8 @@ export const checkEycaLandingDifferentFromLandingPageUrl = (
 
 export const discountDataValidationSchema = (
   staticCheck: boolean,
-  landingCheck?: boolean,
-  bucketCheck?: boolean
+  landingCheck: boolean,
+  bucketCheck: boolean
 ) =>
   Yup.object().shape(
     {
@@ -228,8 +229,8 @@ export const discountDataValidationSchema = (
 
 export const discountsListDataValidationSchema = (
   staticCheck: boolean,
-  landingCheck?: boolean,
-  bucketCheck?: boolean
+  landingCheck: boolean,
+  bucketCheck: boolean
 ) =>
   Yup.object().shape({
     discounts: Yup.array().of(
