@@ -57,9 +57,8 @@ const ConventionFilter = ({
             const today = new Date();
             saveAs(
               blob,
-              `Esercenti CGN - ${today.getDate()}/${
-                today.getMonth() + 1
-              }/${today.getFullYear()}`
+              `Esercenti CGN - ${today.getDate()}/${today.getMonth() +
+                1}/${today.getFullYear()}`
             );
           }
           setDownloadingAgreements(false);
@@ -91,9 +90,8 @@ const ConventionFilter = ({
             const today = new Date();
             saveAs(
               blob,
-              `Opportunità Eyca - ${today.getDate()}/${
-                today.getMonth() + 1
-              }/${today.getFullYear()}`
+              `Opportunità Eyca - ${today.getDate()}/${today.getMonth() +
+                1}/${today.getFullYear()}`
             );
           }
           setDownloadingEyca(false);

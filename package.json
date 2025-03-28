@@ -21,8 +21,7 @@
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
     "generate": "./generate-openapi.sh",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
-    "prepare": "husky",
-    "tsc:noemit": "tsc --noemit"
+    "prepare": "husky"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.14.1",

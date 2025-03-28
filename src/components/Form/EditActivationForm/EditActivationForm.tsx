@@ -32,8 +32,8 @@ const CreateActivationForm = () => {
     [triggerTooltip]
   );
 
-  const createActivationMutation =
-    remoteData.Backoffice.AttributeAuthority.upsertOrganization.useMutation({
+  const createActivationMutation = remoteData.Backoffice.AttributeAuthority.upsertOrganization.useMutation(
+    {
       onSuccess() {
         history.push(ADMIN_PANEL_ACCESSI);
       },
@@ -51,15 +51,19 @@ const CreateActivationForm = () => {
           );
         }
       }
-    });
+    }
+  );
   const createActivation = (organization: OrganizationWithReferents) => {
     createActivationMutation.mutate({ body: organization });
   };
 
-  const { data, error, isLoading } =
-    remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery({
-      keyOrganizationFiscalCode: operatorFiscalCode
-    });
+  const {
+    data,
+    error,
+    isLoading
+  } = remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery({
+    keyOrganizationFiscalCode: operatorFiscalCode
+  });
   useEffect(() => {
     if (error) {
       throwErrorTooltip(

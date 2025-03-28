@@ -168,12 +168,13 @@ export const EditOperatorForm = ({
     };
   }, [profile]);
 
-  const editProfileMutation =
-    remoteData.Index.Profile.updateProfile.useMutation({
+  const editProfileMutation = remoteData.Index.Profile.updateProfile.useMutation(
+    {
       onSuccess() {
         history.push(DASHBOARD);
       }
-    });
+    }
+  );
   const editProfile = async (profile: UpdateProfile) => {
     editProfileMutation.mutate({ agreementId: agreement.id, profile });
   };

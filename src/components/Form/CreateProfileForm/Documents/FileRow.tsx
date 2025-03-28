@@ -100,7 +100,8 @@ const FileRow = (
     ) {
       triggerTooltip({
         severity: Severity.DANGER,
-        text: "Il formato del documento non è valido. Carica un documento PDF e riprova."
+        text:
+          "Il formato del documento non è valido. Carica un documento PDF e riprova."
       });
     } else {
       triggerTooltip({
@@ -112,12 +113,13 @@ const FileRow = (
     setUploadProgress(0);
   };
 
-  const deleteFileMutation =
-    remoteData.Index.Document.deleteDocument.useMutation({
+  const deleteFileMutation = remoteData.Index.Document.deleteDocument.useMutation(
+    {
       onSuccess() {
         getFiles();
       }
-    });
+    }
+  );
   const deleteFile = () => {
     deleteFileMutation.mutate({ agreementId, documentType: type });
   };

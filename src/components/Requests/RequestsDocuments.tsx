@@ -133,13 +133,14 @@ const RequestDocuments = ({
   });
   const documents = documentsQuery.data;
 
-  const uploadDocumentMutation =
-    remoteData.Backoffice.Document.uploadDocument.useMutation({
+  const uploadDocumentMutation = remoteData.Backoffice.Document.uploadDocument.useMutation(
+    {
       onSuccess() {
         setCheckAllDocs(true);
         void documentsQuery.refetch();
       }
-    });
+    }
+  );
   const uploadDocument = (documentType: DocumentType, file: File) => {
     uploadDocumentMutation.mutate({
       agreementId: original.id,
@@ -148,12 +149,13 @@ const RequestDocuments = ({
     });
   };
 
-  const deleteDocumentMutation =
-    remoteData.Backoffice.Document.deleteDocument.useMutation({
+  const deleteDocumentMutation = remoteData.Backoffice.Document.deleteDocument.useMutation(
+    {
       onSuccess() {
         void documentsQuery.refetch();
       }
-    });
+    }
+  );
   const deleteDocument = (documentType: DocumentType) => {
     void deleteDocumentMutation.mutate({
       agreementId: original.id,

@@ -21,11 +21,10 @@ import TestModal from "./TestModal";
 
 const Discounts = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [selectedDiscountAction, setSelectedDiscountAction] =
-    useState<{
-      action: "publish" | "unpublish" | "test" | "delete";
-      discountId: string;
-    }>();
+  const [selectedDiscountAction, setSelectedDiscountAction] = useState<{
+    action: "publish" | "unpublish" | "test" | "delete";
+    discountId: string;
+  }>();
   const closeActionModal = () => setSelectedDiscountAction(undefined);
   const publishModal = selectedDiscountAction?.action === "publish";
   const unpublishModal = selectedDiscountAction?.action === "unpublish";
@@ -57,10 +56,9 @@ const Discounts = () => {
       throwErrorTooltip("Errore nel caricamento delle opportunità");
     }
   }, [discountsQuery.error, throwErrorTooltip]);
-  const discounts = useMemo(
-    () => discountsQuery.data?.items ?? [],
-    [discountsQuery.data?.items]
-  );
+  const discounts = useMemo(() => discountsQuery.data?.items ?? [], [
+    discountsQuery.data?.items
+  ]);
   const invalidateDiscountsQuery = (
     data: unknown,
     { agreementId }: { agreementId: string }
@@ -70,13 +68,14 @@ const Discounts = () => {
     });
   };
 
-  const deleteDiscountMutation =
-    remoteData.Index.Discount.deleteDiscount.useMutation({
+  const deleteDiscountMutation = remoteData.Index.Discount.deleteDiscount.useMutation(
+    {
       onSuccess: invalidateDiscountsQuery,
       onError() {
         throwErrorTooltip("Errore nella cancellazione dell'opportunità");
       }
-    });
+    }
+  );
   const deleteDiscount = (discountId: string) => {
     deleteDiscountMutation.mutate({
       agreementId: agreement.id,
@@ -84,8 +83,8 @@ const Discounts = () => {
     });
   };
 
-  const publishDiscountMutation =
-    remoteData.Index.Discount.publishDiscount.useMutation({
+  const publishDiscountMutation = remoteData.Index.Discount.publishDiscount.useMutation(
+    {
       onSuccess: invalidateDiscountsQuery,
       onError(error) {
         if (error.status === 409) {
@@ -94,7 +93,8 @@ const Discounts = () => {
           throwErrorTooltip("Errore durante la pubblicazione dell'opportunità");
         }
       }
-    });
+    }
+  );
   const publishDiscount = (discountId: string) => {
     publishDiscountMutation.mutate({
       agreementId: agreement.id,
@@ -102,8 +102,8 @@ const Discounts = () => {
     });
   };
 
-  const unpublishDiscountMutation =
-    remoteData.Index.Discount.unpublishDiscount.useMutation({
+  const unpublishDiscountMutation = remoteData.Index.Discount.unpublishDiscount.useMutation(
+    {
       onSuccess: invalidateDiscountsQuery,
       onError(error) {
         if (error.status === 409) {
@@ -114,7 +114,8 @@ const Discounts = () => {
           );
         }
       }
-    });
+    }
+  );
 
   const unpublishDiscount = (discountId: string) => {
     unpublishDiscountMutation.mutate({
@@ -123,8 +124,8 @@ const Discounts = () => {
     });
   };
 
-  const testDiscountMutation =
-    remoteData.Index.Discount.testDiscount.useMutation({
+  const testDiscountMutation = remoteData.Index.Discount.testDiscount.useMutation(
+    {
       onSuccess: invalidateDiscountsQuery,
       async onError(error) {
         if (
@@ -140,7 +141,8 @@ const Discounts = () => {
           );
         }
       }
-    });
+    }
+  );
   const testDiscount = (discountId: string) => {
     testDiscountMutation.mutate({
       agreementId: agreement.id,

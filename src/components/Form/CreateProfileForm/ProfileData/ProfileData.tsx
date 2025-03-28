@@ -53,12 +53,13 @@ const ProfileData = ({
   const throwErrorTooltip = () => {
     triggerTooltip({
       severity: Severity.DANGER,
-      text: "Errore durante la creazione del profilo, controllare i dati e riprovare"
+      text:
+        "Errore durante la creazione del profilo, controllare i dati e riprovare"
     });
   };
 
-  const createProfileMutation =
-    remoteData.Index.Profile.createProfile.useMutation({
+  const createProfileMutation = remoteData.Index.Profile.createProfile.useMutation(
+    {
       async onError(error, variables) {
         if (
           error.status === 400 &&
@@ -73,13 +74,14 @@ const ProfileData = ({
       onSuccess() {
         handleNext();
       }
-    });
+    }
+  );
   const createProfile = (profile: CreateProfile) => {
     createProfileMutation.mutate({ agreementId: agreement.id, profile });
   };
 
-  const editProfileMutation =
-    remoteData.Index.Profile.updateProfile.useMutation({
+  const editProfileMutation = remoteData.Index.Profile.updateProfile.useMutation(
+    {
       onError() {
         throwErrorTooltip();
       },
@@ -87,7 +89,8 @@ const ProfileData = ({
         onUpdate();
         handleNext();
       }
-    });
+    }
+  );
   const editProfile = (profile: UpdateProfile) => {
     editProfileMutation.mutate({ agreementId: agreement.id, profile });
   };
