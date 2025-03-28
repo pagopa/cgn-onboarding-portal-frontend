@@ -37,7 +37,9 @@ type ReactQueryHelpers<Params, Result> = {
   queryFn({ queryKey }: { queryKey: QueryKeyType<Params> }): Promise<Result>;
   mutationFn(params: Params): Promise<Result>;
   invalidateQueries(params: Partial<Params>): void;
-  queryOptions(params: Params): {
+  queryOptions(
+    params: Params
+  ): {
     queryKey: QueryKeyType<Params>;
     queryFn({ queryKey }: { queryKey: QueryKeyType<Params> }): Promise<Result>;
   };

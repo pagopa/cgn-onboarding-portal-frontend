@@ -44,8 +44,9 @@ interface ProviderProps {
 
 function TooltipProvider({ children }: ProviderProps): ReactElement {
   const [open, openTooltip] = useState(false);
-  const [{ severity, text, title }, setTooltip] =
-    useState<TooltipProviderState>(initialState);
+  const [{ severity, text, title }, setTooltip] = useState<
+    TooltipProviderState
+  >(initialState);
 
   const timeoutRef = useRef<NodeJS.Timeout>();
 

@@ -77,21 +77,23 @@ const HelpForm = () => {
       text: "C'è stato un errore durante la sottomissione del form"
     });
 
-  const createLoggedHelpMutation =
-    remoteData.Index.Help.sendHelpRequest.useMutation({
+  const createLoggedHelpMutation = remoteData.Index.Help.sendHelpRequest.useMutation(
+    {
       onSuccess() {
         history.goBack();
       },
       onError: onErrorTooltip
-    });
+    }
+  );
 
-  const createNotLoggedHelpMutation =
-    remoteData.Public.Help.sendHelpRequest.useMutation({
+  const createNotLoggedHelpMutation = remoteData.Public.Help.sendHelpRequest.useMutation(
+    {
       onSuccess() {
         history.goBack();
       },
       onError: onErrorTooltip
-    });
+    }
+  );
 
   const hasTopicDropdown = (category: string): boolean =>
     category === HelpRequestCategoryEnum.DataFilling ||

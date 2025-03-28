@@ -15,12 +15,13 @@ const ProfileApiToken = () => {
 
   const [regeneratedTokens, setRegeneratedTokens] = useState<ApiTokens>();
 
-  const regenerateTokenMutation =
-    remoteData.Index.ApiToken.regenerateToken.useMutation({
+  const regenerateTokenMutation = remoteData.Index.ApiToken.regenerateToken.useMutation(
+    {
       onSuccess(data) {
         setRegeneratedTokens(data);
       }
-    });
+    }
+  );
   const regenerateToken = (
     agreementId: string,
     tokenType: "primary" | "secondary"

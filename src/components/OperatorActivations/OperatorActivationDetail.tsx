@@ -22,8 +22,8 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const deleteActivationMutation =
-    remoteData.Backoffice.AttributeAuthority.deleteOrganization.useMutation({
+  const deleteActivationMutation = remoteData.Backoffice.AttributeAuthority.deleteOrganization.useMutation(
+    {
       onSuccess() {
         getActivations();
       },
@@ -33,7 +33,8 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           text: "Rimozione dell'operatore fallita"
         });
       }
-    });
+    }
+  );
   const askDeleteOrganization = () => {
     deleteActivationMutation.mutate({
       keyOrganizationFiscalCode: operator.keyOrganizationFiscalCode
