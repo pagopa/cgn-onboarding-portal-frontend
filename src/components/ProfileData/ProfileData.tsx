@@ -41,16 +41,18 @@ const ProfileData = () => {
                   value={profile.description}
                   value_en={profile.description_en}
                 />
-                {// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                profile.salesChannel.websiteUrl && (
-                  <ProfileDataItem
-                    label="Sito web"
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    value={profile.salesChannel.websiteUrl}
-                  />
-                )}
+                {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  profile.salesChannel.websiteUrl && (
+                    <ProfileDataItem
+                      label="Sito web"
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      value={profile.salesChannel.websiteUrl}
+                    />
+                  )
+                }
                 <ProfileDataItem
                   label="Indirizzo"
                   value={profile.legalOffice}

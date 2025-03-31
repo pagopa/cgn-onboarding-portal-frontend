@@ -30,25 +30,24 @@ const Documents = ({
   const documentsQuery = remoteData.Index.Document.getDocuments.useQuery({
     agreementId: agreement.id
   });
-  const documents = useMemo(() => documentsQuery.data?.items ?? [], [
-    documentsQuery.data?.items
-  ]);
+  const documents = useMemo(
+    () => documentsQuery.data?.items ?? [],
+    [documentsQuery.data?.items]
+  );
   const getFiles = () => documentsQuery.refetch();
 
-  const requireApprovalMutation = remoteData.Index.Agreement.requestApproval.useMutation(
-    {
+  const requireApprovalMutation =
+    remoteData.Index.Agreement.requestApproval.useMutation({
       onSuccess() {
         setShowRequireApproval(true);
       },
       onError() {
         triggerTooltip({
           severity: Severity.DANGER,
-          text:
-            "Errore durante l'invio della richiesta di approvazione, riprovare in seguito"
+          text: "Errore durante l'invio della richiesta di approvazione, riprovare in seguito"
         });
       }
-    }
-  );
+    });
   const requireApproval = () => {
     requireApprovalMutation.mutate({ agreementId: agreement.id });
   };

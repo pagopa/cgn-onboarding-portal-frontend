@@ -11,14 +11,12 @@ type Props = {
 
 const ToggleField = ({ htmlFor, text, children, small }: Props) => (
   <div className="mt-10 row">
-    <div className={`form-check ${small ? "col-6": "col-10"}`}>
+    <div className={`form-check ${small ? "col-6" : "col-10"}`}>
       <label htmlFor={htmlFor}>
-        <span className="text-base font-weight-normal text-black">
-          {text}
-        </span>
+        <span className="text-base font-weight-normal text-black">{text}</span>
       </label>
     </div>
-    <div className={`form-check ${small ? "col-3": "col-2"}`}>
+    <div className={`form-check ${small ? "col-3" : "col-2"}`}>
       <div className="toggles">
         <label>
           {children}

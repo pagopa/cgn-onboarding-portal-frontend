@@ -81,12 +81,11 @@ export const formatPercentage = (discountValue: number | undefined) =>
 export const withNormalizedSpaces = (value?: string) =>
   value ? value.replace(/(\r\n|\n|\r)/gm, " ").trim() : "";
 
-export const clearIfReferenceIsBlank = (reference?: string) => (
-  value?: string
-) =>
-  withNormalizedSpaces(reference).length <= 0
-    ? ""
-    : withNormalizedSpaces(value);
+export const clearIfReferenceIsBlank =
+  (reference?: string) => (value?: string) =>
+    withNormalizedSpaces(reference).length <= 0
+      ? ""
+      : withNormalizedSpaces(value);
 
 export function getEntityTypeLabel(
   entityType: EntityTypeA | EntityTypeB | undefined
