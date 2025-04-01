@@ -21,11 +21,10 @@ import TestModal from "./TestModal";
 
 const Discounts = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [selectedDiscountAction, setSelectedDiscountAction] =
-    useState<{
-      action: "publish" | "unpublish" | "test" | "delete";
-      discountId: string;
-    }>();
+  const [selectedDiscountAction, setSelectedDiscountAction] = useState<{
+    action: "publish" | "unpublish" | "test" | "delete";
+    discountId: string;
+  }>();
   const closeActionModal = () => setSelectedDiscountAction(undefined);
   const publishModal = selectedDiscountAction?.action === "publish";
   const unpublishModal = selectedDiscountAction?.action === "unpublish";

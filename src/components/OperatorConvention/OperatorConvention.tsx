@@ -19,8 +19,9 @@ import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
 const OperatorConvention = () => {
   const pageSize = 20;
   const [showDetails, setShowDetails] = useState(false);
-  const [selectedConvention, setSelectedConvention] =
-    useState<ApprovedAgreement | undefined>();
+  const [selectedConvention, setSelectedConvention] = useState<
+    ApprovedAgreement | undefined
+  >();
   const refForm = useRef<any>(null);
 
   const [params, setParams] =

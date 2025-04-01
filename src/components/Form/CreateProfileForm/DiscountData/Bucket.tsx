@@ -31,8 +31,9 @@ Props) => {
   const hasIndex = index !== undefined;
   const refFile = useRef<HTMLInputElement>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [currentDoc, setCurrentDoc] =
-    useState<{ name: string } | undefined>(undefined);
+  const [currentDoc, setCurrentDoc] = useState<{ name: string } | undefined>(
+    undefined
+  );
   const [canUploadFile, setCanUploadFile] = useState(true);
   const { triggerTooltip } = useTooltip();
 
