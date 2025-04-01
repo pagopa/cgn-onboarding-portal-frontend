@@ -46,7 +46,6 @@
     "jwt-decode": "^3.1.2",
     "node-sass": "^7.0.1",
     "path": "^0.12.7",
-    "prettier": "^3.5.3",
     "react": "^16.8.0",
     "react-datepicker": "^3.8.0",
     "react-dom": "^17.0.1",
@@ -68,6 +67,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "prettier": "^3.5.3",
     "@openapitools/openapi-generator-cli": "^2.15.3",
     "@pagopa/danger-custom-rules": "^2.0.3",
     "@pagopa/eslint-config": "^1.1.1",
