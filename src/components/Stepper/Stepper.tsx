@@ -40,8 +40,8 @@ const Stepper = ({
                 activeStep === index
                   ? "active"
                   : completedSteps.includes(step.key)
-                  ? "confirmed"
-                  : ""
+                    ? "confirmed"
+                    : ""
               }
               handleChangeStep={changeStep(step.key, index)}
             >
