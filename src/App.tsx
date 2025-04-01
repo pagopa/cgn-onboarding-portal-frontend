@@ -35,21 +35,23 @@ function App() {
     }
   }, [dispatch, hash, token]);
 
-  if (!token) {
-    return <Login />;
-  }
-
-  if (type === "USER" && user.level === "L1") {
-    return <SelectCompany token={token} />;
-  }
-
-  if (loading) {
-    return <CenteredLoading />;
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterConfig user={user} userType={type} />
+      {(() => {
+        if (!token) {
+          return <Login />;
+        }
+
+        if (type === "USER" && user.level === "L1") {
+          return <SelectCompany token={token} />;
+        }
+
+        if (loading) {
+          return <CenteredLoading />;
+        }
+
+        return <RouterConfig user={user} userType={type} />;
+      })()}
     </QueryClientProvider>
   );
 }
