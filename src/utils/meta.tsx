@@ -39,8 +39,7 @@ export const renderCSP = () => {
   }
   if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat") {
     // eslint-disable-next-line functional/immutable-data
-    document.getElementsByTagName(
-      "head"
-    )[0].innerHTML += `<meta http-equiv="Content-Security-Policy" content="${getCSPContent()}">`;
+    document.getElementsByTagName("head")[0].innerHTML +=
+      `<meta http-equiv="Content-Security-Policy" content="${getCSPContent()}">`;
   }
 };

@@ -221,7 +221,7 @@ const DiscountData = ({
                 ),
                 startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
                 endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
-              } as Discount)
+              }) as Discount
           )
         };
         newValues.discounts.forEach((discount: Discount) => {

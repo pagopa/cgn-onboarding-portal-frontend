@@ -26,8 +26,8 @@ type VariablesOf<AxiosParams extends Array<any>> = AxiosParams extends [
 ]
   ? undefined
   : AxiosParams extends [(infer V)?, RawAxiosRequestConfig?]
-  ? V
-  : undefined;
+    ? V
+    : undefined;
 
 type QueryKeyType<Params> = [string, string, string, Params];
 
