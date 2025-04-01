@@ -32,6 +32,14 @@ import {
   ADMIN_PANEL_ACCESSI_CREA
 } from "./routes";
 
+const adminRoutes = [
+  ADMIN_PANEL_RICHIESTE,
+  ADMIN_PANEL_CONVENZIONATI,
+  ADMIN_PANEL_ACCESSI,
+  ADMIN_PANEL_ACCESSI_EDIT,
+  ADMIN_PANEL_ACCESSI_CREA
+];
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
   const { value: agreement, loading } = useSelector(
@@ -42,44 +50,38 @@ export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
   const dispatch = useDispatch();
   const isAdmin = userType === "ADMIN";
 
-  const adminRoutes = [
-    ADMIN_PANEL_RICHIESTE,
-    ADMIN_PANEL_CONVENZIONATI,
-    ADMIN_PANEL_ACCESSI,
-    ADMIN_PANEL_ACCESSI_EDIT,
-    ADMIN_PANEL_ACCESSI_CREA
-  ];
-
   useEffect(() => {
     if (!isAdmin) {
       dispatch(createAgreement());
     }
-  }, []);
+  }, [dispatch, isAdmin]);
+
+  const historyPush = history.push;
 
   useEffect(() => {
     if (!isAdmin) {
       switch (agreement.state) {
         case AgreementState.DraftAgreement:
-          history.push(CREATE_PROFILE);
+          historyPush(CREATE_PROFILE);
           break;
         case AgreementState.PendingAgreement:
         case AgreementState.ApprovedAgreement:
           if (location.pathname === "/") {
-            history.push(DASHBOARD);
+            historyPush(DASHBOARD);
           }
           break;
         case AgreementState.RejectedAgreement:
-          history.push(REJECT_PROFILE);
+          historyPush(REJECT_PROFILE);
           break;
       }
     } else {
-      history.push(
+      historyPush(
         adminRoutes.includes(location.pathname)
           ? location.pathname
           : ADMIN_PANEL_RICHIESTE
       );
     }
-  }, [agreement.state]);
+  }, [agreement.state, historyPush, isAdmin, location.pathname]);
 
   if (isAdmin) {
     return (

@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 declare module "design-react-kit" {
   export { default as Accordion } from "src/components/Accordion/Accordion";

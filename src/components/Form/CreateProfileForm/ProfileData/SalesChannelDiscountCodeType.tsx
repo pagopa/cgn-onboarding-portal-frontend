@@ -27,7 +27,7 @@ const SalesChannelDiscountCodeType = ({
   // channelType can be factored out from the form values, but i still needs to be sent to the backend at this point
   React.useEffect(() => {
     const thereAreSomeAddresses =
-      formikContext.values.salesChannel.addresses?.some(
+      formValues.salesChannel.addresses?.some(
         address =>
           address.street || address.zipCode || address.city || address.district
       ) || formValues.salesChannel?.allNationalAddresses;
@@ -78,7 +78,7 @@ const SalesChannelDiscountCodeType = ({
         SalesChannelType.OnlineChannel
       );
     }
-  }, [formValues]);
+  }, [formValues, formikContextSetFieldValue]);
   return (
     <FormSection
       title={"Gestione delle opportunità per Carta Giovani Nazionale"}

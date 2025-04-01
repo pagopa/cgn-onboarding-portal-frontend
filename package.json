@@ -70,7 +70,7 @@
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.15.3",
     "@pagopa/danger-custom-rules": "^2.0.3",
-    "@pagopa/eslint-config": "^1.1.1",
+    "@pagopa/eslint-config": "3.0.0",
     "@pagopa/openapi-codegen-ts": "9.0.0",
     "@pagopa/ts-commons": "9.1.0",
     "@svgr/parcel-plugin-svgr": "^5.5.0",
@@ -94,7 +94,7 @@
     "danger-plugin-digitalcitizenship": "^1.0.0",
     "dotenv": "^8.2.0",
     "eslint-plugin-prettier": "^5.2.5",
-    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "husky": "^9.1.7",
     "jest": "^26.6.3",
     "lint-staged": "^15.4.3",
@@ -103,7 +103,7 @@
     "sass": "^1.32.13",
     "shx": "^0.3.3",
     "ts-jest": "^26.5.4",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.2"
   },
   "resolutions": {
     "fp-ts": "1.17.4",
