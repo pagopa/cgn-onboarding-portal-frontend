@@ -62,7 +62,10 @@ $ yarn start:uat
 
 ## Login in localhost 
 As soon as the dashboard is up and running, you will see a landing page where you should login. Choose what kind of login do you want (login as Operator or login as Admin).
-After that you logged in successfully, you will be redirected to UAT environemnt dashboard, in this case you need to retrieve the token generated in UAT and put it in localhost env, to do so you have to:
+After that you logged in successfully, you will be redirected to UAT environment dashboard. In this case, you need to retrieve the token generated in UAT and put it in the localhost environment. You can do this in two ways:
+
+### Option 1: Using the Browser Console
+
 - Open the browser inspect console and type the following snippet:
 ```js
 const dialog = window.document.createElement("dialog");
@@ -80,4 +83,16 @@ dialog.onclick = async () => {
 window.document.body.appendChild(dialog);
 dialog.showModal();
 ```
-- Paste the snippet that was automatically placed in the clipboard in the browser console and press enter;
+- Paste the snippet that was automatically placed in the clipboard in the browser console and press enter.
+
+### Option 2: Using the Browser Extension
+
+To simplify the process, you can use the provided browser extension. This extension automates the retrieval of the token from the UAT environment and applies it to the localhost environment.
+
+#### Steps to Use the Extension
+1. Install the extension in your browser. You can find the extension in the [extensions/login](extensions/login) folder.
+2. Navigate to the UAT environment dashboard and log in.
+3. Open the extension and click the "Retrieve CGN token" button.
+4. The extension will automatically copy the token and apply it to the localhost environment.
+
+This eliminates the need to manually execute the JavaScript snippet in the browser console.
