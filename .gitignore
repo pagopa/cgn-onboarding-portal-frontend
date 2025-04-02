@@ -68,5 +68,3 @@ generated_backoffice
 
 # Allow .js files inside the extensions folder
 !extensions/**/*.js
-
-src/commit-hash.ts
