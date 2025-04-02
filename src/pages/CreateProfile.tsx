@@ -11,18 +11,20 @@ import { CompletedStep, EntityType } from "../api/generated";
 import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
 import CgnLogo from "../components/Logo/CgnLogo";
 
+type ExtendedCompletedStep = CompletedStep | "Guide";
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CreateProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [step, setStep] = useState<number>(agreement.completedSteps.length);
   const [completedSteps, setCompletedSteps] = useState<
-    Array<CompletedStep | "Guide">
+    Array<ExtendedCompletedStep>
   >(agreement.completedSteps);
   const [showRequireApproval, setShowRequireApproval] = useState(false);
 
   const entityType = agreement.entityType;
 
-  const handleNext = (step: number, key?: CompletedStep | "Guide") => {
+  const handleNext = (step: number, key?: ExtendedCompletedStep) => {
     if (key && !completedSteps.includes(key)) {
       setCompletedSteps([...completedSteps, key]);
     }
