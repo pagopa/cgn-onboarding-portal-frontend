@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import FormSection from "../FormSection";
 import InputField from "../FormField";
 import {
+  helpTopicRequiresCategory,
   loggedHelpValidationSchema,
   notLoggedHelpValidationSchema
 } from "../ValidationSchemas";
@@ -92,11 +93,6 @@ const HelpForm = () => {
       },
       onError: onErrorTooltip
     });
-
-  const hasTopicDropdown = (category: string): boolean =>
-    category === HelpRequestCategoryEnum.DataFilling ||
-    category === HelpRequestCategoryEnum.Discounts ||
-    category === HelpRequestCategoryEnum.Documents;
 
   return (
     <Formik
@@ -229,12 +225,14 @@ const HelpForm = () => {
                   </label>
                 </div>
               </div>
+              <CustomErrorMessage name="category" />
             </InputField>
-            {hasTopicDropdown(values.category) && (
+            {helpTopicRequiresCategory(values.category) && (
               <InputField
                 title="Argomento"
                 htmlFor="argomento"
                 description="Seleziona l’argomento per cui hai bisogno di aiuto"
+                required
               >
                 <div>
                   <Field className="select" name="topic" as="select">
@@ -249,6 +247,7 @@ const HelpForm = () => {
                     </>
                   </Field>
                 </div>
+                <CustomErrorMessage name="topic" />
               </InputField>
             )}
             <InputField
@@ -264,6 +263,7 @@ const HelpForm = () => {
                 maxLength={200}
                 rows="4"
               />
+              <CustomErrorMessage name="message" />
             </InputField>
             {token && <FormButtons isValid={isValid} dirty={dirty} />}
           </FormSection>
