@@ -13,6 +13,10 @@ import "./styles/react-datepicker.css";
 import "typeface-titillium-web";
 import { RootState } from "./store/store";
 import { queryClient } from "./api/common";
+import { commitHash } from "./commit-hash";
+
+// eslint-disable-next-line no-console
+console.info(`Commit hash: ${commitHash}`);
 
 function App() {
   const dispatch = useDispatch();

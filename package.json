@@ -10,6 +10,7 @@
     "prebuild": "npm-run-all prebuild:*",
     "prebuild:generate": "yarn run generate",
     "prebuild:clean": "shx rm -rf dist",
+    "prebuild:commit-hash": "yarn run expose-commit-hash",
     "prebuild:tsc": "tsc --noEmit",
     "build": "parcel build src/index.html --out-dir dist --public-url /",
     "build:prod": "cross-env NODE_ENV=production yarn run build",
@@ -22,7 +23,8 @@
     "generate": "./generate-openapi.sh",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "prepare": "husky",
-    "tsc:noemit": "tsc --noemit"
+    "tsc:noemit": "tsc --noemit",
+    "expose-commit-hash": "echo \"export const commitHash = '$(git rev-parse HEAD)';\" > src/commit-hash.ts"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.14.1",
