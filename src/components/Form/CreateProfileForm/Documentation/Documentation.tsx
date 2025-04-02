@@ -16,7 +16,6 @@ const Documentation = ({
 
   const handleClick = () => {
     setIsDocumentationRead(true);
-    return true;
   };
 
   useEffect(() => {
