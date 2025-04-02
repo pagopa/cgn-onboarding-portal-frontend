@@ -14,6 +14,8 @@
   - [Setup the project](#setup-the-project)
   - [Run the dashboard](#run-the-dashboard)
   - [Login in localhost](#login-in-localhost)
+    - [Option 1: Using the Browser Console](#option-1-using-the-browser-console)
+    - [Option 2: Using the Browser Extension](#option-2-using-the-browser-extension) 
  
 
 # Getting started
