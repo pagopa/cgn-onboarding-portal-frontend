@@ -65,3 +65,6 @@ generated_backoffice
 !jest.config.js
 !.release-it.js
 
+
+# Allow .js files inside the extensions folder
+!extensions/**/*.js
