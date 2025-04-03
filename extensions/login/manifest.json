@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "CGN Onboarding Extension",
+  "version": "1.0",
+  "description": "A web extension to assist with CGN onboarding.",
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "permissions": [
+    "cookies",
+    "clipboardWrite",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "http://localhost/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
