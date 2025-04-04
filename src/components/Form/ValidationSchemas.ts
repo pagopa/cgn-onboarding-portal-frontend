@@ -238,13 +238,15 @@ export const discountsListDataValidationSchema = (
     )
   });
 
-export const helpTopicRequiresCategory = (category: HelpRequestCategoryEnum) =>
+export const helpTopicRequiresCategory = (
+  category: HelpRequestCategoryEnum | undefined
+) =>
   category === HelpRequestCategoryEnum.Discounts ||
   category === HelpRequestCategoryEnum.Documents ||
   category === HelpRequestCategoryEnum.DataFilling;
 
 export const loggedHelpValidationSchema = Yup.object().shape({
-  category: Yup.string()
+  category: Yup.mixed<HelpRequestCategoryEnum>()
     .oneOf(Object.values(HelpRequestCategoryEnum))
     .required(REQUIRED_FIELD),
   topic: Yup.string().when(["category"], {
@@ -255,7 +257,7 @@ export const loggedHelpValidationSchema = Yup.object().shape({
 });
 
 export const notLoggedHelpValidationSchema = Yup.object().shape({
-  category: Yup.string()
+  category: Yup.mixed<HelpRequestCategoryEnum>()
     .oneOf(Object.values(HelpRequestCategoryEnum))
     .required(REQUIRED_FIELD),
   topic: Yup.string().when(["category"], {

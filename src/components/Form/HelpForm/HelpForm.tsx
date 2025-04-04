@@ -19,14 +19,8 @@ import { Severity, useTooltip } from "../../../context/tooltip";
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
-const loggedInitialValues = {
-  category: "",
-  topic: "",
-  message: ""
-};
-
-const notLoggedInitialValues = {
-  category: "",
+const initialValues = {
+  category: undefined as HelpRequestCategoryEnum | undefined,
   topic: "",
   message: "",
   referentFirstName: "",
@@ -96,23 +90,29 @@ const HelpForm = () => {
 
   return (
     <Formik
-      initialValues={token ? loggedInitialValues : notLoggedInitialValues}
+      initialValues={initialValues}
       validationSchema={
         token ? loggedHelpValidationSchema : notLoggedHelpValidationSchema
       }
-      onSubmit={(values: any) => {
-        const { confirmEmailAddress, ...helpRequest } = values;
+      onSubmit={values => {
         if (token) {
+          const helpRequest = loggedHelpValidationSchema.validateSync(values, {
+            stripUnknown: true
+          });
           createLoggedHelpMutation.mutate({
             agreementId: agreement.id,
-            helpRequest: values
+            helpRequest
           });
         } else {
+          const { confirmEmailAddress, ...helpRequest } =
+            notLoggedHelpValidationSchema.validateSync(values, {
+              stripUnknown: true
+            });
           createNotLoggedHelpMutation.mutate({ helpRequest });
         }
       }}
     >
-      {({ values, isValid, dirty, setFieldValue }) => (
+      {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           {!token && <ReCAPTCHAFormComponent setFieldValue={setFieldValue} />}
           <FormSection
@@ -237,6 +237,9 @@ const HelpForm = () => {
                 <div>
                   <Field className="select" name="topic" as="select">
                     <>
+                      <option key={""} value={""}>
+                        {""}
+                      </option>
                       {topics()
                         .find(topic => topic.key === values.category)
                         ?.items.map(item => (
@@ -265,7 +268,7 @@ const HelpForm = () => {
               />
               <CustomErrorMessage name="message" />
             </InputField>
-            {token && <FormButtons isValid={isValid} dirty={dirty} />}
+            {token && <FormButtons />}
           </FormSection>
           {!token && (
             <FormSection
@@ -352,7 +355,7 @@ const HelpForm = () => {
                   </InputFieldMultiple>
                 </div>
               </div>
-              <FormButtons isValid={isValid} dirty={dirty} />
+              <FormButtons />
               <p className="mt-4 text-gray">
                 Form protetto tramite reCAPTCHA e Google{" "}
                 <a href="https://policies.google.com/privacy">Privacy Policy</a>{" "}
