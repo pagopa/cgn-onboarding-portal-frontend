@@ -22,7 +22,7 @@ export function setCookie(token: string) {
 
 export const getCookie = () => {
   const cookies = new Cookies();
-  return cookies.get(cookieKey);
+  return cookies.get<string | undefined>(cookieKey);
 };
 
 export function deleteCookie() {

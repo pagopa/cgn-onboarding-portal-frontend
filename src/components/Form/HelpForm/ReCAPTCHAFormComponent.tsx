@@ -1,31 +1,30 @@
 /* eslint-disable functional/immutable-data */
-import React, { useEffect, useRef, useState } from "react";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Severity, useTooltip } from "../../../context/tooltip";
 
 type Props = {
-  setFieldValue: any;
+  setFieldValue(name: string, value: unknown): void;
 };
 
 const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
-  const recaptchaRef = useRef<any>();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [canRenderRecaptcha, setCanRenderRecaptcha] = useState(false);
   const { triggerTooltip } = useTooltip();
 
-  const onErrorTooltip = () =>
-    triggerTooltip({
-      severity: Severity.DANGER,
-      text: "C'è stato un errore durante la verifica del recaptcha"
-    });
-
-  const executeRecaptcha = async () =>
-    await tryCatch(() => recaptchaRef.current.executeAsync(), toError)
-      .fold(onErrorTooltip, response =>
-        setFieldValue("recaptchaToken", response)
-      )
-      .run();
+  const executeRecaptcha = useCallback(async () => {
+    if (recaptchaRef.current) {
+      try {
+        const response = await recaptchaRef.current.executeAsync();
+        setFieldValue("recaptchaToken", response);
+      } catch (error) {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "C'è stato un errore durante la verifica del recaptcha"
+        });
+      }
+    }
+  }, [setFieldValue, triggerTooltip]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -35,7 +34,7 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
     };
     setCanRenderRecaptcha(true);
     void executeRecaptcha();
-  }, [setFieldValue]);
+  }, [executeRecaptcha, setFieldValue]);
 
   return (
     <div className="mt-10">
