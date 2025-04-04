@@ -209,7 +209,7 @@ export const EditOperatorForm = ({
             return (
               <Form autoComplete="off">
                 <ProfileInfo entityType={entityType} />
-                <ReferentData entityType={entityType} />
+                <ReferentData />
                 <ProfileImage />
                 <ProfileDescription />
                 <SalesChannels entityType={entityType}>
@@ -224,7 +224,7 @@ export const EditOperatorForm = ({
             return (
               <Form autoComplete="off">
                 <ProfileInfo entityType={entityType} />
-                <ReferentData entityType={entityType}>
+                <ReferentData>
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
                     isEnabled={true}
