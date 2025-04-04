@@ -2,6 +2,7 @@ import { hot } from "react-hot-loader";
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { version } from "../package.json";
 import { setCookie, getCookie } from "./utils/cookie";
 import { setUser } from "./store/user/userSlice";
 import CenteredLoading from "./components/CenteredLoading/CenteredLoading";
@@ -13,6 +14,9 @@ import "./styles/react-datepicker.css";
 import "typeface-titillium-web";
 import { RootState } from "./store/store";
 import { queryClient } from "./api/common";
+
+// eslint-disable-next-line no-console
+console.info("package.json version", version);
 
 function App() {
   const dispatch = useDispatch();
