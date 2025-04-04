@@ -19,7 +19,7 @@
     "test:coverage": "jest --passWithNoTests --coverage --coverageReporters=cobertura",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
-    "generate": "./generate-openapi.sh",
+    "generate": "./generate-openapi.sh v1.0.5",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "prepare": "husky",
     "tsc:noemit": "tsc --noemit"
