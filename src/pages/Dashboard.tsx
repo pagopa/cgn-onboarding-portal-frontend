@@ -23,9 +23,9 @@ const Dashboard = () => {
     );
   }
 
-  function handleClick(newTab: number) {
+  const handleClick = (newTab: number) => {
     setTab(newTab);
-  }
+  };
 
   function selectedTab() {
     switch (tab) {

@@ -181,7 +181,7 @@ const ProfileData = ({
         <Form autoComplete="off">
           <FormContainer className="mb-20">
             <ProfileInfo entityType={entityType} />
-            <ReferentData entityType={entityType} />
+            <ReferentData />
             <ProfileImage />
             <ProfileDescription />
             <SalesChannels entityType={entityType}>
