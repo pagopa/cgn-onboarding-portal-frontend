@@ -11,19 +11,20 @@ import { CompletedStep, EntityType } from "../api/generated";
 import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
 import CgnLogo from "../components/Logo/CgnLogo";
 
+type ExtendedCompletedStep = CompletedStep | "Guide";
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CreateProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const [loading, setLoading] = useState(true);
   const [step, setStep] = useState<number>(agreement.completedSteps.length);
-  const [completedSteps, setCompletedSteps] = useState<Array<string>>(
-    agreement.completedSteps
-  );
+  const [completedSteps, setCompletedSteps] = useState<
+    Array<ExtendedCompletedStep>
+  >(agreement.completedSteps);
   const [showRequireApproval, setShowRequireApproval] = useState(false);
 
   const entityType = agreement.entityType;
 
-  const handleNext = (step: number, key?: string) => {
+  const handleNext = (step: number, key?: ExtendedCompletedStep) => {
     if (key && !completedSteps.includes(key)) {
       setCompletedSteps([...completedSteps, key]);
     }
@@ -34,8 +35,10 @@ const CreateProfile = () => {
     setCompletedSteps([...completedSteps.filter(step => step !== "Document")]);
   };
 
+  const [didSetStepOnPageLoad, setDidSetStepOnPageLoad] = useState(false);
+
   useEffect(() => {
-    if (entityType) {
+    if (entityType && !didSetStepOnPageLoad) {
       if (agreement.state === "RejectedAgreement") {
         setStep(1);
         setCompletedSteps([...completedSteps, "Guide"]);
@@ -48,9 +51,16 @@ const CreateProfile = () => {
           setStep(step + 1);
         }
       }
-      setLoading(false);
+      setDidSetStepOnPageLoad(true);
     }
-  }, [entityType]);
+  }, [
+    agreement.completedSteps,
+    agreement.state,
+    completedSteps,
+    didSetStepOnPageLoad,
+    entityType,
+    step
+  ]);
 
   const selectedTab = () => {
     if (step === 0) {
@@ -97,7 +107,7 @@ const CreateProfile = () => {
     return <RequestApproval />;
   }
 
-  return !loading ? (
+  return (
     <Layout hasHeaderBorder>
       <div className="bg-white">
         <div className="container p-10">
@@ -122,7 +132,7 @@ const CreateProfile = () => {
       </div>
       {selectedTab()}
     </Layout>
-  ) : null;
+  );
 };
 
 export default CreateProfile;

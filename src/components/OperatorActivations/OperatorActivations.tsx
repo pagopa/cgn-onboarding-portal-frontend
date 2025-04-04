@@ -132,7 +132,7 @@ const OperatorActivations = () => {
   );
 
   const data: Array<OrganizationWithReferentsAndStatus> = useMemo(
-    () => (operators?.items ? [...operators?.items] : []),
+    () => (operators?.items ? [...operators.items] : []),
     [operators]
   );
   const {

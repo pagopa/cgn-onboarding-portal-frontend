@@ -232,10 +232,7 @@ const checkMemoization = (
       next.index !== undefined
         ? next.formValues.discounts[next.index].lastBucketCodeLoadUid
         : next.formValues.lastBucketCodeLoadUid;
-    if (previousValue === nextValue) {
-      return true;
-    }
-    return false;
+    return previousValue === nextValue;
   }
   return false;
 };

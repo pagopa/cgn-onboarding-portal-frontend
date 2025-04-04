@@ -14,10 +14,9 @@ const Documentation = ({
 }) => {
   const [isDocumentationRead, setIsDocumentationRead] = useState(isCompleted);
 
-  function handleClick() {
+  const handleClick = () => {
     setIsDocumentationRead(true);
-    return true;
-  }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);

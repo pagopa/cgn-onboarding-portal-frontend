@@ -6,7 +6,7 @@ import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { EntityType, Referent } from "../../../../api/generated";
+import { Referent } from "../../../../api/generated";
 
 const MAX_SECONDARY_REFERENTS = 4;
 
@@ -17,7 +17,6 @@ type Props = {
   showRemove: boolean;
   onRemove(): void;
   children?: React.ReactNode;
-  entityType: EntityType | undefined;
 };
 
 /* eslint complexity: ["error", 20000] */
@@ -29,8 +28,7 @@ const Referent = ({
   onAdd,
   showRemove,
   onRemove,
-  children,
-  entityType
+  children
 }: Props) => {
   const referentFieldName =
     index !== null ? `secondaryReferents[${index}]` : "referent";
@@ -123,13 +121,7 @@ const Referent = ({
   );
 };
 
-function ReferentData({
-  children,
-  entityType
-}: {
-  entityType: EntityType | undefined;
-  children?: React.ReactNode;
-}) {
+function ReferentData({ children }: { children?: React.ReactNode }) {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
   return (
@@ -156,7 +148,6 @@ function ReferentData({
               onAdd={add}
               showRemove={false}
               onRemove={() => undefined}
-              entityType={entityType}
             >
               {noSecondaryReferents ? children : undefined}
             </Referent>
@@ -171,7 +162,6 @@ function ReferentData({
                     onAdd={add}
                     showRemove={true}
                     onRemove={() => arrayHelpers.remove(index)}
-                    entityType={entityType}
                   >
                     {isLast ? children : undefined}
                   </Referent>
