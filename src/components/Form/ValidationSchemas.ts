@@ -285,7 +285,7 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
         .oneOf([Yup.ref("emailAddress")], INCORRECT_CONFIRM_EMAIL_ADDRESS)
         .required(REQUIRED_FIELD)
     }),
-  recaptchaToken: Yup.string().required(REQUIRED_FIELD)
+  recaptchaToken: Yup.string()
 });
 
 export const activationValidationSchema = Yup.object().shape({

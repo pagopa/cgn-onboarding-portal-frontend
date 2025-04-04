@@ -108,7 +108,9 @@ const HelpForm = () => {
             notLoggedHelpValidationSchema.validateSync(values, {
               stripUnknown: true
             });
-          createNotLoggedHelpMutation.mutate({ helpRequest });
+          createNotLoggedHelpMutation.mutate({
+            helpRequest: { ...helpRequest, recaptchaToken: "" }
+          });
         }
       }}
     >
