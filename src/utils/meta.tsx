@@ -14,7 +14,7 @@ const getAdminLoginUri = () => {
 const getCSPContent = () =>
   `
 Content-Security-Policy-Report-Only: default-src 'self';
-script-src 'self' https://www.google.com https://www.gstatic.com;
+script-src 'self' https://www.google.com https://www.gstatic.com https://recaptcha.net${location.host.startsWith("localhost") ? " 'unsafe-eval'" : ""};
 style-src 'self';
 object-src 'none';
 base-uri 'self';
@@ -22,7 +22,7 @@ connect-src 'self' ${getAdminLoginUri()} ${
     process.env.BASE_API_DOMAIN
   } https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self';
-frame-src 'self' https://www.google.com;
+frame-src 'self' https://www.google.com https://recaptcha.net;
 img-src 'self' https://assets.cdn.io.italia.it https://iopitncgnpeassetsst01.blob.core.windows.net ${fromNullable(
     process.env.BASE_BLOB_PATH
   ).getOrElse("")} ${
