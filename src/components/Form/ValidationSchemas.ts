@@ -238,47 +238,30 @@ export const discountsListDataValidationSchema = (
     )
   });
 
+export const helpTopicRequiresCategory = (
+  category: HelpRequestCategoryEnum | undefined
+) =>
+  category === HelpRequestCategoryEnum.Discounts ||
+  category === HelpRequestCategoryEnum.Documents ||
+  category === HelpRequestCategoryEnum.DataFilling;
+
 export const loggedHelpValidationSchema = Yup.object().shape({
-  category: Yup.string()
-    .oneOf([
-      HelpRequestCategoryEnum.Access,
-      HelpRequestCategoryEnum.CgnOwnerReporting,
-      HelpRequestCategoryEnum.DataFilling,
-      HelpRequestCategoryEnum.Discounts,
-      HelpRequestCategoryEnum.Documents,
-      HelpRequestCategoryEnum.Other,
-      HelpRequestCategoryEnum.Suggestions,
-      HelpRequestCategoryEnum.TechnicalProblem
-    ])
+  category: Yup.mixed<HelpRequestCategoryEnum>()
+    .oneOf(Object.values(HelpRequestCategoryEnum))
     .required(REQUIRED_FIELD),
   topic: Yup.string().when(["category"], {
-    is:
-      HelpRequestCategoryEnum.Discounts ||
-      HelpRequestCategoryEnum.Documents ||
-      HelpRequestCategoryEnum.DataFilling,
+    is: helpTopicRequiresCategory,
     then: Yup.string().required(REQUIRED_FIELD)
   }),
   message: Yup.string().required(REQUIRED_FIELD)
 });
 
 export const notLoggedHelpValidationSchema = Yup.object().shape({
-  category: Yup.string()
-    .oneOf([
-      HelpRequestCategoryEnum.Access,
-      HelpRequestCategoryEnum.CgnOwnerReporting,
-      HelpRequestCategoryEnum.DataFilling,
-      HelpRequestCategoryEnum.Discounts,
-      HelpRequestCategoryEnum.Documents,
-      HelpRequestCategoryEnum.Other,
-      HelpRequestCategoryEnum.Suggestions,
-      HelpRequestCategoryEnum.TechnicalProblem
-    ])
+  category: Yup.mixed<HelpRequestCategoryEnum>()
+    .oneOf(Object.values(HelpRequestCategoryEnum))
     .required(REQUIRED_FIELD),
   topic: Yup.string().when(["category"], {
-    is:
-      HelpRequestCategoryEnum.Discounts ||
-      HelpRequestCategoryEnum.Documents ||
-      HelpRequestCategoryEnum.DataFilling,
+    is: helpTopicRequiresCategory,
     then: Yup.string().required(REQUIRED_FIELD)
   }),
   message: Yup.string().required(REQUIRED_FIELD),
@@ -297,7 +280,7 @@ export const notLoggedHelpValidationSchema = Yup.object().shape({
   confirmEmailAddress: Yup.string()
     .email(INCORRECT_EMAIL_ADDRESS)
     .when("emailAddress", {
-      is: (email: string) => email.length > 0,
+      is: (email: string | undefined) => (email?.length ?? 0) > 0,
       then: Yup.string()
         .oneOf([Yup.ref("emailAddress")], INCORRECT_CONFIRM_EMAIL_ADDRESS)
         .required(REQUIRED_FIELD)

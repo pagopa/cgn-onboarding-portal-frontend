@@ -4,23 +4,25 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { Severity, useTooltip } from "../../../context/tooltip";
 
 type Props = {
-  setFieldValue: any;
+  setFieldValue(name: string, value: unknown): void;
 };
 
 const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
-  const recaptchaRef = useRef<any>();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [canRenderRecaptcha, setCanRenderRecaptcha] = useState(false);
   const { triggerTooltip } = useTooltip();
 
   const executeRecaptcha = useCallback(async () => {
-    try {
-      const response = await recaptchaRef.current.executeAsync();
-      setFieldValue("recaptchaToken", response);
-    } catch (error) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: "C'è stato un errore durante la verifica del recaptcha"
-      });
+    if (recaptchaRef.current) {
+      try {
+        const response = await recaptchaRef.current.executeAsync();
+        setFieldValue("recaptchaToken", response);
+      } catch (error) {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "C'è stato un errore durante la verifica del recaptcha"
+        });
+      }
     }
   }, [setFieldValue, triggerTooltip]);
 

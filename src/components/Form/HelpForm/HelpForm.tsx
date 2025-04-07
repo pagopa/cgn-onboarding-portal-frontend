@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import FormSection from "../FormSection";
 import InputField from "../FormField";
 import {
+  helpTopicRequiresCategory,
   loggedHelpValidationSchema,
   notLoggedHelpValidationSchema
 } from "../ValidationSchemas";
@@ -18,14 +19,8 @@ import { Severity, useTooltip } from "../../../context/tooltip";
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
-const loggedInitialValues = {
-  category: "",
-  topic: "",
-  message: ""
-};
-
-const notLoggedInitialValues = {
-  category: "",
+const initialValues = {
+  category: undefined as HelpRequestCategoryEnum | undefined,
   topic: "",
   message: "",
   referentFirstName: "",
@@ -93,30 +88,33 @@ const HelpForm = () => {
       onError: onErrorTooltip
     });
 
-  const hasTopicDropdown = (category: string): boolean =>
-    category === HelpRequestCategoryEnum.DataFilling ||
-    category === HelpRequestCategoryEnum.Discounts ||
-    category === HelpRequestCategoryEnum.Documents;
-
   return (
     <Formik
-      initialValues={token ? loggedInitialValues : notLoggedInitialValues}
+      initialValues={initialValues}
       validationSchema={
         token ? loggedHelpValidationSchema : notLoggedHelpValidationSchema
       }
-      onSubmit={(values: any) => {
-        const { confirmEmailAddress, ...helpRequest } = values;
+      onSubmit={values => {
         if (token) {
+          const helpRequest = loggedHelpValidationSchema.validateSync(values, {
+            stripUnknown: true
+          });
           createLoggedHelpMutation.mutate({
             agreementId: agreement.id,
-            helpRequest: values
+            helpRequest
           });
         } else {
-          createNotLoggedHelpMutation.mutate({ helpRequest });
+          const { confirmEmailAddress, ...helpRequest } =
+            notLoggedHelpValidationSchema.validateSync(values, {
+              stripUnknown: true
+            });
+          createNotLoggedHelpMutation.mutate({
+            helpRequest: { ...helpRequest }
+          });
         }
       }}
     >
-      {({ values, isValid, dirty, setFieldValue }) => (
+      {({ values, setFieldValue }) => (
         <Form autoComplete="off">
           {!token && <ReCAPTCHAFormComponent setFieldValue={setFieldValue} />}
           <FormSection
@@ -229,16 +227,21 @@ const HelpForm = () => {
                   </label>
                 </div>
               </div>
+              <CustomErrorMessage name="category" />
             </InputField>
-            {hasTopicDropdown(values.category) && (
+            {helpTopicRequiresCategory(values.category) && (
               <InputField
                 title="Argomento"
                 htmlFor="argomento"
                 description="Seleziona l’argomento per cui hai bisogno di aiuto"
+                required
               >
                 <div>
                   <Field className="select" name="topic" as="select">
                     <>
+                      <option key={""} value={""}>
+                        {""}
+                      </option>
                       {topics()
                         .find(topic => topic.key === values.category)
                         ?.items.map(item => (
@@ -249,6 +252,7 @@ const HelpForm = () => {
                     </>
                   </Field>
                 </div>
+                <CustomErrorMessage name="topic" />
               </InputField>
             )}
             <InputField
@@ -264,8 +268,9 @@ const HelpForm = () => {
                 maxLength={200}
                 rows="4"
               />
+              <CustomErrorMessage name="message" />
             </InputField>
-            {token && <FormButtons isValid={isValid} dirty={dirty} />}
+            {token && <FormButtons />}
           </FormSection>
           {!token && (
             <FormSection
@@ -352,7 +357,7 @@ const HelpForm = () => {
                   </InputFieldMultiple>
                 </div>
               </div>
-              <FormButtons isValid={isValid} dirty={dirty} />
+              <FormButtons />
               <p className="mt-4 text-gray">
                 Form protetto tramite reCAPTCHA e Google{" "}
                 <a href="https://policies.google.com/privacy">Privacy Policy</a>{" "}
