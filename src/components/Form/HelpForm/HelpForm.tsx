@@ -109,7 +109,7 @@ const HelpForm = () => {
               stripUnknown: true
             });
           createNotLoggedHelpMutation.mutate({
-            helpRequest: { ...helpRequest, recaptchaToken: "" }
+            helpRequest: { ...helpRequest }
           });
         }
       }}
