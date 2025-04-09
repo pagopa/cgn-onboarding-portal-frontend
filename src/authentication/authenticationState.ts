@@ -141,15 +141,18 @@ export function getMerchantToken(): string {
   const data = authenticationStore.get();
   if (data.currentSession?.type === "user") {
     const merchantFiscalCode = data.currentSession.merchantFiscalCode;
-    data.userSessionByFiscalCode[
-      data.currentSession.userFiscalCode
-    ]?.merchants.find(
-      merchant => merchant.organization_fiscal_code === merchantFiscalCode
+    return (
+      data.userSessionByFiscalCode[
+        data.currentSession.userFiscalCode
+      ]?.merchants.find(
+        merchant => merchant.organization_fiscal_code === merchantFiscalCode
+      )?.token ?? ""
     );
   }
   return "";
   // returning empty, invalid or expired token here is fine since authentication errors are handled elsewhere
 }
+
 export function getAdminToken(): string {
   // TODO
   return "";

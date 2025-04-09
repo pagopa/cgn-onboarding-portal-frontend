@@ -26,7 +26,7 @@ import {
   getAdminNonceByState
 } from "./authenticationState";
 import { makeStore } from "./authenticationStore";
-import { load, save, watch } from "./authenticationPeristance";
+import { load, save, watch } from "./authenticationPersistance";
 
 const LOCAL_STORAGE_KEY = "oneidentity";
 
@@ -128,9 +128,9 @@ void (async () => {
         }
       });
       const decoded = jwtDecode<unknown>(adminTokenResponse.data);
-      const parsed = adminJWTPayloadSchema.parse(decoded);
       // eslint-disable-next-line
       console.log(decoded);
+      const parsed = adminJWTPayloadSchema.parse(decoded);
       // TODO salvare admin token e impostare current session
     }
   }
@@ -202,7 +202,7 @@ export function on401() {
 type AuthenticationContextType = {
   userSessionByFiscalCode: Record<string, UserSession>;
   currentSession: CurrentSession;
-  setCurrentSession(session: CurrentSession): void;
+  changeSession(session: CurrentSession): void;
   logout(session: CurrentSession): void;
 };
 
@@ -224,28 +224,25 @@ export function AuthenticationProvider({
     []
   );
   const { currentSession, userSessionByFiscalCode } = persistedState;
-  const setCurrentSession = useCallback((session: CurrentSession) => {
+  const changeSession = useCallback((session: CurrentSession) => {
     setCurrentSession(session);
     // eslint-disable-next-line functional/immutable-data
     window.location.href = "/";
   }, []);
-  const logout = useCallback(
-    (session: CurrentSession) => {
-      deleteSession(session);
-      setCurrentSession(null);
-      // eslint-disable-next-line functional/immutable-data
-      window.location.href = "/";
-    },
-    [setCurrentSession]
-  );
+  const logout = useCallback((session: CurrentSession) => {
+    deleteSession(session);
+    setCurrentSession(null);
+    // eslint-disable-next-line functional/immutable-data
+    window.location.href = "/";
+  }, []);
   const value = useMemo<AuthenticationContextType>(
     () => ({
       userSessionByFiscalCode,
       currentSession,
-      setCurrentSession,
+      changeSession,
       logout
     }),
-    [currentSession, logout, setCurrentSession, userSessionByFiscalCode]
+    [changeSession, currentSession, logout, userSessionByFiscalCode]
   );
   return (
     <AuthenticationContext.Provider value={value}>
@@ -300,7 +297,7 @@ export function UserSessionsDropdown() {
                     padding: "0px 16px"
                   }}
                   onClick={() => {
-                    authentication.setCurrentSession({
+                    authentication.changeSession({
                       type: "user",
                       userFiscalCode: fiscal_code,
                       merchantFiscalCode: undefined

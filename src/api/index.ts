@@ -11,7 +11,6 @@ import {
   DocumentTemplateApi,
   GeolocationTokenApi,
   HelpApi,
-  OrganizationsDataApi,
   ProfileApi
 } from "./generated";
 
