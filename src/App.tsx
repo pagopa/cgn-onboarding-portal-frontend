@@ -19,7 +19,7 @@ function App() {
       <AuthenticationProvider>
         <AuthenticationConsumer>
           {({ currentSession }) => {
-            if (currentSession === null) {
+            if (!currentSession) {
               return <Login />;
             }
             if (

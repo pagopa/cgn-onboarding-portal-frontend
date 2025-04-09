@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { authenticationStore } from "./authentication";
+import {
+  AuthenticationContextType,
+  authenticationStore
+} from "./authentication";
 
 const merchantInfoSchema = z.object({
   organization_name: z.string(),
@@ -156,4 +159,33 @@ export function getMerchantToken(): string {
 export function getAdminToken(): string {
   // TODO
   return "";
+}
+
+export function getCurrentUserFiscalCode(state: AuthenticationContextType) {
+  if (state.currentSession && state.currentSession.type === "user") {
+    return state.currentSession.userFiscalCode;
+  }
+}
+
+export function getCurrentUserSession(state: AuthenticationContextType) {
+  if (state.currentSession && state.currentSession.type === "user") {
+    return state.userSessionByFiscalCode[state.currentSession.userFiscalCode];
+  }
+}
+
+export function getCurrentMerchantFiscalCode(state: AuthenticationContextType) {
+  if (state.currentSession && state.currentSession.type === "user") {
+    return state.currentSession.merchantFiscalCode;
+  }
+}
+
+export function getCurrentMerchant(state: AuthenticationContextType) {
+  if (state.currentSession && state.currentSession.type === "user") {
+    const merchantFiscalCode = state.currentSession.merchantFiscalCode;
+    return state.userSessionByFiscalCode[
+      state.currentSession.userFiscalCode
+    ]?.merchants.find(
+      merchant => merchant.organization_fiscal_code === merchantFiscalCode
+    );
+  }
 }

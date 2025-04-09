@@ -5,6 +5,7 @@ import { useTooltip, Severity } from "../../context/tooltip";
 import { Agreement, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/authentication";
+import { getCurrentUserSession } from "../../authentication/authenticationState";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -24,12 +25,7 @@ const RequestsDetails = ({
   const { triggerTooltip } = useTooltip();
 
   const authentication = useAuthentication();
-  const user =
-    authentication.currentSession?.type === "user"
-      ? authentication.userSessionByFiscalCode[
-          authentication.currentSession.userFiscalCode
-        ]
-      : null;
+  const user = getCurrentUserSession(authentication);
 
   const entityType = original.entityType as EntityType;
 

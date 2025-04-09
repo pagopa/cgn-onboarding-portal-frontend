@@ -21,6 +21,11 @@ import {
   sanitizeProfileFromValues
 } from "../../EditOperatorDataForm/EditOperatorDataForm";
 import { useAuthentication } from "../../../../authentication/authentication";
+import {
+  getCurrentMerchant,
+  getCurrentMerchantFiscalCode,
+  getCurrentUserFiscalCode
+} from "../../../../authentication/authenticationState";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -151,19 +156,9 @@ const ProfileData = ({
   const isLoading = isCompleted && profileQuery.isLoading;
 
   const authentication = useAuthentication();
-  const userFiscalCode =
-    authentication.currentSession?.type === "user"
-      ? authentication.currentSession.userFiscalCode
-      : "";
-  const merchantFiscalCode =
-    authentication.currentSession?.type === "user"
-      ? (authentication.currentSession.merchantFiscalCode ?? "")
-      : "";
-  const merchant = authentication.userSessionByFiscalCode[
-    userFiscalCode
-  ]?.merchants?.find(
-    merchant => merchant.organization_fiscal_code === merchantFiscalCode
-  );
+  const userFiscalCode = getCurrentUserFiscalCode(authentication);
+  const merchantFiscalCode = getCurrentMerchantFiscalCode(authentication);
+  const merchant = getCurrentMerchant(authentication);
 
   if (isLoading) {
     return <CenteredLoading />;

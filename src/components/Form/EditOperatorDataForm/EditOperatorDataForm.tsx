@@ -20,6 +20,11 @@ import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 import { UpdateProfile } from "../../../api/generated";
 import { useAuthentication } from "../../../authentication/authentication";
+import {
+  getCurrentMerchant,
+  getCurrentMerchantFiscalCode,
+  getCurrentUserFiscalCode
+} from "../../../authentication/authenticationState";
 
 // WARNING: this file is 90% duplicated with src/components/Form/CreateProfileForm/ProfileData/ProfileData.tsx
 // any changes here should be reflected there as well
@@ -179,19 +184,9 @@ export const EditOperatorForm = ({
   };
 
   const authentication = useAuthentication();
-  const userFiscalCode =
-    authentication.currentSession?.type === "user"
-      ? authentication.currentSession.userFiscalCode
-      : "";
-  const merchantFiscalCode =
-    authentication.currentSession?.type === "user"
-      ? (authentication.currentSession.merchantFiscalCode ?? "")
-      : "";
-  const merchant = authentication.userSessionByFiscalCode[
-    userFiscalCode
-  ]?.merchants?.find(
-    merchant => merchant.organization_fiscal_code === merchantFiscalCode
-  );
+  const userFiscalCode = getCurrentUserFiscalCode(authentication);
+  const merchantFiscalCode = getCurrentMerchantFiscalCode(authentication);
+  const merchant = getCurrentMerchant(authentication);
 
   if (profileQuery.isLoading) {
     return <CenteredLoading />;

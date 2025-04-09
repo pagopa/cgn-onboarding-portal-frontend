@@ -10,18 +10,14 @@ import Profile from "../components/Profile/Profile";
 import ProfileData from "../components/ProfileData/ProfileData";
 import { RootState } from "../store/store";
 import { useAuthentication } from "../authentication/authentication";
+import { getCurrentUserSession } from "../authentication/authenticationState";
 
 const Dashboard = () => {
   const [tab, setTab] = useState(0);
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
   const authentication = useAuthentication();
-  const user =
-    authentication.currentSession?.type === "user"
-      ? authentication.userSessionByFiscalCode[
-          authentication.currentSession.userFiscalCode
-        ]
-      : null;
+  const user = getCurrentUserSession(authentication);
 
   function hasStateSection(state: any) {
     return (

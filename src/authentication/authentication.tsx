@@ -199,7 +199,7 @@ export function on401() {
   window.location.href = "/";
 }
 
-type AuthenticationContextType = {
+export type AuthenticationContextType = {
   userSessionByFiscalCode: Record<string, UserSession>;
   currentSession: CurrentSession;
   changeSession(session: CurrentSession): void;
