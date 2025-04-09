@@ -20,6 +20,7 @@ import {
   profileDefaultInitialValues,
   sanitizeProfileFromValues
 } from "../../EditOperatorDataForm/EditOperatorDataForm";
+import { useAuthentication } from "../../../../authentication/authentication";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -43,7 +44,6 @@ const ProfileData = ({
   onUpdate
 }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const user = useSelector((state: RootState) => state.user.data);
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {
@@ -150,6 +150,21 @@ const ProfileData = ({
 
   const isLoading = isCompleted && profileQuery.isLoading;
 
+  const authentication = useAuthentication();
+  const userFiscalCode =
+    authentication.currentSession?.type === "user"
+      ? authentication.currentSession.userFiscalCode
+      : "";
+  const merchantFiscalCode =
+    authentication.currentSession?.type === "user"
+      ? (authentication.currentSession.merchantFiscalCode ?? "")
+      : "";
+  const merchant = authentication.userSessionByFiscalCode[
+    userFiscalCode
+  ]?.merchants?.find(
+    merchant => merchant.organization_fiscal_code === merchantFiscalCode
+  );
+
   if (isLoading) {
     return <CenteredLoading />;
   }
@@ -163,9 +178,8 @@ const ProfileData = ({
           ...defaultSalesChannel,
           ...initialValues.salesChannel
         },
-        fullName: user.company?.organization_name || "",
-        taxCodeOrVat:
-          user.company?.organization_fiscal_code || user.fiscal_number || ""
+        fullName: merchant?.organization_name || "",
+        taxCodeOrVat: merchantFiscalCode || userFiscalCode || ""
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {

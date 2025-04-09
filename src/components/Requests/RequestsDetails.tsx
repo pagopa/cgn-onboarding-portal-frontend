@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
-import { RootState } from "../../store/store";
 import { useTooltip, Severity } from "../../context/tooltip";
 import { Agreement, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
+import { useAuthentication } from "../../authentication/authentication";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -19,18 +18,23 @@ const RequestsDetails = ({
   updateList: () => void;
   setLoading: (state: boolean) => void;
 }) => {
-  const { data: user }: { data: any } = useSelector(
-    (state: RootState) => state.user
-  );
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [checkAllDocs, setCheckAllDocs] = useState(false);
   const { triggerTooltip } = useTooltip();
 
+  const authentication = useAuthentication();
+  const user =
+    authentication.currentSession?.type === "user"
+      ? authentication.userSessionByFiscalCode[
+          authentication.currentSession.userFiscalCode
+        ]
+      : null;
+
   const entityType = original.entityType as EntityType;
 
   const assignedToMe =
-    `${user.given_name} ${user.family_name}` ===
+    `${user?.first_name} ${user?.last_name}` ===
     (original as any).assignee?.fullName;
 
   const approveAgreementMutation =

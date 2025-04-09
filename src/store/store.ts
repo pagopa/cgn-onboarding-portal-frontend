@@ -1,11 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import agreementReducer from "./agreement/agreementSlice";
-import userReducer from "./user/userSlice";
 
 export const store = configureStore({
   reducer: {
-    agreement: agreementReducer,
-    user: userReducer
+    agreement: agreementReducer
   }
 });
 

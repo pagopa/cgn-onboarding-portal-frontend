@@ -16,6 +16,7 @@ import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
 import CreateActivation from "../pages/CreateActivation";
 import EditActivation from "../pages/EditActivation";
+import { useAuthentication } from "../authentication/authentication";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -41,14 +42,16 @@ const adminRoutes = [
 ];
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
+export const RouterConfig = () => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
   );
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
-  const isAdmin = userType === "ADMIN";
+
+  const authentication = useAuthentication();
+  const isAdmin = authentication.currentSession?.type === "admin";
 
   useEffect(() => {
     if (!isAdmin) {

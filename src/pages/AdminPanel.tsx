@@ -1,12 +1,10 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
 import Layout from "../components/Layout/Layout";
 import { ContainerFluid } from "../components/Container/Container";
 import IntroductionAdmin from "../components/Introduction/IntroductionAdmin";
 import Requests from "../components/Requests/Requests";
 import OperatorConvention from "../components/OperatorConvention/OperatorConvention";
-import { RootState } from "../store/store";
 import {
   ADMIN_PANEL_RICHIESTE,
   ADMIN_PANEL_CONVENZIONATI,
@@ -15,10 +13,10 @@ import {
 import OperatorActivations from "../components/OperatorActivations/OperatorActivations";
 
 const AdminPanel = () => {
-  const { data } = useSelector((state: RootState) => state.user);
   const location = useLocation();
   const history = useHistory();
-  const user = data as any;
+
+  const user = {} as any; // TODO
 
   const handleClick = (newTab: string) => {
     history.push(newTab);
@@ -42,7 +40,7 @@ const AdminPanel = () => {
       <ContainerFluid className="mt-10 mb-20" maxWidth="1200px">
         <div className="col-12">
           <IntroductionAdmin
-            name={user.name?.replace(".", " ")}
+            name={user?.name?.replace(".", " ")}
             handleClick={handleClick}
             activeTab={location.pathname}
           />

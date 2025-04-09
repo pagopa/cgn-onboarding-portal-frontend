@@ -34,7 +34,10 @@ worker-src 'none';
 `;
 
 export const renderCSP = () => {
-  if (location.host.startsWith("localhost")) {
+  if (
+    location.host.startsWith("localhost") ||
+    location.host.startsWith("127.0.0.1")
+  ) {
     return;
   }
   if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat") {

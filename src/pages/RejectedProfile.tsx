@@ -3,16 +3,17 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { RootState } from "../store/store";
-import { logout } from "../utils/cookie";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import DocumentFail from "../assets/icons/document_fail.svg";
 import { CREATE_PROFILE } from "../navigation/routes";
 import CgnLogo from "../components/Logo/CgnLogo";
+import { useAuthentication } from "../authentication/authentication";
 
 const RejectedProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const history = useHistory();
+  const authentication = useAuthentication();
   return (
     <Layout>
       <Container className="mt-10 mb-20">
@@ -47,7 +48,9 @@ const RejectedProfile = () => {
                 color="primary"
                 className="ml-4"
                 outline
-                onClick={() => logout("USER")}
+                onClick={() => {
+                  authentication.logout(authentication.currentSession);
+                }}
                 style={{ width: "175px" }}
               >
                 Esci

@@ -9,12 +9,19 @@ import Discounts from "../components/Discounts/Discounts";
 import Profile from "../components/Profile/Profile";
 import ProfileData from "../components/ProfileData/ProfileData";
 import { RootState } from "../store/store";
+import { useAuthentication } from "../authentication/authentication";
 
 const Dashboard = () => {
   const [tab, setTab] = useState(0);
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const { data } = useSelector((state: RootState) => state.user);
-  const user = data as any;
+
+  const authentication = useAuthentication();
+  const user =
+    authentication.currentSession?.type === "user"
+      ? authentication.userSessionByFiscalCode[
+          authentication.currentSession.userFiscalCode
+        ]
+      : null;
 
   function hasStateSection(state: any) {
     return (
@@ -45,7 +52,7 @@ const Dashboard = () => {
       <ContainerFluid className="mt-10 mb-20" maxWidth="972px">
         <div className="col-9">
           <Introduction
-            name={`${user.name} ${user.family_name}`}
+            name={`${user?.first_name} ${user?.last_name}`}
             handleClick={handleClick}
             activeTab={tab}
           />

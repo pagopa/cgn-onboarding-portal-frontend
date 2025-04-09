@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { getCookie, logout } from "../utils/cookie";
+import { on401 } from "../authentication/authentication";
+import { getMerchantToken } from "../authentication/authenticationState";
 import {
   AgreementApi,
   ApiTokenApi,
@@ -10,10 +11,11 @@ import {
   DocumentTemplateApi,
   GeolocationTokenApi,
   HelpApi,
+  OrganizationsDataApi,
   ProfileApi
 } from "./generated";
 
-const token = getCookie();
+const token = getMerchantToken();
 
 export const axiosInstance = axios.create({
   headers: {
@@ -27,7 +29,7 @@ axiosInstance.interceptors.response.use(
   response => response,
   (error: AxiosError) => {
     if (error?.response?.status === 401) {
-      logout("USER");
+      on401();
     }
     return error;
   }

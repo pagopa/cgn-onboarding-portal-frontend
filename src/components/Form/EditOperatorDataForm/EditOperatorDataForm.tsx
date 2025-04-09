@@ -19,6 +19,7 @@ import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 import { UpdateProfile } from "../../../api/generated";
+import { useAuthentication } from "../../../authentication/authentication";
 
 // WARNING: this file is 90% duplicated with src/components/Form/CreateProfileForm/ProfileData/ProfileData.tsx
 // any changes here should be reflected there as well
@@ -112,7 +113,6 @@ export const EditOperatorForm = ({
 }) => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const user = useSelector((state: RootState) => state.user.data);
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
@@ -178,6 +178,21 @@ export const EditOperatorForm = ({
     editProfileMutation.mutate({ agreementId: agreement.id, profile });
   };
 
+  const authentication = useAuthentication();
+  const userFiscalCode =
+    authentication.currentSession?.type === "user"
+      ? authentication.currentSession.userFiscalCode
+      : "";
+  const merchantFiscalCode =
+    authentication.currentSession?.type === "user"
+      ? (authentication.currentSession.merchantFiscalCode ?? "")
+      : "";
+  const merchant = authentication.userSessionByFiscalCode[
+    userFiscalCode
+  ]?.merchants?.find(
+    merchant => merchant.organization_fiscal_code === merchantFiscalCode
+  );
+
   if (profileQuery.isLoading) {
     return <CenteredLoading />;
   }
@@ -193,9 +208,8 @@ export const EditOperatorForm = ({
           ...defaultSalesChannel,
           ...initialValues.salesChannel
         },
-        fullName: user.company?.organization_name || "",
-        taxCodeOrVat:
-          user.company?.organization_fiscal_code || user.fiscal_number || ""
+        fullName: merchant?.organization_name || "",
+        taxCodeOrVat: merchantFiscalCode || userFiscalCode || ""
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {

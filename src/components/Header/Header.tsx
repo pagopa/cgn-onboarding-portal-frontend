@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
-import { getCookie, logout } from "../../utils/cookie";
 import { CREATE_PROFILE, HELP } from "../../navigation/routes";
-import { RootState } from "../../store/store";
 import Logo from "../Logo/Logo";
+import {
+  ALLOW_MULTIPLE_LOGIN,
+  useAuthentication,
+  UserSessionsDropdown
+} from "../../authentication/authentication";
 import LogoutModal from "./LogoutModal";
 
 type Props = {
@@ -13,8 +15,8 @@ type Props = {
 };
 
 const Header = ({ hasBorder = false }: Props) => {
-  const { type } = useSelector((state: RootState) => state.user);
-  const token = getCookie();
+  const authentication = useAuthentication();
+  const isLogged = authentication.currentSession !== null;
   const location = useLocation();
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
@@ -33,9 +35,9 @@ const Header = ({ hasBorder = false }: Props) => {
           <Logo />
         </div>
         <div className="d-flex align-items-center">
-          {type !== "ADMIN" && (
+          {authentication.currentSession?.type !== "admin" && (
             <>
-              {token ? (
+              {isLogged ? (
                 <Link
                   to={HELP}
                   className="mr-11 text-base text-blue font-weight-semibold no-underline"
@@ -52,7 +54,8 @@ const Header = ({ hasBorder = false }: Props) => {
               )}
             </>
           )}
-          {token && (
+          {ALLOW_MULTIPLE_LOGIN && <UserSessionsDropdown />}
+          {isLogged && (
             <>
               {location.pathname === CREATE_PROFILE && (
                 <Button
@@ -73,7 +76,9 @@ const Header = ({ hasBorder = false }: Props) => {
                   size="xs"
                   icon={false}
                   tag="button"
-                  onClick={() => logout(type)}
+                  onClick={() => {
+                    authentication.logout(authentication.currentSession);
+                  }}
                 >
                   Esci
                 </Button>
@@ -85,7 +90,7 @@ const Header = ({ hasBorder = false }: Props) => {
           isOpen={modal}
           toggle={toggle}
           logout={() => {
-            logout(type);
+            authentication.logout(authentication.currentSession);
           }}
         />
       </div>

@@ -1,48 +1,21 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useSelector } from "react-redux";
+import React from "react";
 import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { logout, setCookie } from "../utils/cookie";
-import { RootState } from "../store/store";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import CgnLogo from "../components/Logo/CgnLogo";
+import { useAuthentication } from "../authentication/authentication";
 
-const SelectCompany = ({ token }: { token: string }) => {
-  const { data } = useSelector((state: RootState) => state.user);
-  const [selectedCompany, setCompany] = useState("");
-  const user = data as any;
-
-  const saveSelectedCompany = async () =>
-    await tryCatch(
-      () =>
-        axios.post(
-          `${process.env.BASE_SPID_LOGIN_PATH}/upgradeToken`,
-          {
-            organization_fiscal_code: selectedCompany
-          },
-          {
-            headers: {
-              "X-CGN-TOKEN": token,
-              Accept: "application/json",
-              "Content-Type": "application/json"
-            }
-          }
-        ),
-      toError
-    )
-      .map(response => response.data.token)
-      .fold(
-        () => logout("USER"),
-        response => {
-          setCookie(response);
-          window.location.replace("/");
-        }
-      )
-      .run();
-
+const SelectCompany = () => {
+  const authentication = useAuthentication();
+  const [selectedCompany, setSelectedCompany] = React.useState<string | null>(
+    null
+  );
+  const merchants =
+    authentication.currentSession?.type === "user"
+      ? authentication.userSessionByFiscalCode[
+          authentication.currentSession.userFiscalCode
+        ]?.merchants
+      : undefined;
   return (
     <Layout>
       <Container>
@@ -63,40 +36,44 @@ const SelectCompany = ({ token }: { token: string }) => {
                   <CgnLogo />
                 </div>
               </div>
-              {user.companies.map((company: any, i: number) => (
-                <div
-                  key={i}
-                  className="form-check pb-4"
-                  style={{ borderBottom: "1px solid lightgray" }}
-                >
-                  <input
-                    name={`organization_fiscal_code_${i}`}
-                    type="radio"
-                    id={`organization_fiscal_code_${i}`}
-                    onChange={e => setCompany(e.target.value)}
-                    value={company.organization_fiscal_code}
-                    checked={
-                      selectedCompany === company.organization_fiscal_code
-                    }
-                  />
-                  <label htmlFor={`organization_fiscal_code_${i}`}>
-                    <strong>{company.organization_name}</strong>
-                    <small
+              {merchants?.map((company, i) => {
+                return (
+                  <div
+                    key={i}
+                    className="form-check pb-4"
+                    style={{ borderBottom: "1px solid lightgray" }}
+                  >
+                    <input
+                      name={`organization_fiscal_code_${i}`}
+                      type="radio"
                       id={`organization_fiscal_code_${i}`}
-                      className="form-text"
-                    >
-                      CF/PIVA {company.organization_fiscal_code}
-                    </small>
-                  </label>
-                </div>
-              ))}
+                      onChange={e => setSelectedCompany(e.target.value)}
+                      value={company.organization_fiscal_code}
+                      checked={
+                        selectedCompany === company.organization_fiscal_code
+                      }
+                    />
+                    <label htmlFor={`organization_fiscal_code_${i}`}>
+                      <strong>{company.organization_name}</strong>
+                      <small
+                        id={`organization_fiscal_code_${i}`}
+                        className="form-text"
+                      >
+                        CF/PIVA {company.organization_fiscal_code}
+                      </small>
+                    </label>
+                  </div>
+                );
+              })}
               <div className="mt-10 d-flex flex-row">
                 <Button
                   className="px-14 mr-4"
                   outline
                   color="primary"
                   tag="button"
-                  onClick={() => logout("USER")}
+                  onClick={() => {
+                    authentication.logout(authentication.currentSession);
+                  }}
                 >
                   Annulla
                 </Button>
@@ -105,7 +82,19 @@ const SelectCompany = ({ token }: { token: string }) => {
                   className="px-14 mr-4"
                   color="primary"
                   tag="button"
-                  onClick={saveSelectedCompany}
+                  onClick={() => {
+                    if (
+                      authentication.currentSession?.type === "user" &&
+                      selectedCompany
+                    ) {
+                      authentication.setCurrentSession({
+                        type: "user",
+                        userFiscalCode:
+                          authentication.currentSession.userFiscalCode,
+                        merchantFiscalCode: selectedCompany
+                      });
+                    }
+                  }}
                 >
                   Continua
                 </Button>

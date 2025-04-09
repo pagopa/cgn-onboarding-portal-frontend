@@ -5,8 +5,6 @@
   "scripts": {
     "start:prod": "cross-env NODE_ENV=production parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
     "start:uat": "cross-env NODE_ENV=uat parcel --port 3000 src/index.html --public-url / --out-dir dist/debug --no-cache",
-    "start:dev": "cross-env NODE_ENV=dev parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
-    "start:local": "cross-env NODE_ENV=local parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
     "prebuild": "npm-run-all prebuild:*",
     "prebuild:generate": "yarn run generate",
     "prebuild:clean": "shx rm -rf dist",
@@ -19,7 +17,7 @@
     "test:coverage": "jest --passWithNoTests --coverage --coverageReporters=cobertura",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
-    "generate": "./generate-openapi.sh",
+    "generate": "./generate-openapi.sh IOBP-1479-one-identity",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "prepare": "husky",
     "tsc:noemit": "tsc --noemit"
@@ -43,7 +41,7 @@
     "glob": "^7.1.6",
     "i18next": "^19.8.4",
     "io-ts": "1.8.5",
-    "jwt-decode": "^3.1.2",
+    "jwt-decode": "^4.0.0",
     "node-sass": "^7.0.1",
     "path": "^0.12.7",
     "react": "^16.8.0",
@@ -64,10 +62,10 @@
     "typeface-titillium-web": "^1.1.13",
     "universal-cookie": "^4.0.4",
     "url": "^0.11.0",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "prettier": "^3.5.3",
     "@openapitools/openapi-generator-cli": "^2.15.3",
     "@pagopa/danger-custom-rules": "^2.0.3",
     "@pagopa/eslint-config": "3.0.0",
@@ -100,6 +98,7 @@
     "lint-staged": "^15.4.3",
     "npm-run-all": "^4.1.5",
     "parcel": "^1.12.3",
+    "prettier": "^3.5.3",
     "sass": "^1.32.13",
     "shx": "^0.3.3",
     "ts-jest": "^26.5.4",

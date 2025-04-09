@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { getCookie, logout } from "../utils/cookie";
+import { on401 } from "../authentication/authentication";
+import { getAdminToken } from "../authentication/authenticationState";
 import {
   AttributeauthorityApi,
   AgreementApi,
@@ -8,7 +9,7 @@ import {
   ExportsApi
 } from "./generated_backoffice/";
 
-const token = getCookie();
+const token = getAdminToken();
 
 export const axiosInstance = axios.create({
   headers: {
@@ -22,7 +23,7 @@ axiosInstance.interceptors.response.use(
   response => response,
   (error: AxiosError) => {
     if (error?.response?.status === 401) {
-      logout("ADMIN");
+      on401();
     }
     return error;
   }

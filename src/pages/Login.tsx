@@ -1,38 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Icon } from "design-react-kit";
 import { useLocation } from "react-router-dom";
-import { setCookie } from "../utils/cookie";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
-import Spid from "../assets/icons/spid.svg";
-import { AdminAccess, loginRequest } from "../authConfig";
 import CgnLogo from "../components/Logo/CgnLogo";
-import SpidSelect from "./SpidSelect";
+import {
+  goToAdminLoginPage,
+  goToUserLoginPage
+} from "../authentication/authentication";
 import Help from "./Help";
 
 const Login = () => {
   const location = useLocation();
-  const [showIDPS, setShowIDPS] = useState(false);
-
-  useEffect(() => {
-    void AdminAccess.handleRedirectPromise().then(response => {
-      if (response) {
-        setCookie(response.idToken);
-        window.location.replace("/");
-      }
-    });
-  }, []);
-
-  const AdminLogin = () => {
-    void AdminAccess.loginRedirect(loginRequest);
-  };
 
   if (location.pathname === "/admin/operatori/login/help") {
     return <Help />;
-  }
-
-  if (showIDPS) {
-    return <SpidSelect onBack={() => setShowIDPS(false)} />;
   }
 
   return (
@@ -71,33 +53,17 @@ const Login = () => {
               <div className="mt-14 row variable-gutters">
                 <div className="col">
                   <h2 className="h3 text-dark-blue">Sei un operatore?</h2>
-                  <span className="text-sm font-weight-normal text-dark-blue text-uppercase">
-                    Accedi con spid
-                  </span>
-                  <div className="mt-10">
-                    <Spid />
-                    <p className="mt-4">
-                      SPID è il sistema unico di accesso ai servizi online della
-                      Pubblica Amministrazione. Se hai già un&apos;identità
-                      digitale SPID, accedi con le tue credenziali. Se non hai
-                      ancora SPID, richiedilo ad uno dei gestori.
-                    </p>
-                  </div>
                   <Button
                     type="button"
                     color="primary"
                     className="mt-10"
                     style={{ width: "100%" }}
-                    onClick={() => setShowIDPS(true)}
+                    onClick={() => {
+                      goToUserLoginPage();
+                    }}
                   >
-                    Entra con SPID
+                    Entra con SPID/CIE
                   </Button>
-                  <div className="mt-4">
-                    <span>
-                      Non hai spid?{" "}
-                      <a href="https://www.spid.gov.it/">Scopri di più</a>
-                    </span>
-                  </div>
                 </div>
                 <div className="col">
                   <h2 className="h3 text-dark-blue">Sei un amministratore?</h2>
@@ -109,7 +75,9 @@ const Login = () => {
                     color="primary"
                     className="mt-10"
                     style={{ width: "100%" }}
-                    onClick={AdminLogin}
+                    onClick={() => {
+                      goToAdminLoginPage();
+                    }}
                   >
                     Entra come Amministratore
                   </Button>

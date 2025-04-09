@@ -1,5 +1,5 @@
 import axios from "axios";
-import { HelpApi } from "./generated_public";
+import { HelpApi, SessionApi } from "./generated_public";
 
 export const axiosInstance = axios.create({
   headers: {
@@ -9,5 +9,10 @@ export const axiosInstance = axios.create({
 });
 
 export default {
-  Help: new HelpApi(undefined, process.env.BASE_PUBLIC_PATH, axiosInstance)
+  Help: new HelpApi(undefined, process.env.BASE_PUBLIC_PATH, axiosInstance),
+  Session: new SessionApi(
+    undefined,
+    process.env.BASE_PUBLIC_PATH,
+    axiosInstance
+  )
 };

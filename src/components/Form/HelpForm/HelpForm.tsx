@@ -11,10 +11,10 @@ import {
 import { RootState } from "../../../store/store";
 import { HelpRequestCategoryEnum } from "../../../api/generated";
 import { remoteData } from "../../../api/common";
-import { getCookie } from "../../../utils/cookie";
 import InputFieldMultiple from "../InputFieldMultiple";
 import CustomErrorMessage from "../CustomErrorMessage";
 import { Severity, useTooltip } from "../../../context/tooltip";
+import { useAuthentication } from "../../../authentication/authentication";
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
@@ -68,7 +68,8 @@ const topics = () => [
 const HelpForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const history = useHistory();
-  const token = getCookie();
+  const authentication = useAuthentication();
+  const token = authentication.currentSession !== null;
   const { triggerTooltip } = useTooltip();
 
   const onErrorTooltip = () =>
