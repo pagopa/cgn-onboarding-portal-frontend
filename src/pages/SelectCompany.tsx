@@ -3,7 +3,7 @@ import { Button } from "design-react-kit";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import CgnLogo from "../components/Logo/CgnLogo";
-import { useAuthentication } from "../authentication/authentication";
+import { useAuthentication } from "../authentication/AuthenticationContext";
 import { getCurrentUserSession } from "../authentication/authenticationState";
 
 const SelectCompany = () => {

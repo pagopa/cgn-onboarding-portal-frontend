@@ -9,7 +9,7 @@ import Discounts from "../components/Discounts/Discounts";
 import Profile from "../components/Profile/Profile";
 import ProfileData from "../components/ProfileData/ProfileData";
 import { RootState } from "../store/store";
-import { useAuthentication } from "../authentication/authentication";
+import { useAuthentication } from "../authentication/AuthenticationContext";
 import { getCurrentUserSession } from "../authentication/authenticationState";
 
 const Dashboard = () => {

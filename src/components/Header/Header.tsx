@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { CREATE_PROFILE, HELP } from "../../navigation/routes";
 import Logo from "../Logo/Logo";
-import { useAuthentication } from "../../authentication/authentication";
+import { useAuthentication } from "../../authentication/AuthenticationContext";
 import { UserSessionSwitch } from "../../authentication/UserSessionSwitch";
 import LogoutModal from "./LogoutModal";
 

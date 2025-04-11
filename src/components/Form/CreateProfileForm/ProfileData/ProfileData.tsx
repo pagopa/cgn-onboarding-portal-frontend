@@ -20,7 +20,7 @@ import {
   profileDefaultInitialValues,
   sanitizeProfileFromValues
 } from "../../EditOperatorDataForm/EditOperatorDataForm";
-import { useAuthentication } from "../../../../authentication/authentication";
+import { useAuthentication } from "../../../../authentication/AuthenticationContext";
 import {
   getCurrentMerchant,
   getCurrentMerchantFiscalCode,

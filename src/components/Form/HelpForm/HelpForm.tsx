@@ -14,7 +14,7 @@ import { remoteData } from "../../../api/common";
 import InputFieldMultiple from "../InputFieldMultiple";
 import CustomErrorMessage from "../CustomErrorMessage";
 import { Severity, useTooltip } from "../../../context/tooltip";
-import { useAuthentication } from "../../../authentication/authentication";
+import { useAuthentication } from "../../../authentication/AuthenticationContext";
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 

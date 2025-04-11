@@ -16,7 +16,7 @@ import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
 import CreateActivation from "../pages/CreateActivation";
 import EditActivation from "../pages/EditActivation";
-import { useAuthentication } from "../authentication/authentication";
+import { useAuthentication } from "../authentication/AuthenticationContext";
 import {
   DASHBOARD,
   CREATE_PROFILE,

@@ -1,8 +1,6 @@
 import { z } from "zod";
-import {
-  AuthenticationContextType,
-  authenticationStore
-} from "./authentication";
+import { authenticationStore } from "./authentication";
+import { AuthenticationContextType } from "./AuthenticationContext";
 
 const merchantInfoSchema = z.object({
   organization_name: z.string(),

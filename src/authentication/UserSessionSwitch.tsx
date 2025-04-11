@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuthentication } from "./authentication";
+import { useAuthentication } from "./AuthenticationContext";
 
 // this serves only for testing purposes until multiple logins are not approved
 

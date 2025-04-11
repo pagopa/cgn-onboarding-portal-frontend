@@ -8,7 +8,7 @@ import Container from "../components/Container/Container";
 import DocumentFail from "../assets/icons/document_fail.svg";
 import { CREATE_PROFILE } from "../navigation/routes";
 import CgnLogo from "../components/Logo/CgnLogo";
-import { useAuthentication } from "../authentication/authentication";
+import { useAuthentication } from "../authentication/AuthenticationContext";
 
 const RejectedProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);

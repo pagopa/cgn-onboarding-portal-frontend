@@ -4,7 +4,7 @@ import { remoteData } from "../../api/common";
 import { useTooltip, Severity } from "../../context/tooltip";
 import { Agreement, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
-import { useAuthentication } from "../../authentication/authentication";
+import { useAuthentication } from "../../authentication/AuthenticationContext";
 import { getCurrentUserSession } from "../../authentication/authenticationState";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";

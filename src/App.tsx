@@ -11,7 +11,7 @@ import { queryClient } from "./api/common";
 import {
   AuthenticationConsumer,
   AuthenticationProvider
-} from "./authentication/authentication";
+} from "./authentication/AuthenticationContext";
 
 function App() {
   return (

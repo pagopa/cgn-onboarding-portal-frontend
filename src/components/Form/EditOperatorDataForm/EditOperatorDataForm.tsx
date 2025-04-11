@@ -19,7 +19,7 @@ import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 import { UpdateProfile } from "../../../api/generated";
-import { useAuthentication } from "../../../authentication/authentication";
+import { useAuthentication } from "../../../authentication/AuthenticationContext";
 import {
   getCurrentMerchant,
   getCurrentMerchantFiscalCode,

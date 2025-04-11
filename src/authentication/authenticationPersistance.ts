@@ -1,4 +1,11 @@
-export function load<T>({
+import {
+  AuthenticationState,
+  authenticationStateSchema,
+  empty
+} from "./authenticationState";
+import { Store } from "./authenticationStore";
+
+function load<T>({
   key,
   validate,
   empty
@@ -21,7 +28,7 @@ export function load<T>({
   }
 }
 
-export function save<T>({ key, value }: { key: string; value: T }) {
+function save<T>({ key, value }: { key: string; value: T }) {
   try {
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
@@ -31,7 +38,7 @@ export function save<T>({ key, value }: { key: string; value: T }) {
   }
 }
 
-export function watch<T>({
+function watch<T>({
   key,
   validate,
   listener
@@ -53,5 +60,24 @@ export function watch<T>({
         }
       }
     }
+  });
+}
+
+const LOCAL_STORAGE_KEY = "oneidentity";
+
+export const localStorageInitialState = load({
+  key: LOCAL_STORAGE_KEY,
+  validate: authenticationStateSchema.parse,
+  empty
+});
+
+export function localStorageSetup(store: Store<AuthenticationState>) {
+  store.subscribe(() => {
+    save({ key: LOCAL_STORAGE_KEY, value: store.get() });
+  });
+  watch({
+    key: LOCAL_STORAGE_KEY,
+    validate: authenticationStateSchema.parse,
+    listener: store.set
   });
 }
