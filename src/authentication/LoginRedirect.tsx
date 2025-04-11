@@ -20,8 +20,7 @@ import {
   setAdminNonceByState,
   deleteAdminNonceByState,
   getAdminNonceByState,
-  setAdminSession,
-  deleteExpiredTokens
+  setAdminSession
 } from "./authenticationState";
 import { makeStore } from "./authenticationStore";
 import {
@@ -31,8 +30,6 @@ import {
 
 export const authenticationStore = makeStore(localStorageInitialState);
 localStorageSetup(authenticationStore);
-
-deleteExpiredTokens();
 
 function randomAlphaNumericString(length: number): string {
   const choices =
@@ -84,13 +81,12 @@ const organizationsDataApi = new OrganizationsDataApi(
 );
 
 export function goToUserLoginPage() {
-  const targetHost = process.env.ONE_IDENTITY_LOGIN_HOST ?? "";
-  const currentHost = process.env.ONE_IDENTITY_REDIRECT_HOST ?? "";
+  const targetUri = process.env.ONE_IDENTITY_LOGIN_URI ?? "";
+  const redirect_uri = process.env.ONE_IDENTITY_REDIRECT_URI ?? "";
   const client_id = process.env.ONE_IDENTITY_CLIENT_ID ?? "";
   const state = randomAlphaNumericString(16);
   const nonce = randomAlphaNumericString(16);
-  const redirect_uri = `https://${currentHost}/session`;
-  const targetUrl = `https://${targetHost}/login?${new URLSearchParams({
+  const targetUrl = `${targetUri}?${new URLSearchParams({
     response_type: "CODE",
     scope: "openid",
     client_id,
@@ -118,7 +114,7 @@ export function goToAdminLoginPage() {
 export function LoginRedirect() {
   const history = useHistory();
   const location = useLocation();
-  const [state, setState] = useState<{
+  const [loginState, setLoginState] = useState<{
     admin:
       | { type: "loading" }
       | { type: "not-executed" }
@@ -144,8 +140,8 @@ export function LoginRedirect() {
       try {
         const nonce = getUserNonceByState(state);
         if (!nonce) {
-          setState(state => ({
-            ...state,
+          setLoginState(loginState => ({
+            ...loginState,
             user: { type: "not-executed" }
           }));
           return;
@@ -179,15 +175,15 @@ export function LoginRedirect() {
           exp,
           merchants: merchantTokensReponse.data.items
         });
-        setState(state => ({
-          ...state,
+        setLoginState(loginState => ({
+          ...loginState,
           user: { type: "success", fiscal_code }
         }));
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
-        setState(state => ({
-          ...state,
+        setLoginState(loginState => ({
+          ...loginState,
           user: { type: "error" }
         }));
       }
@@ -199,8 +195,8 @@ export function LoginRedirect() {
       try {
         const result = await AdminAccess.handleRedirectPromise();
         if (!result) {
-          setState(state => ({
-            ...state,
+          setLoginState(loginState => ({
+            ...loginState,
             admin: { type: "not-executed" }
           }));
           return;
@@ -231,15 +227,15 @@ export function LoginRedirect() {
           last_name,
           exp
         });
-        setState(state => ({
-          ...state,
+        setLoginState(loginState => ({
+          ...loginState,
           admin: { type: "success", name }
         }));
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
-        setState(state => ({
-          ...state,
+        setLoginState(loginState => ({
+          ...loginState,
           admin: { type: "error" }
         }));
       }
@@ -247,19 +243,19 @@ export function LoginRedirect() {
   }, []);
 
   useEffect(() => {
-    if (state.user.type === "success") {
+    if (loginState.user.type === "success") {
       setCurrentSession({
         type: "user",
-        userFiscalCode: state.user.fiscal_code
+        userFiscalCode: loginState.user.fiscal_code
       });
       historyPush(DASHBOARD);
       resetQueries();
-    } else if (state.admin.type === "success") {
-      setCurrentSession({ type: "admin", name: state.admin.name });
+    } else if (loginState.admin.type === "success") {
+      setCurrentSession({ type: "admin", name: loginState.admin.name });
       historyPush(ADMIN_PANEL_RICHIESTE);
       resetQueries();
     }
-  }, [historyPush, state]);
+  }, [historyPush, loginState]);
 
   return (
     <Layout>
@@ -267,10 +263,10 @@ export function LoginRedirect() {
         <div className="col-12 bg-white my-20 p-10 d-flex flex-column align-items-center">
           {(() => {
             if (
-              state.user.type === "error" ||
-              state.admin.type === "error" ||
-              (state.user.type === "not-executed" &&
-                state.admin.type === "not-executed")
+              loginState.user.type === "error" ||
+              loginState.admin.type === "error" ||
+              (loginState.user.type === "not-executed" &&
+                loginState.admin.type === "not-executed")
             ) {
               return (
                 <Fragment>

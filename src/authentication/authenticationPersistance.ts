@@ -1,7 +1,8 @@
 import {
   AuthenticationState,
   authenticationStateSchema,
-  empty
+  empty,
+  excludeExpiredTokens
 } from "./authenticationState";
 import { Store } from "./authenticationStore";
 
@@ -65,11 +66,13 @@ function watch<T>({
 
 const LOCAL_STORAGE_KEY = "oneidentity";
 
-export const localStorageInitialState = load({
-  key: LOCAL_STORAGE_KEY,
-  validate: authenticationStateSchema.parse,
-  empty
-});
+export const localStorageInitialState = excludeExpiredTokens(
+  load({
+    key: LOCAL_STORAGE_KEY,
+    validate: authenticationStateSchema.parse,
+    empty
+  })
+);
 
 export function localStorageSetup(store: Store<AuthenticationState>) {
   store.subscribe(() => {

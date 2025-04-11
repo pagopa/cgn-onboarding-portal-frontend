@@ -198,28 +198,27 @@ export function getAdminToken(): string {
   // returning empty, invalid or expired token here is fine since authentication errors are handled on401
 }
 
-export function deleteExpiredTokens() {
-  const data = authenticationStore.get();
+export function excludeExpiredTokens(
+  data: AuthenticationState
+): AuthenticationState {
   const now = Date.now();
-  authenticationStore.set({
+  return {
     ...data,
     userNonceByState: Object.fromEntries(
-      Object.entries(data.userNonceByState).filter(([, { exp }]) => exp <= now)
+      Object.entries(data.userNonceByState).filter(([, { exp }]) => exp > now)
     ),
     adminNonceByState: Object.fromEntries(
-      Object.entries(data.adminNonceByState).filter(([, { exp }]) => exp <= now)
+      Object.entries(data.adminNonceByState).filter(([, { exp }]) => exp > now)
     ),
     userSessionByFiscalCode: Object.fromEntries(
       Object.entries(data.userSessionByFiscalCode).filter(
-        ([, { exp }]) => exp <= now
+        ([, { exp }]) => exp > now
       )
     ),
     adminSessionByName: Object.fromEntries(
-      Object.entries(data.adminSessionByName).filter(
-        ([, { exp }]) => exp <= now
-      )
+      Object.entries(data.adminSessionByName).filter(([, { exp }]) => exp > now)
     )
-  });
+  };
 }
 
 export function getCurrentUserFiscalCode(state: AuthenticationContextType) {
