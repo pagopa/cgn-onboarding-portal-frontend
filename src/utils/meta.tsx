@@ -13,7 +13,6 @@ const getAdminLoginUri = () => {
 
 const getCSPContent = () =>
   `
-Content-Security-Policy-Report-Only: default-src 'self';
 script-src 'self' https://www.google.com https://www.gstatic.com;
 style-src 'self';
 object-src 'none';
