@@ -3,11 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { CREATE_PROFILE, HELP } from "../../navigation/routes";
 import Logo from "../Logo/Logo";
-import {
-  ALLOW_MULTIPLE_LOGIN,
-  useAuthentication,
-  UserSessionsDropdown
-} from "../../authentication/authentication";
+import { useAuthentication } from "../../authentication/authentication";
+import { UserSessionSwitch } from "../../authentication/UserSessionSwitch";
 import LogoutModal from "./LogoutModal";
 
 type Props = {
@@ -54,7 +51,7 @@ const Header = ({ hasBorder = false }: Props) => {
               )}
             </>
           )}
-          {ALLOW_MULTIPLE_LOGIN && <UserSessionsDropdown />}
+          <UserSessionSwitch />
           {isLogged && (
             <>
               {location.pathname === CREATE_PROFILE && (

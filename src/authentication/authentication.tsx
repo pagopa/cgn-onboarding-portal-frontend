@@ -28,6 +28,10 @@ import {
 import { makeStore } from "./authenticationStore";
 import { load, save, watch } from "./authenticationPersistance";
 
+// TODO remove tokens and nonces that are expired
+// TODO replace /session?... on page load
+// TODO delete nonce and session on login error and show error message
+
 const LOCAL_STORAGE_KEY = "oneidentity";
 
 export const authenticationStore = makeStore(
@@ -186,11 +190,6 @@ const organizationsDataApi = new OrganizationsDataApi(
   undefined
 );
 
-export const ALLOW_MULTIPLE_LOGIN =
-  window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1" ||
-  window.location.hostname === "portal.cgnonboardingportal-uat.pagopa.it";
-
 export function on401() {
   const data = authenticationStore.get();
   deleteSession(data.currentSession);
@@ -255,65 +254,4 @@ export const AuthenticationConsumer = AuthenticationContext.Consumer;
 
 export function useAuthentication() {
   return React.useContext(AuthenticationContext);
-}
-
-export function UserSessionsDropdown() {
-  const authentication = useAuthentication();
-  const [isOpen, setIsOpen] = useState(false);
-  if (!ALLOW_MULTIPLE_LOGIN) {
-    return null;
-  }
-  return (
-    <div style={{ position: "relative" }}>
-      <button
-        onClick={() => {
-          setIsOpen(!isOpen);
-        }}
-      >
-        one identity
-      </button>
-      {isOpen && (
-        <div
-          style={{
-            position: "absolute",
-            top: "100%",
-            right: 0,
-            backgroundColor: "white",
-            maxWidth: "80vw",
-            border: "1px solid black",
-            zIndex: 1,
-            gap: 8,
-            display: "flex",
-            flexDirection: "column",
-            padding: 8
-          }}
-        >
-          {Object.entries(authentication.userSessionByFiscalCode).map(
-            ([fiscal_code, { first_name, last_name }]) => {
-              return (
-                <div
-                  key={fiscal_code}
-                  style={{
-                    padding: "0px 16px"
-                  }}
-                  onClick={() => {
-                    authentication.changeSession({
-                      type: "user",
-                      userFiscalCode: fiscal_code,
-                      merchantFiscalCode: undefined
-                    });
-                  }}
-                >
-                  <div>
-                    {first_name} {last_name}
-                  </div>
-                  <div>{fiscal_code}</div>
-                </div>
-              );
-            }
-          )}
-        </div>
-      )}
-    </div>
-  );
 }
