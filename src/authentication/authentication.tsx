@@ -12,7 +12,8 @@ import {
   setCurrentSession,
   setAdminNonceByState,
   deleteAdminNonceByState,
-  getAdminNonceByState
+  getAdminNonceByState,
+  setAdminSession
 } from "./authenticationState";
 import { makeStore } from "./authenticationStore";
 import {
@@ -110,6 +111,7 @@ void (async function onUserLoginRedirect() {
   setCurrentSession({ type: "user", userFiscalCode: fiscal_code });
   // eslint-disable-next-line functional/immutable-data
   window.location.href = "/";
+  // TODO reset queries, change route
 })();
 
 const AdminAccess = new Msal.PublicClientApplication({
@@ -154,11 +156,19 @@ void (async function onAdminLoginRedirect() {
           nonce
         }
       });
-      const decoded = jwtDecode<unknown>(adminTokenResponse.data);
-      // eslint-disable-next-line
-      console.log(decoded);
-      const parsed = adminJWTPayloadSchema.parse(decoded);
-      // TODO salvare admin token e impostare current session
+      const { first_name, last_name } = adminJWTPayloadSchema.parse(
+        jwtDecode<unknown>(adminTokenResponse.data)
+      );
+      const name = `${first_name} ${last_name}`;
+      setAdminSession(name, {
+        token: adminTokenResponse.data,
+        first_name,
+        last_name
+      });
+      setCurrentSession({ type: "admin", name });
+      // eslint-disable-next-line functional/immutable-data
+      window.location.href = "/";
+      // TODO reset queries, change route
     }
   }
 })();
@@ -169,4 +179,5 @@ export function on401() {
   setCurrentSession(null);
   // eslint-disable-next-line functional/immutable-data
   window.location.href = "/";
+  // TODO reset queries, change route
 }

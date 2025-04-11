@@ -1,38 +1,38 @@
 import { hot } from "react-hot-loader";
 import React from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import { registerLocale, setDefaultLocale } from "react-datepicker";
+import it from "date-fns/locale/it";
 import RouterConfig from "./navigation/RouterConfig";
-import Login from "./pages/Login";
-import SelectCompany from "./pages/SelectCompany";
 import "./styles/bootstrap-italia-custom.scss";
 import "./styles/react-datepicker.css";
 import "typeface-titillium-web";
 import { queryClient } from "./api/common";
-import {
-  AuthenticationConsumer,
-  AuthenticationProvider
-} from "./authentication/AuthenticationContext";
+import { AuthenticationProvider } from "./authentication/AuthenticationContext";
+import { TooltipProvider } from "./context/tooltip";
+import { renderCSP } from "./utils/meta";
+import { store } from "./store/store";
+
+registerLocale("it", it);
+setDefaultLocale("it");
+
+renderCSP();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthenticationProvider>
-        <AuthenticationConsumer>
-          {({ currentSession }) => {
-            if (!currentSession) {
-              return <Login />;
-            }
-            if (
-              currentSession.type === "user" &&
-              !currentSession.merchantFiscalCode
-            ) {
-              return <SelectCompany />;
-            }
-            return <RouterConfig />;
-          }}
-        </AuthenticationConsumer>
-      </AuthenticationProvider>
-    </QueryClientProvider>
+    <Provider store={store}>
+      <BrowserRouter>
+        <TooltipProvider>
+          <QueryClientProvider client={queryClient}>
+            <AuthenticationProvider>
+              <RouterConfig />;
+            </AuthenticationProvider>
+          </QueryClientProvider>
+        </TooltipProvider>
+      </BrowserRouter>
+    </Provider>
   );
 }
 

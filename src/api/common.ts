@@ -7,7 +7,6 @@ import {
   UseMutationOptions,
   UseMutationResult
 } from "@tanstack/react-query";
-
 import { AxiosError, AxiosResponse, RawAxiosRequestConfig } from "axios";
 import PublicApi from "./public";
 import BackofficeApi from "./backoffice";

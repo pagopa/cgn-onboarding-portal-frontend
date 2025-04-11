@@ -5,16 +5,20 @@ import React, {
   useCallback,
   useMemo
 } from "react";
+import { useHistory } from "react-router-dom";
+import { queryClient } from "../api/common";
 import { authenticationStore } from "./authentication";
 import {
   UserSession,
   CurrentSession,
   setCurrentSession,
-  deleteSession
+  deleteSession,
+  AdminSession
 } from "./authenticationState";
 
 export type AuthenticationContextType = {
   userSessionByFiscalCode: Record<string, UserSession>;
+  adminSessionByName: Record<string, AdminSession>;
   currentSession: CurrentSession;
   changeSession(session: CurrentSession): void;
   logout(session: CurrentSession): void;
@@ -28,6 +32,8 @@ export function AuthenticationProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const history = useHistory();
+  const historyPush = history.push;
   const [persistedState, setPersistedState] = useState(authenticationStore.get);
   useEffect(
     () =>
@@ -36,26 +42,40 @@ export function AuthenticationProvider({
       }),
     []
   );
-  const { currentSession, userSessionByFiscalCode } = persistedState;
-  const changeSession = useCallback((session: CurrentSession) => {
-    setCurrentSession(session);
-    // eslint-disable-next-line functional/immutable-data
-    window.location.href = "/";
-  }, []);
-  const logout = useCallback((session: CurrentSession) => {
-    deleteSession(session);
-    setCurrentSession(null);
-    // eslint-disable-next-line functional/immutable-data
-    window.location.href = "/";
-  }, []);
+  const { currentSession, userSessionByFiscalCode, adminSessionByName } =
+    persistedState;
+  const changeSession = useCallback(
+    (session: CurrentSession) => {
+      setCurrentSession(session);
+      historyPush("/");
+      resetQueries();
+    },
+    [historyPush]
+  );
+  const logout = useCallback(
+    (session: CurrentSession) => {
+      deleteSession(session);
+      setCurrentSession(null);
+      historyPush("/");
+      resetQueries();
+    },
+    [historyPush]
+  );
   const value = useMemo<AuthenticationContextType>(
     () => ({
       userSessionByFiscalCode,
+      adminSessionByName,
       currentSession,
       changeSession,
       logout
     }),
-    [changeSession, currentSession, logout, userSessionByFiscalCode]
+    [
+      adminSessionByName,
+      changeSession,
+      currentSession,
+      logout,
+      userSessionByFiscalCode
+    ]
   );
   return (
     <AuthenticationContext.Provider value={value}>
@@ -64,8 +84,11 @@ export function AuthenticationProvider({
   );
 }
 
-export const AuthenticationConsumer = AuthenticationContext.Consumer;
-
 export function useAuthentication() {
   return React.useContext(AuthenticationContext);
+}
+
+export function resetQueries() {
+  queryClient.clear();
+  void queryClient.invalidateQueries();
 }

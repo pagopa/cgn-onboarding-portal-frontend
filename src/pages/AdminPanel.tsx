@@ -11,12 +11,15 @@ import {
   ADMIN_PANEL_ACCESSI
 } from "../navigation/routes";
 import OperatorActivations from "../components/OperatorActivations/OperatorActivations";
+import { useAuthentication } from "../authentication/AuthenticationContext";
+import { getCurrentUserSession } from "../authentication/authenticationState";
 
 const AdminPanel = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const user = {} as any; // TODO
+  const authentication = useAuthentication();
+  const user = getCurrentUserSession(authentication);
 
   const handleClick = (newTab: string) => {
     history.push(newTab);
@@ -40,7 +43,7 @@ const AdminPanel = () => {
       <ContainerFluid className="mt-10 mb-20" maxWidth="1200px">
         <div className="col-12">
           <IntroductionAdmin
-            name={user?.name?.replace(".", " ")}
+            name={`${user?.first_name ?? ""} ${user?.last_name ?? ""}`}
             handleClick={handleClick}
             activeTab={location.pathname}
           />

@@ -13,7 +13,7 @@ const currentSessionSchema = z
   .discriminatedUnion("type", [
     z.object({
       type: z.literal("admin"),
-      email: z.string()
+      name: z.string()
     }),
     z.object({
       type: z.literal("user"),
@@ -34,10 +34,19 @@ const userSessionSchema = z.object({
 
 export type UserSession = z.infer<typeof userSessionSchema>;
 
+const adminSessionSchema = z.object({
+  token: z.string(),
+  first_name: z.string(),
+  last_name: z.string()
+});
+
+export type AdminSession = z.infer<typeof adminSessionSchema>;
+
 export const authenticationStateSchema = z.object({
   userNonceByState: z.record(z.string(), z.string()),
   userSessionByFiscalCode: z.record(z.string(), userSessionSchema),
   adminNonceByState: z.record(z.string(), z.string()),
+  adminSessionByName: z.record(z.string(), adminSessionSchema),
   currentSession: currentSessionSchema
 });
 
@@ -47,6 +56,7 @@ export const empty: AuthenticationState = {
   userNonceByState: {},
   userSessionByFiscalCode: {},
   adminNonceByState: {},
+  adminSessionByName: {},
   currentSession: null
 };
 
@@ -99,8 +109,12 @@ export function setUserSession(fiscal_code: string, session: UserSession) {
   });
 }
 
-export function setAdminSession() {
-  // TODO
+export function setAdminSession(name: string, session: AdminSession) {
+  const data = authenticationStore.get();
+  authenticationStore.set({
+    ...data,
+    adminSessionByName: { ...data.adminSessionByName, [name]: session }
+  });
 }
 
 export function setCurrentSession(session: CurrentSession) {
@@ -122,7 +136,12 @@ export function deleteSession(session: CurrentSession) {
     });
   }
   if (session?.type === "admin") {
-    // TODO remove admin token
+    const { [session.name]: deleted, ...adminSessionByName } =
+      data.adminSessionByName;
+    authenticationStore.set({
+      ...data,
+      adminSessionByName
+    });
   }
 }
 
@@ -135,7 +154,7 @@ export function getUserToken(): string {
     );
   }
   return "";
-  // returning empty, invalid or expired token here is fine since authentication errors are handled elsewhere
+  // returning empty, invalid or expired token here is fine since authentication errors are handled on401
 }
 
 export function getMerchantToken(): string {
@@ -151,12 +170,16 @@ export function getMerchantToken(): string {
     );
   }
   return "";
-  // returning empty, invalid or expired token here is fine since authentication errors are handled elsewhere
+  // returning empty, invalid or expired token here is fine since authentication errors are handled on401
 }
 
 export function getAdminToken(): string {
-  // TODO
+  const data = authenticationStore.get();
+  if (data.currentSession?.type === "admin") {
+    return data.adminSessionByName[data.currentSession.name]?.token ?? "";
+  }
   return "";
+  // returning empty, invalid or expired token here is fine since authentication errors are handled on401
 }
 
 export function getCurrentUserFiscalCode(state: AuthenticationContextType) {
@@ -185,5 +208,11 @@ export function getCurrentMerchant(state: AuthenticationContextType) {
     ]?.merchants.find(
       merchant => merchant.organization_fiscal_code === merchantFiscalCode
     );
+  }
+}
+
+export function getCurrentAdminSession(state: AuthenticationContextType) {
+  if (state.currentSession && state.currentSession.type === "admin") {
+    return state.adminSessionByName[state.currentSession.name];
   }
 }

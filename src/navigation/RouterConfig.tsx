@@ -17,6 +17,8 @@ import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
 import CreateActivation from "../pages/CreateActivation";
 import EditActivation from "../pages/EditActivation";
 import { useAuthentication } from "../authentication/AuthenticationContext";
+import Login from "../pages/Login";
+import SelectCompany from "../pages/SelectCompany";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -49,77 +51,101 @@ export const RouterConfig = () => {
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
-
   const authentication = useAuthentication();
-  const isAdmin = authentication.currentSession?.type === "admin";
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (authentication.currentSession?.type === "user") {
       dispatch(createAgreement());
     }
-  }, [dispatch, isAdmin]);
+  }, [authentication.currentSession?.type, dispatch]);
 
   const historyPush = history.push;
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (authentication.currentSession?.type === "user") {
       switch (agreement.state) {
-        case AgreementState.DraftAgreement:
-          historyPush(CREATE_PROFILE);
+        case AgreementState.DraftAgreement: {
+          if (location.pathname !== CREATE_PROFILE) {
+            historyPush(CREATE_PROFILE);
+          }
           break;
+        }
         case AgreementState.PendingAgreement:
-        case AgreementState.ApprovedAgreement:
+        case AgreementState.ApprovedAgreement: {
           if (location.pathname === "/") {
             historyPush(DASHBOARD);
           }
           break;
-        case AgreementState.RejectedAgreement:
-          historyPush(REJECT_PROFILE);
+        }
+        case AgreementState.RejectedAgreement: {
+          if (location.pathname !== CREATE_PROFILE) {
+            historyPush(REJECT_PROFILE);
+          }
           break;
+        }
       }
-    } else {
-      historyPush(
-        adminRoutes.includes(location.pathname)
-          ? location.pathname
-          : ADMIN_PANEL_RICHIESTE
+    }
+    if (
+      authentication.currentSession?.type === "admin" &&
+      !adminRoutes.includes(location.pathname)
+    ) {
+      historyPush(ADMIN_PANEL_RICHIESTE);
+    }
+  }, [
+    agreement.state,
+    authentication.currentSession?.type,
+    historyPush,
+    location.pathname
+  ]);
+
+  switch (authentication.currentSession?.type) {
+    case undefined: {
+      return <Login />;
+    }
+    case "admin": {
+      return (
+        <Switch>
+          <Route exact path={ADMIN_PANEL_RICHIESTE} component={AdminPanel} />
+          <Route
+            exact
+            path={ADMIN_PANEL_CONVENZIONATI}
+            component={AdminPanel}
+          />
+          <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
+          <Route
+            exact
+            path={ADMIN_PANEL_ACCESSI_EDIT}
+            component={EditActivation}
+          />
+          <Route
+            exact
+            path={ADMIN_PANEL_ACCESSI_CREA}
+            component={CreateActivation}
+          />
+        </Switch>
       );
     }
-  }, [agreement.state, historyPush, isAdmin, location.pathname]);
-
-  if (isAdmin) {
-    return (
-      <Switch>
-        <Route exact path={ADMIN_PANEL_RICHIESTE} component={AdminPanel} />
-        <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
-        <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
-        <Route
-          exact
-          path={ADMIN_PANEL_ACCESSI_EDIT}
-          component={EditActivation}
-        />
-        <Route
-          exact
-          path={ADMIN_PANEL_ACCESSI_CREA}
-          component={CreateActivation}
-        />
-      </Switch>
-    );
+    case "user": {
+      if (!authentication.currentSession.merchantFiscalCode) {
+        return <SelectCompany />;
+      }
+      if (loading) {
+        return <CenteredLoading />;
+      }
+      return (
+        <Switch>
+          <Route exact path={DASHBOARD} component={Dashboard} />
+          <Route exact path={HELP} component={Help} />
+          <Route exact path={CREATE_PROFILE} component={CreateProfile} />
+          <Route exact path={EDIT_PROFILE} component={EditProfile} />
+          <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
+          <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
+          <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
+          <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
+        </Switch>
+      );
+    }
   }
-
-  return loading ? (
-    <CenteredLoading />
-  ) : (
-    <Switch>
-      <Route exact path={DASHBOARD} component={Dashboard} />
-      <Route exact path={HELP} component={Help} />
-      <Route exact path={CREATE_PROFILE} component={CreateProfile} />
-      <Route exact path={EDIT_PROFILE} component={EditProfile} />
-      <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
-      <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
-      <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
-      <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
-    </Switch>
-  );
 };
 
 export default RouterConfig;
