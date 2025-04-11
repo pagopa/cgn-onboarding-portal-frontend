@@ -7,7 +7,7 @@ import CgnLogo from "../components/Logo/CgnLogo";
 import {
   goToAdminLoginPage,
   goToUserLoginPage
-} from "../authentication/authentication";
+} from "../authentication/LoginRedirect";
 import Help from "./Help";
 
 const Login = () => {

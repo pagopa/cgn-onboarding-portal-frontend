@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { authenticationStore } from "./authentication";
+import { authenticationStore } from "./LoginRedirect";
 import { AuthenticationContextType } from "./AuthenticationContext";
 
 const merchantInfoSchema = z.object({
@@ -29,6 +29,7 @@ const userSessionSchema = z.object({
   token: z.string(),
   first_name: z.string(),
   last_name: z.string(),
+  exp: z.number(),
   merchants: z.array(merchantInfoSchema)
 });
 
@@ -37,15 +38,22 @@ export type UserSession = z.infer<typeof userSessionSchema>;
 const adminSessionSchema = z.object({
   token: z.string(),
   first_name: z.string(),
-  last_name: z.string()
+  last_name: z.string(),
+  exp: z.number()
 });
 
 export type AdminSession = z.infer<typeof adminSessionSchema>;
 
 export const authenticationStateSchema = z.object({
-  userNonceByState: z.record(z.string(), z.string()),
+  userNonceByState: z.record(
+    z.string(),
+    z.object({ nonce: z.string(), exp: z.number() })
+  ),
   userSessionByFiscalCode: z.record(z.string(), userSessionSchema),
-  adminNonceByState: z.record(z.string(), z.string()),
+  adminNonceByState: z.record(
+    z.string(),
+    z.object({ nonce: z.string(), exp: z.number() })
+  ),
   adminSessionByName: z.record(z.string(), adminSessionSchema),
   currentSession: currentSessionSchema
 });
@@ -60,17 +68,22 @@ export const empty: AuthenticationState = {
   currentSession: null
 };
 
+const NONCE_DURATION = 15 * 60 * 1000;
+
 export function setUserNonceByState(state: string, nonce: string) {
   const data = authenticationStore.get();
   authenticationStore.set({
     ...data,
-    userNonceByState: { ...data.userNonceByState, [state]: nonce }
+    userNonceByState: {
+      ...data.userNonceByState,
+      [state]: { nonce, exp: Date.now() + NONCE_DURATION }
+    }
   });
 }
 
 export function getUserNonceByState(state: string): string | undefined {
   const data = authenticationStore.get();
-  return data.userNonceByState[state];
+  return data.userNonceByState[state]?.nonce;
 }
 
 export function deleteUserNonceByState(state: string) {
@@ -83,13 +96,16 @@ export function setAdminNonceByState(state: string, nonce: string) {
   const data = authenticationStore.get();
   authenticationStore.set({
     ...data,
-    adminNonceByState: { ...data.adminNonceByState, [state]: nonce }
+    adminNonceByState: {
+      ...data.adminNonceByState,
+      [state]: { nonce, exp: Date.now() + NONCE_DURATION }
+    }
   });
 }
 
 export function getAdminNonceByState(state: string): string | undefined {
   const data = authenticationStore.get();
-  return data.adminNonceByState[state];
+  return data.adminNonceByState[state]?.nonce;
 }
 
 export function deleteAdminNonceByState(state: string) {
@@ -180,6 +196,30 @@ export function getAdminToken(): string {
   }
   return "";
   // returning empty, invalid or expired token here is fine since authentication errors are handled on401
+}
+
+export function deleteExpiredTokens() {
+  const data = authenticationStore.get();
+  const now = Date.now();
+  authenticationStore.set({
+    ...data,
+    userNonceByState: Object.fromEntries(
+      Object.entries(data.userNonceByState).filter(([, { exp }]) => exp <= now)
+    ),
+    adminNonceByState: Object.fromEntries(
+      Object.entries(data.adminNonceByState).filter(([, { exp }]) => exp <= now)
+    ),
+    userSessionByFiscalCode: Object.fromEntries(
+      Object.entries(data.userSessionByFiscalCode).filter(
+        ([, { exp }]) => exp <= now
+      )
+    ),
+    adminSessionByName: Object.fromEntries(
+      Object.entries(data.adminSessionByName).filter(
+        ([, { exp }]) => exp <= now
+      )
+    )
+  });
 }
 
 export function getCurrentUserFiscalCode(state: AuthenticationContextType) {

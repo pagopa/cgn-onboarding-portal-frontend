@@ -6,8 +6,8 @@ import React, {
   useMemo
 } from "react";
 import { useHistory } from "react-router-dom";
-import { queryClient } from "../api/common";
-import { authenticationStore } from "./authentication";
+import { ADMIN_PANEL_RICHIESTE, DASHBOARD, ROOT } from "../navigation/routes";
+import { authenticationStore, resetQueries } from "./LoginRedirect";
 import {
   UserSession,
   CurrentSession,
@@ -47,7 +47,12 @@ export function AuthenticationProvider({
   const changeSession = useCallback(
     (session: CurrentSession) => {
       setCurrentSession(session);
-      historyPush("/");
+      if (session?.type === "user") {
+        historyPush(DASHBOARD);
+      }
+      if (session?.type === "admin") {
+        historyPush(ADMIN_PANEL_RICHIESTE);
+      }
       resetQueries();
     },
     [historyPush]
@@ -56,7 +61,7 @@ export function AuthenticationProvider({
     (session: CurrentSession) => {
       deleteSession(session);
       setCurrentSession(null);
-      historyPush("/");
+      historyPush(ROOT);
       resetQueries();
     },
     [historyPush]
@@ -86,9 +91,4 @@ export function AuthenticationProvider({
 
 export function useAuthentication() {
   return React.useContext(AuthenticationContext);
-}
-
-export function resetQueries() {
-  queryClient.clear();
-  void queryClient.invalidateQueries();
 }

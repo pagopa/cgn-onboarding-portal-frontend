@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { on401 } from "../authentication/authentication";
+import { on401 } from "../authentication/LoginRedirect";
 import { getMerchantToken } from "../authentication/authenticationState";
 import {
   AgreementApi,
