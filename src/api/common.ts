@@ -8,9 +8,76 @@ import {
   UseMutationResult
 } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse, RawAxiosRequestConfig } from "axios";
-import PublicApi from "./public";
-import BackofficeApi from "./backoffice";
-import IndexApi from "./index";
+import { on401 } from "../authentication/LoginRedirect";
+import {
+  getAdminToken,
+  getMerchantToken
+} from "../authentication/authenticationState";
+import * as GeneratedPublic from "./generated_public";
+import * as GeneratedIndex from "./generated";
+import * as GeneratedBackoffice from "./generated_backoffice";
+
+const PublicApi = {
+  Help: new GeneratedPublic.HelpApi(undefined, process.env.BASE_PUBLIC_PATH)
+};
+
+const IndexApi = {
+  Agreement: new GeneratedIndex.AgreementApi(
+    undefined,
+    process.env.BASE_API_PATH
+  ),
+  Profile: new GeneratedIndex.ProfileApi(undefined, process.env.BASE_API_PATH),
+  Discount: new GeneratedIndex.DiscountApi(
+    undefined,
+    process.env.BASE_API_PATH
+  ),
+  Bucket: new GeneratedIndex.BucketApi(undefined, process.env.BASE_API_PATH),
+  Document: new GeneratedIndex.DocumentApi(
+    undefined,
+    process.env.BASE_API_PATH
+  ),
+  DocumentTemplate: new GeneratedIndex.DocumentTemplateApi(
+    undefined,
+    process.env.BASE_API_PATH
+  ),
+  ApiToken: new GeneratedIndex.ApiTokenApi(
+    undefined,
+    process.env.BASE_API_PATH
+  ),
+  Help: new GeneratedIndex.HelpApi(undefined, process.env.BASE_API_PATH),
+  GeolocationToken: new GeneratedIndex.GeolocationTokenApi(
+    undefined,
+    process.env.BASE_API_PATH
+  ),
+  DiscountBucketLoadingProgress:
+    new GeneratedIndex.DiscountBucketLoadingProgressApi(
+      undefined,
+      process.env.BASE_API_PATH
+    )
+};
+
+const BackofficeApi = {
+  Agreement: new GeneratedBackoffice.AgreementApi(
+    undefined,
+    process.env.BASE_BACKOFFICE_PATH
+  ),
+  Discount: new GeneratedBackoffice.DiscountApi(
+    undefined,
+    process.env.BASE_BACKOFFICE_PATH
+  ),
+  Document: new GeneratedBackoffice.DocumentApi(
+    undefined,
+    process.env.BASE_BACKOFFICE_PATH
+  ),
+  Exports: new GeneratedBackoffice.ExportsApi(
+    undefined,
+    process.env.BASE_BACKOFFICE_PATH
+  ),
+  AttributeAuthority: new GeneratedBackoffice.AttributeauthorityApi(
+    undefined,
+    process.env.BASE_BACKOFFICE_PATH
+  )
+};
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,7 +98,7 @@ type VariablesOf<AxiosParams extends Array<any>> = AxiosParams extends [
 type QueryKeyType<Params> = [string, string, string, Params];
 
 type ReactQueryHelpers<Params, Result> = {
-  method(params: Params): Promise<Result>;
+  method(params: Params, config?: RawAxiosRequestConfig): Promise<Result>;
   queryKey(params: Params): QueryKeyType<Params>;
   queryFn({ queryKey }: { queryKey: QueryKeyType<Params> }): Promise<Result>;
   mutationFn(params: Params): Promise<Result>;
@@ -59,12 +126,28 @@ function makeReactQuery<AxiosParams extends Array<any>, Result>(
   methodName: [string, string, string],
   axiosMethod: (
     ...params: AxiosParams
-  ) => Promise<AxiosResponse<Result, unknown>>
+  ) => Promise<AxiosResponse<Result, unknown>>,
+  getToken: () => string
 ) {
   const self: ReactQueryHelpers<VariablesOf<AxiosParams>, Result> = {
-    async method(params) {
-      const response = await axiosMethod(...([params] as any));
+    async method(params, config) {
+      const configWithAuth = {
+        ...(config ?? {}),
+        headers: {
+          ...(config?.headers ?? {}),
+          Authorization: `Bearer ${getToken()}`
+        }
+      };
+
+      const response = await axiosMethod(
+        ...(params === undefined
+          ? [configWithAuth]
+          : ([params, configWithAuth] as any))
+      );
       if (response instanceof AxiosError) {
+        if (response?.response?.status === 401) {
+          on401();
+        }
         throw response;
       }
       return response.data;
@@ -111,7 +194,8 @@ function makeReactQueries<
 >(
   queryKeyNameLevel1: string,
   queryKeyNameLevel2: string,
-  methods: Methods
+  methods: Methods,
+  getToken: () => string
 ): {
   [M in keyof Methods]: ReactQueryHelpers<
     VariablesOf<Parameters<Methods[M]>>,
@@ -123,7 +207,8 @@ function makeReactQueries<
       methodName,
       makeReactQuery(
         [queryKeyNameLevel1, queryKeyNameLevel2, methodName],
-        (...args) => methods[methodName](...args)
+        (...args) => methods[methodName](...args),
+        getToken
       )
     ])
   ) as any;
@@ -139,7 +224,8 @@ function mapApiMethods<
   }
 >(
   queryKeyNameLevel1: string,
-  obj: Obj
+  obj: Obj,
+  getToken: () => string
 ): {
   [K in keyof Obj]: {
     [M in keyof Obj[K]]: ReactQueryHelpers<
@@ -151,13 +237,13 @@ function mapApiMethods<
   return Object.fromEntries(
     Object.entries(obj as any).map(([key, value]) => [
       key,
-      makeReactQueries(queryKeyNameLevel1, key, value as any)
+      makeReactQueries(queryKeyNameLevel1, key, value as any, getToken)
     ])
   ) as any;
 }
 
 export const remoteData = {
-  Index: mapApiMethods("Index", IndexApi),
-  Backoffice: mapApiMethods("Backoffice", BackofficeApi),
-  Public: mapApiMethods("Public", PublicApi)
+  Public: mapApiMethods("Public", PublicApi, () => ""),
+  Index: mapApiMethods("Index", IndexApi, getMerchantToken),
+  Backoffice: mapApiMethods("Backoffice", BackofficeApi, getAdminToken)
 };

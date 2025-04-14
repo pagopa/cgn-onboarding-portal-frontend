@@ -201,7 +201,7 @@ export function getAdminToken(): string {
 export function excludeExpiredTokens(
   data: AuthenticationState
 ): AuthenticationState {
-  const now = Date.now();
+  const now = Date.now() / 1000;
   return {
     ...data,
     userNonceByState: Object.fromEntries(

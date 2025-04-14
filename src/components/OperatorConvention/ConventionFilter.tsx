@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
 import { saveAs } from "file-saver";
-import Api from "../../api/backoffice";
 import CenteredLoading from "../CenteredLoading";
+import { remoteData } from "../../api/common";
+import { Severity, useTooltip } from "../../context/tooltip";
 import DateModal from "./DateModal";
 
 interface FilterFormValues {
@@ -22,6 +21,7 @@ const ConventionFilter = ({
   refForm: any;
   getConventions: (params: any) => void;
 }) => {
+  const { triggerTooltip } = useTooltip();
   const [downloadingAgreements, setDownloadingAgreements] = useState(false);
   const [downloadingEyca, setDownloadingEyca] = useState(false);
   // eslint-disable-next-line functional/no-let
@@ -35,71 +35,64 @@ const ConventionFilter = ({
   };
 
   const getExport = async () => {
-    setDownloadingAgreements(true);
-    await tryCatch(
-      () =>
-        Api.Exports.exportAgreements({
+    try {
+      setDownloadingAgreements(true);
+      const data = await remoteData.Backoffice.Exports.exportAgreements.method(
+        undefined,
+        {
           headers: {
             "Content-Type": "text/csv"
           },
           responseType: "arraybuffer"
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => {
-          setDownloadingAgreements(false);
-        },
-        response => {
-          if (response) {
-            const blob = new Blob([response], { type: "text/csv" });
-            const today = new Date();
-            saveAs(
-              blob,
-              `Esercenti CGN - ${today.getDate()}/${
-                today.getMonth() + 1
-              }/${today.getFullYear()}`
-            );
-          }
-          setDownloadingAgreements(false);
         }
-      )
-      .run();
+      );
+      const blob = new Blob([data], { type: "text/csv" });
+      const today = new Date();
+      saveAs(
+        blob,
+        `Esercenti CGN - ${today.getDate()}/${
+          today.getMonth() + 1
+        }/${today.getFullYear()}`
+      );
+    } catch (error) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Errore durante il download del file"
+      });
+    } finally {
+      setDownloadingAgreements(false);
+    }
   };
 
   const getExportEyca = async () => {
-    setDownloadingEyca(true);
-    await tryCatch(
-      () =>
-        Api.Exports.exportEycaDiscounts({
-          headers: {
-            "Content-Type": "text/csv"
-          },
-          responseType: "arraybuffer"
-        }),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => {
-          setDownloadingEyca(false);
-        },
-        response => {
-          if (response) {
-            const blob = new Blob([response], { type: "text/csv" });
-            const today = new Date();
-            saveAs(
-              blob,
-              `Opportunità Eyca - ${today.getDate()}/${
-                today.getMonth() + 1
-              }/${today.getFullYear()}`
-            );
+    try {
+      setDownloadingEyca(true);
+      const data =
+        await remoteData.Backoffice.Exports.exportEycaDiscounts.method(
+          undefined,
+          {
+            headers: {
+              "Content-Type": "text/csv"
+            },
+            responseType: "arraybuffer"
           }
-          setDownloadingEyca(false);
-        }
-      )
-      .run();
+        );
+      const blob = new Blob([data], { type: "text/csv" });
+      const today = new Date();
+      saveAs(
+        blob,
+        `Opportunità Eyca - ${today.getDate()}/${
+          today.getMonth() + 1
+        }/${today.getFullYear()}`
+      );
+    } catch (error) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Errore durante il download del file"
+      });
+    } finally {
+      setDownloadingEyca(false);
+    }
   };
 
   return (

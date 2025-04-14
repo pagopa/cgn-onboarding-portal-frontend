@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AxiosError } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormSection from "../../FormSection";
 import { setImage } from "../../../../store/agreement/agreementSlice";
 import PlusIcon from "../../../../assets/icons/plus.svg";
 import { RootState } from "../../../../store/store";
-import Api from "../../../../api/index";
-import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
+import { remoteData } from "../../../../api/common";
 
 const FooterDescription = (
   <div>
@@ -53,32 +53,35 @@ const ProfileImage = () => {
   };
 
   const uploadImage = async (image: any) => {
-    setLoading(true);
-    const response = await normalizeAxiosResponse(
-      Api.Agreement.uploadImage({
+    try {
+      setLoading(true);
+      const data = await remoteData.Index.Agreement.uploadImage.method({
         agreementId: agreement.id,
         image: image[0]
-      })
-    );
-    if (response.status === 200 || response.status === 204) {
-      if (response.data?.imageUrl) {
-        dispatch(
-          setImage(`${process.env.BASE_IMAGE_PATH}/${response.data.imageUrl}`)
-        );
+      });
+      if (data.imageUrl) {
+        dispatch(setImage(`${process.env.BASE_IMAGE_PATH}/${data.imageUrl}`));
       }
-    } else if (response.status === 400) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: getImageErrorCodeDescription(response.data)
-      });
-    } else {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: getImageErrorCodeDescription(undefined)
-      });
+    } catch (error) {
+      if (
+        error instanceof AxiosError &&
+        error.response &&
+        error.response.status === 400
+      ) {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: getImageErrorCodeDescription(error.response.data)
+        });
+      } else {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: getImageErrorCodeDescription(undefined)
+        });
+      }
+    } finally {
+      setLoading(false);
+      setImageRefreshTimestamp(Date.now());
     }
-    setLoading(false);
-    setImageRefreshTimestamp(Date.now());
   };
 
   const [imageRefreshTimestamp, setImageRefreshTimestamp] = useState(

@@ -3,14 +3,14 @@ import { Button, Progress } from "design-react-kit";
 import { Field } from "formik";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
-import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import FormField from "../../FormField";
 import bucketTemplate from "../../../../templates/test-codes.csv";
 import { BucketCodeLoadStatus } from "../../../../api/generated";
-import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
+import { remoteData } from "../../../../api/common";
 
 type Props = {
   label: string;
@@ -64,8 +64,8 @@ Props) => {
 
   const uploadBucketMutation = useMutation({
     async mutationFn({ file }: { file: File }) {
-      const response = await normalizeAxiosResponse(
-        Api.Bucket.uploadBucket(
+      try {
+        const data = await remoteData.Index.Bucket.uploadBucket.method(
           {
             agreementId,
             document: file
@@ -77,14 +77,12 @@ Props) => {
               );
             }
           }
-        )
-      );
-      if (response.status === 200 || response.status === 204) {
+        );
         setFieldValue(
           hasIndex
             ? `discounts[${index}].lastBucketCodeLoadUid`
             : "lastBucketCodeLoadUid",
-          response.data.uid
+          data.uid
         );
         setFieldValue(
           hasIndex
@@ -94,21 +92,27 @@ Props) => {
         );
         setCurrentDoc({ name: file.name });
         setCanUploadFile(false);
-      } else if (
-        response.status === 400 &&
-        (response.data as string) in ERROR_MESSAGES
-      ) {
-        triggerTooltip({
-          severity: Severity.DANGER,
-          text: ERROR_MESSAGES[response.data as keyof typeof ERROR_MESSAGES]
-        });
-      } else {
-        triggerTooltip({
-          severity: Severity.DANGER,
-          text: ERROR_MESSAGES.DEFAULT
-        });
+      } catch (error) {
+        if (
+          error instanceof AxiosError &&
+          error.response &&
+          error.response.status === 400 &&
+          error.response.data in ERROR_MESSAGES
+        ) {
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text: ERROR_MESSAGES[
+              error.response.data as keyof typeof ERROR_MESSAGES
+            ]
+          });
+        } else {
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text: ERROR_MESSAGES.DEFAULT
+          });
+        }
+        setUploadProgress(0);
       }
-      setUploadProgress(0);
     }
   });
 

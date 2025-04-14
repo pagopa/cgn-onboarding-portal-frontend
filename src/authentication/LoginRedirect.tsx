@@ -4,12 +4,12 @@ import React, { Fragment, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { AxiosError } from "axios";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import PublicApi from "../api/public";
 import { OrganizationsDataApi } from "../api/generated";
 import { queryClient } from "../api/common";
 import { ADMIN_PANEL_RICHIESTE, DASHBOARD, ROOT } from "../navigation/routes";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
+import { SessionApi } from "../api/generated_public";
 import {
   deleteUserNonceByState,
   getUserNonceByState,
@@ -73,6 +73,8 @@ const adminJWTPayloadSchema = z.object({
   iat: z.number(),
   exp: z.number()
 });
+
+const sessionApi = new SessionApi(undefined, process.env.BASE_PUBLIC_PATH);
 
 const organizationsDataApi = new OrganizationsDataApi(
   undefined,
@@ -147,11 +149,9 @@ export function LoginRedirect() {
           return;
         }
         deleteUserNonceByState(state);
-        const userTokenResponse = await PublicApi.Session.createJwtSessionToken(
-          {
-            createJwtSessionTokenRequest: { requestType: "oi", nonce, code }
-          }
-        );
+        const userTokenResponse = await sessionApi.createJwtSessionToken({
+          createJwtSessionTokenRequest: { requestType: "oi", nonce, code }
+        });
         if (userTokenResponse instanceof AxiosError) {
           throw userTokenResponse;
         }
@@ -206,14 +206,13 @@ export function LoginRedirect() {
           throw new Error("Admin login nonce not found");
         }
         deleteAdminNonceByState(result.state ?? "");
-        const adminTokenResponse =
-          await PublicApi.Session.createJwtSessionToken({
-            createJwtSessionTokenRequest: {
-              requestType: "ad",
-              token: result.idToken,
-              nonce
-            }
-          });
+        const adminTokenResponse = await sessionApi.createJwtSessionToken({
+          createJwtSessionTokenRequest: {
+            requestType: "ad",
+            token: result.idToken,
+            nonce
+          }
+        });
         if (adminTokenResponse instanceof AxiosError) {
           throw adminTokenResponse;
         }
