@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Icon } from "design-react-kit";
-import { useLocation } from "react-router-dom";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import CgnLogo from "../components/Logo/CgnLogo";
@@ -8,15 +7,8 @@ import {
   goToAdminLoginPage,
   goToUserLoginPage
 } from "../authentication/LoginRedirect";
-import Help from "./Help";
 
 const Login = () => {
-  const location = useLocation();
-
-  if (location.pathname === "/admin/operatori/login/help") {
-    return <Help />;
-  }
-
   return (
     <Layout>
       <Container>

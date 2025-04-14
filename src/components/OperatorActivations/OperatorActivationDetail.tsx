@@ -8,6 +8,7 @@ import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import CenteredLoading from "../CenteredLoading";
 import { getEntityTypeLabel } from "../../utils/strings";
+import { ADMIN_PANEL_ACCESSI_EDIT } from "../../navigation/routes";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
@@ -112,7 +113,10 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           tag="button"
           onClick={() =>
             history.push(
-              `/admin/operatori/accessi/modifica/${operator.keyOrganizationFiscalCode}`
+              ADMIN_PANEL_ACCESSI_EDIT.replace(
+                ":operatorFiscalCode",
+                operator.keyOrganizationFiscalCode
+              )
             )
           }
         >

@@ -19,6 +19,7 @@ import {
 import Callout from "../Callout/Callout";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
+import { EDIT_DISCOUNT } from "../../navigation/routes";
 import ImportationStatus from "./ImportationStatus";
 
 type Props = {
@@ -183,9 +184,7 @@ Props) => {
         outline
         tag="button"
         onClick={() =>
-          history.push(
-            `/admin/operatori/agevolazioni/modifica/${row.original.id}`
-          )
+          history.push(EDIT_DISCOUNT.replace(":discountId", row.original.id))
         }
       >
         {row.original.state !== "expired" ? (
@@ -266,7 +265,7 @@ Props) => {
                     className="btn btn-link font-weight-bold p-0 my-2"
                     onClick={() => {
                       history.push(
-                        `/admin/operatori/agevolazioni/modifica/${row.original.id}`
+                        EDIT_DISCOUNT.replace(":discountId", row.original.id)
                       );
                     }}
                   >

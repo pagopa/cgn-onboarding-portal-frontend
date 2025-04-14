@@ -33,23 +33,12 @@ const Header = ({ hasBorder = false }: Props) => {
         </div>
         <div className="d-flex align-items-center">
           {authentication.currentSession?.type !== "admin" && (
-            <>
-              {isLogged ? (
-                <Link
-                  to={HELP}
-                  className="mr-11 text-base text-blue font-weight-semibold no-underline"
-                >
-                  Serve aiuto?
-                </Link>
-              ) : (
-                <Link
-                  to={`/admin/operatori/login/help`}
-                  className="mr-11 text-base text-blue font-weight-semibold no-underline"
-                >
-                  Serve aiuto?
-                </Link>
-              )}
-            </>
+            <Link
+              to={HELP}
+              className="mr-11 text-base text-blue font-weight-semibold no-underline"
+            >
+              Serve aiuto?
+            </Link>
           )}
           <UserSessionSwitch />
           {isLogged && (

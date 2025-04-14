@@ -5,6 +5,7 @@ import { BucketCodeLoadStatus } from "../../api/generated";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading";
+import { EDIT_DISCOUNT } from "../../navigation/routes";
 
 type Props = {
   discountId: string;
@@ -41,7 +42,7 @@ const getRenderAttributesByState = (
             Abbiamo riscontrato un problema nell’importazione dei codici sui
             nostri sistemi.{" "}
             <Link
-              to={`/admin/operatori/agevolazioni/modifica/${discountId}`}
+              to={EDIT_DISCOUNT.replace(":discountId", discountId)}
               className="font-weight-semibold"
             >
               Aggiungi codici
@@ -69,7 +70,7 @@ const getRenderAttributesByState = (
             opportunità. Ad esaurimento dei codici sconto l’opportunità non sarà
             più visibile in app.{" "}
             <Link
-              to={`/admin/operatori/agevolazioni/modifica/${discountId}`}
+              to={EDIT_DISCOUNT.replace(":discountId", discountId)}
               className="font-weight-semibold"
             >
               Riprova

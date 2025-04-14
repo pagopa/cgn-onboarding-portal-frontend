@@ -35,7 +35,8 @@ import {
   ADMIN_PANEL_ACCESSI,
   ADMIN_PANEL_ACCESSI_EDIT,
   ADMIN_PANEL_ACCESSI_CREA,
-  LOGIN_REDIRECT
+  LOGIN_REDIRECT,
+  LOGIN
 } from "./routes";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -65,6 +66,8 @@ export const RouterConfig = () => {
   if (authentication.currentSession.type === "admin") {
     return (
       <Switch>
+        <Route exact path={LOGIN} component={Login} />
+        <Route exact path={HELP} component={Help} />
         <Route exact path={ADMIN_PANEL_RICHIESTE} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
         <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
@@ -94,6 +97,7 @@ export const RouterConfig = () => {
     case AgreementState.DraftAgreement: {
       return (
         <Switch>
+          <Route exact path={LOGIN} component={Login} />
           <Route exact path={HELP} component={Help} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />
           <Route path="*">
@@ -105,6 +109,7 @@ export const RouterConfig = () => {
     case AgreementState.RejectedAgreement: {
       return (
         <Switch>
+          <Route exact path={LOGIN} component={Login} />
           <Route exact path={HELP} component={Help} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />
           <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
@@ -117,8 +122,9 @@ export const RouterConfig = () => {
     default: {
       return (
         <Switch>
-          <Route exact path={DASHBOARD} component={Dashboard} />
+          <Route exact path={LOGIN} component={Login} />
           <Route exact path={HELP} component={Help} />
+          <Route exact path={DASHBOARD} component={Dashboard} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />
           <Route exact path={EDIT_PROFILE} component={EditProfile} />
           <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />

@@ -6,7 +6,7 @@ import React, {
   useMemo
 } from "react";
 import { useHistory } from "react-router-dom";
-import { ADMIN_PANEL_RICHIESTE, DASHBOARD, ROOT } from "../navigation/routes";
+import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
 import { authenticationStore, resetQueries } from "./LoginRedirect";
 import {
   UserSession,
@@ -61,7 +61,7 @@ export function AuthenticationProvider({
     (session: CurrentSession) => {
       deleteSession(session);
       setCurrentSession(null);
-      historyPush(ROOT);
+      historyPush(LOGIN);
       resetQueries();
     },
     [historyPush]

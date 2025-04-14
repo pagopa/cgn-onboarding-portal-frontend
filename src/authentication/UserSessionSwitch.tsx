@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { LOGIN } from "../navigation/routes";
 import { useAuthentication } from "./AuthenticationContext";
 
 // this serves only for testing purposes until multiple logins are not approved
@@ -39,6 +41,7 @@ export function UserSessionSwitch() {
             padding: 8
           }}
         >
+          <Link to={LOGIN}>add session</Link>
           {Object.entries(authentication.userSessionByFiscalCode).map(
             ([fiscal_code, { first_name, last_name }]) => {
               return (

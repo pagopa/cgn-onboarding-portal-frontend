@@ -1,4 +1,5 @@
-export const ROOT = "/admin/operatori/login";
+export const LOGIN = "/admin/operatori/login";
+export const LOGIN_REDIRECT = "/session";
 export const DASHBOARD = "/admin/operatori/home";
 export const HELP = "/admin/operatori/serve-aiuto";
 export const CREATE_PROFILE = "/admin/operatori/richiesta-convenzione";
@@ -15,4 +16,3 @@ export const ADMIN_PANEL_ACCESSI = "/admin/operatori/accessi";
 export const ADMIN_PANEL_ACCESSI_EDIT =
   "/admin/operatori/accessi/modifica/:operatorFiscalCode";
 export const ADMIN_PANEL_ACCESSI_CREA = "/admin/operatori/accessi/crea";
-export const LOGIN_REDIRECT = "/session";

@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { OrganizationsDataApi } from "../api/generated";
 import { queryClient } from "../api/common";
-import { ADMIN_PANEL_RICHIESTE, DASHBOARD, ROOT } from "../navigation/routes";
+import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import { SessionApi } from "../api/generated_public";
@@ -49,7 +49,7 @@ const AdminAccess = new Msal.PublicClientApplication({
       "cgnonboardingportal.b2clogin.com"
     ], // You must identify your tenant's domain as a known authority.
     redirectUri: process.env.MSAL_REDIRECT_URI as string,
-    postLogoutRedirectUri: "/"
+    postLogoutRedirectUri: LOGIN
   },
   cache: {
     cacheLocation: "sessionStorage",
@@ -272,7 +272,7 @@ export function LoginRedirect() {
                   <h1 className="h2 font-weight-bold text-dark-blue">
                     Errore durante il login
                   </h1>
-                  <Link className="mt-8 btn btn-outline-primary" to={ROOT}>
+                  <Link className="mt-8 btn btn-outline-primary" to={LOGIN}>
                     Riprova
                   </Link>
                 </Fragment>
@@ -301,5 +301,5 @@ export function on401() {
   setCurrentSession(null);
   resetQueries();
   // eslint-disable-next-line functional/immutable-data
-  window.location.href = ROOT;
+  window.location.href = LOGIN;
 }
