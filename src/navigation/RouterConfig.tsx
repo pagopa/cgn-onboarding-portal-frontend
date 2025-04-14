@@ -20,6 +20,7 @@ import { useAuthentication } from "../authentication/AuthenticationContext";
 import Login from "../pages/Login";
 import SelectCompany from "../pages/SelectCompany";
 import { LoginRedirect } from "../authentication/LoginRedirect";
+import { getCurrentMerchantFiscalCode } from "../authentication/authenticationState";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -46,11 +47,13 @@ export const RouterConfig = () => {
   const dispatch = useDispatch();
   const authentication = useAuthentication();
 
+  const merchantFiscalCode = getCurrentMerchantFiscalCode(authentication);
+
   useEffect(() => {
-    if (authentication.currentSession?.type === "user") {
+    if (merchantFiscalCode) {
       dispatch(createAgreement());
     }
-  }, [authentication.currentSession?.type, dispatch]);
+  }, [dispatch, merchantFiscalCode]);
 
   if (location.pathname === LOGIN_REDIRECT) {
     return <LoginRedirect />;
