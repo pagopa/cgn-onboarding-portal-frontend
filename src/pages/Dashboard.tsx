@@ -10,7 +10,7 @@ import Profile from "../components/Profile/Profile";
 import ProfileData from "../components/ProfileData/ProfileData";
 import { RootState } from "../store/store";
 import { useAuthentication } from "../authentication/AuthenticationContext";
-import { getCurrentUserSession } from "../authentication/authenticationState";
+import { getCurrentUserSession } from "../authentication/authenticationHelpers";
 
 const Dashboard = () => {
   const [tab, setTab] = useState(0);

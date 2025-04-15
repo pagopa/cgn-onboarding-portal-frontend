@@ -1,7 +1,6 @@
 import React, { ComponentProps, useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
 import { Field } from "formik";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
@@ -52,7 +51,7 @@ Props) => {
       : formValues.lastBucketCodeLoadFileName;
 
   useEffect(() => {
-    if (NonEmptyString.is(documentName)) {
+    if (typeof documentName === "string" && documentName.length > 0) {
       setCurrentDoc({ name: documentName });
     }
 

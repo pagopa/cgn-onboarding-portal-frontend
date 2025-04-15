@@ -4,7 +4,7 @@ import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import CgnLogo from "../components/Logo/CgnLogo";
 import { useAuthentication } from "../authentication/AuthenticationContext";
-import { getCurrentUserSession } from "../authentication/authenticationState";
+import { getCurrentUserSession } from "../authentication/authenticationHelpers";
 
 const SelectCompany = () => {
   const authentication = useAuthentication();

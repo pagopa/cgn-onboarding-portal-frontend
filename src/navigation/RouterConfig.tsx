@@ -20,7 +20,7 @@ import { useAuthentication } from "../authentication/AuthenticationContext";
 import Login from "../pages/Login";
 import SelectCompany from "../pages/SelectCompany";
 import { LoginRedirect } from "../authentication/LoginRedirect";
-import { getCurrentMerchantFiscalCode } from "../authentication/authenticationState";
+import { getCurrentMerchantFiscalCode } from "../authentication/authenticationHelpers";
 import {
   DASHBOARD,
   CREATE_PROFILE,

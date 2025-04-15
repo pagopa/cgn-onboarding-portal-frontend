@@ -24,7 +24,7 @@ import {
   getCurrentMerchant,
   getCurrentMerchantFiscalCode,
   getCurrentUserFiscalCode
-} from "../../../authentication/authenticationState";
+} from "../../../authentication/authenticationHelpers";
 
 // WARNING: this file is 90% duplicated with src/components/Form/CreateProfileForm/ProfileData/ProfileData.tsx
 // any changes here should be reflected there as well
@@ -73,7 +73,7 @@ export function getSalesChannel(salesChannel: any) {
       return {
         ...OfflineChannel,
         addresses:
-          EmptyAddresses.is(OfflineChannel.addresses) ||
+          EmptyAddresses.safeParse(OfflineChannel.addresses).success ||
           OfflineChannel.allNationalAddresses
             ? []
             : OfflineChannel.addresses.map((add: any) => ({
@@ -85,7 +85,7 @@ export function getSalesChannel(salesChannel: any) {
       return {
         ...salesChannel,
         addresses:
-          EmptyAddresses.is(salesChannel.addresses) ||
+          EmptyAddresses.safeParse(salesChannel.addresses).success ||
           salesChannel.allNationalAddresses
             ? []
             : salesChannel.addresses.map((add: any) => ({

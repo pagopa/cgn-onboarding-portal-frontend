@@ -5,7 +5,7 @@ import { useTooltip, Severity } from "../../context/tooltip";
 import { Agreement, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
-import { getCurrentUserSession } from "../../authentication/authenticationState";
+import { getCurrentUserSession } from "../../authentication/authenticationHelpers";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";

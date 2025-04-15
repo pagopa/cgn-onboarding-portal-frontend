@@ -1,5 +1,3 @@
-import { fromNullable } from "fp-ts/lib/Option";
-
 const getAdminLoginUri = () => {
   switch (process.env.NODE_ENV) {
     case "production":
@@ -22,9 +20,9 @@ connect-src 'self' ${getAdminLoginUri()} ${
   } https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self';
 frame-src 'self' https://www.google.com;
-img-src 'self' https://assets.cdn.io.italia.it https://iopitncgnpeassetsst01.blob.core.windows.net ${fromNullable(
-    process.env.BASE_BLOB_PATH
-  ).getOrElse("")} ${
+img-src 'self' https://assets.cdn.io.italia.it https://iopitncgnpeassetsst01.blob.core.windows.net ${
+    process.env.BASE_BLOB_PATH ?? ""
+  } ${
     process.env.NODE_ENV !== "production" ? "https://upload.wikimedia.org/" : ""
   };
 manifest-src 'self';

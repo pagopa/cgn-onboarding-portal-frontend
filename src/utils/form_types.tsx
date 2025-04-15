@@ -1,16 +1,16 @@
-import * as t from "io-ts";
+import z from "zod";
 
-export const EmptyAddresses = t.array(
-  t.interface({
-    street: t.literal(""),
-    zipCode: t.literal(""),
-    city: t.literal(""),
-    district: t.literal(""),
-    coordinates: t.interface({
-      latitude: t.literal(""),
-      longitude: t.literal("")
+export const EmptyAddresses = z.array(
+  z.object({
+    street: z.literal(""),
+    zipCode: z.literal(""),
+    city: z.literal(""),
+    district: z.literal(""),
+    coordinates: z.object({
+      latitude: z.literal(""),
+      longitude: z.literal("")
     })
   })
 );
 
-export type EmptyAddresses = t.TypeOf<typeof EmptyAddresses>;
+export type EmptyAddresses = z.infer<typeof EmptyAddresses>;

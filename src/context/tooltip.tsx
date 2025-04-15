@@ -1,4 +1,3 @@
-import { fromNullable } from "fp-ts/lib/Option";
 import React, {
   useContext,
   createContext,
@@ -97,9 +96,7 @@ function TooltipProvider({ children }: ProviderProps): ReactElement {
 }
 
 function useTooltip(): TooltipContextProps {
-  return fromNullable(useContext(TooltipContext)).getOrElseL(() => {
-    throw new Error("useTooltip must be used within a TooltipProvider");
-  });
+  return useContext(TooltipContext);
 }
 
 export { TooltipProvider, useTooltip };

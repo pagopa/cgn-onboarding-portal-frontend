@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import cx from "classnames";
 import { Icon } from "design-react-kit";
 import { format } from "date-fns";
 import { remoteData } from "../../api/common";
@@ -22,16 +21,9 @@ const menuLink = (
   label: string,
   child?: any
 ) => (
-  <li
-    className={cx("nav-item", {
-      active: view.includes(viewKey)
-    })}
-  >
+  <li className={`nav-item ${view.includes(viewKey) ? "active" : ""}`}>
     <a
-      className={cx("nav-link", {
-        active: view.includes(viewKey),
-        "cursor-pointer": !child
-      })}
+      className={`nav-link ${view.includes(viewKey) ? "active" : ""} ${!child ? "cursor-pointer" : ""}`}
       onClick={() => !child && setView(viewKey)}
     >
       <span>{label}</span>
@@ -198,14 +190,12 @@ const ConventionDetails = ({
                               key={i}
                             >
                               <a
-                                className={cx(
-                                  "nav-link primary-color cursor-pointer",
-                                  {
-                                    "font-weight-bold": view.includes(
-                                      `agevolazione${i + 1}`
-                                    )
-                                  }
-                                )}
+                                className={`
+                                  nav-link primary-color cursor-pointer ${
+                                    view.includes(`agevolazione${i + 1}`)
+                                      ? "font-weight-bold"
+                                      : ""
+                                  }`}
                                 onClick={() => setView(`agevolazione${i + 1}`)}
                               >
                                 {d.name}

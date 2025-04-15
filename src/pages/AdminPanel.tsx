@@ -12,7 +12,7 @@ import {
 } from "../navigation/routes";
 import OperatorActivations from "../components/OperatorActivations/OperatorActivations";
 import { useAuthentication } from "../authentication/AuthenticationContext";
-import { getCurrentUserSession } from "../authentication/authenticationState";
+import { getCurrentUserSession } from "../authentication/authenticationHelpers";
 
 const AdminPanel = () => {
   const location = useLocation();
