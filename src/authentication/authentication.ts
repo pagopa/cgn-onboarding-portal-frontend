@@ -187,9 +187,8 @@ const AdminAccess = new Msal.PublicClientApplication({
       "testcgnportalbitrock.b2clogin.com",
       "cgnonboardingportaluat.b2clogin.com",
       "cgnonboardingportal.b2clogin.com"
-    ], // You must identify your tenant's domain as a known authority.
-    // redirectUri: process.env.MSAL_REDIRECT_URI as string,
-    redirectUri: "http://localhost:3000/session", // TODO
+    ],
+    redirectUri: process.env.MSAL_REDIRECT_URI as string,
     postLogoutRedirectUri: LOGIN
   },
   cache: {
