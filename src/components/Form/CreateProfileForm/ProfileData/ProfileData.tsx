@@ -20,11 +20,6 @@ import {
   sanitizeProfileFromValues
 } from "../../EditOperatorDataForm/EditOperatorDataForm";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
-import {
-  getCurrentMerchant,
-  getCurrentMerchantFiscalCode,
-  getCurrentUserFiscalCode
-} from "../../../../authentication/authenticationHelpers";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -156,9 +151,6 @@ const ProfileData = ({
   const isLoading = isCompleted && profileQuery.isLoading;
 
   const authentication = useAuthentication();
-  const userFiscalCode = getCurrentUserFiscalCode(authentication);
-  const merchantFiscalCode = getCurrentMerchantFiscalCode(authentication);
-  const merchant = getCurrentMerchant(authentication);
 
   if (isLoading) {
     return <CenteredLoading />;
@@ -173,8 +165,11 @@ const ProfileData = ({
           ...defaultSalesChannel,
           ...initialValues.salesChannel
         },
-        fullName: merchant?.organization_name || "",
-        taxCodeOrVat: merchantFiscalCode || userFiscalCode || ""
+        fullName: authentication.currentMerchant?.organization_name || "",
+        taxCodeOrVat:
+          authentication.currentMerchantFiscalCode ||
+          authentication.currentUserFiscalCode ||
+          ""
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {

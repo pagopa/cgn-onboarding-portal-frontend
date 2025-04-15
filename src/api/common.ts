@@ -8,11 +8,13 @@ import {
   UseMutationResult
 } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse, RawAxiosRequestConfig } from "axios";
-import { on401 } from "../authentication/LoginRedirect";
 import {
+  deleteSession,
   getAdminToken,
-  getMerchantToken
-} from "../authentication/authenticationState";
+  getMerchantToken,
+  setCurrentSession
+} from "../authentication/authentication";
+import { authenticationStore } from "../authentication/authentication";
 import * as GeneratedPublic from "./generated_public";
 import * as GeneratedIndex from "./generated";
 import * as GeneratedBackoffice from "./generated_backoffice";
@@ -146,7 +148,11 @@ function makeReactQuery<AxiosParams extends Array<any>, Result>(
       );
       if (response instanceof AxiosError) {
         if (response?.response?.status === 401) {
-          on401();
+          const data = authenticationStore.get();
+          deleteSession(data.currentSession);
+          setCurrentSession(null);
+          // eslint-disable-next-line functional/immutable-data
+          window.location.href = "/";
         }
         throw response;
       }

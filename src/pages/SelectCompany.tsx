@@ -4,14 +4,13 @@ import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import CgnLogo from "../components/Logo/CgnLogo";
 import { useAuthentication } from "../authentication/AuthenticationContext";
-import { getCurrentUserSession } from "../authentication/authenticationHelpers";
 
 const SelectCompany = () => {
   const authentication = useAuthentication();
   const [selectedCompany, setSelectedCompany] = React.useState<string | null>(
     null
   );
-  const merchants = getCurrentUserSession(authentication)?.merchants;
+  const merchants = authentication.currentUserSession?.merchants;
   return (
     <Layout>
       <Container>

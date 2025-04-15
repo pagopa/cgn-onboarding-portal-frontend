@@ -8,7 +8,7 @@ const ALLOW_MULTIPLE_LOGIN =
   window.location.hostname === "127.0.0.1" ||
   window.location.hostname === "portal.cgnonboardingportal-uat.pagopa.it";
 
-export function UserSessionSwitch() {
+export function SessionSwitch() {
   const authentication = useAuthentication();
   const [isOpen, setIsOpen] = useState(false);
   if (!ALLOW_MULTIPLE_LOGIN) {
@@ -46,6 +46,25 @@ export function UserSessionSwitch() {
           >
             add session
           </button>
+          {Object.entries(authentication.adminSessionByName).map(
+            ([name, { first_name, last_name }]) => {
+              return (
+                <div
+                  key={name}
+                  style={{
+                    padding: "0px 16px"
+                  }}
+                  onClick={() => {
+                    authentication.changeSession({ type: "admin", name });
+                  }}
+                >
+                  <div>
+                    {first_name} {last_name}
+                  </div>
+                </div>
+              );
+            }
+          )}
           {Object.entries(authentication.userSessionByFiscalCode).map(
             ([fiscal_code, { first_name, last_name }]) => {
               return (

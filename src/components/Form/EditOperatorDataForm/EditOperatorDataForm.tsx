@@ -20,11 +20,6 @@ import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 import { UpdateProfile } from "../../../api/generated";
 import { useAuthentication } from "../../../authentication/AuthenticationContext";
-import {
-  getCurrentMerchant,
-  getCurrentMerchantFiscalCode,
-  getCurrentUserFiscalCode
-} from "../../../authentication/authenticationHelpers";
 
 // WARNING: this file is 90% duplicated with src/components/Form/CreateProfileForm/ProfileData/ProfileData.tsx
 // any changes here should be reflected there as well
@@ -184,9 +179,6 @@ export const EditOperatorForm = ({
   };
 
   const authentication = useAuthentication();
-  const userFiscalCode = getCurrentUserFiscalCode(authentication);
-  const merchantFiscalCode = getCurrentMerchantFiscalCode(authentication);
-  const merchant = getCurrentMerchant(authentication);
 
   if (profileQuery.isLoading) {
     return <CenteredLoading />;
@@ -203,8 +195,11 @@ export const EditOperatorForm = ({
           ...defaultSalesChannel,
           ...initialValues.salesChannel
         },
-        fullName: merchant?.organization_name || "",
-        taxCodeOrVat: merchantFiscalCode || userFiscalCode || ""
+        fullName: authentication.currentMerchant?.organization_name || "",
+        taxCodeOrVat:
+          authentication.currentMerchantFiscalCode ||
+          authentication.currentUserFiscalCode ||
+          ""
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {

@@ -4,7 +4,7 @@ import { Button } from "design-react-kit";
 import { CREATE_PROFILE, HELP } from "../../navigation/routes";
 import Logo from "../Logo/Logo";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
-import { UserSessionSwitch } from "../../authentication/UserSessionSwitch";
+import { SessionSwitch } from "../../authentication/SessionSwitch";
 import LogoutModal from "./LogoutModal";
 
 type Props = {
@@ -40,7 +40,7 @@ const Header = ({ hasBorder = false }: Props) => {
               Serve aiuto?
             </Link>
           )}
-          <UserSessionSwitch />
+          <SessionSwitch />
           {isLogged && (
             <>
               {location.pathname === CREATE_PROFILE && (

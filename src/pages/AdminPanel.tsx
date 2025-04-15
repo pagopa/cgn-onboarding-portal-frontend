@@ -12,14 +12,13 @@ import {
 } from "../navigation/routes";
 import OperatorActivations from "../components/OperatorActivations/OperatorActivations";
 import { useAuthentication } from "../authentication/AuthenticationContext";
-import { getCurrentUserSession } from "../authentication/authenticationHelpers";
 
 const AdminPanel = () => {
   const location = useLocation();
   const history = useHistory();
 
   const authentication = useAuthentication();
-  const user = getCurrentUserSession(authentication);
+  const user = authentication.currentUserSession;
 
   const handleClick = (newTab: string) => {
     history.push(newTab);

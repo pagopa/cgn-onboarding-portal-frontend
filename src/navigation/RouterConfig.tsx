@@ -20,7 +20,6 @@ import { useAuthentication } from "../authentication/AuthenticationContext";
 import Login from "../pages/Login";
 import SelectCompany from "../pages/SelectCompany";
 import { LoginRedirect } from "../authentication/LoginRedirect";
-import { getCurrentMerchantFiscalCode } from "../authentication/authenticationHelpers";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -48,7 +47,7 @@ export const RouterConfig = () => {
   const dispatch = useDispatch();
   const authentication = useAuthentication();
 
-  const merchantFiscalCode = getCurrentMerchantFiscalCode(authentication);
+  const merchantFiscalCode = authentication.currentMerchantFiscalCode;
 
   useEffect(() => {
     if (merchantFiscalCode) {

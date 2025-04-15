@@ -6,20 +6,26 @@ import React, {
   useMemo
 } from "react";
 import { useHistory } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
-import { authenticationStore, resetQueries } from "./LoginRedirect";
+import { authenticationStore, useLoginRedirect } from "./authentication";
 import {
   UserSession,
   CurrentSession,
-  setCurrentSession,
-  deleteSession,
-  AdminSession
+  AdminSession,
+  MerchantInfo
 } from "./authenticationState";
+import { setCurrentSession, deleteSession } from "./authentication";
 
 export type AuthenticationContextType = {
   userSessionByFiscalCode: Record<string, UserSession>;
   adminSessionByName: Record<string, AdminSession>;
   currentSession: CurrentSession;
+  currentUserFiscalCode: string | undefined;
+  currentUserSession: UserSession | undefined;
+  currentMerchantFiscalCode: string | undefined;
+  currentMerchant: MerchantInfo | undefined;
+  currentAdminSession: AdminSession | undefined;
   changeSession(session: CurrentSession): void;
   logout(session: CurrentSession): void;
 };
@@ -32,8 +38,10 @@ export function AuthenticationProvider({
 }: {
   children: React.ReactNode;
 }) {
+  useLoginRedirect();
   const history = useHistory();
   const historyPush = history.push;
+  const queryClient = useQueryClient();
   const [persistedState, setPersistedState] = useState(authenticationStore.get);
   useEffect(
     () =>
@@ -44,6 +52,10 @@ export function AuthenticationProvider({
   );
   const { currentSession, userSessionByFiscalCode, adminSessionByName } =
     persistedState;
+  const resetQueries = useCallback(() => {
+    queryClient.clear();
+    void queryClient.invalidateQueries();
+  }, [queryClient]);
   const changeSession = useCallback(
     (session: CurrentSession) => {
       setCurrentSession(session);
@@ -55,7 +67,7 @@ export function AuthenticationProvider({
       }
       resetQueries();
     },
-    [historyPush]
+    [historyPush, resetQueries]
   );
   const logout = useCallback(
     (session: CurrentSession) => {
@@ -64,13 +76,39 @@ export function AuthenticationProvider({
       historyPush(LOGIN);
       resetQueries();
     },
-    [historyPush]
+    [historyPush, resetQueries]
   );
   const value = useMemo<AuthenticationContextType>(
     () => ({
       userSessionByFiscalCode,
       adminSessionByName,
       currentSession,
+      currentUserFiscalCode:
+        currentSession && currentSession.type === "user"
+          ? currentSession.userFiscalCode
+          : undefined,
+      currentUserSession:
+        currentSession && currentSession.type === "user"
+          ? userSessionByFiscalCode[currentSession.userFiscalCode]
+          : undefined,
+      currentMerchantFiscalCode:
+        currentSession && currentSession.type === "user"
+          ? currentSession.merchantFiscalCode
+          : undefined,
+      currentMerchant:
+        currentSession && currentSession.type === "user"
+          ? userSessionByFiscalCode[
+              currentSession.userFiscalCode
+            ]?.merchants.find(
+              merchant =>
+                merchant.organization_fiscal_code ===
+                currentSession.merchantFiscalCode
+            )
+          : undefined,
+      currentAdminSession:
+        currentSession && currentSession.type === "admin"
+          ? adminSessionByName[currentSession.name]
+          : undefined,
       changeSession,
       logout
     }),
