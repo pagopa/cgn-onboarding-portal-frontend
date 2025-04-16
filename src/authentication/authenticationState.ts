@@ -67,26 +67,3 @@ export const empty: AuthenticationState = {
   adminSessionByName: {},
   currentSession: null
 };
-
-export function excludeExpiredTokens(
-  data: AuthenticationState
-): AuthenticationState {
-  const now = Date.now() / 1000;
-  return {
-    ...data,
-    userNonceByState: Object.fromEntries(
-      Object.entries(data.userNonceByState).filter(([, { exp }]) => exp > now)
-    ),
-    adminNonceByState: Object.fromEntries(
-      Object.entries(data.adminNonceByState).filter(([, { exp }]) => exp > now)
-    ),
-    userSessionByFiscalCode: Object.fromEntries(
-      Object.entries(data.userSessionByFiscalCode).filter(
-        ([, { exp }]) => exp > now
-      )
-    ),
-    adminSessionByName: Object.fromEntries(
-      Object.entries(data.adminSessionByName).filter(([, { exp }]) => exp > now)
-    )
-  };
-}

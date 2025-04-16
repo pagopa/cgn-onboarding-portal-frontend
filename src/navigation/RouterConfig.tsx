@@ -19,7 +19,7 @@ import EditActivation from "../pages/EditActivation";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import Login from "../pages/Login";
 import SelectCompany from "../pages/SelectCompany";
-import { LoginRedirect } from "../authentication/LoginRedirect";
+import { LoginRedirect } from "../pages/LoginRedirect";
 import {
   DASHBOARD,
   CREATE_PROFILE,

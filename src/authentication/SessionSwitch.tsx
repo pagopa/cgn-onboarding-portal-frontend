@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuthentication } from "./AuthenticationContext";
+import { adminLogoutPopup } from "./authentication";
 
 // this serves only for testing purposes until multiple logins are not approved
 
@@ -41,6 +42,7 @@ export function SessionSwitch() {
         >
           <button
             onClick={() => {
+              adminLogoutPopup();
               authentication.changeSession(null);
             }}
           >

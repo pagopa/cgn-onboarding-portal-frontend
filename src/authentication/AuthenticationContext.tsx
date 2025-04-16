@@ -8,14 +8,14 @@ import React, {
 import { useHistory } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
-import { authenticationStore, useLoginRedirect } from "./authentication";
+import { adminLogoutRedirect, useLoginRedirect } from "./authentication";
+import { authenticationStore } from "./authenticationStore";
 import {
   UserSession,
   CurrentSession,
   AdminSession,
   MerchantInfo
 } from "./authenticationState";
-import { setCurrentSession, deleteSession } from "./authentication";
 
 export type AuthenticationContextType = {
   userSessionByFiscalCode: Record<string, UserSession>;
@@ -29,6 +29,7 @@ export type AuthenticationContextType = {
   changeSession(session: CurrentSession): void;
   logout(session: CurrentSession): void;
 };
+
 const AuthenticationContext = createContext<AuthenticationContextType>(
   null as any
 );
@@ -58,7 +59,7 @@ export function AuthenticationProvider({
   }, [queryClient]);
   const changeSession = useCallback(
     (session: CurrentSession) => {
-      setCurrentSession(session);
+      authenticationStore.setCurrentSession(session);
       if (session?.type === "user") {
         historyPush(DASHBOARD);
       }
@@ -71,10 +72,13 @@ export function AuthenticationProvider({
   );
   const logout = useCallback(
     (session: CurrentSession) => {
-      deleteSession(session);
-      setCurrentSession(null);
+      authenticationStore.deleteSession(session);
+      authenticationStore.setCurrentSession(null);
       historyPush(LOGIN);
       resetQueries();
+      if (session?.type === "admin") {
+        adminLogoutRedirect();
+      }
     },
     [historyPush, resetQueries]
   );

@@ -8,13 +8,7 @@ import {
   UseMutationResult
 } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse, RawAxiosRequestConfig } from "axios";
-import {
-  deleteSession,
-  getAdminToken,
-  getMerchantToken,
-  setCurrentSession
-} from "../authentication/authentication";
-import { authenticationStore } from "../authentication/authentication";
+import { authenticationStore } from "../authentication/authenticationStore";
 import * as GeneratedPublic from "./generated_public";
 import * as GeneratedIndex from "./generated";
 import * as GeneratedBackoffice from "./generated_backoffice";
@@ -133,30 +127,30 @@ function makeReactQuery<AxiosParams extends Array<any>, Result>(
 ) {
   const self: ReactQueryHelpers<VariablesOf<AxiosParams>, Result> = {
     async method(params, config) {
-      const configWithAuth = {
-        ...(config ?? {}),
-        headers: {
-          ...(config?.headers ?? {}),
-          Authorization: `Bearer ${getToken()}`
-        }
-      };
-
-      const response = await axiosMethod(
-        ...(params === undefined
-          ? [configWithAuth]
-          : ([params, configWithAuth] as any))
-      );
-      if (response instanceof AxiosError) {
-        if (response?.response?.status === 401) {
+      try {
+        const configWithAuth = {
+          ...(config ?? {}),
+          headers: {
+            ...(config?.headers ?? {}),
+            Authorization: `Bearer ${getToken()}`
+          }
+        };
+        const response = await axiosMethod(
+          ...(params === undefined
+            ? [configWithAuth]
+            : ([params, configWithAuth] as any))
+        );
+        return response.data;
+      } catch (error) {
+        if (error instanceof AxiosError && error.response?.status === 401) {
           const data = authenticationStore.get();
-          deleteSession(data.currentSession);
-          setCurrentSession(null);
+          authenticationStore.deleteSession(data.currentSession);
+          authenticationStore.setCurrentSession(null);
           // eslint-disable-next-line functional/immutable-data
           window.location.href = "/";
         }
-        throw response;
+        throw error;
       }
-      return response.data;
     },
     queryKey(params) {
       return [...methodName, params] as QueryKeyType<VariablesOf<AxiosParams>>;
@@ -250,6 +244,10 @@ function mapApiMethods<
 
 export const remoteData = {
   Public: mapApiMethods("Public", PublicApi, () => ""),
-  Index: mapApiMethods("Index", IndexApi, getMerchantToken),
-  Backoffice: mapApiMethods("Backoffice", BackofficeApi, getAdminToken)
+  Index: mapApiMethods("Index", IndexApi, authenticationStore.getMerchantToken),
+  Backoffice: mapApiMethods(
+    "Backoffice",
+    BackofficeApi,
+    authenticationStore.getAdminToken
+  )
 };

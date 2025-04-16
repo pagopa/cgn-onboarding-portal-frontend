@@ -1,12 +1,4 @@
-import {
-  AuthenticationState,
-  authenticationStateSchema,
-  empty,
-  excludeExpiredTokens
-} from "./authenticationState";
-import { Store } from "./authenticationStore";
-
-function load<T>({
+export function load<T>({
   key,
   validate,
   empty
@@ -28,8 +20,7 @@ function load<T>({
     return empty;
   }
 }
-
-function save<T>({ key, value }: { key: string; value: T }) {
+export function save<T>({ key, value }: { key: string; value: T }) {
   try {
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
@@ -38,8 +29,7 @@ function save<T>({ key, value }: { key: string; value: T }) {
     console.error(`Failed to save ${key} to localStorage`, error);
   }
 }
-
-function watch<T>({
+export function watch<T>({
   key,
   validate,
   listener
@@ -61,26 +51,5 @@ function watch<T>({
         }
       }
     }
-  });
-}
-
-const LOCAL_STORAGE_KEY = "oneidentity";
-
-export const localStorageInitialState = excludeExpiredTokens(
-  load({
-    key: LOCAL_STORAGE_KEY,
-    validate: authenticationStateSchema.parse,
-    empty
-  })
-);
-
-export function localStorageSetup(store: Store<AuthenticationState>) {
-  store.subscribe(() => {
-    save({ key: LOCAL_STORAGE_KEY, value: store.get() });
-  });
-  watch({
-    key: LOCAL_STORAGE_KEY,
-    validate: authenticationStateSchema.parse,
-    listener: store.set
   });
 }
