@@ -96,7 +96,11 @@ function TooltipProvider({ children }: ProviderProps): ReactElement {
 }
 
 function useTooltip(): TooltipContextProps {
-  return useContext(TooltipContext);
+  const value = useContext(TooltipContext);
+  if (!value) {
+    throw new Error("useTooltip must be used within a TooltipProvider");
+  }
+  return value;
 }
 
 export { TooltipProvider, useTooltip };

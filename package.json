@@ -6,10 +6,10 @@
     "start:prod": "cross-env NODE_ENV=production parcel --port 3000 src/index.html --public-url / --out-dir dist/debug",
     "start:uat": "cross-env NODE_ENV=uat parcel --port 3000 src/index.html --public-url / --out-dir dist/debug --no-cache",
     "prebuild": "npm-run-all prebuild:*",
+    "build": "parcel build src/index.html --out-dir dist --public-url /",
     "prebuild:generate": "yarn run generate",
     "prebuild:clean": "shx rm -rf dist",
     "prebuild:tsc": "tsc --noEmit",
-    "build": "parcel build src/index.html --out-dir dist --public-url /",
     "build:prod": "cross-env NODE_ENV=production yarn run build",
     "build:uat": "cross-env NODE_ENV=uat yarn run build",
     "build:dev": "cross-env NODE_ENV=dev yarn run build",
@@ -21,7 +21,10 @@
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "prepare": "husky",
     "tsc:noemit": "tsc --noemit",
-    "detect-dead-code": "yarn ts-prune --ignore src/api/generated --error && yarn unimported --show-unused-files  --show-unresolved-imports && yarn ts-unused-exports tsconfig.json"
+    "detect-dead-code": "yarn ts-prune --ignore src/api/generated --error && yarn unimported && yarn ts-unused-exports tsconfig.json"
+  },
+  "resolutions": {
+    "@babel/preset-env": "7.13.8"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.39.0",
@@ -29,13 +32,11 @@
     "@tanstack/react-query": "^4.0.0",
     "axios": "^1.8.4",
     "bootstrap-italia": "^1.4.3",
-    "cross-env": "^7.0.3",
     "date-fns": "^2.16.1",
     "design-react-kit": "^3.3.3",
     "file-saver": "^2.0.5",
     "formik": "^2.2.6",
     "jwt-decode": "^4.0.0",
-    "node-sass": "^7.0.1",
     "react": "^16.8.0",
     "react-datepicker": "^3.8.0",
     "react-dom": "^17.0.1",
@@ -69,6 +70,7 @@
     "babel-core": "^6.26.3",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.7.0",
+    "cross-env": "^7.0.3",
     "cssnano": "^4.1.10",
     "danger": "^10.3.0",
     "danger-plugin-digitalcitizenship": "^1.0.0",
@@ -78,6 +80,7 @@
     "husky": "^9.1.7",
     "jest": "^26.6.3",
     "lint-staged": "^15.4.3",
+    "node-sass": "^7.0.1",
     "npm-run-all": "^4.1.5",
     "parcel": "^1.12.3",
     "prettier": "^3.5.3",
@@ -88,9 +91,6 @@
     "ts-unused-exports": "^11.0.1",
     "typescript": "^5.8.2",
     "unimported": "^1.31.1"
-  },
-  "resolutions": {
-    "@babel/preset-env": "7.13.8"
   },
   "packageManager": "yarn@1.22.22"
 }
