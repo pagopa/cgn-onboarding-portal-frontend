@@ -8,6 +8,11 @@ echo "$unstagedFiles"
 echo "🔨 compiling..."
 yarn tsc:noemit
 
+# Check for dead code
+echo "🧟 checking for dead code..."
+yarn detect-dead-code || { echo "❌ dead code detected"; exit 1; }
+
+
 # Run lintier
 echo "🧹 running linter..."  
 yarn lint-autofix
