@@ -13,7 +13,7 @@ export interface TooltipContextProps {
   triggerTooltip: (action: TooltipProviderState) => void;
 }
 
-export interface TooltipProviderState {
+interface TooltipProviderState {
   severity: Severity | undefined;
   text: string;
   title?: string;

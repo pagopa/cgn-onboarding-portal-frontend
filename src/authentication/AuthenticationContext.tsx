@@ -17,7 +17,7 @@ import {
   MerchantInfo
 } from "./authenticationState";
 
-export type AuthenticationContextType = {
+type AuthenticationContextType = {
   userSessionByFiscalCode: Record<string, UserSession>;
   adminSessionByName: Record<string, AdminSession>;
   currentSession: CurrentSession;

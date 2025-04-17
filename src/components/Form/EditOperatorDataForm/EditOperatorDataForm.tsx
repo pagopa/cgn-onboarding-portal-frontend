@@ -58,7 +58,7 @@ export const profileDefaultInitialValues = {
   salesChannel: defaultSalesChannel
 };
 
-export function getSalesChannel(salesChannel: any) {
+function getSalesChannel(salesChannel: any) {
   switch (salesChannel.channelType) {
     case "OnlineChannel":
       const { addresses, ...OnlineChannel } = salesChannel;
@@ -242,7 +242,7 @@ export const EditOperatorForm = ({
   );
 };
 
-export function OperatorDataButtons({
+function OperatorDataButtons({
   isEnabled,
   onBack
 }: {

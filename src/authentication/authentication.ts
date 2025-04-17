@@ -57,7 +57,10 @@ const AdminAccess = new Msal.PublicClientApplication({
       "cgnonboardingportaluat.b2clogin.com",
       "cgnonboardingportal.b2clogin.com"
     ],
-    redirectUri: process.env.MSAL_REDIRECT_URI as string,
+    redirectUri:
+      location.host === "localhost:3000"
+        ? "http://localhost:3000/session"
+        : (process.env.MSAL_REDIRECT_URI as string),
     postLogoutRedirectUri: LOGIN
   },
   cache: {

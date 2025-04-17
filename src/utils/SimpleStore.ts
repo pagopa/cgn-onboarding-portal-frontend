@@ -1,4 +1,4 @@
-export type Store<Value> = {
+type Store<Value> = {
   get(): Value;
   set(value: Value): void;
   subscribe(callback: () => void): () => void;
