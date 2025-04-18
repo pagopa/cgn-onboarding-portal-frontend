@@ -21,11 +21,11 @@ type AuthenticationContextType = {
   userSessionByFiscalCode: Record<string, UserSession>;
   adminSessionByName: Record<string, AdminSession>;
   currentSession: CurrentSession;
-  currentUserFiscalCode: string | undefined;
-  currentUserSession: UserSession | undefined;
-  currentMerchantFiscalCode: string | undefined;
-  currentMerchant: MerchantInfo | undefined;
-  currentAdminSession: AdminSession | undefined;
+  currentUserFiscalCode?: string;
+  currentUserSession?: UserSession;
+  currentMerchantFiscalCode?: string;
+  currentMerchant?: MerchantInfo;
+  currentAdminSession?: AdminSession;
   changeSession(session: CurrentSession): void;
   logout(session: CurrentSession): void;
 };
