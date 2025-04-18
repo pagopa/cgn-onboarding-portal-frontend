@@ -27,7 +27,7 @@ function App() {
         <TooltipProvider>
           <QueryClientProvider client={queryClient}>
             <AuthenticationProvider>
-              <RouterConfig />;
+              <RouterConfig />
             </AuthenticationProvider>
           </QueryClientProvider>
         </TooltipProvider>
