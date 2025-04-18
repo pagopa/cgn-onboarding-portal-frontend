@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuthentication } from "./AuthenticationContext";
 import { adminLogoutPopup } from "./authentication";
+import { authenticationStore } from "./authenticationStore";
 
 // this serves only for testing purposes until multiple logins are not approved
 
@@ -40,6 +41,26 @@ export function SessionSwitch() {
             padding: 8
           }}
         >
+          {
+            // developer utility to be able to test from localhost
+            window.location.host ===
+              "portal.cgnonboardingportal-uat.pagopa.it" && (
+              <button
+                onClick={() => {
+                  // eslint-disable-next-line functional/immutable-data
+                  window.location.href = `http://localhost:3000/dev-auth?${new URLSearchParams(
+                    {
+                      authenticationState: JSON.stringify(
+                        authenticationStore.get()
+                      )
+                    }
+                  )}`;
+                }}
+              >
+                authenticate on localhost
+              </button>
+            )
+          }
           <button
             onClick={() => {
               adminLogoutPopup();

@@ -32,8 +32,8 @@ worker-src 'none';
 
 export const renderCSP = () => {
   if (
-    location.host.startsWith("localhost") ||
-    location.host.startsWith("127.0.0.1")
+    window.location.host.startsWith("localhost") ||
+    window.location.host.startsWith("127.0.0.1")
   ) {
     return;
   }

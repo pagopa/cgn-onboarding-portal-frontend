@@ -58,7 +58,7 @@ const AdminAccess = new Msal.PublicClientApplication({
       "cgnonboardingportal.b2clogin.com"
     ],
     redirectUri:
-      location.host === "localhost:3000"
+      window.location.host === "localhost:3000"
         ? "http://localhost:3000/session"
         : (process.env.MSAL_REDIRECT_URI as string),
     postLogoutRedirectUri: LOGIN
@@ -94,10 +94,10 @@ const organizationsDataApi = new OrganizationsDataApi(
 );
 
 async function onUserLoginRedirect() {
-  if (location.pathname !== "/session") {
+  if (window.location.pathname !== "/session") {
     return { type: "not-executed" } as const;
   }
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = new URLSearchParams(window.location.search);
   const state = searchParams.get("state") ?? "";
   const code = searchParams.get("code") ?? "";
   try {
@@ -182,6 +182,7 @@ export function useLoginRedirect() {
   const history = useHistory();
   const historyPush = history.push;
   const queryClient = useQueryClient();
+
   useEffect(() => {
     const resetQueries = () => {
       queryClient.clear();
@@ -210,4 +211,14 @@ export function useLoginRedirect() {
       }
     });
   }, [historyPush, queryClient]);
+}
+
+// developer utility to be able to test from localhost
+if (window.location.pathname === "/dev-auth") {
+  const searchParams = new URLSearchParams(window.location.search);
+  authenticationStore.set(
+    JSON.parse(searchParams.get("authenticationState") ?? "")
+  );
+  // eslint-disable-next-line functional/immutable-data
+  window.location.href = "http://localhost:3000/";
 }

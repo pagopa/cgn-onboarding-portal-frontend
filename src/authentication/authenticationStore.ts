@@ -55,6 +55,7 @@ const NONCE_DURATION = 15 * 60 * 1000;
 
 export const authenticationStore = {
   get: store.get,
+  set: store.set,
   subscribe: store.subscribe,
   getCurrentSession() {
     const data = store.get();
