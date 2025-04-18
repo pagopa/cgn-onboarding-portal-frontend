@@ -43,7 +43,7 @@ export function SessionSwitch() {
           <button
             onClick={() => {
               adminLogoutPopup();
-              authentication.changeSession(null);
+              authentication.setCurrentSession(null);
             }}
           >
             add session
@@ -57,7 +57,7 @@ export function SessionSwitch() {
                     padding: "0px 16px"
                   }}
                   onClick={() => {
-                    authentication.changeSession({ type: "admin", name });
+                    authentication.setCurrentSession({ type: "admin", name });
                   }}
                 >
                   <div>
@@ -76,7 +76,7 @@ export function SessionSwitch() {
                     padding: "0px 16px"
                   }}
                   onClick={() => {
-                    authentication.changeSession({
+                    authentication.setCurrentSession({
                       type: "user",
                       userFiscalCode: fiscal_code,
                       merchantFiscalCode: undefined

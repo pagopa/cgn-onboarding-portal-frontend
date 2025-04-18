@@ -26,7 +26,7 @@ type AuthenticationContextType = {
   currentMerchantFiscalCode?: string;
   currentMerchant?: MerchantInfo;
   currentAdminSession?: AdminSession;
-  changeSession(session: CurrentSession): void;
+  setCurrentSession(session: CurrentSession): void;
   logout(session: CurrentSession): void;
 };
 
@@ -57,7 +57,7 @@ export function AuthenticationProvider({
     queryClient.clear();
     void queryClient.invalidateQueries();
   }, [queryClient]);
-  const changeSession = useCallback(
+  const setCurrentSession = useCallback(
     (session: CurrentSession) => {
       authenticationStore.setCurrentSession(session);
       if (session?.type === "user") {
@@ -113,12 +113,12 @@ export function AuthenticationProvider({
         currentSession && currentSession.type === "admin"
           ? adminSessionByName[currentSession.name]
           : undefined,
-      changeSession,
+      setCurrentSession,
       logout
     }),
     [
       adminSessionByName,
-      changeSession,
+      setCurrentSession,
       currentSession,
       logout,
       userSessionByFiscalCode

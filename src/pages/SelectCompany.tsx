@@ -82,7 +82,7 @@ const SelectCompany = () => {
                       authentication.currentSession?.type === "user" &&
                       selectedCompany
                     ) {
-                      authentication.changeSession({
+                      authentication.setCurrentSession({
                         type: "user",
                         userFiscalCode:
                           authentication.currentSession.userFiscalCode,
