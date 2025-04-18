@@ -47,7 +47,7 @@ const Dashboard = () => {
       <ContainerFluid className="mt-10 mb-20" maxWidth="972px">
         <div className="col-9">
           <Introduction
-            name={`${user?.first_name} ${user?.last_name}`}
+            name={user ? `${user.first_name} ${user.last_name}` : ""}
             handleClick={handleClick}
             activeTab={tab}
           />
