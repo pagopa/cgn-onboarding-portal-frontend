@@ -15,7 +15,8 @@
   - [Run the dashboard](#run-the-dashboard)
   - [Login in localhost](#login-in-localhost)
     - [Option 1: Using the Browser Console](#option-1-using-the-browser-console)
-    - [Option 2: Using the Browser Extension](#option-2-using-the-browser-extension) 
+    - [Option 2: Using the Browser Extension](#option-2-using-the-browser-extension)
+      - [Steps to Use the Extension](#steps-to-use-the-extension)
  
 
 # Getting started
@@ -71,14 +72,11 @@ After that you logged in successfully, you will be redirected to UAT environment
 - Open the browser inspect console and type the following snippet:
 ```js
 const dialog = window.document.createElement("dialog");
-dialog.innerText = "click here";
+dialog.innerText = "click here, then paste in console";
 dialog.onclick = async () => {
-  const token = await window.cookieStore.get("pagopa_token");
+  const token = localStorage.getItem("oneidentity");
   await navigator.clipboard.writeText(
-    `window.cookieStore.set(${JSON.stringify({
-      ...token,
-      domain: "localhost",
-    })}); window.location.reload();`
+    `localStorage.setItem("oneidentity", ${JSON.stringify(token)}); location.reload();`
   );
   window.location.replace("http://localhost:3000");
 };
