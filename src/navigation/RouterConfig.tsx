@@ -38,7 +38,6 @@ import {
   LOGIN
 } from "./routes";
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const RouterConfig = () => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
