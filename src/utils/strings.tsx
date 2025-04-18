@@ -73,7 +73,7 @@ export const makeProductCategoriesString = (
   );
 
 export const formatPercentage = (discountValue: number | undefined) =>
-  discountValue !== undefined ? `${discountValue} %` : "";
+  discountValue ? `${discountValue} %` : "";
 
 export const withNormalizedSpaces = (value?: string) =>
   value ? value.replace(/(\r\n|\n|\r)/gm, " ").trim() : "";

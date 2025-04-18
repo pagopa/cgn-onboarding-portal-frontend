@@ -20,6 +20,7 @@ export function load<T>({
     return empty;
   }
 }
+
 export function save<T>({ key, value }: { key: string; value: T }) {
   try {
     const serializedValue = JSON.stringify(value);
@@ -29,6 +30,7 @@ export function save<T>({ key, value }: { key: string; value: T }) {
     console.error(`Failed to save ${key} to localStorage`, error);
   }
 }
+
 export function watch<T>({
   key,
   validate,

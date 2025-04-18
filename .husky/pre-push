@@ -10,7 +10,7 @@ yarn tsc:noemit
 
 # Check for dead code
 echo "🧟 checking for dead code..."
-yarn detect-dead-code || { echo "❌ dead code detected"; exit 1; }
+npx ts-prune --ignore src/api/generated --error && npx knip --exclude devDependencies,binaries,enumMembers && npx ts-unused-exports tsconfig.json || { echo "❌ dead code detected"; exit 1; }
 
 
 # Run lintier
