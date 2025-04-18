@@ -66,9 +66,15 @@ const RouterConfig = () => {
       <Switch>
         <Route exact path={LOGIN} component={Login} />
         <Route exact path={HELP} component={Help} />
-        <Route exact path={ADMIN_PANEL_RICHIESTE} component={AdminPanel} />
-        <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
-        <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
+        <Route
+          exact
+          path={[
+            ADMIN_PANEL_RICHIESTE,
+            ADMIN_PANEL_CONVENZIONATI,
+            ADMIN_PANEL_ACCESSI
+          ]}
+          component={AdminPanel}
+        />
         <Route
           exact
           path={ADMIN_PANEL_ACCESSI_EDIT}
