@@ -15,8 +15,6 @@ export function load<T>({
     const parsedValue = JSON.parse(value);
     return validate(parsedValue);
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`Failed to load ${key} from localStorage`, error);
     return empty;
   }
 }
@@ -26,8 +24,7 @@ export function save<T>({ key, value }: { key: string; value: T }) {
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`Failed to save ${key} to localStorage`, error);
+    return;
   }
 }
 
@@ -48,8 +45,7 @@ export function watch<T>({
           const parsedValue = JSON.parse(newValue);
           listener(validate(parsedValue));
         } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error("Failed to parse new value from localStorage", error);
+          return;
         }
       }
     }

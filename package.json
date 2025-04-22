@@ -12,7 +12,6 @@
     "prebuild:tsc": "tsc --noEmit",
     "build:prod": "cross-env NODE_ENV=production yarn run build",
     "build:uat": "cross-env NODE_ENV=uat yarn run build",
-    "build:dev": "cross-env NODE_ENV=dev yarn run build",
     "test": "jest --passWithNoTests",
     "test:coverage": "jest --passWithNoTests --coverage --coverageReporters=cobertura",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",

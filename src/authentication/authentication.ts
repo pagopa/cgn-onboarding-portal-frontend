@@ -125,8 +125,6 @@ async function onUserLoginRedirect() {
     });
     return { type: "success", fiscal_code } as const;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
     return { type: "error" } as const;
   }
 }
@@ -161,8 +159,6 @@ async function onAdminLoginRedirect() {
     });
     return { type: "success", name } as const;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
     return { type: "error" } as const;
   }
 }
@@ -214,7 +210,10 @@ export function useLoginRedirect() {
 }
 
 // developer utility to be able to test from localhost
-if (window.location.pathname === "/dev-auth") {
+if (
+  process.env.NODE_ENV === "uat" &&
+  window.location.pathname === "/dev-auth"
+) {
   const searchParams = new URLSearchParams(window.location.search);
   authenticationStore.set(
     JSON.parse(searchParams.get("authenticationState") ?? "")
