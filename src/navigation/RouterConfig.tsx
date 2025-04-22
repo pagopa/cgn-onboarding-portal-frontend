@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Switch, Route, Redirect, useLocation } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { createAgreement } from "../store/agreement/agreementSlice";
 import { RootState } from "../store/store";
@@ -42,7 +42,6 @@ const RouterConfig = () => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
   );
-  const location = useLocation();
   const dispatch = useDispatch();
   const authentication = useAuthentication();
 
@@ -54,17 +53,23 @@ const RouterConfig = () => {
     }
   }, [dispatch, merchantFiscalCode]);
 
-  if (location.pathname === LOGIN_REDIRECT) {
-    return <LoginRedirect />;
-  }
-
   if (!authentication.currentSession) {
-    return <Login />;
+    return (
+      <Switch>
+        <Route exact path={LOGIN} component={Login} />
+        <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
+        <Route exact path={HELP} component={Help} />
+        <Route path="*">
+          <Redirect to={LOGIN} />
+        </Route>
+      </Switch>
+    );
   }
   if (authentication.currentSession.type === "admin") {
     return (
       <Switch>
         <Route exact path={LOGIN} component={Login} />
+        <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
         <Route exact path={HELP} component={Help} />
         <Route
           exact
@@ -102,6 +107,7 @@ const RouterConfig = () => {
       return (
         <Switch>
           <Route exact path={LOGIN} component={Login} />
+          <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
           <Route exact path={HELP} component={Help} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />
           <Route path="*">
@@ -114,6 +120,7 @@ const RouterConfig = () => {
       return (
         <Switch>
           <Route exact path={LOGIN} component={Login} />
+          <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
           <Route exact path={HELP} component={Help} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />
           <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
@@ -127,6 +134,7 @@ const RouterConfig = () => {
       return (
         <Switch>
           <Route exact path={LOGIN} component={Login} />
+          <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
           <Route exact path={HELP} component={Help} />
           <Route exact path={DASHBOARD} component={Dashboard} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />
