@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo } from "react";
 import { Button } from "design-react-kit";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { remoteData } from "../../../../api/common";
 import { RootState } from "../../../../store/store";
 import { Documents, EntityType } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
+import { createAgreement } from "../../../../store/agreement/agreementSlice";
 import FileRow from "./FileRow";
 
 type Props = {
@@ -36,9 +37,12 @@ const Documents = ({
   );
   const getFiles = () => documentsQuery.refetch();
 
+  const dispatch = useDispatch();
+
   const requireApprovalMutation =
     remoteData.Index.Agreement.requestApproval.useMutation({
       onSuccess() {
+        dispatch(createAgreement());
         setShowRequireApproval(true);
       },
       onError() {
