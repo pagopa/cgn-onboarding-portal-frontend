@@ -8,8 +8,7 @@ import {
   goToUserLoginPage
 } from "../authentication/authentication";
 
-const Login = () => {
-  return (
+const Login = () => (
     <Layout>
       <Container>
         <Container className="mt-20 mb-20">
@@ -81,7 +80,6 @@ const Login = () => {
       </Container>
     </Layout>
   );
-};
 
 export default Login;
 

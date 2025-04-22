@@ -31,8 +31,7 @@ const SelectCompany = () => {
                   <CgnLogo />
                 </div>
               </div>
-              {merchants?.map((company, i) => {
-                return (
+              {merchants?.map((company, i) => (
                   <div
                     key={i}
                     className="form-check pb-4"
@@ -58,8 +57,7 @@ const SelectCompany = () => {
                       </small>
                     </label>
                   </div>
-                );
-              })}
+                ))}
               <div className="mt-10 d-flex flex-row">
                 <Button
                   className="px-14 mr-4"

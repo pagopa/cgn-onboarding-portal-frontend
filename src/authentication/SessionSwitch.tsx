@@ -70,8 +70,7 @@ export function SessionSwitch() {
             add session
           </button>
           {Object.entries(authentication.adminSessionByName).map(
-            ([name, { first_name, last_name }]) => {
-              return (
+            ([name, { first_name, last_name }]) => (
                 <div
                   key={name}
                   style={{
@@ -85,12 +84,10 @@ export function SessionSwitch() {
                     {first_name} {last_name}
                   </div>
                 </div>
-              );
-            }
+              )
           )}
           {Object.entries(authentication.userSessionByFiscalCode).map(
-            ([fiscal_code, { first_name, last_name }]) => {
-              return (
+            ([fiscal_code, { first_name, last_name }]) => (
                 <div
                   key={fiscal_code}
                   style={{
@@ -109,8 +106,7 @@ export function SessionSwitch() {
                   </div>
                   <div>{fiscal_code}</div>
                 </div>
-              );
-            }
+              )
           )}
         </div>
       )}
