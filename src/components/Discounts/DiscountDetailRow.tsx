@@ -19,7 +19,7 @@ import {
 import Callout from "../Callout/Callout";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
-import { EDIT_DISCOUNT } from "../../navigation/routes";
+import { getEditDiscountRoute } from "../../navigation/routes";
 import ImportationStatus from "./ImportationStatus";
 
 type Props = {
@@ -183,9 +183,7 @@ Props) => {
         color={"primary"}
         outline
         tag="button"
-        onClick={() =>
-          history.push(EDIT_DISCOUNT.replace(":discountId", row.original.id))
-        }
+        onClick={() => history.push(getEditDiscountRoute(row.original.id))}
       >
         {row.original.state !== "expired" ? (
           <EditIcon fill={"#0273E6"} />
@@ -264,9 +262,7 @@ Props) => {
                   <button
                     className="btn btn-link font-weight-bold p-0 my-2"
                     onClick={() => {
-                      history.push(
-                        EDIT_DISCOUNT.replace(":discountId", row.original.id)
-                      );
+                      history.push(getEditDiscountRoute(row.original.id));
                     }}
                   >
                     Modifica opportunità
