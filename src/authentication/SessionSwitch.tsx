@@ -71,42 +71,42 @@ export function SessionSwitch() {
           </button>
           {Object.entries(authentication.adminSessionByName).map(
             ([name, { first_name, last_name }]) => (
-                <div
-                  key={name}
-                  style={{
-                    padding: "0px 16px"
-                  }}
-                  onClick={() => {
-                    authentication.setCurrentSession({ type: "admin", name });
-                  }}
-                >
-                  <div>
-                    {first_name} {last_name}
-                  </div>
+              <div
+                key={name}
+                style={{
+                  padding: "0px 16px"
+                }}
+                onClick={() => {
+                  authentication.setCurrentSession({ type: "admin", name });
+                }}
+              >
+                <div>
+                  {first_name} {last_name}
                 </div>
-              )
+              </div>
+            )
           )}
           {Object.entries(authentication.userSessionByFiscalCode).map(
             ([fiscal_code, { first_name, last_name }]) => (
-                <div
-                  key={fiscal_code}
-                  style={{
-                    padding: "0px 16px"
-                  }}
-                  onClick={() => {
-                    authentication.setCurrentSession({
-                      type: "user",
-                      userFiscalCode: fiscal_code,
-                      merchantFiscalCode: undefined
-                    });
-                  }}
-                >
-                  <div>
-                    {first_name} {last_name}
-                  </div>
-                  <div>{fiscal_code}</div>
+              <div
+                key={fiscal_code}
+                style={{
+                  padding: "0px 16px"
+                }}
+                onClick={() => {
+                  authentication.setCurrentSession({
+                    type: "user",
+                    userFiscalCode: fiscal_code,
+                    merchantFiscalCode: undefined
+                  });
+                }}
+              >
+                <div>
+                  {first_name} {last_name}
                 </div>
-              )
+                <div>{fiscal_code}</div>
+              </div>
+            )
           )}
         </div>
       )}
