@@ -1,30 +1,15 @@
-const getAdminLoginUri = () => {
-  switch (process.env.NODE_ENV) {
-    case "production":
-      return "https://login.microsoftonline.com https://cgnonboardingportal.b2clogin.com";
-    case "uat":
-      return "https://cgnonboardingportaluat.b2clogin.com";
-    default:
-      return "";
-  }
-};
-
 const getCSPContent = () =>
   `
 script-src 'self' https://www.google.com https://www.gstatic.com;
 style-src 'self';
 object-src 'none';
 base-uri 'self';
-connect-src 'self' ${getAdminLoginUri()} ${
+connect-src 'self' https://login.microsoftonline.com ${process.env.MSAL_AUTHORITY ?? ""} ${
     process.env.BASE_API_DOMAIN
   } https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self';
 frame-src 'self' https://www.google.com;
-img-src 'self' https://assets.cdn.io.italia.it https://iopitncgnpeassetsst01.blob.core.windows.net ${
-    process.env.BASE_BLOB_PATH ?? ""
-  } ${
-    process.env.NODE_ENV !== "production" ? "https://upload.wikimedia.org/" : ""
-  };
+img-src 'self' https://assets.cdn.io.italia.it ${process.env.BASE_IMAGE_PATH ?? ""};
 manifest-src 'self';
 media-src 'self';
 worker-src 'none';
