@@ -15,10 +15,10 @@ import { TooltipProvider } from "./context/tooltip";
 import { renderCSP } from "./utils/meta";
 import { store } from "./store/store";
 
+renderCSP();
+
 registerLocale("it", it);
 setDefaultLocale("it");
-
-renderCSP();
 
 function App() {
   return (
