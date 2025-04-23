@@ -1,16 +1,17 @@
-import z from "zod";
+import * as Yup from "yup";
+import { YupLiteral } from "./yupUtils";
 
-export const EmptyAddresses = z.array(
-  z.object({
-    street: z.literal(""),
-    zipCode: z.literal(""),
-    city: z.literal(""),
-    district: z.literal(""),
-    coordinates: z.object({
-      latitude: z.literal(""),
-      longitude: z.literal("")
-    })
-  })
-);
+export const EmptyAddresses = Yup.array(
+  Yup.object({
+    street: YupLiteral("").required(),
+    zipCode: YupLiteral("").required(),
+    city: YupLiteral("").required(),
+    district: YupLiteral("").required(),
+    coordinates: Yup.object({
+      latitude: YupLiteral("").required(),
+      longitude: YupLiteral("").required()
+    }).required()
+  }).required()
+).required();
 
-export type EmptyAddresses = z.infer<typeof EmptyAddresses>;
+export type EmptyAddresses = Yup.InferType<typeof EmptyAddresses>;

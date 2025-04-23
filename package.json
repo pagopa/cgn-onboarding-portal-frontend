@@ -46,8 +46,7 @@
     "react-table": "^7.6.3",
     "reactstrap": "^8.7.1",
     "typeface-titillium-web": "^1.1.13",
-    "yup": "^0.32.9",
-    "zod": "^3.24.2"
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.15.3",

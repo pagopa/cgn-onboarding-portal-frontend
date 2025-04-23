@@ -73,7 +73,7 @@ export function AuthenticationProvider({
   const logout = useCallback(
     (session: CurrentSession) => {
       authenticationStore.deleteSession(session);
-      authenticationStore.setCurrentSession(null);
+      authenticationStore.setCurrentSession({ type: "none" });
       historyPush(LOGIN);
       resetQueries();
       if (session?.type === "admin") {

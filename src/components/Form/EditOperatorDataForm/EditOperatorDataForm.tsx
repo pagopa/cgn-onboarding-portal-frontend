@@ -68,7 +68,7 @@ function getSalesChannel(salesChannel: any) {
       return {
         ...OfflineChannel,
         addresses:
-          EmptyAddresses.safeParse(OfflineChannel.addresses).success ||
+          EmptyAddresses.is(OfflineChannel.addresses) ||
           OfflineChannel.allNationalAddresses
             ? []
             : OfflineChannel.addresses.map((add: any) => ({
@@ -80,7 +80,7 @@ function getSalesChannel(salesChannel: any) {
       return {
         ...salesChannel,
         addresses:
-          EmptyAddresses.safeParse(salesChannel.addresses).success ||
+          EmptyAddresses.is(salesChannel.addresses) ||
           salesChannel.allNationalAddresses
             ? []
             : salesChannel.addresses.map((add: any) => ({

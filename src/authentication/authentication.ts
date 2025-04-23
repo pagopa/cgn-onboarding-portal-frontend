@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as Yup from "yup";
 import * as Msal from "@azure/msal-browser";
 import { jwtDecode } from "jwt-decode";
 import { useHistory } from "react-router-dom";
@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { OrganizationsDataApi } from "../api/generated";
 import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
 import { SessionApi } from "../api/generated_public";
+import { YupLiteral } from "../utils/yupUtils";
 import { authenticationStore } from "./authenticationStore";
 
 export function goToUserLoginPage() {
@@ -69,22 +70,22 @@ const AdminAccess = new Msal.PublicClientApplication({
   }
 });
 
-const userJWTPayloadSchema = z.object({
-  role: z.literal("ROLE_MERCHANT"),
-  fiscal_code: z.string(),
-  first_name: z.string(),
-  last_name: z.string(),
-  iat: z.number(),
-  exp: z.number()
-});
+const userJWTPayloadSchema = Yup.object({
+  role: YupLiteral("ROLE_MERCHANT").required(),
+  fiscal_code: Yup.string().required(),
+  first_name: Yup.string().required(),
+  last_name: Yup.string().required(),
+  iat: Yup.number().required(),
+  exp: Yup.number().required()
+}).required();
 
-const adminJWTPayloadSchema = z.object({
-  role: z.literal("ROLE_ADMIN"),
-  first_name: z.string(),
-  last_name: z.string(),
-  iat: z.number(),
-  exp: z.number()
-});
+const adminJWTPayloadSchema = Yup.object({
+  role: YupLiteral("ROLE_ADMIN").required(),
+  first_name: Yup.string().required(),
+  last_name: Yup.string().required(),
+  iat: Yup.number().required(),
+  exp: Yup.number().required()
+}).required();
 
 const sessionApi = new SessionApi(undefined, process.env.BASE_PUBLIC_PATH);
 
@@ -110,7 +111,9 @@ async function onUserLoginRedirect() {
       createJwtSessionTokenRequest: { requestType: "oi", nonce, code }
     });
     const { fiscal_code, first_name, last_name, exp } =
-      userJWTPayloadSchema.parse(jwtDecode<unknown>(userTokenResponse.data));
+      userJWTPayloadSchema.validateSync(
+        jwtDecode<unknown>(userTokenResponse.data)
+      );
     const merchantTokensReponse = await organizationsDataApi.getOrganizations({
       headers: {
         Authorization: `Bearer ${userTokenResponse.data}`
@@ -147,7 +150,7 @@ async function onAdminLoginRedirect() {
         nonce
       }
     });
-    const { first_name, last_name, exp } = adminJWTPayloadSchema.parse(
+    const { first_name, last_name, exp } = adminJWTPayloadSchema.validateSync(
       jwtDecode<unknown>(adminTokenResponse.data)
     );
     const name = `${first_name} ${last_name}`;
@@ -189,7 +192,8 @@ export function useLoginRedirect() {
       if (state.type === "success") {
         authenticationStore.setCurrentSession({
           type: "user",
-          userFiscalCode: state.fiscal_code
+          userFiscalCode: state.fiscal_code,
+          merchantFiscalCode: undefined
         });
         resetQueries();
         historyPush(DASHBOARD);

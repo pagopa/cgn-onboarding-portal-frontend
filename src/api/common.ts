@@ -145,7 +145,7 @@ function makeReactQuery<AxiosParams extends Array<any>, Result>(
         if (error instanceof AxiosError && error.response?.status === 401) {
           const data = authenticationStore.get();
           authenticationStore.deleteSession(data.currentSession);
-          authenticationStore.setCurrentSession(null);
+          authenticationStore.setCurrentSession({ type: "none" });
           // eslint-disable-next-line functional/immutable-data
           window.location.href = "/";
         }

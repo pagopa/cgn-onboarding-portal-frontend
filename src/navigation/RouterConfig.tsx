@@ -53,7 +53,7 @@ const RouterConfig = () => {
     }
   }, [dispatch, merchantFiscalCode]);
 
-  if (!authentication.currentSession) {
+  if (authentication.currentSession.type === "none") {
     return (
       <Switch>
         <Route exact path={LOGIN} component={Login} />

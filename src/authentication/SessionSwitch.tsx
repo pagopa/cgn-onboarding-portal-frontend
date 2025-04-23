@@ -64,7 +64,7 @@ export function SessionSwitch() {
           <button
             onClick={() => {
               adminLogoutPopup();
-              authentication.setCurrentSession(null);
+              authentication.setCurrentSession({ type: "none" });
             }}
           >
             add session

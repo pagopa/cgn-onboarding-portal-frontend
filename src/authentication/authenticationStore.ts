@@ -36,7 +36,9 @@ const store = makeStore(
   excludeExpiredTokens(
     load({
       key: LOCAL_STORAGE_KEY,
-      validate: authenticationStateSchema.parse,
+      validate: authenticationStateSchema.validateSync.bind(
+        authenticationStateSchema
+      ),
       empty
     })
   )
@@ -47,7 +49,9 @@ store.subscribe(() => {
 });
 watch({
   key: LOCAL_STORAGE_KEY,
-  validate: authenticationStateSchema.parse,
+  validate: authenticationStateSchema.validateSync.bind(
+    authenticationStateSchema
+  ),
   listener: store.set
 });
 
