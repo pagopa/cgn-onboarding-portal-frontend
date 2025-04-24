@@ -5,7 +5,7 @@ import { BucketCodeLoadStatus } from "../../api/generated";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading";
-import { getEditDiscountRoute } from "../../navigation/routes";
+import { getEditDiscountRoute } from "../../navigation/utils";
 
 type Props = {
   discountId: string;

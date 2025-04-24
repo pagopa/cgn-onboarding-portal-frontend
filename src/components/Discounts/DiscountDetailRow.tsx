@@ -19,7 +19,7 @@ import {
 import Callout from "../Callout/Callout";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
-import { getEditDiscountRoute } from "../../navigation/routes";
+import { getEditDiscountRoute } from "../../navigation/utils";
 import ImportationStatus from "./ImportationStatus";
 
 type Props = {

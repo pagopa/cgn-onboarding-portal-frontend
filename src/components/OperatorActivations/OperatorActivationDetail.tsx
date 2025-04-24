@@ -8,7 +8,7 @@ import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import CenteredLoading from "../CenteredLoading";
 import { getEntityTypeLabel } from "../../utils/strings";
-import { getEditOperatorRoute } from "../../navigation/routes";
+import { getEditOperatorRoute } from "../../navigation/utils";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
