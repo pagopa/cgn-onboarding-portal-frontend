@@ -16,7 +16,8 @@ export function YupLiteral<
 }
 
 export function YupUnion<Options extends Array<Yup.BaseSchema>>(
-  options: Options
+  options: Options,
+  asynchronous: boolean = false
 ): YupCustomSchema<
   Yup.TypeOf<Options[number]>,
   any,
@@ -25,50 +26,86 @@ export function YupUnion<Options extends Array<Yup.BaseSchema>>(
   return Yup.mixed().test(
     "union",
     "Must match one of the provided schemas",
-    function (obj) {
-      const { path, createError } = this;
-      for (const option of options) {
-        try {
-          option.validateSync(obj);
-          return true;
-        } catch (err) {
-          // Ignore validation error
+    asynchronous
+      ? async function (obj) {
+          const { path, createError } = this;
+          for (const option of options) {
+            try {
+              await option.validate(obj);
+              return true;
+            } catch (err) {
+              // Keep checking other options
+            }
+          }
+          return createError({
+            path,
+            message: "Must match one of the provided schemas"
+          });
         }
-      }
-      return createError({
-        path,
-        message: "Must match one of the provided schemas"
-      });
-    }
+      : function (obj) {
+          const { path, createError } = this;
+          for (const option of options) {
+            try {
+              option.validateSync(obj);
+              return true;
+            } catch (err) {
+              // Keep checking other options
+            }
+          }
+          return createError({
+            path,
+            message: "Must match one of the provided schemas"
+          });
+        }
   ) as any;
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function YupRecord<ValueSchema extends Yup.BaseSchema>(
-  valueSchema: ValueSchema
+  valueSchema: ValueSchema,
+  asynchronous: boolean = false
 ): YupCustomSchema<
   Yup.TypeOf<ValueSchema>,
   any,
   Record<string, Yup.InferType<ValueSchema>>
 > {
   return Yup.object().test(
-    "record",
+    "record-sync",
     "All values must match the provided schema",
-    function (obj) {
-      const { path, createError } = this;
-      if (typeof obj !== "object" || obj === null) {
-        return createError({ path, message: "Must be a valid object" });
-      }
-      for (const [key, value] of Object.entries(obj)) {
-        try {
-          valueSchema.validateSync(value);
-        } catch (err) {
-          return createError({
-            path: `${path}.${key}`,
-            message: (err as Yup.ValidationError).message
-          });
+    asynchronous
+      ? async function (obj) {
+          const { path, createError } = this;
+          if (typeof obj !== "object" || obj === null) {
+            return createError({ path, message: "Must be a valid object" });
+          }
+          for (const [key, value] of Object.entries(obj)) {
+            try {
+              await valueSchema.validate(value);
+            } catch (err) {
+              return createError({
+                path: `${path}.${key}`,
+                message: (err as Yup.ValidationError).message
+              });
+            }
+          }
+          return true;
         }
-      }
-      return true;
-    }
+      : function (obj) {
+          const { path, createError } = this;
+          if (typeof obj !== "object" || obj === null) {
+            return createError({ path, message: "Must be a valid object" });
+          }
+          for (const [key, value] of Object.entries(obj)) {
+            try {
+              valueSchema.validateSync(value);
+            } catch (err) {
+              return createError({
+                path: `${path}.${key}`,
+                message: (err as Yup.ValidationError).message
+              });
+            }
+          }
+          return true;
+        }
   ) as any;
 }
