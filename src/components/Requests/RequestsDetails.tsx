@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import { useTooltip, Severity } from "../../context/tooltip";
 import { Agreement, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
+import CenteredLoading from "../CenteredLoading";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
 
 const RequestsDetails = ({
   original,
-  updateList,
-  setLoading
+  updateList
 }: {
   original: Agreement;
   updateList: () => void;
-  setLoading: (state: boolean) => void;
 }) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
@@ -35,7 +34,6 @@ const RequestsDetails = ({
   const approveAgreementMutation =
     remoteData.Backoffice.Agreement.approveAgreement.useMutation({
       onSuccess() {
-        setLoading(false);
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,
@@ -44,7 +42,6 @@ const RequestsDetails = ({
         });
       },
       onError() {
-        setLoading(false);
         triggerTooltip({
           severity: Severity.DANGER,
           text: "Errore durante la validazione"
@@ -58,16 +55,12 @@ const RequestsDetails = ({
   const rejectAgreementMutation =
     remoteData.Backoffice.Agreement.rejectAgreement.useMutation({
       onSuccess() {
-        setLoading(false);
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,
           text: "La richiesta di convenzione è stata rifiutata con successo.",
           title: "Rifiuto inviato"
         });
-      },
-      onError() {
-        setLoading(false);
       }
     });
   const rejectAgreement = () => {
@@ -79,15 +72,31 @@ const RequestsDetails = ({
     });
   };
 
-  useEffect(() => {
-    setLoading(
-      approveAgreementMutation.isLoading || rejectAgreementMutation.isLoading
+  const assignAgreementsMutation =
+    remoteData.Backoffice.Agreement.assignAgreement.useMutation({
+      onSuccess() {
+        updateList();
+      }
+    });
+  const assignAgreements = () => {
+    assignAgreementsMutation.mutate({ agreementId: original.id });
+  };
+
+  const isLoading =
+    approveAgreementMutation.isLoading ||
+    rejectAgreementMutation.isLoading ||
+    assignAgreementsMutation.isLoading;
+
+  if (isLoading) {
+    return (
+      <section className="px-6 py-4 bg-white">
+        <h1 className="h5 font-weight-bold text-dark-blue mb-5">Dettagli</h1>
+        <div className="container">
+          <CenteredLoading />
+        </div>
+      </section>
     );
-  }, [
-    approveAgreementMutation.isLoading,
-    rejectAgreementMutation.isLoading,
-    setLoading
-  ]);
+  }
 
   return (
     <section className="px-6 py-4 bg-white">
@@ -209,8 +218,7 @@ const RequestsDetails = ({
           <AssignRequest
             original={original}
             assignedToMe={assignedToMe}
-            updateList={updateList}
-            setLoading={setLoading}
+            assignAgreements={assignAgreements}
           />
         </div>
       )}

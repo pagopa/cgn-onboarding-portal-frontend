@@ -28,7 +28,6 @@ import RequestsDetails from "./RequestsDetails";
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const Requests = () => {
   const pageSize = 20;
-  const [isLoadingExtra, setIsLoadingExtra] = useState(false);
   const refForm = useRef<any>(null);
 
   const [agreementsQueryParams, setAgreementsQueryParams] =
@@ -50,7 +49,7 @@ const Requests = () => {
   );
   const agreements = agreementsQuery.data;
 
-  const isLoading = agreementsQuery.isLoading || isLoadingExtra;
+  const isLoading = agreementsQuery.isLoading;
 
   const data = useMemo(() => agreements?.items || [], [agreements]);
   const columns = useMemo(
@@ -96,7 +95,6 @@ const Requests = () => {
       <RequestsDetails
         updateList={() => refForm.current?.submitForm()}
         original={original}
-        setLoading={setIsLoadingExtra}
       />
     ),
     []
