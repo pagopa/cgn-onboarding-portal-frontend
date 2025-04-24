@@ -14,7 +14,7 @@ export function load<T>({
   try {
     const parsedValue = JSON.parse(value);
     return validate(parsedValue);
-  } catch (error) {
+  } catch {
     return empty;
   }
 }
@@ -23,7 +23,7 @@ export function save<T>({ key, value }: { key: string; value: T }) {
   try {
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
-  } catch (error) {
+  } catch {
     return;
   }
 }
@@ -44,7 +44,7 @@ export function watch<T>({
         try {
           const parsedValue = JSON.parse(newValue);
           listener(validate(parsedValue));
-        } catch (error) {
+        } catch {
           return;
         }
       }
