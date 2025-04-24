@@ -11,16 +11,11 @@ import { createAgreement } from "../../../../store/agreement/agreementSlice";
 import FileRow from "./FileRow";
 
 type Props = {
-  setShowRequireApproval: (b: boolean) => void;
   handleBack: () => void;
   isCompleted: boolean;
 };
 
-const Documents = ({
-  setShowRequireApproval,
-  handleBack,
-  isCompleted
-}: Props) => {
+const Documents = ({ handleBack, isCompleted }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const { triggerTooltip } = useTooltip();
 
@@ -43,7 +38,6 @@ const Documents = ({
     remoteData.Index.Agreement.requestApproval.useMutation({
       onSuccess() {
         dispatch(createAgreement());
-        setShowRequireApproval(true);
       },
       onError() {
         triggerTooltip({
