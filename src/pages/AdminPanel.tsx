@@ -18,7 +18,7 @@ const AdminPanel = () => {
   const history = useHistory();
 
   const authentication = useAuthentication();
-  const user = authentication.currentUserSession;
+  const user = authentication.currentAdminSession;
 
   const handleClick = (newTab: string) => {
     history.push(newTab);

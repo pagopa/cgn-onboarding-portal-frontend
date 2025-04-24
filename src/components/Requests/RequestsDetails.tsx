@@ -23,7 +23,7 @@ const RequestsDetails = ({
   const { triggerTooltip } = useTooltip();
 
   const authentication = useAuthentication();
-  const user = authentication.currentUserSession;
+  const user = authentication.currentAdminSession;
 
   const entityType = original.entityType as EntityType;
 
