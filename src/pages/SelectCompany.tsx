@@ -12,7 +12,7 @@ const SelectCompany = () => {
   );
   const merchants = authentication.currentUserSession?.merchants;
   const onConfirmSelection = () => {
-    if (authentication.currentSession?.type === "user" && selectedCompany) {
+    if (authentication.currentSession.type === "user" && selectedCompany) {
       authentication.setCurrentSession({
         type: "user",
         userFiscalCode: authentication.currentSession.userFiscalCode,

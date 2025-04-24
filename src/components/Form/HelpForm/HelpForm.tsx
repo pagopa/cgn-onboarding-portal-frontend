@@ -69,7 +69,7 @@ const HelpForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const history = useHistory();
   const authentication = useAuthentication();
-  const token = authentication.currentSession !== null;
+  const token = authentication.currentSession.type !== "none";
   const { triggerTooltip } = useTooltip();
 
   const onErrorTooltip = () =>

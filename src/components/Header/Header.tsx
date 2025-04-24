@@ -13,7 +13,7 @@ type Props = {
 
 const Header = ({ hasBorder = false }: Props) => {
   const authentication = useAuthentication();
-  const isLogged = authentication.currentSession !== null;
+  const isLogged = authentication.currentSession.type !== "none";
   const location = useLocation();
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
