@@ -11,6 +11,15 @@ const SelectCompany = () => {
     null
   );
   const merchants = authentication.currentUserSession?.merchants;
+  const onConfirmSelection = () => {
+    if (authentication.currentSession?.type === "user" && selectedCompany) {
+      authentication.setCurrentSession({
+        type: "user",
+        userFiscalCode: authentication.currentSession.userFiscalCode,
+        merchantFiscalCode: selectedCompany
+      });
+    }
+  };
   return (
     <Layout>
       <Container>
@@ -75,19 +84,7 @@ const SelectCompany = () => {
                   className="px-14 mr-4"
                   color="primary"
                   tag="button"
-                  onClick={() => {
-                    if (
-                      authentication.currentSession?.type === "user" &&
-                      selectedCompany
-                    ) {
-                      authentication.setCurrentSession({
-                        type: "user",
-                        userFiscalCode:
-                          authentication.currentSession.userFiscalCode,
-                        merchantFiscalCode: selectedCompany
-                      });
-                    }
-                  }}
+                  onClick={onConfirmSelection}
                 >
                   Continua
                 </Button>
