@@ -56,7 +56,7 @@ const FileRow = (
         );
       const blob = new Blob([data], { type: "application/pdf" });
       saveAs(blob, label);
-    } catch (error) {
+    } catch {
       triggerTooltip({
         severity: Severity.DANGER,
         text: "Download del file fallito"
