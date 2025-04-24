@@ -195,10 +195,10 @@ export const EditOperatorForm = ({
           ...defaultSalesChannel,
           ...initialValues.salesChannel
         },
-        fullName: authentication.currentMerchant?.organization_name || "",
+        fullName: authentication.currentMerchant?.organization_name ?? "",
         taxCodeOrVat:
-          authentication.currentMerchantFiscalCode ||
-          authentication.currentUserFiscalCode ||
+          authentication.currentMerchantFiscalCode ??
+          authentication.currentUserFiscalCode ??
           ""
       }}
       validationSchema={ProfileDataValidationSchema}
