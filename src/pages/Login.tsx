@@ -84,7 +84,7 @@ const Login = () => (
 export default Login;
 
 const MAINTENANCE_BANNER: undefined | "short-downtime" | "long-downtime" =
-  "short-downtime";
+  undefined;
 
 function Alert({ title }: { title: string }) {
   return (
