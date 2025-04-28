@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
-import { getCookie, logout } from "../../utils/cookie";
 import { CREATE_PROFILE, HELP } from "../../navigation/routes";
-import { RootState } from "../../store/store";
 import Logo from "../Logo/Logo";
+import { useAuthentication } from "../../authentication/AuthenticationContext";
+import { SessionSwitch } from "../../authentication/SessionSwitch";
 import LogoutModal from "./LogoutModal";
 
 type Props = {
@@ -13,8 +12,8 @@ type Props = {
 };
 
 const Header = ({ hasBorder = false }: Props) => {
-  const { type } = useSelector((state: RootState) => state.user);
-  const token = getCookie();
+  const authentication = useAuthentication();
+  const isLogged = authentication.currentSession.type !== "none";
   const location = useLocation();
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
@@ -33,26 +32,16 @@ const Header = ({ hasBorder = false }: Props) => {
           <Logo />
         </div>
         <div className="d-flex align-items-center">
-          {type !== "ADMIN" && (
-            <>
-              {token ? (
-                <Link
-                  to={HELP}
-                  className="mr-11 text-base text-blue font-weight-semibold no-underline"
-                >
-                  Serve aiuto?
-                </Link>
-              ) : (
-                <Link
-                  to={`/admin/operatori/login/help`}
-                  className="mr-11 text-base text-blue font-weight-semibold no-underline"
-                >
-                  Serve aiuto?
-                </Link>
-              )}
-            </>
+          {authentication.currentSession?.type !== "admin" && (
+            <Link
+              to={HELP}
+              className="mr-11 text-base text-blue font-weight-semibold no-underline"
+            >
+              Serve aiuto?
+            </Link>
           )}
-          {token && (
+          <SessionSwitch />
+          {isLogged && (
             <>
               {location.pathname === CREATE_PROFILE && (
                 <Button
@@ -73,7 +62,9 @@ const Header = ({ hasBorder = false }: Props) => {
                   size="xs"
                   icon={false}
                   tag="button"
-                  onClick={() => logout(type)}
+                  onClick={() => {
+                    authentication.logout(authentication.currentSession);
+                  }}
                 >
                   Esci
                 </Button>
@@ -85,7 +76,7 @@ const Header = ({ hasBorder = false }: Props) => {
           isOpen={modal}
           toggle={toggle}
           logout={() => {
-            logout(type);
+            authentication.logout(authentication.currentSession);
           }}
         />
       </div>

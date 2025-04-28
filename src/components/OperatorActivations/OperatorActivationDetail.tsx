@@ -8,6 +8,7 @@ import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import CenteredLoading from "../CenteredLoading";
 import { getEntityTypeLabel } from "../../utils/strings";
+import { getEditOperatorRoute } from "../../navigation/utils";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
@@ -72,19 +73,6 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
               {operator.referents.map((referent, index) => (
                 <div className="d-flex flex-row mb-3" key={index}>
                   <p className="m-0 mr-4">{referent}</p>
-                  {/* <Button */}
-                  {/*  color="link" */}
-                  {/*  onClick={constNull} */}
-                  {/*  icon={true} */}
-                  {/*  className={"p-0 align-self-center"} */}
-                  {/* > */}
-                  {/*  <Icon */}
-                  {/*    icon="it-delete" */}
-                  {/*    color="primary" */}
-                  {/*    padding={false} */}
-                  {/*    size="sm" */}
-                  {/*  /> */}
-                  {/* </Button> */}
                 </div>
               ))}
             </td>
@@ -112,7 +100,7 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           tag="button"
           onClick={() =>
             history.push(
-              `/admin/operatori/accessi/modifica/${operator.keyOrganizationFiscalCode}`
+              getEditOperatorRoute(operator.keyOrganizationFiscalCode)
             )
           }
         >

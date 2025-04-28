@@ -1,16 +1,12 @@
 import React, { useRef, useState } from "react";
 import { Button, Icon, Progress } from "design-react-kit";
 import { saveAs } from "file-saver";
-import { tryCatch } from "fp-ts/lib/TaskEither";
-import { toError } from "fp-ts/lib/Either";
-import { AxiosProgressEvent } from "axios";
+import { AxiosError, AxiosProgressEvent } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import DocumentIcon from "../../../../assets/icons/document.svg";
-import Api from "../../../../api";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg";
 import { Document } from "../../../../api/generated";
 import { formatDate } from "../../../../utils/dates";
-import { normalizeAxiosResponse } from "../../../../utils/normalizeAxiosResponse";
 import { remoteData } from "../../../../api/common";
 import DeleteDocument from "./DeleteDocument";
 
@@ -42,10 +38,10 @@ const FileRow = (
   };
 
   const getTemplates = async () => {
-    setLoadingTemplate(true);
-    await tryCatch(
-      () =>
-        Api.DocumentTemplate.downloadDocumentTemplate(
+    try {
+      setLoadingTemplate(true);
+      const data =
+        await remoteData.Index.DocumentTemplate.downloadDocumentTemplate.method(
           {
             agreementId,
             documentType: type
@@ -57,31 +53,24 @@ const FileRow = (
             responseType: "arraybuffer",
             onDownloadProgress: onUploadProgress
           }
-        ),
-      toError
-    )
-      .map(response => response.data)
-      .fold(
-        () => {
-          setLoadingTemplate(false);
-          setUploadProgress(0);
-        },
-        response => {
-          if (response) {
-            const blob = new Blob([response], { type: "application/pdf" });
-            saveAs(blob, label);
-          }
-          setLoadingTemplate(false);
-          setUploadProgress(0);
-        }
-      )
-      .run();
+        );
+      const blob = new Blob([data], { type: "application/pdf" });
+      saveAs(blob, label);
+    } catch {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Download del file fallito"
+      });
+    } finally {
+      setLoadingTemplate(false);
+      setUploadProgress(0);
+    }
   };
 
   const addFile = async (files: FileList) => {
-    setLoadingDoc(true);
-    const response = await normalizeAxiosResponse(
-      Api.Document.uploadDocument(
+    try {
+      setLoadingDoc(true);
+      await remoteData.Index.Document.uploadDocument.method(
         {
           agreementId,
           documentType: type,
@@ -90,26 +79,29 @@ const FileRow = (
         {
           onUploadProgress
         }
-      )
-    );
-    if (response.status === 200) {
+      );
       getFiles();
-    } else if (
-      response.status === 400 &&
-      response.data === "PDF_NAME_OR_EXTENSION_NOT_VALID"
-    ) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: "Il formato del documento non è valido. Carica un documento PDF e riprova."
-      });
-    } else {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: "Caricamento del file fallito"
-      });
+    } catch (error) {
+      if (
+        error instanceof AxiosError &&
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data === "PDF_NAME_OR_EXTENSION_NOT_VALID"
+      ) {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "Il formato del documento non è valido. Carica un documento PDF e riprova."
+        });
+      } else {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "Caricamento del file fallito"
+        });
+      }
+    } finally {
+      setLoadingDoc(false);
+      setUploadProgress(0);
     }
-    setLoadingDoc(false);
-    setUploadProgress(0);
   };
 
   const deleteFileMutation =

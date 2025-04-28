@@ -7,7 +7,7 @@ import ProfileData from "../components/Form/CreateProfileForm/ProfileData/Profil
 import DiscountData from "../components/Form/CreateProfileForm/DiscountData/DiscountData";
 import Documents from "../components/Form/CreateProfileForm/Documents/Documents";
 import { RootState } from "../store/store";
-import { CompletedStep, EntityType } from "../api/generated";
+import { AgreementState, CompletedStep, EntityType } from "../api/generated";
 import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
 import CgnLogo from "../components/Logo/CgnLogo";
 
@@ -20,7 +20,8 @@ const CreateProfile = () => {
   const [completedSteps, setCompletedSteps] = useState<
     Array<ExtendedCompletedStep>
   >(agreement.completedSteps);
-  const [showRequireApproval, setShowRequireApproval] = useState(false);
+  const showRequireApproval =
+    agreement.state === AgreementState.PendingAgreement;
 
   const entityType = agreement.entityType;
 
@@ -97,7 +98,6 @@ const CreateProfile = () => {
         <Documents
           isCompleted={completedSteps.includes("Document")}
           handleBack={() => setStep(2)}
-          setShowRequireApproval={setShowRequireApproval}
         />
       );
     }

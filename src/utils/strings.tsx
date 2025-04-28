@@ -1,4 +1,3 @@
-import { fromNullable } from "fp-ts/lib/Option";
 import { ProductCategory, EntityType as EntityTypeA } from "../api/generated";
 import {
   OrganizationStatus,
@@ -64,7 +63,7 @@ const organizationStatusMap: Record<OrganizationStatus, string> = {
 };
 
 export const makeOrganizationStatusReadable = (status: OrganizationStatus) =>
-  fromNullable(organizationStatusMap[status]).fold("", s => s);
+  organizationStatusMap[status] ?? "";
 
 export const makeProductCategoriesString = (
   productCategories: Array<ProductCategory>
@@ -74,9 +73,7 @@ export const makeProductCategoriesString = (
   );
 
 export const formatPercentage = (discountValue: number | undefined) =>
-  fromNullable(discountValue)
-    .map(value => `${value} %`)
-    .getOrElse("");
+  discountValue ? `${discountValue} %` : "";
 
 export const withNormalizedSpaces = (value?: string) =>
   value ? value.replace(/(\r\n|\n|\r)/gm, " ").trim() : "";

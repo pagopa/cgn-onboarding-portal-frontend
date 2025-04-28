@@ -15,7 +15,9 @@
   - [Run the dashboard](#run-the-dashboard)
   - [Login in localhost](#login-in-localhost)
     - [Option 1: Using the Browser Console](#option-1-using-the-browser-console)
-    - [Option 2: Using the Browser Extension](#option-2-using-the-browser-extension) 
+    - [Option 2: Pressing a button](#option-2-pressing-a-button)
+    - [Option 3: Using the Browser Extension](#option-3-using-the-browser-extension)
+      - [Steps to Use the Extension](#steps-to-use-the-extension)
  
 
 # Getting started
@@ -64,21 +66,18 @@ $ yarn start:uat
 
 ## Login in localhost 
 As soon as the dashboard is up and running, you will see a landing page where you should login. Choose what kind of login do you want (login as Operator or login as Admin).
-After that you logged in successfully, you will be redirected to UAT environment dashboard. In this case, you need to retrieve the token generated in UAT and put it in the localhost environment. You can do this in two ways:
+After that you logged in successfully, you will be redirected to UAT environment dashboard. In this case, you need to retrieve the token generated in UAT and put it in the localhost environment. You can do this in three ways:
 
 ### Option 1: Using the Browser Console
 
 - Open the browser inspect console and type the following snippet:
 ```js
 const dialog = window.document.createElement("dialog");
-dialog.innerText = "click here";
+dialog.innerText = "click here, then paste in console";
 dialog.onclick = async () => {
-  const token = await window.cookieStore.get("pagopa_token");
+  const token = localStorage.getItem("oneidentity");
   await navigator.clipboard.writeText(
-    `window.cookieStore.set(${JSON.stringify({
-      ...token,
-      domain: "localhost",
-    })}); window.location.reload();`
+    `localStorage.setItem("oneidentity", ${JSON.stringify(token)}); location.reload();`
   );
   window.location.replace("http://localhost:3000");
 };
@@ -87,7 +86,11 @@ dialog.showModal();
 ```
 - Paste the snippet that was automatically placed in the clipboard in the browser console and press enter.
 
-### Option 2: Using the Browser Extension
+### Option 2: Pressing a button
+
+Visiting `https://portal.cgnonboardingportal-uat.pagopa.it/`, in the top right corner there is a dropdown containing the button `authenticate on localhost`
+
+### Option 3: Using the Browser Extension
 
 To simplify the process, you can use the provided browser extension. This extension automates the retrieval of the token from the UAT environment and applies it to the localhost environment.
 

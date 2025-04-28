@@ -1,16 +1,17 @@
-import * as t from "io-ts";
+import * as Yup from "yup";
+import { YupLiteral } from "./yupUtils";
 
-export const EmptyAddresses = t.array(
-  t.interface({
-    street: t.literal(""),
-    zipCode: t.literal(""),
-    city: t.literal(""),
-    district: t.literal(""),
-    coordinates: t.interface({
-      latitude: t.literal(""),
-      longitude: t.literal("")
-    })
-  })
-);
+export const EmptyAddresses = Yup.array(
+  Yup.object({
+    street: YupLiteral("").required(),
+    zipCode: YupLiteral("").required(),
+    city: YupLiteral("").required(),
+    district: YupLiteral("").required(),
+    coordinates: Yup.object({
+      latitude: YupLiteral("").required(),
+      longitude: YupLiteral("").required()
+    }).required()
+  }).required()
+).required();
 
-export type EmptyAddresses = t.TypeOf<typeof EmptyAddresses>;
+export type EmptyAddresses = Yup.InferType<typeof EmptyAddresses>;

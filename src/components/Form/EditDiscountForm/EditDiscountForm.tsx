@@ -1,7 +1,6 @@
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { Form, Formik } from "formik";
-import { fromNullable } from "fp-ts/lib/Option";
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
@@ -159,21 +158,16 @@ const EditDiscountForm = () => {
       condition: cleanedIfConditionIsBlank(discount.condition),
       condition_en: cleanedIfConditionIsBlank(discount.condition_en),
       condition_de: "-",
-      discountUrl: fromNullable(discount.discountUrl).toUndefined(),
+      discountUrl: discount.discountUrl ?? undefined,
       startDate: new Date(discount.startDate),
       endDate: new Date(discount.endDate),
-      landingPageReferrer: fromNullable(
-        discount.landingPageReferrer
-      ).toUndefined(),
-      landingPageUrl: fromNullable(discount.landingPageUrl).toUndefined(),
-      discount: fromNullable(discount.discount).toUndefined(),
-      staticCode: fromNullable(discount.staticCode).toUndefined(),
-      lastBucketCodeLoadUid: fromNullable(
-        discount.lastBucketCodeLoadUid
-      ).toUndefined(),
-      lastBucketCodeLoadFileName: fromNullable(
-        discount.lastBucketCodeLoadFileName
-      ).toUndefined()
+      landingPageReferrer: discount.landingPageReferrer ?? undefined,
+      landingPageUrl: discount.landingPageUrl ?? undefined,
+      discount: discount.discount ?? undefined,
+      staticCode: discount.staticCode ?? undefined,
+      lastBucketCodeLoadUid: discount.lastBucketCodeLoadUid ?? undefined,
+      lastBucketCodeLoadFileName:
+        discount.lastBucketCodeLoadFileName ?? undefined
     };
   }, [discount]);
 

@@ -1,5 +1,4 @@
 import React, { ReactChildren } from "react";
-import cx from "classnames";
 
 const NavItem = ({
   children,
@@ -12,7 +11,7 @@ const NavItem = ({
 }) => (
   <li className="nav-item">
     <a
-      className={cx("nav-link", active ? "active" : false)}
+      className={`nav-link ${active ? "active" : ""}`}
       style={{ cursor: "pointer" }}
       onClick={onClick}
     >

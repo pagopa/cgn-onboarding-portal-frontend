@@ -1,6 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import { Form, Formik } from "formik";
-import * as array from "fp-ts/lib/Array";
 import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
@@ -20,6 +19,7 @@ import {
   profileDefaultInitialValues,
   sanitizeProfileFromValues
 } from "../../EditOperatorDataForm/EditOperatorDataForm";
+import { useAuthentication } from "../../../../authentication/AuthenticationContext";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -43,7 +43,6 @@ const ProfileData = ({
   onUpdate
 }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const user = useSelector((state: RootState) => state.user.data);
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {
@@ -119,27 +118,28 @@ const ProfileData = ({
         profile.salesChannel.channelType === "BothChannels"
           ? {
               ...profile.salesChannel,
-              addresses: !array.isEmpty((profile.salesChannel as any).addresses)
-                ? (profile.salesChannel as any).addresses.map(
-                    (address: any) => {
-                      const addressSplit = address.fullAddress
-                        .split(",")
-                        .map((item: string) => item.trim());
-                      return {
-                        street: addressSplit[0],
-                        city: addressSplit[1],
-                        district: addressSplit[2],
-                        zipCode: addressSplit[3],
-                        value: address.fullAddress,
-                        label: address.fullAddress
-                      };
-                    }
-                  )
-                : [
-                    {
-                      fullAddress: ""
-                    }
-                  ]
+              addresses:
+                (profile.salesChannel as any).addresses.length > 0
+                  ? (profile.salesChannel as any).addresses.map(
+                      (address: any) => {
+                        const addressSplit = address.fullAddress
+                          .split(",")
+                          .map((item: string) => item.trim());
+                        return {
+                          street: addressSplit[0],
+                          city: addressSplit[1],
+                          district: addressSplit[2],
+                          zipCode: addressSplit[3],
+                          value: address.fullAddress,
+                          label: address.fullAddress
+                        };
+                      }
+                    )
+                  : [
+                      {
+                        fullAddress: ""
+                      }
+                    ]
             }
           : profile.salesChannel,
       hasDifferentFullName: !!profile.name
@@ -149,6 +149,8 @@ const ProfileData = ({
   const entityType = agreement.entityType;
 
   const isLoading = isCompleted && profileQuery.isLoading;
+
+  const authentication = useAuthentication();
 
   if (isLoading) {
     return <CenteredLoading />;
@@ -163,9 +165,11 @@ const ProfileData = ({
           ...defaultSalesChannel,
           ...initialValues.salesChannel
         },
-        fullName: user.company?.organization_name || "",
+        fullName: authentication.currentMerchant?.organization_name ?? "",
         taxCodeOrVat:
-          user.company?.organization_fiscal_code || user.fiscal_number || ""
+          authentication.currentMerchantFiscalCode ??
+          authentication.currentUserFiscalCode ??
+          ""
       }}
       validationSchema={ProfileDataValidationSchema}
       onSubmit={values => {

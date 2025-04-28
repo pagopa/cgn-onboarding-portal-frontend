@@ -1,5 +1,4 @@
 import { Icon } from "design-react-kit";
-import cx from "classnames";
 import React from "react";
 
 type Props = {
@@ -34,10 +33,9 @@ const Pager = (props: Props) => (
       )}
       {props.pageArray.map(page => (
         <div
-          className={cx(
-            "font-weight-bold mx-1",
-            page !== props.pageIndex ? "cursor-pointer primary-color" : false
-          )}
+          className={`font-weight-bold mx-1 ${
+            page !== props.pageIndex ? "cursor-pointer primary-color" : ""
+          }`}
           key={page}
           onClick={() => {
             if (page !== props.pageIndex) {

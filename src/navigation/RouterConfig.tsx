@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Switch, Route, useHistory, useLocation } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { createAgreement } from "../store/agreement/agreementSlice";
 import { RootState } from "../store/store";
@@ -16,6 +16,10 @@ import { AgreementState } from "../api/generated";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
 import CreateActivation from "../pages/CreateActivation";
 import EditActivation from "../pages/EditActivation";
+import { useAuthentication } from "../authentication/AuthenticationContext";
+import Login from "../pages/Login";
+import SelectCompany from "../pages/SelectCompany";
+import { LoginRedirect } from "../pages/LoginRedirect";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -29,66 +33,53 @@ import {
   REJECT_PROFILE,
   ADMIN_PANEL_ACCESSI,
   ADMIN_PANEL_ACCESSI_EDIT,
-  ADMIN_PANEL_ACCESSI_CREA
+  ADMIN_PANEL_ACCESSI_CREA,
+  LOGIN_REDIRECT,
+  LOGIN
 } from "./routes";
 
-const adminRoutes = [
-  ADMIN_PANEL_RICHIESTE,
-  ADMIN_PANEL_CONVENZIONATI,
-  ADMIN_PANEL_ACCESSI,
-  ADMIN_PANEL_ACCESSI_EDIT,
-  ADMIN_PANEL_ACCESSI_CREA
-];
-
-// eslint-disable-next-line sonarjs/cognitive-complexity
-export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
+const RouterConfig = () => {
   const { value: agreement, loading } = useSelector(
     (state: RootState) => state.agreement
   );
-  const history = useHistory();
-  const location = useLocation();
   const dispatch = useDispatch();
-  const isAdmin = userType === "ADMIN";
+  const authentication = useAuthentication();
+
+  const merchantFiscalCode = authentication.currentMerchantFiscalCode;
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (merchantFiscalCode) {
       dispatch(createAgreement());
     }
-  }, [dispatch, isAdmin]);
+  }, [dispatch, merchantFiscalCode]);
 
-  const historyPush = history.push;
-
-  useEffect(() => {
-    if (!isAdmin) {
-      switch (agreement.state) {
-        case AgreementState.DraftAgreement:
-          historyPush(CREATE_PROFILE);
-          break;
-        case AgreementState.PendingAgreement:
-        case AgreementState.ApprovedAgreement:
-          if (location.pathname === "/") {
-            historyPush(DASHBOARD);
-          }
-          break;
-        case AgreementState.RejectedAgreement:
-          historyPush(REJECT_PROFILE);
-          break;
-      }
-    } else {
-      historyPush(
-        adminRoutes.includes(location.pathname)
-          ? location.pathname
-          : ADMIN_PANEL_RICHIESTE
-      );
-    }
-  }, [agreement.state, historyPush, isAdmin, location.pathname]);
-
-  if (isAdmin) {
+  if (authentication.currentSession.type === "none") {
     return (
       <Switch>
-        <Route exact path={ADMIN_PANEL_RICHIESTE} component={AdminPanel} />
-        <Route exact path={ADMIN_PANEL_CONVENZIONATI} component={AdminPanel} />
-        <Route exact path={ADMIN_PANEL_ACCESSI} component={AdminPanel} />
+        <Route exact path={LOGIN} component={Login} />
+        <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
+        <Route exact path={HELP} component={Help} />
+        <Route path="*">
+          <Redirect to={LOGIN} />
+        </Route>
+      </Switch>
+    );
+  }
+  if (authentication.currentSession.type === "admin") {
+    return (
+      <Switch>
+        <Route exact path={LOGIN} component={Login} />
+        <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
+        <Route exact path={HELP} component={Help} />
+        <Route
+          exact
+          path={[
+            ADMIN_PANEL_RICHIESTE,
+            ADMIN_PANEL_CONVENZIONATI,
+            ADMIN_PANEL_ACCESSI
+          ]}
+          component={AdminPanel}
+        />
         <Route
           exact
           path={ADMIN_PANEL_ACCESSI_EDIT}
@@ -99,24 +90,66 @@ export const RouterConfig = ({ userType }: { user: any; userType: string }) => {
           path={ADMIN_PANEL_ACCESSI_CREA}
           component={CreateActivation}
         />
+        <Route path="*">
+          <Redirect to={ADMIN_PANEL_RICHIESTE} />
+        </Route>
       </Switch>
     );
   }
-
-  return loading ? (
-    <CenteredLoading />
-  ) : (
-    <Switch>
-      <Route exact path={DASHBOARD} component={Dashboard} />
-      <Route exact path={HELP} component={Help} />
-      <Route exact path={CREATE_PROFILE} component={CreateProfile} />
-      <Route exact path={EDIT_PROFILE} component={EditProfile} />
-      <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
-      <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
-      <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
-      <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
-    </Switch>
-  );
+  if (!authentication.currentSession.merchantFiscalCode) {
+    return <SelectCompany />;
+  }
+  if (loading) {
+    return <CenteredLoading />;
+  }
+  switch (agreement.state) {
+    case AgreementState.DraftAgreement: {
+      return (
+        <Switch>
+          <Route exact path={LOGIN} component={Login} />
+          <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
+          <Route exact path={HELP} component={Help} />
+          <Route exact path={CREATE_PROFILE} component={CreateProfile} />
+          <Route path="*">
+            <Redirect to={CREATE_PROFILE} />
+          </Route>
+        </Switch>
+      );
+    }
+    case AgreementState.RejectedAgreement: {
+      return (
+        <Switch>
+          <Route exact path={LOGIN} component={Login} />
+          <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
+          <Route exact path={HELP} component={Help} />
+          <Route exact path={CREATE_PROFILE} component={CreateProfile} />
+          <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
+          <Route path="*">
+            <Redirect to={REJECT_PROFILE} />
+          </Route>
+        </Switch>
+      );
+    }
+    default: {
+      return (
+        <Switch>
+          <Route exact path={LOGIN} component={Login} />
+          <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
+          <Route exact path={HELP} component={Help} />
+          <Route exact path={DASHBOARD} component={Dashboard} />
+          <Route exact path={CREATE_PROFILE} component={CreateProfile} />
+          <Route exact path={EDIT_PROFILE} component={EditProfile} />
+          <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
+          <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
+          <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
+          <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
+          <Route path="*">
+            <Redirect to={DASHBOARD} />
+          </Route>
+        </Switch>
+      );
+    }
+  }
 };
 
 export default RouterConfig;

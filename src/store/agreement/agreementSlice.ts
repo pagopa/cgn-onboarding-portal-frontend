@@ -25,7 +25,7 @@ interface AgreementState {
   loading: boolean;
 }
 
-export const agreementSlice = createSlice({
+const agreementSlice = createSlice({
   name: "agreement",
   initialState: { value: {}, loading: true } as AgreementState,
   reducers: {
