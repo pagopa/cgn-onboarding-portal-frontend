@@ -1,9 +1,8 @@
-import React from "react";
 import { Field, FieldArray, useFormikContext } from "formik";
 import { Icon } from "design-react-kit";
 import { InferType } from "yup";
 import FormSection from "../../FormSection";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import ToggleField from "../../ToggleField";
 import InputFieldMultiple from "../../InputFieldMultiple";
@@ -16,7 +15,6 @@ type Props = {
   children?: React.ReactNode;
 };
 
-/* eslint-disable sonarjs/cognitive-complexity */
 const SalesChannels = ({ entityType, children }: Props) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
@@ -28,7 +26,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
     hasOnlineOrBothChannels || entityType === EntityType.PublicAdministration;
   return (
     <>
-      <SalesChannelDiscountCodeType entityType={entityType} />
+      <SalesChannelDiscountCodeType />
       <FieldArray
         name="salesChannel.addresses"
         render={arrayHelpers => (
@@ -49,7 +47,6 @@ const SalesChannels = ({ entityType, children }: Props) => {
                           SalesChannelType.OfflineChannel && index + 1 === 1
                       );
                     }
-                    default:
                     case EntityType.PublicAdministration: {
                       return (
                         formValues.salesChannel.channelType === "OfflineChannel"
@@ -67,8 +64,8 @@ const SalesChannels = ({ entityType, children }: Props) => {
                       switch (entityType) {
                         case EntityType.Private:
                           return "Rappresenti un franchising e vuoi che le opportunità valgano in tutti i punti vendita presenti sul territorio nazionale?";
-                        default:
                         case EntityType.PublicAdministration:
+                        default:
                           return "Rappresenti un ente e vuoi che le opportunità valgano in tutti i punti vendita presenti sul territorio nazionale?";
                       }
                     })()}
@@ -186,8 +183,8 @@ const SalesChannels = ({ entityType, children }: Props) => {
                             })
                           }
                         >
-                          <PlusCircleIcon className="mr-2" />
-                          <span className="text-base font-weight-semibold text-blue">
+                          <PlusCircleIcon className="me-2" />
+                          <span className="text-base fw-semibold text-blue">
                             Aggiungi un indirizzo
                           </span>
                         </div>
@@ -210,8 +207,8 @@ const SalesChannels = ({ entityType, children }: Props) => {
             switch (entityType) {
               case EntityType.Private:
                 return "Inserire l'URL del proprio e-commerce o del proprio sito istituzionale";
-              default:
               case EntityType.PublicAdministration:
+              default:
                 return "Inserire l'URL del sito web principale dell'ente";
             }
           })()}

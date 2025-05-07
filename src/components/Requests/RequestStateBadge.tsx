@@ -1,4 +1,3 @@
-import React from "react";
 import { Badge } from "design-react-kit";
 import { AgreementState } from "../../api/generated_backoffice";
 
@@ -7,7 +6,7 @@ const RequestStateBadge = (state: AgreementState) => {
     case "PendingAgreement":
       return (
         <Badge
-          className="font-weight-normal"
+          className="fw-normal"
           style={{
             backgroundColor: "#FFFFFF",
             color: "#0073E6",
@@ -22,7 +21,7 @@ const RequestStateBadge = (state: AgreementState) => {
     case "AssignedAgreement":
       return (
         <Badge
-          className="font-weight-normal"
+          className="fw-normal"
           pill
           tag="span"
           style={{

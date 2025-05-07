@@ -1,5 +1,4 @@
 import { Field } from "formik";
-import * as React from "react";
 import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {

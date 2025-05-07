@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
@@ -60,10 +60,11 @@ export const profileDefaultInitialValues = {
 
 function getSalesChannel(salesChannel: any) {
   switch (salesChannel.channelType) {
-    case "OnlineChannel":
+    case "OnlineChannel": {
       const { addresses, ...OnlineChannel } = salesChannel;
       return OnlineChannel;
-    case "OfflineChannel":
+    }
+    case "OfflineChannel": {
       const { websiteUrl, discountCodeType, ...OfflineChannel } = salesChannel;
       return {
         ...OfflineChannel,
@@ -76,7 +77,8 @@ function getSalesChannel(salesChannel: any) {
                 coordinates: add.coordinates
               }))
       };
-    case "BothChannels":
+    }
+    case "BothChannels": {
       return {
         ...salesChannel,
         addresses:
@@ -88,6 +90,7 @@ function getSalesChannel(salesChannel: any) {
                 coordinates: add.coordinates
               }))
       };
+    }
   }
 }
 
@@ -252,7 +255,7 @@ function OperatorDataButtons({
   return (
     <div className="mt-10">
       <Button
-        className="px-14 mr-4"
+        className="px-14 me-4"
         outline
         color="primary"
         tag="button"
@@ -262,7 +265,7 @@ function OperatorDataButtons({
       </Button>
       <Button
         type="submit"
-        className="px-14 mr-4"
+        className="px-14 me-4"
         color="primary"
         tag="button"
         disabled={!isEnabled}

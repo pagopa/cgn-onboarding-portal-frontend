@@ -1,4 +1,3 @@
-import React from "react";
 import { Field, Form, Formik } from "formik";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -139,7 +138,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.DataFilling}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="DataFilling"
                   >
                     Compilazione dati
@@ -153,7 +152,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.Discounts}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="Discounts"
                   >
                     Opportunità
@@ -167,7 +166,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.Documents}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="Documents"
                   >
                     Documenti
@@ -181,7 +180,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.TechnicalProblem}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="TechnicalProblem"
                   >
                     Problema tecnico
@@ -195,7 +194,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.CgnOwnerReporting}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="CgnOwnerReporting"
                   >
                     Segnalazione titolare di CGN
@@ -209,7 +208,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.Suggestions}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="Suggestions"
                   >
                     Suggerimenti
@@ -223,7 +222,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.Other}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="Other"
                   >
                     Altro

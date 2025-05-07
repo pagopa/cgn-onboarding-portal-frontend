@@ -1,4 +1,3 @@
-import React from "react";
 import { format } from "date-fns";
 import {
   ApprovedAgreementProfile,
@@ -10,7 +9,7 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
   const salesChannel = profile.salesChannel as BothChannels;
   return (
     <div>
-      <h5 className="mb-7 font-weight-bold">Profilo</h5>
+      <h5 className="mb-7 fw-bold">Profilo</h5>
       {profile.name && (
         <Item label="Nome Operatore visualizzato" value={profile.name} />
       )}
@@ -33,7 +32,7 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
             <img
               width="300"
               height="300"
-              src={`${process.env.BASE_IMAGE_PATH}/${profile.imageUrl}`}
+              src={`${import.meta.env.VITE_BASE_IMAGE_PATH}/${profile.imageUrl}`}
               alt="Immagine operatore"
             />
           ) : (

@@ -1,5 +1,5 @@
-import React, { forwardRef } from "react";
-import CalendarIcon from "../../assets/icons/calendar.svg";
+import { forwardRef } from "react";
+import CalendarIcon from "../../assets/icons/calendar.svg?react";
 
 type Props = {
   value: string;
@@ -7,12 +7,10 @@ type Props = {
 };
 
 const DateInputComponent = forwardRef<HTMLInputElement, Props>((props, ref) => (
-  <div className="form-group">
+  <div className="mb-12">
     <div className="input-group">
-      <div className="input-group-prepend">
-        <div className="input-group-text">
-          <CalendarIcon />
-        </div>
+      <div className="input-group-text">
+        <CalendarIcon />
       </div>
       <input
         aria-describedby="date-input-description"

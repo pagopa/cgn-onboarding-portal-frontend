@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Profile } from "../../api/generated";

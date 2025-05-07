@@ -1,4 +1,3 @@
-import React from "react";
 import Container from "../Container/Container";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import CgnLogo from "../Logo/CgnLogo";
@@ -26,7 +25,7 @@ const CreateLayout = ({
 
         <div className="row">
           <div className="col-9">
-            <h1 className="mt-4 h3 font-weight-bold text-dark-blue">{title}</h1>
+            <h1 className="mt-4 h3 fw-bold text-dark-blue">{title}</h1>
           </div>
           <div className="col-3 d-flex justify-content-end">
             <CgnLogo />

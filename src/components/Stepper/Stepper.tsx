@@ -1,4 +1,3 @@
-import React from "react";
 import Step from "./Step";
 
 interface Step {
@@ -36,13 +35,15 @@ const Stepper = ({
             <Step
               key={step.key}
               index={index + 1}
-              stepType={
-                activeStep === index
-                  ? "active"
-                  : completedSteps.includes(step.key)
-                    ? "confirmed"
-                    : ""
-              }
+              stepType={(() => {
+                if (activeStep === index) {
+                  return "active";
+                }
+                if (completedSteps.includes(step.key)) {
+                  return "confirmed";
+                }
+                return "";
+              })()}
               handleChangeStep={changeStep(step.key, index)}
             >
               {step.label}

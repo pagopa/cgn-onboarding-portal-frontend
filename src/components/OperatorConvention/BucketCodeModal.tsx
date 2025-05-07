@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { remoteData } from "../../api/common";
@@ -30,13 +29,15 @@ const BucketCodeModal = ({
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Codice Sconto dalla lista</ModalHeader>
       <ModalBody>
-        {isLoading ? (
-          <CenteredLoading />
-        ) : data?.code && !isError ? (
-          data.code
-        ) : (
-          "Non è stato possibile caricare il codice"
-        )}
+        {(() => {
+          if (isLoading) {
+            return <CenteredLoading />;
+          }
+          if (data?.code && !isError) {
+            return data.code;
+          }
+          return "Non è stato possibile caricare il codice";
+        })()}
       </ModalBody>
       <ModalFooter className="d-flex flex-column">
         <Button

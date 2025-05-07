@@ -11,9 +11,9 @@ import { YupLiteral } from "../utils/yupUtils";
 import { authenticationStore } from "./authenticationStore";
 
 export function goToUserLoginPage() {
-  const targetUri = process.env.ONE_IDENTITY_LOGIN_URI ?? "";
-  const redirect_uri = process.env.ONE_IDENTITY_REDIRECT_URI ?? "";
-  const client_id = process.env.ONE_IDENTITY_CLIENT_ID ?? "";
+  const targetUri = import.meta.env.VITE_ONE_IDENTITY_LOGIN_URI ?? "";
+  const redirect_uri = import.meta.env.VITE_ONE_IDENTITY_REDIRECT_URI ?? "";
+  const client_id = import.meta.env.VITE_ONE_IDENTITY_CLIENT_ID ?? "";
   const state = randomAlphaNumericString(16);
   const nonce = randomAlphaNumericString(16);
   const targetUrl = `${targetUri}?${new URLSearchParams({
@@ -35,7 +35,7 @@ export function goToAdminLoginPage() {
   const nonce = randomAlphaNumericString(16);
   authenticationStore.setAdminNonceByState(state, nonce);
   void AdminAccess.loginRedirect({
-    scopes: ["openid", process.env.MSAL_CLIENT_ID as string],
+    scopes: ["openid", import.meta.env.VITE_MSAL_CLIENT_ID as string],
     state,
     nonce
   });
@@ -51,17 +51,16 @@ function randomAlphaNumericString(length: number): string {
 
 const AdminAccess = new Msal.PublicClientApplication({
   auth: {
-    clientId: process.env.MSAL_CLIENT_ID as string,
-    authority: process.env.MSAL_AUTHORITY as string,
+    clientId: import.meta.env.VITE_MSAL_CLIENT_ID as string,
+    authority: import.meta.env.VITE_MSAL_AUTHORITY as string,
     knownAuthorities: [
-      "testcgnportalbitrock.b2clogin.com",
       "cgnonboardingportaluat.b2clogin.com",
       "cgnonboardingportal.b2clogin.com"
     ],
     redirectUri:
       window.location.host === "localhost:3000"
         ? "http://localhost:3000/session"
-        : (process.env.MSAL_REDIRECT_URI as string),
+        : (import.meta.env.VITE_MSAL_REDIRECT_URI as string),
     postLogoutRedirectUri: LOGIN
   },
   cache: {
@@ -87,11 +86,14 @@ const adminJWTPayloadSchema = Yup.object({
   exp: Yup.number().required()
 }).required();
 
-const sessionApi = new SessionApi(undefined, process.env.BASE_PUBLIC_PATH);
+const sessionApi = new SessionApi(
+  undefined,
+  import.meta.env.VITE_BASE_PUBLIC_PATH
+);
 
 const organizationsDataApi = new OrganizationsDataApi(
   undefined,
-  process.env.BASE_API_PATH
+  import.meta.env.VITE_BASE_API_PATH
 );
 
 async function onUserLoginRedirect() {
@@ -127,7 +129,7 @@ async function onUserLoginRedirect() {
       merchants: merchantTokensReponse.data.items
     });
     return { type: "success", fiscal_code } as const;
-  } catch (error) {
+  } catch {
     return { type: "error" } as const;
   }
 }
@@ -161,7 +163,7 @@ async function onAdminLoginRedirect() {
       exp
     });
     return { type: "success", name } as const;
-  } catch (error) {
+  } catch {
     return { type: "error" } as const;
   }
 }
@@ -215,7 +217,7 @@ export function useLoginRedirect() {
 
 // developer utility to be able to test from localhost
 if (
-  process.env.NODE_ENV === "uat" &&
+  window.location.hostname === "localhost" &&
   window.location.pathname === "/dev-auth"
 ) {
   const searchParams = new URLSearchParams(window.location.search);

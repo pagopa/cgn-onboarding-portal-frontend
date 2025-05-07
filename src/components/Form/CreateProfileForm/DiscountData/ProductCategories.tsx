@@ -1,4 +1,3 @@
-import React from "react";
 import { Field } from "formik";
 import { FormGroup } from "design-react-kit";
 import { Label } from "reactstrap";
@@ -46,7 +45,7 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
             tag="label"
             style={{ height: "auto" }}
           >
-            <div className="row ml-1">
+            <div className="row ms-1">
               <p style={nameLabelStyle}>
                 {categoriesMap[categoryKey as ProductCategory].name}{" "}
               </p>{" "}

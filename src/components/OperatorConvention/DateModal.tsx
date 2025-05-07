@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from "react";
+import { useState, forwardRef } from "react";
 import { Button, Icon } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Field, FieldInputProps } from "formik";
@@ -45,7 +45,7 @@ const DateModal = ({
 
   const DatePickerInput = forwardRef((fieldProps: any, ref: any) => (
     <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
-      <div className="form-group">
+      <div className="mb-12">
         <input
           {...fieldProps}
           ref={ref}
@@ -54,7 +54,9 @@ const DateModal = ({
           type="text"
           placeholder="gg/mm/aaaa"
         />
-        <label htmlFor={fieldProps.name}>{fieldProps.label}</label>
+        <label htmlFor={fieldProps.name} className="form-label">
+          {fieldProps.label}
+        </label>
       </div>
     </div>
   ));
@@ -75,7 +77,7 @@ const DateModal = ({
               setFieldValue("page", 0);
               setFieldValue("lastUpdateDateFrom", undefined);
               setFieldValue("lastUpdateDateTo", undefined);
-              void submitForm();
+              submitForm();
             }}
           >
             <Icon color="" icon="it-close" size="" />
@@ -136,7 +138,7 @@ const DateModal = ({
             onClick={() => {
               setFieldValue("lastUpdateDateFrom", dateFrom);
               setFieldValue("lastUpdateDateTo", dateTo);
-              void submitForm();
+              submitForm();
               toggleDateModal();
             }}
           >

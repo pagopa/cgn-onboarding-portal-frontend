@@ -1,4 +1,3 @@
-import React from "react";
 import Logo from "../Logo/Logo";
 import DeparmentLogo from "../Logo/DepartmentLogo";
 
@@ -19,7 +18,7 @@ const Footer = () => (
               <Logo />
             </a>
           </div>
-          <div className="col-9 text-left">
+          <div className="col-9 text-start">
             <span className="text-sm text-white">
               PagoPA S.p.A. - società per azioni con socio unico - capitale
               sociale di euro 1,000,000 interamente versato - sede legale in
@@ -31,7 +30,7 @@ const Footer = () => (
         <div className="row mt-4">
           <div className="col-12">
             <ul className="p-0 mt-7 d-flex flex-row justify-content-start list-unstyled">
-              <li className="mr-8">
+              <li className="me-8">
                 <a
                   className="text-gray no-underline"
                   href="https://io.italia.it/carta-giovani-nazionale/informativa-operatori"

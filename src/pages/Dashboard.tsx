@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { AgreementState as AgreementStateType } from "../api/generated";
 import AgreementState from "../components/AgreementState/AgreementState";

@@ -1,4 +1,3 @@
-import React from "react";
 import { Form, Formik, Field } from "formik";
 import {
   AgreementApiGetAgreementsRequest,
@@ -64,10 +63,10 @@ const RequestsFilter = ({
         <Form>
           <div className="d-flex justify-content-between">
             {dirty ? (
-              <h2 className="h4 font-weight-bold text-dark-blue">
+              <h2 className="h4 fw-bold text-dark-blue">
                 Risultati della ricerca
                 <span
-                  className="primary-color ml-2 text-sm font-weight-regular cursor-pointer"
+                  className="primary-color ms-2 text-sm fw-regular cursor-pointer"
                   onClick={() => {
                     resetForm();
                     void submitForm();
@@ -77,7 +76,7 @@ const RequestsFilter = ({
                 </span>
               </h2>
             ) : (
-              <h2 className="h4 font-weight-bold text-dark-blue">
+              <h2 className="h4 fw-bold text-dark-blue">
                 Richieste di convenzione
               </h2>
             )}
@@ -102,12 +101,12 @@ const RequestsFilter = ({
                 type="text"
                 placeholder="Cerca Richiesta"
                 onChange={(e: { target: { value: any } }) => {
-                  setFieldValue("profileFullName", e.target.value);
+                  void setFieldValue("profileFullName", e.target.value);
                   if (timeout) {
                     clearTimeout(timeout);
                   }
                   timeout = setTimeout(() => {
-                    setFieldValue("page", 0);
+                    void setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);
                 }}

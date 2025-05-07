@@ -1,5 +1,4 @@
 import { Field, useFormikContext } from "formik";
-import React from "react";
 import { InferType } from "yup";
 import { EntityType } from "../../../../api/generated";
 import CustomErrorMessage from "../../CustomErrorMessage";
@@ -56,16 +55,12 @@ const ProfileInfo = ({ entityType }: Props) => {
         >
           <div className="row">
             <div className="col-6">
-              <p className="text-sm font-weight-normal text-black mb-0">
-                Italiano 🇮🇹
-              </p>
+              <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
               <Field id="name" name="name" type="text" />
               <CustomErrorMessage name="name" />
             </div>
             <div className="col-6">
-              <p className="text-sm font-weight-normal text-black mb-0">
-                Inglese 🇬🇧
-              </p>
+              <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
               <Field id="name_en" name="name_en" type="text" />
               <CustomErrorMessage name="name_en" />
             </div>

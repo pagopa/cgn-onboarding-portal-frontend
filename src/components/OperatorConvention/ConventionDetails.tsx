@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Icon } from "design-react-kit";
 import { format } from "date-fns";
 import { remoteData } from "../../api/common";
@@ -37,7 +37,7 @@ export const getBadgeStatus = (state: DiscountState) => {
     case "suspended":
       return (
         <span
-          className="badge badge-pill badge-outline-warning"
+          className="badge rounded-pill badge-outline-warning"
           style={{ fontSize: "12px" }}
         >
           Sospesa
@@ -46,7 +46,7 @@ export const getBadgeStatus = (state: DiscountState) => {
     case "test_pending":
       return (
         <span
-          className="badge badge-pill badge-outline-warning"
+          className="badge rounded-pill badge-outline-warning"
           style={{ fontSize: "12px" }}
         >
           Test
@@ -55,7 +55,7 @@ export const getBadgeStatus = (state: DiscountState) => {
     case "test_passed":
       return (
         <span
-          className="badge badge-pill badge-outline-success"
+          className="badge rounded-pill badge-outline-success"
           style={{ fontSize: "12px" }}
         >
           Test superato
@@ -64,7 +64,7 @@ export const getBadgeStatus = (state: DiscountState) => {
     case "test_failed":
       return (
         <span
-          className="badge badge-pill badge-outline-danger"
+          className="badge rounded-pill badge-outline-danger"
           style={{ fontSize: "12px" }}
         >
           Test fallito
@@ -73,7 +73,7 @@ export const getBadgeStatus = (state: DiscountState) => {
     case "published":
       return (
         <span
-          className="badge badge-pill badge-outline-primary"
+          className="badge rounded-pill badge-outline-primary"
           style={{ fontSize: "12px" }}
         >
           Pubblicata
@@ -84,7 +84,6 @@ export const getBadgeStatus = (state: DiscountState) => {
   }
 };
 
-/* eslint-disable sonarjs/cognitive-complexity */
 const getView = (
   details: ApprovedAgreementDetail | undefined,
   view: string,
@@ -107,7 +106,7 @@ const getView = (
       } else {
         return (
           <div>
-            <h5 className="mb-5 font-weight-bold">Opportunità</h5>
+            <h5 className="mb-5 fw-bold">Opportunità</h5>
             <p className="text-center text-gray">
               Non è presente nessuna opportunità.
             </p>
@@ -171,7 +170,7 @@ const ConventionDetails = ({
       </div>
       <div className="d-flex mt-2">
         <div className="col-4 p-0">
-          <div className="mr-1 px-8 py-10 bg-white">
+          <div className="me-1 px-8 py-10 bg-white">
             <nav className="navbar it-navscroll-wrapper navbar-expand-lg it-left-side">
               <div className="menu-wrapper">
                 <div className="link-list-wrapper">
@@ -193,7 +192,7 @@ const ConventionDetails = ({
                                 className={`
                                   nav-link primary-color cursor-pointer ${
                                     view.includes(`agevolazione${i + 1}`)
-                                      ? "font-weight-bold"
+                                      ? "fw-bold"
                                       : ""
                                   }`}
                                 onClick={() => setView(`agevolazione${i + 1}`)}
@@ -216,7 +215,7 @@ const ConventionDetails = ({
           </div>
         </div>
         <div className="col-8 p-0">
-          <div className="ml-1 px-8 py-10 bg-white">
+          <div className="ms-1 px-8 py-10 bg-white">
             {getView(details, view, () => refetch(), agreement)}
           </div>
         </div>

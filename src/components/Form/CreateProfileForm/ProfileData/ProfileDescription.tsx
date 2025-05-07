@@ -1,5 +1,4 @@
 import { Field } from "formik";
-import React from "react";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import FormSection from "../../FormSection";
 
@@ -12,9 +11,7 @@ const ProfileDescription = () => (
   >
     <div className="row">
       <div className="col-6">
-        <p className="text-sm font-weight-normal text-black mb-0">
-          Italiano 🇮🇹
-        </p>
+        <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
         <Field
           as="textarea"
           id="description"
@@ -25,7 +22,7 @@ const ProfileDescription = () => (
         />
       </div>
       <div className="col-6">
-        <p className="text-sm font-weight-normal text-black mb-0">Inglese 🇬🇧</p>
+        <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
         <Field
           as="textarea"
           id="description_en"

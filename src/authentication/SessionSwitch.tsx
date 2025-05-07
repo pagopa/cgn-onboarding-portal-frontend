@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuthentication } from "./AuthenticationContext";
 import { adminLogoutPopup } from "./authentication";
 import { authenticationStore } from "./authenticationStore";

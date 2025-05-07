@@ -1,5 +1,5 @@
 /* eslint-disable functional/immutable-data */
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Severity, useTooltip } from "../../../context/tooltip";
 
@@ -8,7 +8,7 @@ type Props = {
 };
 
 const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
-  const recaptchaRef = useRef<any>();
+  const recaptchaRef = useRef<any>(null);
   const [canRenderRecaptcha, setCanRenderRecaptcha] = useState(false);
   const { triggerTooltip } = useTooltip();
 
@@ -16,7 +16,7 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
     try {
       const response = await recaptchaRef.current.executeAsync();
       setFieldValue("recaptchaToken", response);
-    } catch (error) {
+    } catch {
       triggerTooltip({
         severity: Severity.DANGER,
         text: "C'è stato un errore durante la verifica del recaptcha"
@@ -41,8 +41,8 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
           ref={recaptchaRef}
           size="invisible"
           sitekey={
-            process.env.RECAPTCHA_API_KEY
-              ? process.env.RECAPTCHA_API_KEY
+            import.meta.env.VITE_RECAPTCHA_API_KEY
+              ? import.meta.env.VITE_RECAPTCHA_API_KEY
               : "6Le93sseAAAAAGXS34PkpfmkTThwMhUdklkNtIM5"
           }
         />

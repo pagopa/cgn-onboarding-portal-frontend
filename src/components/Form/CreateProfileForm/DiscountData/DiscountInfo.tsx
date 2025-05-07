@@ -1,9 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 
 import { Field, FieldProps } from "formik";
-import React from "react";
 import DatePicker from "react-datepicker";
 import { useSelector } from "react-redux";
+import { createElement } from "react";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import DateInputComponent from "../../DateInputComponent";
 import FormField from "../../FormField";
@@ -54,9 +54,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
       >
         <div className="row">
           <div className="col-6">
-            <p className="text-sm font-weight-normal text-black mb-0">
-              Italiano 🇮🇹
-            </p>
+            <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
             <Field
               maxLength={100}
               id="name"
@@ -68,9 +66,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
             />
           </div>
           <div className="col-6">
-            <p className="text-sm font-weight-normal text-black mb-0">
-              Inglese 🇬🇧
-            </p>
+            <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
             <Field
               maxLength={100}
               id="name"
@@ -91,9 +87,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
       >
         <div className="row">
           <div className="col-6">
-            <p className="text-sm font-weight-normal text-black mb-0">
-              Italiano 🇮🇹
-            </p>
+            <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
             <Field
               as="textarea"
               id="description"
@@ -111,9 +105,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
             />
           </div>
           <div className="col-6">
-            <p className="text-sm font-weight-normal text-black mb-0">
-              Inglese 🇬🇧
-            </p>
+            <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
             <Field
               as="textarea"
               id="description_en"
@@ -162,7 +154,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
                   date
                 );
               }}
-              customInput={React.createElement(DateInputComponent)}
+              customInput={createElement(DateInputComponent)}
             />
             <CustomErrorMessage
               name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
@@ -193,7 +185,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
                   date
                 );
               }}
-              customInput={React.createElement(DateInputComponent)}
+              customInput={createElement(DateInputComponent)}
             />
             <CustomErrorMessage
               name={hasIndex ? `discounts[${index}].endDate` : "endDate"}

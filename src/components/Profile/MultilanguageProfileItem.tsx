@@ -1,5 +1,3 @@
-import React from "react";
-
 type Props = {
   className?: string;
   label: string;
@@ -16,11 +14,9 @@ const MultilanguageProfileItem = ({
   <tr>
     <td className={`${className} px-0 text-gray border-bottom-0`}>{label}</td>
     <td className={`${className} border-bottom-0 text-base`}>
-      <p className="text-sm font-weight-normal text-gray mb-0">Italiano 🇮🇹</p>
+      <p className="text-sm fw-normal text-gray mb-0">Italiano 🇮🇹</p>
       {value}
-      <p className="text-sm font-weight-normal text-gray mb-0 mt-3">
-        Inglese 🇬🇧
-      </p>
+      <p className="text-sm fw-normal text-gray mb-0 mt-3">Inglese 🇬🇧</p>
       {value_en}
     </td>
   </tr>

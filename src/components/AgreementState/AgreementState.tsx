@@ -1,9 +1,8 @@
-import React from "react";
 import { Badge } from "design-react-kit";
 import { format } from "date-fns";
-import Hourglass from "../../assets/icons/hourglass.svg";
+import Hourglass from "../../assets/icons/hourglass.svg?react";
 import { AgreementState as AgreementStateType } from "../../api/generated";
-import Check from "../../assets/icons/check.svg";
+import Check from "../../assets/icons/check.svg?react";
 
 type Props = {
   state: AgreementStateType;
@@ -15,26 +14,26 @@ const DateLabel = ({ className = "", title, date }: any) => {
   const newDate = format(new Date(date), "dd/MM/yyyy");
   return (
     <div className={`${className} d-flex flex-column text-center`}>
-      <span className="text-sm font-weight-light text-gray">{title}</span>
-      <span className="text-sm font-weight-bold text-black">{newDate}</span>
+      <span className="text-sm fw-light text-gray">{title}</span>
+      <span className="text-sm fw-bold text-black">{newDate}</span>
     </div>
   );
 };
 
 const AgreementState = ({ state, startDate, endDate }: Props) => (
   <section className="bg-white d-flex flex-column align-items-center px-4">
-    <h1 className="pt-7 text-base font-weight-semibold text-dark-blue text-uppercase tracking">
+    <h1 className="pt-7 text-base fw-semibold text-dark-blue text-uppercase tracking">
       PagoPA
     </h1>
     <div>
       {state === AgreementStateType.ApprovedAgreement && (
-        <Badge className="font-weight-normal" color="primary" pill tag="span">
+        <Badge className="fw-normal" color="primary" pill tag="span">
           Convenzione attiva
         </Badge>
       )}
       {state === AgreementStateType.PendingAgreement && (
         <Badge
-          className="font-weight-normal"
+          className="fw-normal"
           pill
           tag="span"
           style={{ backgroundColor: "#EA7614" }}

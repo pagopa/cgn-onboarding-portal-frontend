@@ -1,5 +1,3 @@
-import React from "react";
-
 const ProfileDataItem = ({ label, value }: any) => (
   <tr>
     <td className="px-0 border-bottom-0">{label}</td>

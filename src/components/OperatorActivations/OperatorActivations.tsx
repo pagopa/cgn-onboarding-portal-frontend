@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, Fragment } from "react";
 import {
   useTable,
   usePagination,
-  Row,
   useSortBy,
   Column,
-  UseExpandedRowProps,
   useExpanded
 } from "react-table";
 import { Badge, Button, Icon } from "design-react-kit";
@@ -36,7 +34,6 @@ export type GetOrgsParams = {
   sortColumn?: OrderType;
   sortDirection?: "ASC" | "DESC";
 };
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorActivations = () => {
   const refForm = useRef<any>(null);
 
@@ -53,22 +50,21 @@ const OperatorActivations = () => {
     sortDirection: params?.sortDirection
   });
 
-  const columns: Array<Column<OrganizationWithReferentsAndStatus>> = useMemo(
-    () => [
+  const columns = useMemo(
+    (): Array<Column<OrganizationWithReferentsAndStatus>> => [
       {
         Header: "RAGIONE SOCIALE",
         accessor: "organizationName"
       },
       {
         Header: "TIPOLOGIA ENTE",
-        Cell: ({ row }: { row: Row<OrganizationWithReferentsAndStatus> }) =>
-          getEntityTypeLabel(row.original.entityType)
+        Cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
       },
       {
         Header: "UTENTI ABILITATI",
         disableSortBy: true,
         accessor: "referents",
-        Cell: ({ row }: { row: Row }) => {
+        Cell: ({ row }) => {
           if (Array.isArray(row.values.referents)) {
             return (
               <span>
@@ -93,7 +89,7 @@ const OperatorActivations = () => {
       {
         Header: "AGGIUNTO IL",
         accessor: "insertedAt",
-        Cell: ({ row }: { row: Row }) => (
+        Cell: ({ row }) => (
           <span>{format(new Date(row.values.insertedAt), "dd/MM/yyyy")}</span>
         )
       },
@@ -101,9 +97,9 @@ const OperatorActivations = () => {
         Header: "STATO",
         accessor: "status",
         disableSortBy: true,
-        Cell: ({ row }: { row: Row }) => (
+        Cell: ({ row }) => (
           <Badge
-            className="font-weight-semibold"
+            className="fw-semibold"
             color="outline-primary"
             pill
             tag="span"
@@ -117,7 +113,7 @@ const OperatorActivations = () => {
       {
         Header: () => null,
         id: "expander",
-        Cell: ({ row }: { row: UseExpandedRowProps<Row> }) => (
+        Cell: ({ row }) => (
           <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
             {row.isExpanded ? (
               <Icon icon="it-expand" color="primary" />
@@ -231,7 +227,7 @@ const OperatorActivations = () => {
               {page.map(row => {
                 prepareRow(row);
                 return (
-                  <React.Fragment key={row.getRowProps().key}>
+                  <Fragment key={row.getRowProps().key}>
                     <tr
                       className="cursor-pointer"
                       onClick={() => row.toggleRowExpanded()}
@@ -239,8 +235,8 @@ const OperatorActivations = () => {
                       {row.cells.map((cell, i) => (
                         <td
                           className={`
-                          ${i === 0 ? "pl-6" : ""}
-                          ${i === headerGroups.length - 1 ? "pr-6" : ""}
+                          ${i === 0 ? "ps-6" : ""}
+                          ${i === headerGroups.length - 1 ? "pe-6" : ""}
                           px-3 py-2 border-bottom text-sm
                           `}
                           {...cell.getCellProps()}
@@ -256,7 +252,7 @@ const OperatorActivations = () => {
                       ))}
                     </tr>
                     {row.isExpanded && (
-                      <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
+                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
                         <td colSpan={visibleColumns.length}>
                           <OperatorActivationDetail
                             operator={row.original}
@@ -265,7 +261,7 @@ const OperatorActivations = () => {
                         </td>
                       </tr>
                     )}
-                  </React.Fragment>
+                  </Fragment>
                 );
               })}
             </tbody>

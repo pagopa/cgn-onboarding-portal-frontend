@@ -1,9 +1,9 @@
-import React from "react";
 import { Field } from "formik";
+import { ReactNode } from "react";
 import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
-  children?: any;
+  children?: ReactNode;
   index?: number;
 };
 

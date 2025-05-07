@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback, useEffect, useMemo } from "react";
+import { CSSProperties, useCallback, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Icon, Progress } from "design-react-kit";
 import { BucketCodeLoadStatus } from "../../api/generated";
@@ -41,10 +41,7 @@ const getRenderAttributesByState = (
           <>
             Abbiamo riscontrato un problema nell’importazione dei codici sui
             nostri sistemi.{" "}
-            <Link
-              to={getEditDiscountRoute(discountId)}
-              className="font-weight-semibold"
-            >
+            <Link to={getEditDiscountRoute(discountId)} className="fw-semibold">
               Aggiungi codici
             </Link>
           </>
@@ -69,10 +66,7 @@ const getRenderAttributesByState = (
             E’ stata raggiunta la soglia minima di codici sconti per questa
             opportunità. Ad esaurimento dei codici sconto l’opportunità non sarà
             più visibile in app.{" "}
-            <Link
-              to={getEditDiscountRoute(discountId)}
-              className="font-weight-semibold"
-            >
+            <Link to={getEditDiscountRoute(discountId)} className="fw-semibold">
               Riprova
             </Link>
           </>

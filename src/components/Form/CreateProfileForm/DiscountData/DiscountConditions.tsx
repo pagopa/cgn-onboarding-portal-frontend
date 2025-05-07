@@ -1,5 +1,4 @@
 import { Field } from "formik";
-import React from "react";
 import CustomErrorMessage from "../../CustomErrorMessage";
 
 type Props = {
@@ -11,9 +10,7 @@ const DiscountConditions = ({ index }: Props) => {
   return (
     <div className="row">
       <div className="col-6">
-        <p className="text-sm font-weight-normal text-black mb-0">
-          Italiano 🇮🇹
-        </p>
+        <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
         <Field
           as="textarea"
           id="condition"
@@ -27,7 +24,7 @@ const DiscountConditions = ({ index }: Props) => {
         />
       </div>
       <div className="col-6">
-        <p className="text-sm font-weight-normal text-black mb-0">Inglese 🇬🇧</p>
+        <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
         <Field
           as="textarea"
           id="condition_en"

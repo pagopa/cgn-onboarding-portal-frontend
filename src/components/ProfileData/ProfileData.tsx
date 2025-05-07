@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { remoteData } from "../../api/common";
@@ -16,18 +15,16 @@ const ProfileData = () => {
 
   const getImage = () =>
     agreement &&
-    agreement.imageUrl?.includes(process.env.BASE_IMAGE_PATH as string)
+    agreement.imageUrl?.includes(import.meta.env.VITE_BASE_IMAGE_PATH as string)
       ? agreement.imageUrl
-      : `${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`;
+      : `${import.meta.env.VITE_BASE_IMAGE_PATH}/${agreement.imageUrl}`;
 
   return (
     <>
       {profile && (
         <section className="mt-2 px-8 py-10 bg-white">
           <section>
-            <h2 className="h5 font-weight-bold text-dark-blue">
-              Descrizione operatore
-            </h2>
+            <h2 className="h5 fw-bold text-dark-blue">Descrizione operatore</h2>
             <table className="table">
               <tbody>
                 {Boolean(profile.name) && (

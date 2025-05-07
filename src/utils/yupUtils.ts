@@ -33,7 +33,7 @@ export function YupUnion<Options extends Array<Yup.BaseSchema>>(
             try {
               await option.validate(obj);
               return true;
-            } catch (err) {
+            } catch {
               // Keep checking other options
             }
           }
@@ -48,7 +48,7 @@ export function YupUnion<Options extends Array<Yup.BaseSchema>>(
             try {
               option.validateSync(obj);
               return true;
-            } catch (err) {
+            } catch {
               // Keep checking other options
             }
           }
@@ -60,7 +60,6 @@ export function YupUnion<Options extends Array<Yup.BaseSchema>>(
   ) as any;
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export function YupRecord<ValueSchema extends Yup.BaseSchema>(
   valueSchema: ValueSchema,
   asynchronous: boolean = false
@@ -75,7 +74,7 @@ export function YupRecord<ValueSchema extends Yup.BaseSchema>(
     asynchronous
       ? async function (obj) {
           const { path, createError } = this;
-          if (typeof obj !== "object" || obj === null) {
+          if (typeof obj !== "object" || obj == null) {
             return createError({ path, message: "Must be a valid object" });
           }
           for (const [key, value] of Object.entries(obj)) {
@@ -92,7 +91,7 @@ export function YupRecord<ValueSchema extends Yup.BaseSchema>(
         }
       : function (obj) {
           const { path, createError } = this;
-          if (typeof obj !== "object" || obj === null) {
+          if (typeof obj !== "object" || obj == null) {
             return createError({ path, message: "Must be a valid object" });
           }
           for (const [key, value] of Object.entries(obj)) {

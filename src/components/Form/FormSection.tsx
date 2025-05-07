@@ -1,6 +1,5 @@
 import { Icon } from "design-react-kit";
-import React from "react";
-import VisibleIcon from "../../assets/icons/visible.svg";
+import VisibleIcon from "../../assets/icons/visible.svg?react";
 
 type Props = {
   hasIntroduction?: boolean;
@@ -52,7 +51,7 @@ const FormSection = ({
           <>
             {hasClose && (
               <div className="d-flex flex-row justify-content-between">
-                <p className="mb-10 text-base font-weight-normal text-black">
+                <p className="mb-10 text-base fw-normal text-black">
                   Le domande contrassegnate con il simbolo * sono obbligatorie
                   <br /> Le informazioni contrassegnate con il simbolo{" "}
                   <VisibleIcon /> saranno visibili in app.
@@ -65,7 +64,7 @@ const FormSection = ({
               </div>
             )}
             {!hasClose && (
-              <p className="mb-10 text-base font-weight-normal text-black">
+              <p className="mb-10 text-base fw-normal text-black">
                 Le domande contrassegnate con il simbolo * sono obbligatorie
                 <br /> Le informazioni contrassegnate con il simbolo{" "}
                 <VisibleIcon /> saranno visibili in app.
@@ -75,7 +74,7 @@ const FormSection = ({
         )}
         {title && (
           <div className="d-flex flex-row align-items-center">
-            <h1 className="h4 font-weight-bold text-dark-blue mr-4">
+            <h1 className="h4 fw-bold text-dark-blue me-4">
               {title}
               {required && "*"}
             </h1>
@@ -83,7 +82,7 @@ const FormSection = ({
           </div>
         )}
         {description && (
-          <p className="text-sm font-weight-normal text-black">{description}</p>
+          <p className="text-sm fw-normal text-black">{description}</p>
         )}
         {children}
         {footerDescription !== "" && footerDescription}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Field } from "formik";
 import { Button, FormGroup } from "design-react-kit";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
@@ -118,7 +118,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
                 <br />
                 Per maggiori informazioni, consultare la{" "}
                 <a
-                  className="font-weight-semibold"
+                  className="fw-semibold"
                   href="https://docs.pagopa.it/carta-giovani-nazionale/le-opportunita/riconoscimento-delle-opportunita-ai-titolari-di-eyca"
                   target="_blank"
                   rel="noreferrer"
@@ -134,7 +134,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
                 momento.
                 <br /> Per maggiori informazioni, consultare la{" "}
                 <a
-                  className="font-weight-semibold"
+                  className="fw-semibold"
                   href="https://docs.pagopa.it/carta-giovani-nazionale"
                   target="_blank"
                   rel="noreferrer"
@@ -193,7 +193,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
           cui potranno accedere esclusivamente i beneficiari di EYCA. Per
           maggiori informazioni, consulta la{" "}
           <a
-            className="font-weight-semibold"
+            className="fw-semibold"
             href="https://docs.pagopa.it/carta-giovani-nazionale"
             target="_blank"
             rel="noreferrer"

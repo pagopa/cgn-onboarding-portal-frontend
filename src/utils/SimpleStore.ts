@@ -17,8 +17,10 @@ export function makeStore<Value>(initial: Value): Store<Value> {
       listeners.forEach(listener => listener());
     },
     subscribe(callback: () => void) {
+      // eslint-disable-next-line functional/immutable-data
       listeners.add(callback);
       return () => {
+        // eslint-disable-next-line functional/immutable-data
         listeners.delete(callback);
       };
     }

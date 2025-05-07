@@ -14,74 +14,80 @@ import * as GeneratedIndex from "./generated";
 import * as GeneratedBackoffice from "./generated_backoffice";
 
 const PublicApi = {
-  Help: new GeneratedPublic.HelpApi(undefined, process.env.BASE_PUBLIC_PATH)
+  Help: new GeneratedPublic.HelpApi(
+    undefined,
+    import.meta.env.VITE_BASE_PUBLIC_PATH
+  )
 };
 
 const IndexApi = {
   Agreement: new GeneratedIndex.AgreementApi(
     undefined,
-    process.env.BASE_API_PATH
+    import.meta.env.VITE_BASE_API_PATH
   ),
-  Profile: new GeneratedIndex.ProfileApi(undefined, process.env.BASE_API_PATH),
+  Profile: new GeneratedIndex.ProfileApi(
+    undefined,
+    import.meta.env.VITE_BASE_API_PATH
+  ),
   Discount: new GeneratedIndex.DiscountApi(
     undefined,
-    process.env.BASE_API_PATH
+    import.meta.env.VITE_BASE_API_PATH
   ),
-  Bucket: new GeneratedIndex.BucketApi(undefined, process.env.BASE_API_PATH),
+  Bucket: new GeneratedIndex.BucketApi(
+    undefined,
+    import.meta.env.VITE_BASE_API_PATH
+  ),
   Document: new GeneratedIndex.DocumentApi(
     undefined,
-    process.env.BASE_API_PATH
+    import.meta.env.VITE_BASE_API_PATH
   ),
   DocumentTemplate: new GeneratedIndex.DocumentTemplateApi(
     undefined,
-    process.env.BASE_API_PATH
+    import.meta.env.VITE_BASE_API_PATH
   ),
   ApiToken: new GeneratedIndex.ApiTokenApi(
     undefined,
-    process.env.BASE_API_PATH
+    import.meta.env.VITE_BASE_API_PATH
   ),
-  Help: new GeneratedIndex.HelpApi(undefined, process.env.BASE_API_PATH),
+  Help: new GeneratedIndex.HelpApi(
+    undefined,
+    import.meta.env.VITE_BASE_API_PATH
+  ),
   GeolocationToken: new GeneratedIndex.GeolocationTokenApi(
     undefined,
-    process.env.BASE_API_PATH
+    import.meta.env.VITE_BASE_API_PATH
   ),
   DiscountBucketLoadingProgress:
     new GeneratedIndex.DiscountBucketLoadingProgressApi(
       undefined,
-      process.env.BASE_API_PATH
+      import.meta.env.VITE_BASE_API_PATH
     )
 };
 
 const BackofficeApi = {
   Agreement: new GeneratedBackoffice.AgreementApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    import.meta.env.VITE_BASE_BACKOFFICE_PATH
   ),
   Discount: new GeneratedBackoffice.DiscountApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    import.meta.env.VITE_BASE_BACKOFFICE_PATH
   ),
   Document: new GeneratedBackoffice.DocumentApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    import.meta.env.VITE_BASE_BACKOFFICE_PATH
   ),
   Exports: new GeneratedBackoffice.ExportsApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    import.meta.env.VITE_BASE_BACKOFFICE_PATH
   ),
   AttributeAuthority: new GeneratedBackoffice.AttributeauthorityApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    import.meta.env.VITE_BASE_BACKOFFICE_PATH
   )
 };
 
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: process.env.NODE_ENV === "production"
-    }
-  }
-});
+export const queryClient = new QueryClient({});
 
 type VariablesOf<AxiosParams extends Array<any>> = AxiosParams extends [
   RawAxiosRequestConfig?
@@ -203,14 +209,16 @@ function makeReactQueries<
   >;
 } {
   return Object.fromEntries(
-    Object.keys(Object.getPrototypeOf(methods)).map(methodName => [
-      methodName,
-      makeReactQuery(
-        [queryKeyNameLevel1, queryKeyNameLevel2, methodName],
-        (...args) => methods[methodName](...args),
-        getToken
-      )
-    ])
+    Object.getOwnPropertyNames(Object.getPrototypeOf(methods)).map(
+      methodName => [
+        methodName,
+        makeReactQuery(
+          [queryKeyNameLevel1, queryKeyNameLevel2, methodName],
+          (...args) => methods[methodName](...args),
+          getToken
+        )
+      ]
+    )
   ) as any;
 }
 

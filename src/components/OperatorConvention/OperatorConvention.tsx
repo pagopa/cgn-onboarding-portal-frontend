@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Row, usePagination, useSortBy, useTable } from "react-table";
 import { Button } from "design-react-kit";
 import { format } from "date-fns";
@@ -15,7 +15,6 @@ import { getEntityTypeLabel } from "../../utils/strings";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const OperatorConvention = () => {
   const pageSize = 20;
   const [showDetails, setShowDetails] = useState(false);
@@ -181,7 +180,7 @@ const OperatorConvention = () => {
               {page.map(row => {
                 prepareRow(row);
                 return (
-                  <React.Fragment key={row.getRowProps().key}>
+                  <Fragment key={row.getRowProps().key}>
                     <tr
                       className="cursor-pointer"
                       onClick={() => {
@@ -192,8 +191,8 @@ const OperatorConvention = () => {
                       {row.cells.map((cell, i) => (
                         <td
                           className={`
-                          ${i === 0 ? "pl-6" : ""}
-                          ${i === headerGroups.length - 1 ? "pr-6" : ""}
+                          ${i === 0 ? "ps-6" : ""}
+                          ${i === headerGroups.length - 1 ? "pe-6" : ""}
                           px-3 py-2 border-bottom text-sm
                           `}
                           {...cell.getCellProps()}
@@ -203,7 +202,7 @@ const OperatorConvention = () => {
                         </td>
                       ))}
                     </tr>
-                  </React.Fragment>
+                  </Fragment>
                 );
               })}
             </tbody>

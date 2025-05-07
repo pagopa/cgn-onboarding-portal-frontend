@@ -29,7 +29,7 @@ const ReferentValidationSchema = Yup.object().shape({
     .email(INCORRECT_EMAIL_ADDRESS)
     .required(REQUIRED_FIELD),
   telephoneNumber: Yup.string()
-    .matches(/^[0-9]*$/, ONLY_NUMBER)
+    .matches(/^\d*$/, ONLY_NUMBER)
     .min(4, "Deve essere di 4 caratteri")
     .required(REQUIRED_FIELD)
 });
@@ -53,7 +53,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     .required(REQUIRED_FIELD),
   legalOffice: Yup.string().required(REQUIRED_FIELD),
   telephoneNumber: Yup.string()
-    .matches(/^[0-9]*$/, ONLY_NUMBER)
+    .matches(/^\d*$/, ONLY_NUMBER)
     .min(4, "Deve essere di 4 caratteri")
     .required(REQUIRED_FIELD),
   legalRepresentativeFullName: Yup.string()
@@ -100,7 +100,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
               .matches(/^[A-Za-z0-9\s]*$/, "Solo lettere o numeri")
               .required(REQUIRED_FIELD),
             zipCode: Yup.string()
-              .matches(/^[0-9]*$/, ONLY_NUMBER)
+              .matches(/^\d*$/, ONLY_NUMBER)
               .min(5, "Deve essere di 5 caratteri")
               .max(5, "Deve essere di 5 caratteri")
               .required(REQUIRED_FIELD),

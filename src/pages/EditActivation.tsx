@@ -1,4 +1,3 @@
-import React from "react";
 import CreateLayout from "../components/Layout/CreateLayout";
 import { ADMIN_PANEL_ACCESSI } from "../navigation/routes";
 import EditActivationForm from "../components/Form/EditActivationForm/EditActivationForm";

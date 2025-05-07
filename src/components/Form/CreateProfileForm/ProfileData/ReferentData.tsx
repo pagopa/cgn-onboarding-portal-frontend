@@ -1,12 +1,12 @@
-import React from "react";
 import { Field, FieldArray, useFormikContext } from "formik";
+import { Fragment } from "react";
 import { InferType } from "yup";
 import FormSection from "../../FormSection";
 import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { Referent } from "../../../../api/generated";
+import type { Referent } from "../../../../api/generated";
 
 const MAX_SECONDARY_REFERENTS = 4;
 
@@ -110,8 +110,8 @@ const Referent = ({
       </InputField>
       {showAdd && (
         <div className="mt-8 cursor-pointer" onClick={onAdd}>
-          <PlusCircleIcon className="mr-2" />
-          <span className="text-base font-weight-semibold text-blue">
+          <PlusCircleIcon className="me-2" />
+          <span className="text-base fw-semibold text-blue">
             Aggiungi un referente
           </span>
         </div>
@@ -141,7 +141,7 @@ function ReferentData({ children }: { children?: React.ReactNode }) {
         const noSecondaryReferents =
           formikContext.values.secondaryReferents.length === 0;
         return (
-          <React.Fragment>
+          <Fragment>
             <Referent
               index={null}
               showAdd={noSecondaryReferents}
@@ -151,24 +151,22 @@ function ReferentData({ children }: { children?: React.ReactNode }) {
             >
               {noSecondaryReferents ? children : undefined}
             </Referent>
-            {formikContext.values.secondaryReferents.map(
-              (referent, index, array) => {
-                const isLast = index === array.length - 1;
-                return (
-                  <Referent
-                    key={index}
-                    index={index}
-                    showAdd={isLast && array.length < MAX_SECONDARY_REFERENTS}
-                    onAdd={add}
-                    showRemove={true}
-                    onRemove={() => arrayHelpers.remove(index)}
-                  >
-                    {isLast ? children : undefined}
-                  </Referent>
-                );
-              }
-            )}
-          </React.Fragment>
+            {formikContext.values.secondaryReferents.map((_, index, array) => {
+              const isLast = index === array.length - 1;
+              return (
+                <Referent
+                  key={index}
+                  index={index}
+                  showAdd={isLast && array.length < MAX_SECONDARY_REFERENTS}
+                  onAdd={add}
+                  showRemove={true}
+                  onRemove={() => arrayHelpers.remove(index)}
+                >
+                  {isLast ? children : undefined}
+                </Referent>
+              );
+            })}
+          </Fragment>
         );
       }}
     />

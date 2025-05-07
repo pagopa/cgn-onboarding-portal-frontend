@@ -1,5 +1,4 @@
-import React from "react";
-import VisibleIcon from "../../assets/icons/visible.svg";
+import VisibleIcon from "../../assets/icons/visible.svg?react";
 
 type Props = {
   htmlFor: string;
@@ -19,9 +18,9 @@ const InputFieldMultiple = ({
   isVisible = false
 }: Props) => (
   <>
-    <label htmlFor={htmlFor}>
+    <label htmlFor={htmlFor} className="form-label">
       <span className="d-flex flex-row align-items-center">
-        <span className="text-base font-weight-bold mr-4">
+        <span className="text-base fw-bold me-4">
           {title}
           {required && "*"}
         </span>
@@ -29,9 +28,7 @@ const InputFieldMultiple = ({
       </span>
 
       {description && (
-        <p className="mt-2 text-sm font-weight-normal text-black">
-          {description}
-        </p>
+        <p className="mt-2 text-sm fw-normal text-black">{description}</p>
       )}
     </label>
     {children}

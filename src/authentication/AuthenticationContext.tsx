@@ -1,9 +1,10 @@
-import React, {
+import {
   createContext,
   useState,
   useEffect,
   useCallback,
-  useMemo
+  useMemo,
+  useContext
 } from "react";
 import { useHistory } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -132,5 +133,5 @@ export function AuthenticationProvider({
 }
 
 export function useAuthentication() {
-  return React.useContext(AuthenticationContext);
+  return useContext(AuthenticationContext);
 }

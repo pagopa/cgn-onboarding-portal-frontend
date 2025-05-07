@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Icon } from "design-react-kit";
 import { useSelector } from "react-redux";
 import { remoteData } from "../../api/common";
@@ -36,7 +36,7 @@ const ProfileApiToken = () => {
     <>
       {tokens && (
         <section className="mt-4 px-8 py-10 bg-white">
-          <h2 className="h5 font-weight-bold text-dark-blue">
+          <h2 className="h5 fw-bold text-dark-blue">
             Codici di validazione API
           </h2>
           <table className="table mb-4">
@@ -55,7 +55,7 @@ const ProfileApiToken = () => {
                       }
                       color="primary"
                       size="sm"
-                      className="mr-4"
+                      className="me-4"
                       onClick={() =>
                         setIsPrimaryTokenShown(!isPrimaryTokenShown)
                       }
@@ -69,7 +69,7 @@ const ProfileApiToken = () => {
                     </span>
                     <Button
                       size="xs"
-                      className="mt-4 mr-4"
+                      className="mt-4 me-4"
                       color="primary"
                       outline
                       tag="button"
@@ -95,7 +95,7 @@ const ProfileApiToken = () => {
                       }
                       color="primary"
                       size="sm"
-                      className="mr-4"
+                      className="me-4"
                       onClick={() =>
                         setIsSecondaryTokenShown(!isSecondaryTokenShown)
                       }
@@ -109,7 +109,7 @@ const ProfileApiToken = () => {
                     </span>
                     <Button
                       size="xs"
-                      className="mt-4 mr-4"
+                      className="mt-4 me-4"
                       color="primary"
                       outline
                       tag="button"

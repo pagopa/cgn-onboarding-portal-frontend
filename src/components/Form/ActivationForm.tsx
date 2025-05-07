@@ -1,8 +1,7 @@
 import { Field, FieldArray, FieldArrayRenderProps, Form, Formik } from "formik";
 import { Button, Icon } from "design-react-kit";
-import React from "react";
 import { useHistory } from "react-router-dom";
-import PlusCircleIcon from "../../assets/icons/plus-circle.svg";
+import PlusCircleIcon from "../../assets/icons/plus-circle.svg?react";
 import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
 import CenteredLoading from "../CenteredLoading";
 import {
@@ -69,7 +68,7 @@ const ActivationForm = (props: Props) => {
                   disabled={!props.canChangeEntityType}
                 />
                 <label
-                  className="text-sm font-weight-normal text-black"
+                  className="text-sm fw-normal text-black form-label"
                   htmlFor="entityTypePrivato"
                 >
                   <span className="text-sm">Privato</span>
@@ -85,7 +84,7 @@ const ActivationForm = (props: Props) => {
                   disabled={!props.canChangeEntityType}
                 />
                 <label
-                  className="text-sm font-weight-normal text-black"
+                  className="text-sm fw-normal text-black form-label"
                   htmlFor="entityTypePubblico"
                 >
                   <span className="text-sm">Pubblico</span>
@@ -139,7 +138,7 @@ const ActivationForm = (props: Props) => {
                           </div>
                           {i !== 0 && (
                             <Button
-                              className="mr-4"
+                              className="me-4"
                               color="link"
                               tag="button"
                               onClick={() => remove(i)}
@@ -153,8 +152,8 @@ const ActivationForm = (props: Props) => {
                     </div>
                   ))}
                   <div className="mt-8 cursor-pointer" onClick={() => push("")}>
-                    <PlusCircleIcon className="mr-2" />
-                    <span className="text-base font-weight-semibold text-blue">
+                    <PlusCircleIcon className="me-2" />
+                    <span className="text-base fw-semibold text-blue">
                       Aggiungi
                     </span>
                   </div>
@@ -163,7 +162,7 @@ const ActivationForm = (props: Props) => {
             />
             <div className="mt-10">
               <Button
-                className="px-14 mr-4"
+                className="px-14 me-4"
                 outline
                 color="primary"
                 tag="button"
@@ -173,7 +172,7 @@ const ActivationForm = (props: Props) => {
               </Button>
               <Button
                 type="submit"
-                className="px-14 mr-4"
+                className="px-14 me-4"
                 color="primary"
                 disabled={props.isSubmitting}
                 tag="button"

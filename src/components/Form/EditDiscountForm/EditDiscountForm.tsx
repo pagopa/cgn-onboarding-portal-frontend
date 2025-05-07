@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { Form, Formik } from "formik";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { AxiosError } from "axios";
@@ -105,7 +105,6 @@ export function sanitizeDiscountFormValues(values: any) {
  * src/components/Form/CreateDiscountForm/CreateDiscountForm.tsx Used to create new discount once onboarded
  * src/components/Form/EditDiscountForm/EditDiscountForm.tsx  Used to edit new discount once onboarded
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const EditDiscountForm = () => {
   const { discountId } = useParams<any>();
   const history = useHistory();
@@ -191,7 +190,7 @@ const EditDiscountForm = () => {
         }
         onSubmit={values => {
           const newValues = sanitizeDiscountFormValues(values);
-          void updateDiscount(agreement.id, newValues);
+          updateDiscount(agreement.id, newValues);
         }}
       >
         {({ values, setFieldValue }) => (
@@ -205,7 +204,7 @@ const EditDiscountForm = () => {
               {discount?.state !== "draft" && (
                 <div className="mt-10">
                   <Button
-                    className="px-14 mr-4"
+                    className="px-14 me-4"
                     outline
                     color="primary"
                     tag="button"
@@ -215,7 +214,7 @@ const EditDiscountForm = () => {
                   </Button>
                   <Button
                     type="submit"
-                    className="px-14 mr-4"
+                    className="px-14 me-4"
                     color="primary"
                     tag="button"
                     disabled={updateDiscountMutation.isLoading}
@@ -227,7 +226,7 @@ const EditDiscountForm = () => {
               {discount?.state === "draft" && (
                 <div className="mt-10">
                   <Button
-                    className="px-14 mr-4"
+                    className="px-14 me-4"
                     color="secondary"
                     tag="button"
                     onClick={() => history.push(DASHBOARD)}
@@ -236,7 +235,7 @@ const EditDiscountForm = () => {
                   </Button>
                   <Button
                     type="submit"
-                    className="px-14 mr-4"
+                    className="px-14 me-4"
                     color="primary"
                     outline
                     tag="button"

@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
-import React, { useState } from "react";
+import { useState } from "react";
 import { remoteData } from "../../api/common";
 import {
   ApprovedAgreementDiscount,
@@ -15,7 +15,6 @@ import BucketCodeModal from "./BucketCodeModal";
 import { getBadgeStatus } from "./ConventionDetails";
 import Item from "./Item";
 
-/* eslint-disable sonarjs/cognitive-complexity */
 const Discount = ({
   discount,
   agreementId,
@@ -108,9 +107,7 @@ const Discount = ({
 
   return (
     <div>
-      <h5 className="mb-7 d-flex align-items-center font-weight-bold">
-        Opportunità
-      </h5>
+      <h5 className="mb-7 d-flex align-items-center fw-bold">Opportunità</h5>
       <Item label="Nome opportunità" value={discount.name} />
       <Item label="Descrizione opportunità" value={discount.description} />
       <Item label="Stato" value={getBadgeStatus(discount.state)} />
@@ -225,7 +222,7 @@ const Discount = ({
             Inserisci una nota di spiegazione riguardo al motivo per cui questa
             opportunità sarà sospesa. La nota sarà visibile all’operatore
           </p>
-          <div className="form-group">
+          <div className="mb-12">
             <textarea
               id="rejectMessage"
               value={suspendMessage}
@@ -239,7 +236,7 @@ const Discount = ({
             color="primary"
             outline
             tag="button"
-            className="ml-4"
+            className="ms-4"
             onClick={() => {
               setSuspendMode(false);
               setSuspendMessage("");
@@ -250,7 +247,7 @@ const Discount = ({
           <Button
             color="primary"
             tag="button"
-            className="ml-4"
+            className="ms-4"
             onClick={suspendDiscount}
             disabled={!suspendMessage.length}
           >
@@ -271,7 +268,7 @@ const Discount = ({
         <div className="mt-5 d-flex">
           <Button
             color="danger"
-            className="mr-2"
+            className="me-2"
             outline
             onClick={() => setRejectMode(true)}
           >
@@ -289,7 +286,7 @@ const Discount = ({
             Inserisci il motivo per cui il test è da considerarsi fallito. Il
             commento sarà inviato all’operatore insieme all’esito.
           </p>
-          <div className="form-group">
+          <div className="mb-12">
             <textarea
               id="rejectMessage"
               value={rejectMessage}
@@ -303,7 +300,7 @@ const Discount = ({
             color="primary"
             outline
             tag="button"
-            className="ml-4"
+            className="ms-4"
             onClick={() => {
               setRejectMode(false);
               setRejectMessage("");
@@ -314,7 +311,7 @@ const Discount = ({
           <Button
             color="primary"
             tag="button"
-            className="ml-4"
+            className="ms-4"
             onClick={rejectTest}
             disabled={!rejectMessage.length}
           >

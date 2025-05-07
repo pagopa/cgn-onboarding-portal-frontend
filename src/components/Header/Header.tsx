@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { CREATE_PROFILE, HELP } from "../../navigation/routes";
@@ -35,7 +35,7 @@ const Header = ({ hasBorder = false }: Props) => {
           {authentication.currentSession?.type !== "admin" && (
             <Link
               to={HELP}
-              className="mr-11 text-base text-blue font-weight-semibold no-underline"
+              className="me-11 text-base text-blue fw-semibold no-underline"
             >
               Serve aiuto?
             </Link>

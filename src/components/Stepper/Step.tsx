@@ -1,5 +1,4 @@
-import React from "react";
-import CheckStepperIcon from "../../assets/icons/check-stepper.svg";
+import CheckStepperIcon from "../../assets/icons/check-stepper.svg?react";
 
 type Props = {
   stepType?: "active" | "confirmed" | "";
@@ -19,7 +18,7 @@ const Step = ({ stepType = "", index, handleChangeStep, children }: Props) => (
     }}
   >
     <span className={stepType !== "confirmed" ? "steppers-number" : ""}>
-      {stepType === "confirmed" && <CheckStepperIcon className="mr-2" />}
+      {stepType === "confirmed" && <CheckStepperIcon className="me-2" />}
       <span className="sr-only">Step {index}</span>
       {stepType !== "confirmed" && index}
     </span>

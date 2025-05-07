@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
@@ -24,7 +24,7 @@ const AssignRequest = ({
         <Button
           color="primary"
           tag="button"
-          className="ml-4"
+          className="ms-4"
           onClick={checkAssign()}
         >
           Prendi in carico

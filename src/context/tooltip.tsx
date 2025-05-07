@@ -1,9 +1,9 @@
-import React, {
+import {
   useContext,
   createContext,
   useState,
   ReactElement,
-  ReactChildren,
+  ReactNode,
   useCallback,
   useRef,
   useMemo
@@ -33,12 +33,11 @@ const initialState = {
 };
 
 const TooltipContext = createContext<TooltipContextProps>({
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   triggerTooltip: () => {}
 });
 
 interface ProviderProps {
-  children: ReactChildren | ReactElement;
+  children: ReactNode | ReactElement;
 }
 
 function TooltipProvider({ children }: ProviderProps): ReactElement {
@@ -46,7 +45,7 @@ function TooltipProvider({ children }: ProviderProps): ReactElement {
   const [{ severity, text, title }, setTooltip] =
     useState<TooltipProviderState>(initialState);
 
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
 
   const closeTooltip = (): void => {
     openTooltip(false);
@@ -73,7 +72,7 @@ function TooltipProvider({ children }: ProviderProps): ReactElement {
     <TooltipContext.Provider value={contextValue}>
       {children}
       {open && (
-        <div className="fixed-bottom mr-6" style={{ left: "auto" }}>
+        <div className="fixed-bottom me-6" style={{ left: "auto" }}>
           <div
             className={`alert bg-white alert-dismissible alert-${severity} fade show`}
             role="alert"
