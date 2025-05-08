@@ -7,6 +7,7 @@ const RequestStateBadge = (state: AgreementState) => {
       return (
         <Badge
           className="fw-normal"
+          color="#FFFFFF"
           style={{
             backgroundColor: "#FFFFFF",
             color: "#0073E6",
@@ -24,6 +25,7 @@ const RequestStateBadge = (state: AgreementState) => {
           className="fw-normal"
           pill
           tag="span"
+          color="#EA7614"
           style={{
             backgroundColor: "#EA7614",
             color: "white"
