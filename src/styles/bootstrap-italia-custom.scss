@@ -44,7 +44,7 @@ $spacers: (
 
 /* Base */
 
-html, body, #app {
+html, body, #root {
     height: 100%;
     background-color: $background;
 }
@@ -151,4 +151,4 @@ $link-hover-decoration: none;
   box-shadow: inset 0 0 0 1px #0273e6 !important;
 }
 
-@import "../../node_modules/bootstrap-italia/src/scss/bootstrap-italia.scss";
+@import "~/bootstrap-italia/src/scss/bootstrap-italia.scss";

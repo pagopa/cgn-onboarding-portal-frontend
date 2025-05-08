@@ -1,3 +1,4 @@
+import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
@@ -7,8 +8,11 @@ export default defineConfig({
   plugins: [react(), svgr()],
   resolve: {
     alias: {
-      "@splidejs/splide/src/css/core/index":
+      "@splidejs/splide/src/css/core/index": path.resolve(
+        __dirname,
         "node_modules/@splidejs/splide/src/css/core/index.scss"
+      ),
+      "~": path.resolve(__dirname, "./node_modules")
     }
   },
   css: {
