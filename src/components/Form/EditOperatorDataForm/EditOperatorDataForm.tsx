@@ -68,7 +68,7 @@ function getSalesChannel(salesChannel: any) {
       return {
         ...OfflineChannel,
         addresses:
-          EmptyAddresses.is(OfflineChannel.addresses) ||
+          EmptyAddresses.isValidSync(OfflineChannel.addresses) ||
           OfflineChannel.allNationalAddresses
             ? []
             : OfflineChannel.addresses.map((add: any) => ({
@@ -80,7 +80,7 @@ function getSalesChannel(salesChannel: any) {
       return {
         ...salesChannel,
         addresses:
-          EmptyAddresses.is(salesChannel.addresses) ||
+          EmptyAddresses.isValidSync(salesChannel.addresses) ||
           salesChannel.allNationalAddresses
             ? []
             : salesChannel.addresses.map((add: any) => ({
