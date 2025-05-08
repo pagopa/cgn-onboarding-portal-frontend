@@ -43,19 +43,17 @@ const DateModal = ({
 
   const DatePickerInput = forwardRef((fieldProps: any, ref: any) => (
     <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
-      <div className="mb-12">
-        <input
-          {...fieldProps}
-          ref={ref}
-          className="form-control it-date-datepicker"
-          id={fieldProps.name}
-          type="text"
-          placeholder="gg/mm/aaaa"
-        />
-        <label htmlFor={fieldProps.name} className="form-label">
-          {fieldProps.label}
-        </label>
-      </div>
+      <input
+        {...fieldProps}
+        ref={ref}
+        className="form-control it-date-datepicker"
+        id={fieldProps.name}
+        type="text"
+        placeholder="gg/mm/aaaa"
+      />
+      <label htmlFor={fieldProps.name} className="form-label">
+        {fieldProps.label}
+      </label>
     </div>
   ));
 
@@ -94,8 +92,10 @@ const DateModal = ({
                     {...field}
                     dateFormat="dd/MM/yyyy"
                     selected={dateFrom}
-                    onChange={(val: Date) =>
-                      setDateFrom(new Date(format(val, "yyyy-MM-dd")))
+                    onChange={val =>
+                      setDateFrom(
+                        val ? new Date(format(val, "yyyy-MM-dd")) : undefined
+                      )
                     }
                     selectsStart
                     startDate={dateFrom}
@@ -114,8 +114,10 @@ const DateModal = ({
                     {...field}
                     dateFormat="dd/MM/yyyy"
                     selected={dateTo}
-                    onChange={(val: Date) =>
-                      setDateTo(new Date(format(val, "yyyy-MM-dd")))
+                    onChange={val =>
+                      setDateTo(
+                        val ? new Date(format(val, "yyyy-MM-dd")) : undefined
+                      )
                     }
                     selectsEnd
                     startDate={dateFrom}
