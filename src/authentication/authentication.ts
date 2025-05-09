@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import * as Msal from "@azure/msal-browser";
+import { PublicClientApplication } from "@azure/msal-browser";
 import { jwtDecode } from "jwt-decode";
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
@@ -49,7 +49,7 @@ function randomAlphaNumericString(length: number): string {
   return Array.from(buffer, byte => choices[byte % choices.length]).join("");
 }
 
-const AdminAccess = new Msal.PublicClientApplication({
+const AdminAccess = new PublicClientApplication({
   auth: {
     clientId: import.meta.env.VITE_MSAL_CLIENT_ID as string,
     authority: import.meta.env.VITE_MSAL_AUTHORITY as string,

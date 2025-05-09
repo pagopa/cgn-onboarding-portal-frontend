@@ -15,7 +15,7 @@ import {
 } from "react-table";
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
-import { omit } from "lodash";
+import omit from "lodash/omit";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading";
 import {

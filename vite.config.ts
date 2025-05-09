@@ -5,7 +5,19 @@ import svgr from "vite-plugin-svgr";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), svgr()],
+  plugins: [
+    react(),
+    svgr({
+      svgrOptions: {
+        ref: true,
+        svgo: true,
+        plugins: ["@svgr/plugin-svgo", "@svgr/plugin-jsx"],
+        svgoConfig: {
+          floatPrecision: 2
+        }
+      }
+    })
+  ],
   resolve: {
     alias: {
       "@splidejs/splide/src/css/core/index": path.resolve(
@@ -29,6 +41,11 @@ export default defineConfig({
           "import"
         ]
       }
+    }
+  },
+  build: {
+    assetsInlineLimit(file) {
+      return !file.endsWith(".svg");
     }
   }
 });

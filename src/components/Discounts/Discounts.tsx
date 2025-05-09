@@ -4,7 +4,7 @@ import { Column, useExpanded, useSortBy, useTable } from "react-table";
 import { Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
 import { compareAsc, format } from "date-fns";
-import { omit } from "lodash";
+import omit from "lodash/omit";
 import { remoteData } from "../../api/common";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
