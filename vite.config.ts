@@ -44,6 +44,7 @@ export default defineConfig({
     }
   },
   build: {
+    sourcemap: true,
     assetsInlineLimit(file) {
       return !file.endsWith(".svg");
     }
