@@ -4,7 +4,7 @@ style-src 'self';
 object-src 'none';
 base-uri 'self';
 connect-src 'self' ${import.meta.env.VITE_BASE_API_DOMAIN ?? ""} ${import.meta.env.VITE_MSAL_AUTHORITY ?? ""} https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
-font-src 'self';
+font-src 'self' data:;
 frame-src 'self' https://www.google.com https://recaptcha.net;
 img-src 'self' data: https://assets.cdn.io.italia.it ${import.meta.env.VITE_BASE_IMAGE_PATH ?? ""};
 manifest-src 'self';
