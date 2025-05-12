@@ -32,7 +32,7 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
             <img
               width="300"
               height="300"
-              src={`${import.meta.env.VITE_BASE_IMAGE_PATH}/${profile.imageUrl}`}
+              src={`${import.meta.env.VITE_IMAGE_BASE_URL}/${profile.imageUrl}`}
               alt="Immagine operatore"
             />
           ) : (

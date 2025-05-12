@@ -32,14 +32,10 @@ const ProfileImage = () => {
   useEffect(() => {
     if (
       agreement.imageUrl &&
-      !agreement.imageUrl.includes(
-        import.meta.env.VITE_BASE_IMAGE_PATH as string
-      )
+      !agreement.imageUrl.includes(import.meta.env.VITE_IMAGE_BASE_URL)
     ) {
       dispatch(
-        setImage(
-          `${import.meta.env.VITE_BASE_IMAGE_PATH}/${agreement.imageUrl}`
-        )
+        setImage(`${import.meta.env.VITE_IMAGE_BASE_URL}/${agreement.imageUrl}`)
       );
     }
   }, [agreement.imageUrl, dispatch]);
@@ -64,7 +60,7 @@ const ProfileImage = () => {
       });
       if (data.imageUrl) {
         dispatch(
-          setImage(`${import.meta.env.VITE_BASE_IMAGE_PATH}/${data.imageUrl}`)
+          setImage(`${import.meta.env.VITE_IMAGE_BASE_URL}/${data.imageUrl}`)
         );
       }
     } catch (error) {

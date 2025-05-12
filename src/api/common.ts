@@ -13,77 +13,64 @@ import * as GeneratedPublic from "./generated_public";
 import * as GeneratedIndex from "./generated";
 import * as GeneratedBackoffice from "./generated_backoffice";
 
+const API_DOMAIN =
+  window.location.hostname === "localhost"
+    ? ""
+    : `https://${import.meta.env.VITE_API_DOMAIN}`;
+
+export const API_PUBLIC_BASE_URL = `${API_DOMAIN}/public/v1`;
+
 const PublicApi = {
-  Help: new GeneratedPublic.HelpApi(
-    undefined,
-    import.meta.env.VITE_BASE_PUBLIC_PATH
-  )
+  Help: new GeneratedPublic.HelpApi(undefined, API_PUBLIC_BASE_URL)
 };
 
+export const API_INDEX_BASE_URL = `${API_DOMAIN}/api/v1`;
+
 const IndexApi = {
-  Agreement: new GeneratedIndex.AgreementApi(
-    undefined,
-    import.meta.env.VITE_BASE_API_PATH
-  ),
-  Profile: new GeneratedIndex.ProfileApi(
-    undefined,
-    import.meta.env.VITE_BASE_API_PATH
-  ),
-  Discount: new GeneratedIndex.DiscountApi(
-    undefined,
-    import.meta.env.VITE_BASE_API_PATH
-  ),
-  Bucket: new GeneratedIndex.BucketApi(
-    undefined,
-    import.meta.env.VITE_BASE_API_PATH
-  ),
-  Document: new GeneratedIndex.DocumentApi(
-    undefined,
-    import.meta.env.VITE_BASE_API_PATH
-  ),
+  Agreement: new GeneratedIndex.AgreementApi(undefined, API_INDEX_BASE_URL),
+  Profile: new GeneratedIndex.ProfileApi(undefined, API_INDEX_BASE_URL),
+  Discount: new GeneratedIndex.DiscountApi(undefined, API_INDEX_BASE_URL),
+  Bucket: new GeneratedIndex.BucketApi(undefined, API_INDEX_BASE_URL),
+  Document: new GeneratedIndex.DocumentApi(undefined, API_INDEX_BASE_URL),
   DocumentTemplate: new GeneratedIndex.DocumentTemplateApi(
     undefined,
-    import.meta.env.VITE_BASE_API_PATH
+    API_INDEX_BASE_URL
   ),
-  ApiToken: new GeneratedIndex.ApiTokenApi(
-    undefined,
-    import.meta.env.VITE_BASE_API_PATH
-  ),
-  Help: new GeneratedIndex.HelpApi(
-    undefined,
-    import.meta.env.VITE_BASE_API_PATH
-  ),
+  ApiToken: new GeneratedIndex.ApiTokenApi(undefined, API_INDEX_BASE_URL),
+  Help: new GeneratedIndex.HelpApi(undefined, API_INDEX_BASE_URL),
   GeolocationToken: new GeneratedIndex.GeolocationTokenApi(
     undefined,
-    import.meta.env.VITE_BASE_API_PATH
+    API_INDEX_BASE_URL
   ),
   DiscountBucketLoadingProgress:
     new GeneratedIndex.DiscountBucketLoadingProgressApi(
       undefined,
-      import.meta.env.VITE_BASE_API_PATH
+      API_INDEX_BASE_URL
     )
 };
+
+const API_BACKOFFICE_BASE_URL = `${API_DOMAIN}/backoffice/v1`;
 
 const BackofficeApi = {
   Agreement: new GeneratedBackoffice.AgreementApi(
     undefined,
-    import.meta.env.VITE_BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   ),
   Discount: new GeneratedBackoffice.DiscountApi(
     undefined,
-    import.meta.env.VITE_BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   ),
   Document: new GeneratedBackoffice.DocumentApi(
     undefined,
-    import.meta.env.VITE_BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   ),
   Exports: new GeneratedBackoffice.ExportsApi(
     undefined,
-    import.meta.env.VITE_BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   ),
   AttributeAuthority: new GeneratedBackoffice.AttributeauthorityApi(
     undefined,
-    import.meta.env.VITE_BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   )
 };
 

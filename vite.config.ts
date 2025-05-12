@@ -1,7 +1,11 @@
 import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
+
+const env = loadEnv("all", process.cwd());
+
+const PROXY_API_TARGET = `https://${env.VITE_API_DOMAIN}`;
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -47,6 +51,25 @@ export default defineConfig({
     sourcemap: true,
     assetsInlineLimit(file) {
       return !file.endsWith(".svg");
+    }
+  },
+  server: {
+    proxy: {
+      "/public": {
+        target: PROXY_API_TARGET,
+        changeOrigin: true,
+        secure: false
+      },
+      "/api": {
+        target: PROXY_API_TARGET,
+        changeOrigin: true,
+        secure: false
+      },
+      "/backoffice": {
+        target: PROXY_API_TARGET,
+        changeOrigin: true,
+        secure: false
+      }
     }
   }
 });

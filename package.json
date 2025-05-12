@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start:uat": "cp .env.uat .env.local && vite --port 3000",
+    "start:prod": "cp .env.prod .env.local && vite --port 3000",
     "preview": "vite preview --port 3000",
     "prebuild": "npm-run-all prebuild:*",
     "build": "yarn prebuild && tsc -b && vite build",

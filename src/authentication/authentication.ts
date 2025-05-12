@@ -8,12 +8,16 @@ import { OrganizationsDataApi } from "../api/generated";
 import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
 import { SessionApi } from "../api/generated_public";
 import { YupLiteral } from "../utils/yupUtils";
+import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
 import { authenticationStore } from "./authenticationStore";
 
 export function goToUserLoginPage() {
-  const targetUri = import.meta.env.VITE_ONE_IDENTITY_LOGIN_URI ?? "";
-  const redirect_uri = import.meta.env.VITE_ONE_IDENTITY_REDIRECT_URI ?? "";
-  const client_id = import.meta.env.VITE_ONE_IDENTITY_CLIENT_ID ?? "";
+  const targetUri = import.meta.env.VITE_ONE_IDENTITY_LOGIN_URI;
+  const redirect_uri =
+    window.location.hostname === "localhost"
+      ? `${window.location.origin}/session`
+      : import.meta.env.VITE_ONE_IDENTITY_REDIRECT_URI;
+  const client_id = import.meta.env.VITE_ONE_IDENTITY_CLIENT_ID;
   const state = randomAlphaNumericString(16);
   const nonce = randomAlphaNumericString(16);
   const targetUrl = `${targetUri}?${new URLSearchParams({
@@ -35,7 +39,7 @@ export function goToAdminLoginPage() {
   const nonce = randomAlphaNumericString(16);
   authenticationStore.setAdminNonceByState(state, nonce);
   void AdminAccess.loginRedirect({
-    scopes: ["openid", import.meta.env.VITE_MSAL_CLIENT_ID as string],
+    scopes: ["openid", import.meta.env.VITE_MSAL_CLIENT_ID],
     state,
     nonce
   });
@@ -51,16 +55,16 @@ function randomAlphaNumericString(length: number): string {
 
 const AdminAccess = new PublicClientApplication({
   auth: {
-    clientId: import.meta.env.VITE_MSAL_CLIENT_ID as string,
-    authority: import.meta.env.VITE_MSAL_AUTHORITY as string,
+    clientId: import.meta.env.VITE_MSAL_CLIENT_ID,
+    authority: import.meta.env.VITE_MSAL_AUTHORITY,
     knownAuthorities: [
       "cgnonboardingportaluat.b2clogin.com",
       "cgnonboardingportal.b2clogin.com"
     ],
     redirectUri:
-      window.location.host === "localhost:3000"
-        ? "http://localhost:3000/session"
-        : (import.meta.env.VITE_MSAL_REDIRECT_URI as string),
+      window.location.hostname === "localhost"
+        ? `${window.location.origin}/session`
+        : import.meta.env.VITE_MSAL_REDIRECT_URI,
     postLogoutRedirectUri: LOGIN
   },
   cache: {
@@ -86,14 +90,11 @@ const adminJWTPayloadSchema = Yup.object({
   exp: Yup.number().required()
 }).required();
 
-const sessionApi = new SessionApi(
-  undefined,
-  import.meta.env.VITE_BASE_PUBLIC_PATH
-);
+const sessionApi = new SessionApi(undefined, API_PUBLIC_BASE_URL);
 
 const organizationsDataApi = new OrganizationsDataApi(
   undefined,
-  import.meta.env.VITE_BASE_API_PATH
+  API_INDEX_BASE_URL
 );
 
 async function onUserLoginRedirect() {
