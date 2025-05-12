@@ -61,7 +61,7 @@ const SelectCompany = () => {
                     <strong>{company.organization_name}</strong>
                     <small
                       id={`organization_fiscal_code_${i}`}
-                      className="form-text"
+                      className="form-text d-block"
                     >
                       CF/PIVA {company.organization_fiscal_code}
                     </small>

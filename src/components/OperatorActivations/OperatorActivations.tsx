@@ -99,10 +99,10 @@ const OperatorActivations = () => {
         disableSortBy: true,
         Cell: ({ row }) => (
           <Badge
-            className="fw-semibold"
-            color="outline-primary"
+            className="fw-semibold border border-primary text-bg-light text-primary"
             pill
             tag="span"
+            color="white"
           >
             {makeOrganizationStatusReadable(
               row.values.status as OrganizationStatus

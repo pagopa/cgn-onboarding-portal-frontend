@@ -49,6 +49,7 @@ const ActivationForm = (props: Props) => {
                 id="organizationName"
                 name="organizationName"
                 type="text"
+                className="form-control"
               />
               <CustomErrorMessage name="organizationName" />
             </InputField>
@@ -102,11 +103,12 @@ const ActivationForm = (props: Props) => {
                 id="organizationFiscalCode"
                 name="organizationFiscalCode"
                 type="text"
+                className="form-control"
               />
               <CustomErrorMessage name="organizationFiscalCode" />
             </InputField>
             <InputField htmlFor="pec" title="Indirizzo PEC" required>
-              <Field id="pec" name="pec" type="text" />
+              <Field id="pec" name="pec" type="text" className="form-control" />
               <CustomErrorMessage name="pec" />
             </InputField>
           </FormSection>
@@ -134,6 +136,7 @@ const ActivationForm = (props: Props) => {
                               id={`referents[${i}]`}
                               name={`referents[${i}]`}
                               type="text"
+                              className="form-control"
                             />
                           </div>
                           {i !== 0 && (
