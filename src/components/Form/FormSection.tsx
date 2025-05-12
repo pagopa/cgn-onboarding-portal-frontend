@@ -47,7 +47,7 @@ const FormSection = ({
           }}
         />
       )}
-      <div className="col-10 offset-1 py-8">
+      <div className="col-12 px-12 py-8">
         {hasIntroduction && (
           <>
             {hasClose && (

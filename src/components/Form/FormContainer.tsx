@@ -8,7 +8,7 @@ type Props = {
 
 const FormContainer = ({ className = "", children }: Props) => (
   <Container>
-    <div className={`${className} col-10 offset-1`}>{children}</div>
+    <div className={`${className} col-12 px-12`}>{children}</div>
   </Container>
 );
 

@@ -29,49 +29,51 @@ const Stepper = ({
   };
 
   return (
-    <div className="steppers shadow-sm">
-      <div className="steppers-header">
-        <ul className="mb-0">
-          {steps.map((step, index) => {
-            const isActive = index === activeStep;
-            const isConfirmed = completedSteps.includes(step.key);
-            return (
-              <li
+    <div className="container">
+      <div className="steppers">
+        <div className="steppers-header">
+          <ul className="mb-0">
+            {steps.map((step, index) => {
+              const isActive = index === activeStep;
+              const isConfirmed = completedSteps.includes(step.key);
+              return (
+                <li
+                  key={step.key}
+                  className={`${isActive ? "active" : ""} ${isConfirmed ? "confirmed" : ""}`}
+                  onClick={changeStep(step.key, index)}
+                >
+                  <span className="steppers-number">
+                    {(isActive || !isConfirmed) && (
+                      <Fragment>
+                        <span className="visually-hidden">Step </span>
+                        {index + 1}
+                      </Fragment>
+                    )}
+                    {isConfirmed && !isActive && (
+                      <Fragment>
+                        <Icon icon="it-check" aria-hidden />
+                        <span className="visually-hidden">Confermato</span>
+                      </Fragment>
+                    )}
+                  </span>
+                  {step.label}{" "}
+                  {isActive && <span className="visually-hidden">Attivo</span>}
+                </li>
+              );
+            })}
+          </ul>
+          <span className="steppers-index" aria-hidden="true">
+            {steps.map((step, index) => (
+              <span
                 key={step.key}
-                className={`${isActive ? "active" : ""} ${isConfirmed ? "confirmed" : ""}`}
+                className={index === activeStep ? "active" : ""}
                 onClick={changeStep(step.key, index)}
               >
-                <span className="steppers-number">
-                  {(isActive || !isConfirmed) && (
-                    <Fragment>
-                      <span className="visually-hidden">Step </span>
-                      {index + 1}
-                    </Fragment>
-                  )}
-                  {isConfirmed && !isActive && (
-                    <Fragment>
-                      <Icon icon="it-check" aria-hidden />
-                      <span className="visually-hidden">Confermato</span>
-                    </Fragment>
-                  )}
-                </span>
-                {step.label}{" "}
-                {isActive && <span className="visually-hidden">Attivo</span>}
-              </li>
-            );
-          })}
-        </ul>
-        <span className="steppers-index" aria-hidden="true">
-          {steps.map((step, index) => (
-            <span
-              key={step.key}
-              className={index === activeStep ? "active" : ""}
-              onClick={changeStep(step.key, index)}
-            >
-              {index + 1}
-            </span>
-          ))}
-        </span>
+                {index + 1}
+              </span>
+            ))}
+          </span>
+        </div>
       </div>
     </div>
   );

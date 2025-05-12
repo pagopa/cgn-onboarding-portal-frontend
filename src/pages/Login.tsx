@@ -11,7 +11,7 @@ const Login = () => (
   <Layout>
     <Container>
       <Container className="mt-20 mb-20">
-        <div className="col-10 offset-1">
+        <div className="col-12 px-12">
           <section className="px-20 py-28 bg-white">
             <div className="row">
               <div className="col-9">
