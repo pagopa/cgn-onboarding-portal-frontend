@@ -1,5 +1,4 @@
 import { Field, FieldArray, useFormikContext } from "formik";
-import { Icon } from "design-react-kit";
 import { InferType } from "yup";
 import FormSection from "../../FormSection";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
@@ -55,6 +54,8 @@ const SalesChannels = ({ entityType, children }: Props) => {
                   }
                 })()}
                 isVisible
+                hasRemove={index !== 0}
+                onRemove={() => arrayHelpers.remove(index)}
               >
                 {index === 0 && (
                   <ToggleField
@@ -89,23 +90,10 @@ const SalesChannels = ({ entityType, children }: Props) => {
                 )}
 
                 <div key={index}>
-                  {!!index &&
-                    formValues.salesChannel?.allNationalAddresses === false && (
-                      <Icon
-                        icon="it-close"
-                        style={{
-                          position: "absolute",
-                          right: "0",
-                          top: "40px",
-                          cursor: "pointer"
-                        }}
-                        onClick={() => arrayHelpers.remove(index)}
-                      />
-                    )}
                   {formValues.salesChannel?.allNationalAddresses === false && (
                     <>
                       <div className="mt-10 row">
-                        <div className="col-7">
+                        <div className="col-9">
                           <InputFieldMultiple
                             htmlFor="street"
                             title="Indirizzo"
@@ -114,19 +102,21 @@ const SalesChannels = ({ entityType, children }: Props) => {
                               id="street"
                               name={`salesChannel.addresses[${index}].street`}
                               type="text"
+                              className="form-control"
                             />
                             <CustomErrorMessage
                               name={`salesChannel.addresses[${index}].street`}
                             />
                           </InputFieldMultiple>
                         </div>
-                        <div className="col-2 offset-1">
+                        <div className="col-3">
                           <InputFieldMultiple htmlFor="zipCode" title="CAP">
                             <Field
                               id="zipCode"
                               name={`salesChannel.addresses[${index}].zipCode`}
                               type="text"
                               placeholder="Inserisci il CAP"
+                              className="form-control"
                             />
                             <CustomErrorMessage
                               name={`salesChannel.addresses[${index}].zipCode`}
@@ -135,20 +125,21 @@ const SalesChannels = ({ entityType, children }: Props) => {
                         </div>
                       </div>
                       <div className="mt-10 row">
-                        <div className="col-6">
+                        <div className="col-9">
                           <InputFieldMultiple htmlFor="city" title="Città">
                             <Field
                               id="city"
                               name={`salesChannel.addresses[${index}].city`}
                               type="text"
                               placeholder="Inserisci la città"
+                              className="form-control"
                             />
                             <CustomErrorMessage
                               name={`salesChannel.addresses[${index}].city`}
                             />
                           </InputFieldMultiple>
                         </div>
-                        <div className="col-3 offset-1">
+                        <div className="col-3">
                           <InputFieldMultiple
                             htmlFor="district"
                             title="Provincia"
@@ -159,6 +150,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                               name={`salesChannel.addresses[${index}].district`}
                               type="text"
                               placeholder="Inserisci la provincia"
+                              className="form-control"
                             />
                             <CustomErrorMessage
                               name={`salesChannel.addresses[${index}].district`}
@@ -220,6 +212,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
             name="salesChannel.websiteUrl"
             type="text"
             placeholder="Inserisci un sito web (completo di protocollo http o https)"
+            className="form-control"
           />
           <CustomErrorMessage name="salesChannel.websiteUrl" />
           {children}

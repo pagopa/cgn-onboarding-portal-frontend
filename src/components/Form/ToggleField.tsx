@@ -9,7 +9,7 @@ type Props = {
 };
 
 const ToggleField = ({ htmlFor, text, children, small }: Props) => (
-  <div className="mt-10 row">
+  <div className="d-flex">
     <div className={`form-check ${small ? "col-6" : "col-10"}`}>
       <label htmlFor={htmlFor} className="form-label">
         <span className="text-base fw-normal text-black">{text}</span>

@@ -22,21 +22,29 @@ const ProfileInfo = ({ entityType }: Props) => {
         description="Inserisci il nome completo dell'Operatore. Sarà visibile in app e nella lista dei partner."
         required
       >
-        <Field id="fullName" name="fullName" type="text" disabled />
+        <Field
+          id="fullName"
+          name="fullName"
+          type="text"
+          disabled
+          className="form-control"
+        />
         <CustomErrorMessage name="fullName" />
       </InputField>
       {entityType === EntityType.Private && (
-        <ToggleField
-          small={true}
-          htmlFor="hasDifferentFullName"
-          text="Vuoi visualizzare un nome diverso dentro l’app?"
-        >
-          <Field
-            id="hasDifferentFullName"
-            name="hasDifferentFullName"
-            type="checkbox"
-          />
-        </ToggleField>
+        <div className="mt-10">
+          <ToggleField
+            small={true}
+            htmlFor="hasDifferentFullName"
+            text="Vuoi visualizzare un nome diverso dentro l’app?"
+          >
+            <Field
+              id="hasDifferentFullName"
+              name="hasDifferentFullName"
+              type="checkbox"
+            />
+          </ToggleField>
+        </div>
       )}
       {formikContext.values.hasDifferentFullName && (
         <InputField
@@ -73,7 +81,13 @@ const ProfileInfo = ({ entityType }: Props) => {
         required
         // NICE_TO_HAVE: aggiungere validazione della partita iva (può essere nazionale o estera, non può essere codice fiscale)
       >
-        <Field id="taxCodeOrVat" name="taxCodeOrVat" type="text" disabled />
+        <Field
+          id="taxCodeOrVat"
+          name="taxCodeOrVat"
+          type="text"
+          disabled
+          className="form-control"
+        />
         <CustomErrorMessage name="taxCodeOrVat" />
       </InputField>
       <InputField htmlFor="pecAddress" title="Indirizzo PEC" required>
@@ -82,6 +96,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="pecAddress"
           type="email"
           placeholder="Inserisci l'indirizzo pec dell'ente"
+          className="form-control"
         />
         <CustomErrorMessage name="pecAddress" />
       </InputField>
@@ -91,6 +106,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="legalOffice"
           type="text"
           placeholder="Inserisci la sede legale ente"
+          className="form-control"
         />
         <CustomErrorMessage name="legalOffice" />
       </InputField>
@@ -105,6 +121,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="telephoneNumber"
           type="text"
           placeholder="Inserisci il numero di telefono ente"
+          className="form-control"
         />
         <CustomErrorMessage name="telephoneNumber" />
       </InputField>
@@ -118,6 +135,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="legalRepresentativeFullName"
           type="text"
           placeholder="Inserisci il nome e cognome del Legale rappresentante ente"
+          className="form-control"
         />
         <CustomErrorMessage name="legalRepresentativeFullName" />
       </InputField>
@@ -133,6 +151,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="legalRepresentativeTaxCode"
           type="text"
           placeholder="Inserisci il Codice fiscale del Legale rappresentante ente"
+          className="form-control"
         />
         <CustomErrorMessage name="legalRepresentativeTaxCode" />
       </InputField>

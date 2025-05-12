@@ -55,6 +55,7 @@ const Referent = ({
           id={`${referentFieldId}.firstName`}
           name={`${referentFieldName}.firstName`}
           type="text"
+          className="form-control"
         />
         <CustomErrorMessage name={`${referentFieldName}.firstName`} />
       </InputField>
@@ -67,6 +68,7 @@ const Referent = ({
           id={`${referentFieldId}.lastName`}
           name={`${referentFieldName}.lastName`}
           type="text"
+          className="form-control"
         />
         <CustomErrorMessage name={`${referentFieldName}.lastName`} />
       </InputField>
@@ -79,6 +81,7 @@ const Referent = ({
           id={`${referentFieldId}.role`}
           name={`${referentFieldName}.role`}
           type="text"
+          className="form-control"
         />
         <CustomErrorMessage name={`${referentFieldName}.role`} />
       </InputField>
@@ -91,6 +94,7 @@ const Referent = ({
           id={`${referentFieldId}.emailAddress`}
           name={`${referentFieldName}.emailAddress`}
           type="email"
+          className="form-control"
         />
         <CustomErrorMessage name={`${referentFieldName}.emailAddress`} />
       </InputField>
@@ -105,6 +109,7 @@ const Referent = ({
           name={`${referentFieldName}.telephoneNumber`}
           type="tel"
           placeholder="Inserisci il numero di telefono"
+          className="form-control"
         />
         <CustomErrorMessage name={`${referentFieldName}.telephoneNumber`} />
       </InputField>

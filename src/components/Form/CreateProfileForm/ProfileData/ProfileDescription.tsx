@@ -19,6 +19,7 @@ const ProfileDescription = () => (
           placeholder="Inserisci una descrizione"
           maxLength="300"
           rows="4"
+          className="form-control"
         />
       </div>
       <div className="col-6">
@@ -30,6 +31,7 @@ const ProfileDescription = () => (
           placeholder="Type in the description"
           maxLength="300"
           rows="4"
+          className="form-control"
         />
       </div>
     </div>
