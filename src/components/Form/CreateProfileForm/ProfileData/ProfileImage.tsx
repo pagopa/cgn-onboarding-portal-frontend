@@ -25,7 +25,7 @@ const FooterDescription = (
 const ProfileImage = () => {
   const dispatch = useDispatch();
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const imageInput = useRef<any>(null);
+  const imageInput = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const { triggerTooltip } = useTooltip();
 
@@ -51,12 +51,15 @@ const ProfileImage = () => {
     }
   };
 
-  const uploadImage = async (image: any) => {
+  const uploadImage = async (image: FileList | null | undefined) => {
+    if (!image || image.length === 0) {
+      throw new Error();
+    }
     try {
       setLoading(true);
       const data = await remoteData.Index.Agreement.uploadImage.method({
         agreementId: agreement.id,
-        image: image[0]
+        image: image?.[0]
       });
       if (data.imageUrl) {
         dispatch(
@@ -119,7 +122,7 @@ const ProfileImage = () => {
                     ref={imageInput}
                     accept="image/png, image/jpeg"
                     onChange={() => {
-                      void uploadImage(imageInput.current.files);
+                      void uploadImage(imageInput.current?.files);
                     }}
                     style={{ display: "none" }}
                   />
@@ -140,7 +143,7 @@ const ProfileImage = () => {
                     ref={imageInput}
                     accept="image/png, image/jpeg"
                     onChange={() => {
-                      void uploadImage(imageInput.current.files);
+                      void uploadImage(imageInput.current?.files);
                     }}
                   />
                   <label htmlFor="profileImage" className="form-label">

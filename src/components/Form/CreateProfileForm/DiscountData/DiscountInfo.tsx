@@ -20,8 +20,8 @@ import StaticCode from "./StaticCode";
 import DiscountUrl from "./DiscountUrl";
 
 type Props = {
-  formValues: Record<string, any>;
-  setFieldValue(name: string, value: any): void;
+  formValues: any;
+  setFieldValue: any;
   index?: number;
   profile: Profile | undefined;
 };

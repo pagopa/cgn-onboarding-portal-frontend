@@ -23,7 +23,7 @@ const RequestsFilter = ({
   refForm: any;
 }) => {
   // eslint-disable-next-line functional/no-let
-  let timeout: any = null;
+  let timeout: number | null = null;
 
   const initialValues: FilterFormValues = {
     profileFullName: "",
@@ -100,12 +100,12 @@ const RequestsFilter = ({
                 name="profileFullName"
                 type="text"
                 placeholder="Cerca Richiesta"
-                onChange={(e: { target: { value: any } }) => {
+                onChange={(e: { target: { value: string } }) => {
                   void setFieldValue("profileFullName", e.target.value);
                   if (timeout) {
                     clearTimeout(timeout);
                   }
-                  timeout = setTimeout(() => {
+                  timeout = window.setTimeout(() => {
                     void setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);

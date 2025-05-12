@@ -8,7 +8,7 @@ interface Step {
 type Props = {
   activeStep: number;
   completedSteps: Array<string>;
-  handleChangeStep: any;
+  handleChangeStep(sterp: number): void;
   steps: Array<Step>;
 };
 

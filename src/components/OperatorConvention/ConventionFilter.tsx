@@ -25,7 +25,7 @@ const ConventionFilter = ({
   const [downloadingAgreements, setDownloadingAgreements] = useState(false);
   const [downloadingEyca, setDownloadingEyca] = useState(false);
   // eslint-disable-next-line functional/no-let
-  let timeout: any = null;
+  let timeout: number | null = null;
 
   const initialValues: FilterFormValues = {
     fullName: "",
@@ -144,12 +144,12 @@ const ConventionFilter = ({
                 name="fullName"
                 type="text"
                 placeholder="Cerca Operatore"
-                onChange={(e: { target: { value: any } }) => {
+                onChange={(e: { target: { value: string } }) => {
                   void setFieldValue("fullName", e.target.value);
                   if (timeout) {
                     clearTimeout(timeout);
                   }
-                  timeout = setTimeout(() => {
+                  timeout = window.setTimeout(() => {
                     void setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);

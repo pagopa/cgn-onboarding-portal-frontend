@@ -1,6 +1,8 @@
+import { ReactNode } from "react";
+
 type Props = {
   className?: string;
-  children: any;
+  children: ReactNode;
   maxWidth?: string;
 };
 

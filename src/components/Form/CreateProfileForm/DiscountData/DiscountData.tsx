@@ -25,7 +25,7 @@ import { remoteData } from "../../../../api/common";
 import {
   discountEmptyInitialValues,
   updateDiscountMutationOnError
-} from "../../EditDiscountForm/EditDiscountForm";
+} from "../../discountFormUtils";
 
 const emptyInitialValues = {
   discounts: [discountEmptyInitialValues]
@@ -232,7 +232,7 @@ const DiscountData = ({
             name="discounts"
             render={arrayHelpers => (
               <>
-                {values.discounts.map((discount: any, index: number) => (
+                {values.discounts.map((discount, index: number) => (
                   <FormContainer
                     key={index}
                     className={index <= 1 ? "mb-20" : ""}
@@ -243,7 +243,10 @@ const DiscountData = ({
                       handleClose={() => {
                         if (index >= 1) {
                           if (isCompleted) {
-                            deleteDiscount(agreement.id, discount.id);
+                            deleteDiscount(
+                              agreement.id,
+                              (discount as { id: string }).id
+                            );
                           }
                           arrayHelpers.remove(index);
                         }

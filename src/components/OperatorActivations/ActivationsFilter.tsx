@@ -19,7 +19,7 @@ const ActivationsFilter = ({
   const history = useHistory();
 
   // eslint-disable-next-line functional/no-let
-  let timeout: any = null;
+  let timeout: number | null = null;
 
   const initialValues: FilterFormValues = {
     searchQuery: "",
@@ -69,12 +69,12 @@ const ActivationsFilter = ({
                 name="searchQuery"
                 type="text"
                 placeholder="Cerca Operatore"
-                onChange={(e: { target: { value: any } }) => {
+                onChange={(e: { target: { value: string } }) => {
                   void setFieldValue("searchQuery", e.target.value);
                   if (timeout) {
                     clearTimeout(timeout);
                   }
-                  timeout = setTimeout(() => {
+                  timeout = window.setTimeout(() => {
                     void setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);

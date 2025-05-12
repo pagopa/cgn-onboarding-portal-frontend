@@ -8,8 +8,8 @@ import "./styles/bootstrap-italia-fonts.scss";
 import "./styles/bootstrap-italia-custom.scss";
 import "react-datepicker/dist/react-datepicker.css";
 import { queryClient } from "./api/common";
-import { AuthenticationProvider } from "./authentication/AuthenticationContext";
-import { TooltipProvider } from "./context/tooltip";
+import { AuthenticationProvider } from "./authentication/AuthenticationProvider";
+import { TooltipProvider } from "./context/TooltipProvider";
 import { renderCSP } from "./utils/meta";
 import { store } from "./store/store";
 

@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import Container from "../Container/Container";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import CgnLogo from "../Logo/CgnLogo";
@@ -6,7 +7,7 @@ import Layout from "./Layout";
 type Props = {
   breadcrumbLabel: string;
   title: string;
-  children: any;
+  children: ReactNode;
   breadcrumbLink?: string;
 };
 

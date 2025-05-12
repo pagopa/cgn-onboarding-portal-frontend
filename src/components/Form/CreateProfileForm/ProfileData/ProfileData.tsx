@@ -17,7 +17,7 @@ import {
   defaultSalesChannel,
   profileDefaultInitialValues,
   sanitizeProfileFromValues
-} from "../../EditOperatorDataForm/EditOperatorDataForm";
+} from "../../EditOperatorDataForm/operatorDataUtils";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";

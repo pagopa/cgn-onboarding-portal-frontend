@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Agreement } from "../../api/generated_backoffice";
 
 const AssignRequest = ({
   assignedToMe,
@@ -8,7 +9,7 @@ const AssignRequest = ({
   assignAgreements
 }: {
   assignedToMe: boolean;
-  original: any;
+  original: Agreement;
   assignAgreements(): void;
 }) => {
   const [isOpen, toggleAssign] = useState(false);

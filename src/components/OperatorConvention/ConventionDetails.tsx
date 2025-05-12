@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Icon } from "design-react-kit";
 import { format } from "date-fns";
 import { remoteData } from "../../api/common";
@@ -7,19 +7,19 @@ import {
   ApprovedAgreementDetail,
   ApprovedAgreement
 } from "../../api/generated_backoffice";
-import { DiscountState } from "../../api/generated";
 import Documents from "./Documents";
 import Profile from "./Profile";
 import Referent from "./Referent";
 import OperatorData from "./OperatorData";
 import Discount from "./Discount";
+import { getBadgeStatus } from "./getBadgeStatus";
 
 const menuLink = (
   view: string,
   setView: (key: string) => void,
   viewKey: string,
   label: string,
-  child?: any
+  child?: ReactNode
 ) => (
   <li className={`nav-item ${view.includes(viewKey) ? "active" : ""}`}>
     <a
@@ -31,58 +31,6 @@ const menuLink = (
     {child}
   </li>
 );
-
-export const getBadgeStatus = (state: DiscountState) => {
-  switch (state) {
-    case "suspended":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-warning"
-          style={{ fontSize: "12px" }}
-        >
-          Sospesa
-        </span>
-      );
-    case "test_pending":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-warning"
-          style={{ fontSize: "12px" }}
-        >
-          Test
-        </span>
-      );
-    case "test_passed":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-success"
-          style={{ fontSize: "12px" }}
-        >
-          Test superato
-        </span>
-      );
-    case "test_failed":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-danger"
-          style={{ fontSize: "12px" }}
-        >
-          Test fallito
-        </span>
-      );
-    case "published":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-primary"
-          style={{ fontSize: "12px" }}
-        >
-          Pubblicata
-        </span>
-      );
-    default:
-      return null;
-  }
-};
 
 const getView = (
   details: ApprovedAgreementDetail | undefined,
@@ -185,7 +133,7 @@ const ConventionDetails = ({
                         <ul className="link-list">
                           {details?.discounts?.map((d, i: number) => (
                             <li
-                              className="nav-link d-flex flex-row align-items-center flex-nowrap"
+                              className="nav-link d-flex flex-row align-items-center flex-nowrap ps-3"
                               key={i}
                             >
                               <a

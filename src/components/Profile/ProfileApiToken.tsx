@@ -3,9 +3,10 @@ import { Button, Icon } from "design-react-kit";
 import { useSelector } from "react-redux";
 import { remoteData } from "../../api/common";
 import { ApiTokens } from "../../api/generated";
+import { RootState } from "../../store/store";
 
 const ProfileApiToken = () => {
-  const agreement = useSelector((state: any) => state.agreement.value);
+  const agreement = useSelector((state: RootState) => state.agreement.value);
   const [isPrimaryTokenShown, setIsPrimaryTokenShown] = useState(false);
   const [isSecondaryTokenShown, setIsSecondaryTokenShown] = useState(false);
 

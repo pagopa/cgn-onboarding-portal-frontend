@@ -12,7 +12,7 @@ import {
   makeProductCategoriesString
 } from "../../utils/strings";
 import BucketCodeModal from "./BucketCodeModal";
-import { getBadgeStatus } from "./ConventionDetails";
+import { getBadgeStatus } from "./getBadgeStatus";
 import Item from "./Item";
 
 const Discount = ({

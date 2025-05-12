@@ -1,15 +1,16 @@
 import { Icon } from "design-react-kit";
+import { ReactNode } from "react";
 import VisibleIcon from "../../assets/icons/visible.svg?react";
 
 type Props = {
   hasIntroduction?: boolean;
   title?: string;
   description?: string;
-  children: any;
+  children: ReactNode;
   required?: boolean;
   isVisible?: boolean;
-  footerDescription?: any;
-  className?: any;
+  footerDescription?: ReactNode;
+  className?: string;
   hasClose?: boolean;
   handleClose?(): void;
   hasRemove?: boolean;

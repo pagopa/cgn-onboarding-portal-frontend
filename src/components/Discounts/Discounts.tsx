@@ -13,7 +13,8 @@ import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
-import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
+import DiscountDetailRow from "./DiscountDetailRow";
+import { getDiscountComponent } from "./getDiscountComponent";
 import UnpublishModal from "./UnpublishModal";
 import TestModal from "./TestModal";
 

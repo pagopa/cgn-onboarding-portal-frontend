@@ -14,7 +14,7 @@ import { discountDataValidationSchema } from "../ValidationSchemas";
 import {
   discountEmptyInitialValues,
   sanitizeDiscountFormValues
-} from "../EditDiscountForm/EditDiscountForm";
+} from "../discountFormUtils";
 
 /**
  * These are the entry points for forms for discounts. This comment is repeated in every file.

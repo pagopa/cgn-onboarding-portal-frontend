@@ -8,12 +8,15 @@ type Props = {
 };
 
 const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
-  const recaptchaRef = useRef<any>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [canRenderRecaptcha, setCanRenderRecaptcha] = useState(false);
   const { triggerTooltip } = useTooltip();
 
   const executeRecaptcha = useCallback(async () => {
     try {
+      if (!recaptchaRef.current) {
+        throw new Error();
+      }
       const response = await recaptchaRef.current.executeAsync();
       setFieldValue("recaptchaToken", response);
     } catch {

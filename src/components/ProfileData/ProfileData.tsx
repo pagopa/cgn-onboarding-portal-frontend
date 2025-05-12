@@ -30,7 +30,7 @@ const ProfileData = () => {
                 {Boolean(profile.name) && (
                   <ProfileDataItem
                     label="Nome operatore visualizzato"
-                    value={profile.name}
+                    value={profile.name ?? ""}
                   />
                 )}
                 <MultilanguageProfileItem

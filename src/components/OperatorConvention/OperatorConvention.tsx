@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { Row, usePagination, useSortBy, useTable } from "react-table";
+import { Column, Row, usePagination, useSortBy, useTable } from "react-table";
 import { Button } from "design-react-kit";
 import { format } from "date-fns";
 import { remoteData } from "../../api/common";
@@ -13,7 +13,8 @@ import TableHeader from "../Table/TableHeader";
 import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import ConventionFilter from "./ConventionFilter";
-import ConventionDetails, { getBadgeStatus } from "./ConventionDetails";
+import ConventionDetails from "./ConventionDetails";
+import { getBadgeStatus } from "./getBadgeStatus";
 
 const OperatorConvention = () => {
   const pageSize = 20;
@@ -33,7 +34,7 @@ const OperatorConvention = () => {
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
   const columns = useMemo(
-    () => [
+    (): Array<Column<ApprovedAgreement>> => [
       {
         Header: "Operatore",
         accessor: "fullName"
@@ -47,13 +48,13 @@ const OperatorConvention = () => {
       {
         Header: "Data Convenzionamento",
         accessor: "agreementStartDate",
-        Cell: ({ row }: { row: Row }) =>
+        Cell: ({ row }) =>
           format(new Date(row.values.agreementStartDate), "dd/MM/yyyy")
       },
       {
         Header: "Data Ultima Modifica",
         accessor: "agreementLastUpdateDate",
-        Cell: ({ row }: { row: Row }) =>
+        Cell: ({ row }) =>
           format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
       },
       {
@@ -63,7 +64,7 @@ const OperatorConvention = () => {
       {
         Header: "TEST",
         accessor: "testPending",
-        Cell: ({ row }: { row: Row }) =>
+        Cell: ({ row }) =>
           row.values.testPending && getBadgeStatus(DiscountState.TestPending)
       }
     ],
@@ -83,7 +84,7 @@ const OperatorConvention = () => {
     nextPage,
     previousPage,
     state: { pageIndex, sortBy }
-  } = useTable<any>(
+  } = useTable<ApprovedAgreement>(
     {
       columns,
       data,

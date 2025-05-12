@@ -1,10 +1,11 @@
+import { ReactNode } from "react";
 import VisibleIcon from "../../assets/icons/visible.svg?react";
 
 type Props = {
   htmlFor: string;
   title?: string;
   description?: string;
-  children?: any;
+  children?: ReactNode;
   required?: boolean;
   isVisible?: boolean;
 };

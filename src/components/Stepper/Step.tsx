@@ -4,7 +4,7 @@ type Props = {
   stepType?: "active" | "confirmed" | "";
   index?: number;
   children: string;
-  handleChangeStep?: any;
+  handleChangeStep?(): void;
 };
 
 const Step = ({ stepType = "", index, handleChangeStep, children }: Props) => (

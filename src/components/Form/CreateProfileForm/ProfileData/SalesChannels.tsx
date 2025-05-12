@@ -31,7 +31,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
         name="salesChannel.addresses"
         render={arrayHelpers => (
           <>
-            {formValues.salesChannel?.addresses?.map((_: any, index, array) => (
+            {formValues.salesChannel?.addresses?.map((_, index, array) => (
               <FormSection
                 key={index}
                 title={index + 1 >= 2 ? `Indirizzo ${index + 1}` : `Indirizzo`}

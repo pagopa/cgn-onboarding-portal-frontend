@@ -6,12 +6,20 @@ import Check from "../../assets/icons/check.svg?react";
 
 type Props = {
   state: AgreementStateType;
-  startDate: any;
-  endDate: any;
+  startDate: string | undefined;
+  endDate: string | undefined;
 };
 
-const DateLabel = ({ className = "", title, date }: any) => {
-  const newDate = format(new Date(date), "dd/MM/yyyy");
+const DateLabel = ({
+  className = "",
+  title,
+  date
+}: {
+  className?: string;
+  title: string;
+  date: string | undefined;
+}) => {
+  const newDate = format(new Date(date ?? ""), "dd/MM/yyyy");
   return (
     <div className={`${className} d-flex flex-column text-center`}>
       <span className="text-sm fw-light text-gray">{title}</span>

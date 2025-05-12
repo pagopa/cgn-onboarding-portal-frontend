@@ -125,7 +125,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
  */
 const checkEycaLandingDifferentFromLandingPageUrl = (
   landingPageUrl: string,
-  schema: any
+  schema: Yup.StringSchema
 ) => {
   if (landingPageUrl) {
     return schema.notOneOf(

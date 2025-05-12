@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 import { MixedLocale } from "yup/lib/locale";
+import { AnyObject } from "yup/lib/types";
 
 interface YupCustomSchema<In, C, Out = In> extends Yup.BaseSchema<In, C, Out> {
   required(
@@ -11,7 +12,7 @@ interface YupCustomSchema<In, C, Out = In> extends Yup.BaseSchema<In, C, Out> {
 
 export function YupLiteral<
   Literal extends string | number | boolean | null | undefined
->(literal: Literal): YupCustomSchema<Literal, any, Literal> {
+>(literal: Literal): YupCustomSchema<Literal, AnyObject, Literal> {
   return Yup.mixed().oneOf([literal]);
 }
 
@@ -20,7 +21,7 @@ export function YupUnion<Options extends Array<Yup.BaseSchema>>(
   asynchronous: boolean = false
 ): YupCustomSchema<
   Yup.TypeOf<Options[number]>,
-  any,
+  AnyObject,
   Yup.InferType<Options[number]>
 > {
   return Yup.mixed().test(
@@ -57,6 +58,7 @@ export function YupUnion<Options extends Array<Yup.BaseSchema>>(
             message: "Must match one of the provided schemas"
           });
         }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as any;
 }
 
@@ -65,7 +67,7 @@ export function YupRecord<ValueSchema extends Yup.BaseSchema>(
   asynchronous: boolean = false
 ): YupCustomSchema<
   Yup.TypeOf<ValueSchema>,
-  any,
+  AnyObject,
   Record<string, Yup.InferType<ValueSchema>>
 > {
   return Yup.object().test(
@@ -106,5 +108,6 @@ export function YupRecord<ValueSchema extends Yup.BaseSchema>(
           }
           return true;
         }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as any;
 }

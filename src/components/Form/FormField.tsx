@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import VisibleIcon from "../../assets/icons/visible.svg?react";
 
 type Props = {
@@ -5,7 +6,7 @@ type Props = {
   isTitleHeading?: boolean;
   title?: string;
   description?: string | React.ReactElement;
-  children: any;
+  children: ReactNode;
   required?: boolean;
   isVisible?: boolean;
 };

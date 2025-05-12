@@ -10,7 +10,7 @@ import CgnLogo from "../Logo/CgnLogo";
 type Props = {
   name: string;
   activeTab: string;
-  handleClick: any;
+  handleClick(path: string): void;
 };
 
 const IntroductionAdmin = ({ name, activeTab, handleClick }: Props) => (

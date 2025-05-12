@@ -67,7 +67,7 @@ const UncheckedDocument = ({
   uploadDocument: (type: DocumentType, file: File) => void;
   assignedToMe: boolean;
 }) => {
-  const uploadInputRef = useRef<any>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
   const label =
     doc.documentType === "Agreement"
       ? "Convenzione"

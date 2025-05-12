@@ -1,17 +1,11 @@
-import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { Form, Formik } from "formik";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import { AxiosError } from "axios";
 import { remoteData } from "../../../api/common";
-import { Discount, ProductCategory } from "../../../api/generated";
-import {
-  Severity,
-  TooltipContextProps,
-  useTooltip
-} from "../../../context/tooltip";
+import { Discount } from "../../../api/generated";
+import { useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
 import {
@@ -23,81 +17,11 @@ import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
 import { getDiscountTypeChecks } from "../../../utils/formChecks";
 import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
-
-export const discountEmptyInitialValues = {
-  name: "",
-  name_en: "",
-  name_de: "-",
-  description: "",
-  description_en: "",
-  description_de: "-",
-  startDate: "",
-  endDate: "",
-  discount: "",
-  productCategories: [],
-  condition: "",
-  condition_en: "",
-  condition_de: "-",
-  staticCode: "",
-  visibleOnEyca: false,
-  eycaLandingPageUrl: undefined,
-  discountUrl: "",
-  lastBucketCodeLoadFileName: undefined,
-  lastBucketCodeLoadUid: undefined,
-  landingPageUrl: "",
-  landingPageReferrer: ""
-};
-
-export function updateDiscountMutationOnError({
-  triggerTooltip
-}: TooltipContextProps) {
-  return (error: AxiosError<unknown, unknown>) => {
-    if (error.status === 409) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: "Upload codici ancora in corso"
-      });
-    } else if (
-      error.status === 400 &&
-      error.response?.data ===
-        "CANNOT_UPDATE_DISCOUNT_BUCKET_WHILE_PROCESSING_IS_RUNNING"
-    ) {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: "È già in corso il caricamento di una lista di codici. Attendi il completamento e riprova."
-      });
-    } else {
-      triggerTooltip({
-        severity: Severity.DANGER,
-        text: "Errore durante la modifica dell'opportunità, controllare i dati e riprovare"
-      });
-    }
-  };
-}
-
-export function sanitizeDiscountFormValues(values: any) {
-  const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
-    values.description
-  );
-  const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(values.condition);
-  return {
-    ...values,
-    name: withNormalizedSpaces(values.name),
-    name_en: withNormalizedSpaces(values.name_en),
-    name_de: "-",
-    description: cleanedIfDescriptionIsBlank(values.description),
-    description_en: cleanedIfDescriptionIsBlank(values.description_en),
-    description_de: cleanedIfDescriptionIsBlank(values.description_de),
-    condition: cleanedIfConditionIsBlank(values.condition),
-    condition_en: cleanedIfConditionIsBlank(values.condition_en),
-    condition_de: cleanedIfConditionIsBlank(values.condition_de),
-    productCategories: values.productCategories.filter((pc: any) =>
-      Object.values(ProductCategory).includes(pc)
-    ),
-    startDate: format(new Date(values.startDate), "yyyy-MM-dd"),
-    endDate: format(new Date(values.endDate), "yyyy-MM-dd")
-  };
-}
+import {
+  updateDiscountMutationOnError,
+  discountEmptyInitialValues,
+  sanitizeDiscountFormValues
+} from "../discountFormUtils";
 
 /**
  * These are the entry points for forms for discounts. This comment is repeated in every file.
@@ -106,7 +30,7 @@ export function sanitizeDiscountFormValues(values: any) {
  * src/components/Form/EditDiscountForm/EditDiscountForm.tsx  Used to edit new discount once onboarded
  */
 const EditDiscountForm = () => {
-  const { discountId } = useParams<any>();
+  const { discountId } = useParams<{ discountId: string }>();
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
 

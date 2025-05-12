@@ -18,7 +18,7 @@ const Dashboard = () => {
   const authentication = useAuthentication();
   const user = authentication.currentUserSession;
 
-  function hasStateSection(state: any) {
+  function hasStateSection(state: AgreementStateType) {
     return (
       state === AgreementStateType.PendingAgreement ||
       state === AgreementStateType.ApprovedAgreement
