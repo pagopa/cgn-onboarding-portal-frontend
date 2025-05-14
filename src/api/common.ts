@@ -18,7 +18,7 @@ import * as GeneratedBackoffice from "./generated_backoffice";
 const API_DOMAIN =
   window.location.hostname === "localhost"
     ? ""
-    : `https://${import.meta.env.VITE_API_DOMAIN}`;
+    : `https://${import.meta.env.CGN_API_DOMAIN}`;
 
 export const API_PUBLIC_BASE_URL = `${API_DOMAIN}/public/v1`;
 

@@ -15,9 +15,9 @@ const ProfileData = () => {
 
   const getImage = () =>
     agreement &&
-    agreement.imageUrl?.includes(import.meta.env.VITE_IMAGE_BASE_URL)
+    agreement.imageUrl?.includes(import.meta.env.CGN_IMAGE_BASE_URL)
       ? agreement.imageUrl
-      : `${import.meta.env.VITE_IMAGE_BASE_URL}/${agreement.imageUrl}`;
+      : `${import.meta.env.CGN_IMAGE_BASE_URL}/${agreement.imageUrl}`;
 
   return (
     <>

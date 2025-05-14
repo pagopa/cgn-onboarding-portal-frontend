@@ -6,15 +6,15 @@ interface ViteTypeOptions {
 }
 
 interface ImportMetaEnv {
-  readonly VITE_API_DOMAIN: string;
-  readonly VITE_ONE_IDENTITY_CLIENT_ID: string;
-  readonly VITE_ONE_IDENTITY_LOGIN_URI: string;
-  readonly VITE_ONE_IDENTITY_REDIRECT_URI: string;
-  readonly VITE_MSAL_CLIENT_ID: string;
-  readonly VITE_MSAL_AUTHORITY: string;
-  readonly VITE_MSAL_REDIRECT_URI: string;
-  readonly VITE_IMAGE_BASE_URL: string;
-  readonly VITE_RECAPTCHA_API_KEY: string;
+  readonly CGN_API_DOMAIN: string;
+  readonly CGN_ONE_IDENTITY_CLIENT_ID: string;
+  readonly CGN_ONE_IDENTITY_LOGIN_URI: string;
+  readonly CGN_ONE_IDENTITY_REDIRECT_URI: string;
+  readonly CGN_MSAL_CLIENT_ID: string;
+  readonly CGN_MSAL_AUTHORITY: string;
+  readonly CGN_MSAL_REDIRECT_URI: string;
+  readonly CGN_IMAGE_BASE_URL: string;
+  readonly CGN_RECAPTCHA_API_KEY: string;
 }
 
 interface ImportMeta {

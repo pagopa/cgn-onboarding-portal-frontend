@@ -12,12 +12,12 @@ import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
 import { authenticationStore } from "./authenticationStore";
 
 export function goToUserLoginPage() {
-  const targetUri = import.meta.env.VITE_ONE_IDENTITY_LOGIN_URI;
+  const targetUri = import.meta.env.CGN_ONE_IDENTITY_LOGIN_URI;
   const redirect_uri =
     window.location.hostname === "localhost"
       ? `${window.location.origin}/session`
-      : import.meta.env.VITE_ONE_IDENTITY_REDIRECT_URI;
-  const client_id = import.meta.env.VITE_ONE_IDENTITY_CLIENT_ID;
+      : import.meta.env.CGN_ONE_IDENTITY_REDIRECT_URI;
+  const client_id = import.meta.env.CGN_ONE_IDENTITY_CLIENT_ID;
   const state = randomAlphaNumericString(16);
   const nonce = randomAlphaNumericString(16);
   const targetUrl = `${targetUri}?${new URLSearchParams({
@@ -39,7 +39,7 @@ export function goToAdminLoginPage() {
   const nonce = randomAlphaNumericString(16);
   authenticationStore.setAdminNonceByState(state, nonce);
   void AdminAccess.loginRedirect({
-    scopes: ["openid", import.meta.env.VITE_MSAL_CLIENT_ID],
+    scopes: ["openid", import.meta.env.CGN_MSAL_CLIENT_ID],
     state,
     nonce
   });
@@ -55,8 +55,8 @@ function randomAlphaNumericString(length: number): string {
 
 const AdminAccess = new PublicClientApplication({
   auth: {
-    clientId: import.meta.env.VITE_MSAL_CLIENT_ID,
-    authority: import.meta.env.VITE_MSAL_AUTHORITY,
+    clientId: import.meta.env.CGN_MSAL_CLIENT_ID,
+    authority: import.meta.env.CGN_MSAL_AUTHORITY,
     knownAuthorities: [
       "cgnonboardingportaluat.b2clogin.com",
       "cgnonboardingportal.b2clogin.com"
@@ -64,7 +64,7 @@ const AdminAccess = new PublicClientApplication({
     redirectUri:
       window.location.hostname === "localhost"
         ? `${window.location.origin}/session`
-        : import.meta.env.VITE_MSAL_REDIRECT_URI,
+        : import.meta.env.CGN_MSAL_REDIRECT_URI,
     postLogoutRedirectUri: LOGIN
   },
   cache: {

@@ -5,7 +5,7 @@ import svgr from "vite-plugin-svgr";
 
 const env = loadEnv("all", process.cwd());
 
-const PROXY_API_TARGET = `https://${env.VITE_API_DOMAIN}`;
+const PROXY_API_TARGET = `https://${env.CGN_API_DOMAIN}`;
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -71,5 +71,6 @@ export default defineConfig({
         secure: false
       }
     }
-  }
+  },
+  envPrefix: "CGN_"
 });

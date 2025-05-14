@@ -44,8 +44,8 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
           ref={recaptchaRef}
           size="invisible"
           sitekey={
-            import.meta.env.VITE_RECAPTCHA_API_KEY
-              ? import.meta.env.VITE_RECAPTCHA_API_KEY
+            import.meta.env.CGN_RECAPTCHA_API_KEY
+              ? import.meta.env.CGN_RECAPTCHA_API_KEY
               : "6Le93sseAAAAAGXS34PkpfmkTThwMhUdklkNtIM5"
           }
         />
