@@ -14,6 +14,7 @@ const DiscountUrl = ({ index }: Props) => {
         name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}
         type="text"
         placeholder="Inserisci link (completo di protocollo http o https)"
+        className="form-control"
       />
       <CustomErrorMessage
         name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}

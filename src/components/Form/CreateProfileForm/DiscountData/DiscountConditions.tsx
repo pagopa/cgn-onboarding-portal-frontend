@@ -18,6 +18,7 @@ const DiscountConditions = ({ index }: Props) => {
           placeholder="Es. Sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro."
           maxLength="200"
           rows="4"
+          className="form-control"
         />
         <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].condition` : `condition`}
@@ -32,6 +33,7 @@ const DiscountConditions = ({ index }: Props) => {
           placeholder="Ex. Discount valid for the purchase of only one prose season ticket at the theatre’s counters "
           maxLength="200"
           rows="4"
+          className="form-control"
         />
         <CustomErrorMessage
           name={hasIndex ? `discounts[${index}].condition_en` : `condition_en`}

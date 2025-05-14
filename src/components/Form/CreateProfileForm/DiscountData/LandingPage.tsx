@@ -17,6 +17,7 @@ const LandingPage = ({ children, index }: Props) => {
         }
         placeholder="Inserisci indirizzo (completo di protocollo http o https)"
         type="text"
+        className="form-control"
       />
       <CustomErrorMessage
         name={
@@ -37,6 +38,7 @@ const LandingPage = ({ children, index }: Props) => {
         }
         placeholder="Inserisci valore referrer"
         type="text"
+        className="form-control"
       />
       <CustomErrorMessage
         name={

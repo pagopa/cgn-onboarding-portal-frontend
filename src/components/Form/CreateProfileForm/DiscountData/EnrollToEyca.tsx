@@ -170,6 +170,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
               check
               for={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
               tag="label"
+              className="text-info"
             >
               Sì, voglio che questa opportunità sia valida anche per il circuito
               EYCA

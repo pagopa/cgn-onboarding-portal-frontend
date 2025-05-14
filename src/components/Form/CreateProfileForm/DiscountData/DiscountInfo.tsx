@@ -60,6 +60,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               id="name"
               name={hasIndex ? `discounts[${index}].name` : "name"}
               type="text"
+              className="form-control"
             />
             <CustomErrorMessage
               name={hasIndex ? `discounts[${index}].name` : "name"}
@@ -72,6 +73,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               id="name"
               name={hasIndex ? `discounts[${index}].name_en` : "name_en"}
               type="text"
+              className="form-control"
             />
             <CustomErrorMessage
               name={hasIndex ? `discounts[${index}].name_en` : "name_en"}
@@ -97,6 +99,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               placeholder="Es. Sconto valido per l’acquisto di due ingressi per la stagione di prosa 2021/2022 presso il Teatro Comunale"
               maxLength="250"
               rows="4"
+              className="form-control"
             />
             <CustomErrorMessage
               name={
@@ -117,6 +120,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               placeholder="Ex. Discount valid for the purchase of two tickets for the 2021/2022 prose season at the Municipal Theatre"
               maxLength="250"
               rows="4"
+              className="form-control"
             />
             <CustomErrorMessage
               name={
@@ -141,14 +145,21 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               id="startDate"
               name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
               dateFormat="dd/MM/yyyy"
-              minDate={new Date()}
-              maxDate={dateTo}
               showDisabledMonthNavigation
               selected={dateFrom}
               selectsStart
               startDate={dateFrom}
               endDate={dateTo}
               onChange={date => {
+                const endDate = hasIndex
+                  ? formValues.discounts[index].endDate
+                  : formValues.endDate;
+                if (endDate && date! > endDate) {
+                  setFieldValue(
+                    hasIndex ? `discounts[${index}].endDate` : "endDate",
+                    undefined
+                  );
+                }
                 setFieldValue(
                   hasIndex ? `discounts[${index}].startDate` : "startDate",
                   date
@@ -156,9 +167,11 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               }}
               customInput={createElement(DateInputComponent)}
             />
-            <CustomErrorMessage
-              name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
-            />
+            <div>
+              <CustomErrorMessage
+                name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
+              />
+            </div>
           </FormField>
         </div>
         <div className="col-5 offset-1">
@@ -178,8 +191,16 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               selectsEnd
               startDate={dateFrom}
               endDate={dateTo}
-              minDate={dateFrom || new Date()}
               onChange={date => {
+                const startDate = hasIndex
+                  ? formValues.discounts[index].startDate
+                  : formValues.startDate;
+                if (startDate && date! < startDate) {
+                  setFieldValue(
+                    hasIndex ? `discounts[${index}].startDate` : "startDate",
+                    undefined
+                  );
+                }
                 setFieldValue(
                   hasIndex ? `discounts[${index}].endDate` : "endDate",
                   date
@@ -187,9 +208,11 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               }}
               customInput={createElement(DateInputComponent)}
             />
-            <CustomErrorMessage
-              name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
-            />
+            <div>
+              <CustomErrorMessage
+                name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
+              />
+            </div>
           </FormField>
         </div>
       </div>

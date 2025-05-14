@@ -25,7 +25,7 @@ const FormSection = ({
   isVisible = true,
   footerDescription = "",
   children,
-  className,
+  className = "",
   hasClose = false,
   handleClose,
   hasRemove = false,

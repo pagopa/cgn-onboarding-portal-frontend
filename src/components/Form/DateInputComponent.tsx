@@ -7,7 +7,7 @@ type Props = {
 };
 
 const DateInputComponent = forwardRef<HTMLInputElement, Props>((props, ref) => (
-  <div className="mb-12">
+  <div>
     <div className="input-group">
       <div className="input-group-text">
         <CalendarIcon />

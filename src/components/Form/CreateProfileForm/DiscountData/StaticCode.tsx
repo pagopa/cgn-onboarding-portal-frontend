@@ -10,11 +10,12 @@ type Props = {
 const StaticCode = ({ children, index }: Props) => {
   const hasIndex = index !== undefined;
   return (
-    <div className="col-10">
+    <div>
       <Field
         id="staticCode"
         name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
         type="text"
+        className="form-control"
       />
       <CustomErrorMessage
         name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}

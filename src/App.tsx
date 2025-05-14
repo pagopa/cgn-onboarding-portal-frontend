@@ -6,7 +6,7 @@ import it from "date-fns/locale/it";
 import RouterConfig from "./navigation/RouterConfig";
 import "./styles/bootstrap-italia-fonts.scss";
 import "./styles/bootstrap-italia-custom.scss";
-import "react-datepicker/dist/react-datepicker.css";
+import "./styles/react-datepicker-custom.scss";
 import { queryClient } from "./api/common";
 import { AuthenticationProvider } from "./authentication/AuthenticationProvider";
 import { TooltipProvider } from "./context/TooltipProvider";
