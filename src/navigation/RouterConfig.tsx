@@ -97,7 +97,14 @@ const RouterConfig = () => {
     );
   }
   if (!authentication.currentSession.merchantFiscalCode) {
-    return <SelectCompany />;
+    return (
+      <Switch>
+        <Route exact path={LOGIN} component={Login} />
+        <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
+        <Route exact path={HELP} component={Help} />
+        <Route path="*" component={SelectCompany} />
+      </Switch>
+    );
   }
   if (loading) {
     return <CenteredLoading />;

@@ -4,7 +4,7 @@ import Hourglass from "../../../../assets/icons/hourglass.svg?react";
 import { DASHBOARD } from "../../../../navigation/routes";
 
 const RequestApproval = () => (
-  <section className="request-approval">
+  <section className="fixed-top vw-100 vh-100">
     <div className="bg-white px-28 py-16 d-flex align-items-center flex-column h-100 justify-content-center">
       <h1 className="mb-5">Richiesta di convenzione inviata</h1>
       <Hourglass />

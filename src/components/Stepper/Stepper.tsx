@@ -39,9 +39,8 @@ const Stepper = ({
               return (
                 <li
                   key={step.key}
-                  className={`${isActive ? "active" : ""} ${isConfirmed ? "confirmed" : ""}`}
+                  className={`${isActive ? "active" : ""} ${isConfirmed ? "confirmed" : ""} cursor-pointer`}
                   onClick={changeStep(step.key, index)}
-                  style={{ cursor: "pointer" }}
                 >
                   <span className="steppers-number">
                     {(isActive || !isConfirmed) && (

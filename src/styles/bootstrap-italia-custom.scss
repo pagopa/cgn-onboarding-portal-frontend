@@ -93,6 +93,8 @@ textarea {
     color: $text-gray;
 }
 
+.text-red { color: #ff0000 }
+
 /* Font sizes */
 
 .text-sm {
@@ -103,12 +105,6 @@ textarea {
 .text-base {
     font-size: 1rem;
     line-height: 1.25rem;
-}
-
-/* Letter spacing */
-
-.tracking {
-    letter-spacing: 0.5px;
 }
 
 /* Links */
@@ -125,27 +121,8 @@ textarea {
     cursor: pointer;
 }
 
-.text-red { color: #ff0000 }
-
 $link-hover-decoration: none;
 
-/* Select */
-.select {
-    border: 0;
-    border-bottom: 1px solid #000000;
-    padding: 1em;
-    background-color: #ffffff;
-}
-
-/* Request approval */
-.request-approval {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-}
 
 .btn-outline-primary.disabled, .btn-outline-primary:disabled {
   box-shadow: inset 0 0 0 1px #0273e6 !important;

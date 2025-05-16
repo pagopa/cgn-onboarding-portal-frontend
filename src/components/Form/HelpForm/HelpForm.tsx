@@ -236,8 +236,8 @@ const HelpForm = () => {
                 htmlFor="argomento"
                 description="Seleziona l’argomento per cui hai bisogno di aiuto"
               >
-                <div>
-                  <Field className="select" name="topic" as="select">
+                <div className="select-wrapper">
+                  <Field name="topic" as="select">
                     <>
                       {topics()
                         .find(topic => topic.key === values.category)
@@ -263,6 +263,7 @@ const HelpForm = () => {
                 as="textarea"
                 maxLength={200}
                 rows="4"
+                className="form-control"
               />
             </InputField>
             {token && <FormButtons isValid={isValid} dirty={dirty} />}
@@ -285,6 +286,7 @@ const HelpForm = () => {
                       name="referentFirstName"
                       type="text"
                       placeholder="Inserisci il nome"
+                      className="form-control"
                     />
                     <CustomErrorMessage name="referentFirstName" />
                   </InputFieldMultiple>
@@ -300,6 +302,7 @@ const HelpForm = () => {
                       name="referentLastName"
                       type="text"
                       placeholder="Inserisci il cognome"
+                      className="form-control"
                     />
                     <CustomErrorMessage name="referentLastName" />
                   </InputFieldMultiple>
@@ -316,6 +319,7 @@ const HelpForm = () => {
                     name="legalName"
                     type="text"
                     placeholder="Inserisci la denominazione e ragione sociale Operatore"
+                    className="form-control"
                   />
                   <CustomErrorMessage name="legalName" />
                 </InputFieldMultiple>
@@ -332,6 +336,7 @@ const HelpForm = () => {
                       name="emailAddress"
                       type="text"
                       placeholder="Inserisci un'indirizzo e-mail"
+                      className="form-control"
                     />
                     <CustomErrorMessage name="emailAddress" />
                   </InputFieldMultiple>
@@ -347,6 +352,7 @@ const HelpForm = () => {
                       name="confirmEmailAddress"
                       type="text"
                       placeholder="Conferma l'indirizzo e-mail"
+                      className="form-control"
                     />
                     <CustomErrorMessage name="confirmEmailAddress" />
                   </InputFieldMultiple>
