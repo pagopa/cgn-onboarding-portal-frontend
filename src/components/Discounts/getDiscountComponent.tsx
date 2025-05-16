@@ -9,8 +9,8 @@ export const getDiscountComponent = (state: DiscountState) => {
           className="fw-normal"
           pill
           tag="span"
+          color="white"
           style={{
-            backgroundColor: "white",
             color: "#5C6F82",
             border: "1px solid #5C6F82"
           }}
@@ -18,22 +18,20 @@ export const getDiscountComponent = (state: DiscountState) => {
           Bozza
         </Badge>
       );
-
     case "published":
       return (
         <Badge className="fw-normal" color="primary" pill tag="span">
           Pubblicata
         </Badge>
       );
-
     case "suspended":
       return (
         <Badge
           className="fw-normal"
           pill
           tag="span"
+          color="#EA7614"
           style={{
-            backgroundColor: "#EA7614",
             border: "1px solid #EA7614",
             color: "white"
           }}
@@ -41,15 +39,14 @@ export const getDiscountComponent = (state: DiscountState) => {
           Sospesa
         </Badge>
       );
-
     case "expired":
       return (
         <Badge
           className="fw-normal"
           pill
           tag="span"
+          color="white"
           style={{
-            backgroundColor: "white",
             border: "1px solid #C02927",
             color: "#C02927"
           }}
@@ -57,15 +54,14 @@ export const getDiscountComponent = (state: DiscountState) => {
           Scaduta
         </Badge>
       );
-
     case "test_pending":
       return (
         <Badge
           className="fw-normal"
           pill
           tag="span"
+          color="white"
           style={{
-            backgroundColor: "white",
             border: "1px solid #EA7614",
             color: "#EA7614"
           }}
@@ -79,8 +75,8 @@ export const getDiscountComponent = (state: DiscountState) => {
           className="fw-normal"
           pill
           tag="span"
+          color="white"
           style={{
-            backgroundColor: "white",
             border: "1px solid #C02927",
             color: "#C02927"
           }}
@@ -94,8 +90,8 @@ export const getDiscountComponent = (state: DiscountState) => {
           className="fw-normal"
           pill
           tag="span"
+          color="white"
           style={{
-            backgroundColor: "white",
             border: "1px solid #008255",
             color: "#008255"
           }}
