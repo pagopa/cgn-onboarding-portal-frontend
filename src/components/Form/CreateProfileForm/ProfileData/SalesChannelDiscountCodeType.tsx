@@ -82,7 +82,20 @@ const SalesChannelDiscountCodeType = ({
   return (
     <FormSection
       title={"Gestione delle opportunità per Carta Giovani"}
-      description="Le modalità possibili sono definite nella Documentazione Tecnica. Seleziona la modalità principale:"
+      description={
+        <>
+          Le modalità possibili sono definite nella
+          <a
+            className="font-weight-semibold"
+            href="https://docs.pagopa.it/carta-giovani-nazionale"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Documentazione Tecnica
+          </a>
+          . Seleziona la modalità principale:
+        </>
+      }
       required
       isVisible={false}
     >
