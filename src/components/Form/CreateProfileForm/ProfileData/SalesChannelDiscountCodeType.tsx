@@ -81,7 +81,7 @@ const SalesChannelDiscountCodeType = ({
   }, [formValues, formikContextSetFieldValue]);
   return (
     <FormSection
-      title={"Gestione delle opportunità per Carta Giovani Nazionale"}
+      title={"Gestione delle opportunità per Carta Giovani"}
       description="Le modalità possibili sono definite nella Documentazione Tecnica. Seleziona la modalità principale:"
       required
       isVisible={false}
