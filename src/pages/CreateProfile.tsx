@@ -148,7 +148,7 @@ function getSteps(entityType: EntityType | undefined) {
   };
   const discountStep = {
     key: "Discount",
-    label: "Opportunità"
+    label: "Dati opportunità"
   };
   const documentStep = {
     key: "Document",
@@ -157,8 +157,8 @@ function getSteps(entityType: EntityType | undefined) {
   switch (entityType) {
     case EntityType.Private:
       return [guideStep, profileStep, discountStep, documentStep];
-    default:
     case EntityType.PublicAdministration:
+    default:
       return [guideStep, profileStep, documentStep];
   }
 }
