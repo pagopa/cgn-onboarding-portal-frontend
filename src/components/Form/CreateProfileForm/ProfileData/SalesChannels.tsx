@@ -210,9 +210,9 @@ const SalesChannels = ({ entityType, children }: Props) => {
             switch (entityType) {
               case EntityType.Private:
                 return "Inserire l'URL del proprio e-commerce o del proprio sito istituzionale";
-              default:
               case EntityType.PublicAdministration:
-                return "Inserire l'URL del sito web principale dell'ente";
+              default:
+                return "Inserisci l’URL del tuo e-commerce o sito per permettere alle persone di conoscere la tua attività";
             }
           })()}
           required
