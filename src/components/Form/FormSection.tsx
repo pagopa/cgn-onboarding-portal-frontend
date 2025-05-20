@@ -17,6 +17,14 @@ type Props = {
   onRemove?(): void;
 };
 
+const FormAlertInfoContent = () => (
+  <p className="mb-10 text-base font-weight-normal text-black">
+    Le domande contrassegnate con il simbolo * sono obbligatorie
+    <br /> Le informazioni contrassegnate con il simbolo <VisibleIcon /> saranno
+    visibili in app.
+  </p>
+);
+
 const FormSection = ({
   hasIntroduction = false,
   title,
@@ -52,11 +60,7 @@ const FormSection = ({
           <>
             {hasClose && (
               <div className="d-flex flex-row justify-content-between">
-                <p className="mb-10 text-base font-weight-normal text-black">
-                  Le domande contrassegnate con il simbolo * sono obbligatorie
-                  <br /> Le informazioni contrassegnate con il simbolo{" "}
-                  <VisibleIcon /> saranno visibili in app.
-                </p>
+                <FormAlertInfoContent />
                 <Icon
                   icon="it-close"
                   className="cursor-pointer"
@@ -64,13 +68,7 @@ const FormSection = ({
                 />
               </div>
             )}
-            {!hasClose && (
-              <p className="mb-10 text-base font-weight-normal text-black">
-                Le domande contrassegnate con il simbolo * sono obbligatorie
-                <br /> Le informazioni contrassegnate con il simbolo{" "}
-                <VisibleIcon /> saranno visibili in app.
-              </p>
-            )}
+            {!hasClose && <FormAlertInfoContent />}
           </>
         )}
         {title && (
