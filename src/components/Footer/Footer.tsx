@@ -32,7 +32,7 @@ const Footer = () => (
             <ul className="p-0 mt-7 d-flex flex-row justify-content-start list-unstyled">
               <li className="me-8">
                 <a
-                  className="text-gray no-underline"
+                  className="text-gray text-decoration-none"
                   href="https://io.italia.it/carta-giovani-nazionale/informativa-operatori"
                   target="_blank"
                   rel="noreferrer"

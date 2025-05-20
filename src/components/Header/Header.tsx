@@ -35,7 +35,7 @@ const Header = ({ hasBorder = false }: Props) => {
           {authentication.currentSession?.type !== "admin" && (
             <Link
               to={HELP}
-              className="me-11 text-base text-blue fw-semibold no-underline"
+              className="me-11 text-base text-blue fw-semibold text-decoration-none"
             >
               Serve aiuto?
             </Link>

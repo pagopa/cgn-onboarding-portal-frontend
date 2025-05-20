@@ -128,7 +128,7 @@ const ProfileImage = () => {
                   />
                   <label
                     htmlFor="profileImage"
-                    className="ms-4 mb-0 text-primary underline cursor-pointer form-label"
+                    className="ms-4 mb-0 text-primary text-decoration-underline cursor-pointer form-label"
                   >
                     Cambia immagine
                   </label>

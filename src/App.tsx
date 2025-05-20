@@ -7,6 +7,7 @@ import RouterConfig from "./navigation/RouterConfig";
 import "./styles/bootstrap-italia-fonts.scss";
 import "./styles/bootstrap-italia-custom.scss";
 import "./styles/react-datepicker-custom.scss";
+import "./styles/utils.scss";
 import { queryClient } from "./api/common";
 import { AuthenticationProvider } from "./authentication/AuthenticationProvider";
 import { TooltipProvider } from "./context/TooltipProvider";

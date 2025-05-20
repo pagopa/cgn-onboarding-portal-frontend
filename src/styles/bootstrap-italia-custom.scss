@@ -2,9 +2,6 @@
 
 $primary: #0273E6;
 $secondary: #01254C;
-$text-color: #000000;
-$background: #E6E9F2;
-$text-gray: #5C6F82;
 
 /* Spacers */
 
@@ -46,7 +43,7 @@ $spacers: (
 
 html, body, #root {
     height: 100%;
-    background-color: $background;
+    background-color: #E6E9F2;
 }
 
 /* Input */
@@ -77,55 +74,6 @@ input {
 
 textarea {
     resize: none !important;
-}
-
-/* Text */
-
-.text-blue {
-    color: $primary;
-}
-
-.text-dark-blue {
-    color: $secondary;
-}
-
-.text-gray {
-    color: $text-gray;
-}
-
-.text-red { color: #ff0000 }
-
-/* Font sizes */
-
-.text-sm {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-}
-
-.text-base {
-    font-size: 1rem;
-    line-height: 1.25rem;
-}
-
-/* Links */
-
-.no-underline {
-    text-decoration: none;
-}
-
-.underline {
-    text-decoration: underline;
-}
-
-.cursor-pointer{
-    cursor: pointer;
-}
-
-$link-hover-decoration: none;
-
-
-.btn-outline-primary.disabled, .btn-outline-primary:disabled {
-  box-shadow: inset 0 0 0 1px #0273e6 !important;
 }
 
 @import "~/bootstrap-italia/src/scss/bootstrap-italia.scss";
