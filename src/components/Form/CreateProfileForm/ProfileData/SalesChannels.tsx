@@ -222,7 +222,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
             id="websiteUrl"
             name="salesChannel.websiteUrl"
             type="text"
-            placeholder="Inserisci un sito web (completo di protocollo http o https)"
+            placeholder="Inserisci un sito web (completo di protocollo https)"
           />
           <CustomErrorMessage name="salesChannel.websiteUrl" />
           {children}
