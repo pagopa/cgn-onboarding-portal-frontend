@@ -30,13 +30,6 @@ const BucketCodeModal = ({
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Codice Sconto dalla lista</ModalHeader>
       <ModalBody>
-        {isLoading ? (
-          <CenteredLoading />
-        ) : data?.code && !isError ? (
-          data.code
-        ) : (
-          "Non è stato possibile caricare il codice"
-        )}
         {(() => {
           if (isLoading) {
             return <CenteredLoading />;
