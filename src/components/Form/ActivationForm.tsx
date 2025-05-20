@@ -43,7 +43,7 @@ const ActivationForm = (props: Props) => {
             <InputField
               htmlFor="organizationName"
               title="Denominazione e ragione sociale Operatore"
-              description={"Inserire il nome completo dell'Operatore"}
+              description={"Inserire il nome completo dell'operatore"}
               required
             >
               <Field

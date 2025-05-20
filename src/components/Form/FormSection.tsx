@@ -1,11 +1,11 @@
 import { Icon } from "design-react-kit";
-import React from "react";
+import React, { ReactElement } from "react";
 import VisibleIcon from "../../assets/icons/visible.svg";
 
 type Props = {
   hasIntroduction?: boolean;
   title?: string;
-  description?: string;
+  description?: string | ReactElement;
   children: any;
   required?: boolean;
   isVisible?: boolean;
