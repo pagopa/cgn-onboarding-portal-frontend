@@ -26,27 +26,26 @@ const BucketCodeModal = ({
       { enabled: isOpen, retry: false }
     );
 
+  const renderContent = () => {
+    if (isLoading) {
+      return <CenteredLoading />;
+    }
+    if (data?.code && !isError) {
+      return data.code;
+    }
+    if (
+      error?.status === 400 &&
+      error.response?.data ===
+        "CANNOT_RETRIEVE_BUCKET_CODE_FROM_DISCOUNT_WITH_EMPTY_BUCKET"
+    ) {
+      return "I codici sconto disponibili sono terminati. L’operatore deve caricare una nuova lista di codici per poter procedere.";
+    }
+    return "Non è stato possibile caricare il codice";
+  };
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Codice Sconto dalla lista</ModalHeader>
-      <ModalBody>
-        {(() => {
-          if (isLoading) {
-            return <CenteredLoading />;
-          }
-          if (data?.code && !isError) {
-            return data.code;
-          }
-          if (
-            error?.status === 400 &&
-            error.response?.data ===
-              "CANNOT_RETRIEVE_BUCKET_CODE_FROM_DISCOUNT_WITH_EMPTY_BUCKET"
-          ) {
-            return "I codici sconto disponibili sono terminati. L’operatore deve caricare una nuova lista di codici per poter procedere.";
-          }
-          return "Non è stato possibile caricare il codice";
-        })()}
-      </ModalBody>
+      <ModalBody>{renderContent()}</ModalBody>
       <ModalFooter className="d-flex flex-column">
         <Button
           color="primary"
