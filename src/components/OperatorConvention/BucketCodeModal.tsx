@@ -17,13 +17,13 @@ const BucketCodeModal = ({
   agreementId,
   discountId
 }: Props) => {
-  const { data, isLoading, isError } =
+  const { data, isLoading, isError, error } =
     remoteData.Backoffice.Discount.getDiscountBucketCode.useQuery(
       {
         agreementId,
         discountId
       },
-      { enabled: isOpen }
+      { enabled: isOpen, retry: false }
     );
 
   return (
@@ -37,6 +37,22 @@ const BucketCodeModal = ({
         ) : (
           "Non è stato possibile caricare il codice"
         )}
+        {(() => {
+          if (isLoading) {
+            return <CenteredLoading />;
+          }
+          if (data?.code && !isError) {
+            return data.code;
+          }
+          if (
+            error?.status === 400 &&
+            error.response?.data ===
+              "CANNOT_RETRIEVE_BUCKET_CODE_FROM_DISCOUNT_WITH_EMPTY_BUCKET"
+          ) {
+            return "I codici sconto disponibili sono terminati. L’operatore deve caricare una nuova lista di codici per poter procedere.";
+          }
+          return "Non è stato possibile caricare il codice";
+        })()}
       </ModalBody>
       <ModalFooter className="d-flex flex-column">
         <Button
