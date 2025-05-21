@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "design-react-kit";
-import FormContainer from "../../FormContainer";
+import React, { useEffect, useState } from "react";
 import DocumentIcon from "../../../../assets/icons/document.svg";
-import { DASHBOARD } from "../../../../navigation/routes";
+import FormContainer from "../../FormContainer";
 
 const Documentation = ({
   handleNext,
@@ -59,9 +57,6 @@ const Documentation = ({
           relativa all’iniziativa.
         </p>
         <div className="mt-10">
-          <Link to={DASHBOARD} className="btn btn-outline-primary mr-2 px-14">
-            Annulla
-          </Link>
           <Button
             className="px-14"
             color="primary"
