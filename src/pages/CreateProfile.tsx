@@ -128,7 +128,7 @@ const CreateProfile = () => {
           completedSteps={completedSteps}
           handleChangeStep={setStep}
           steps={getSteps(entityType)}
-        ></Stepper>
+        />
       </div>
       {selectedTab()}
     </Layout>
