@@ -24,7 +24,7 @@ const Documentation = ({
     <FormContainer className="mb-10">
       <div className="bg-white px-28 py-16">
         <h1 className="h4 font-weight-bold text-dark-blue">
-          Ti diamo il benvenuto sul Portale operatori
+          Ti diamo il benvenuto sul Portale Operatori
         </h1>
         <p className="mt-10 text-base font-weight-normal text-black">
           Prima di iniziare, consulta la documentazione tecnica.

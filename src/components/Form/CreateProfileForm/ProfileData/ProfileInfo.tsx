@@ -42,7 +42,7 @@ const ProfileInfo = ({ entityType }: Props) => {
       {formikContext.values.hasDifferentFullName && (
         <InputField
           htmlFor="profileName"
-          title="Nome Operatore visualizzato"
+          title="Nome operatore visualizzato"
           description={
             <>
               Può essere una semplificazione del nome dell&apos;Operatore più
