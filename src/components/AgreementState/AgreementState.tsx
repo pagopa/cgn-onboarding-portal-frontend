@@ -30,7 +30,7 @@ const DateLabel = ({
 
 const AgreementState = ({ state, startDate, endDate }: Props) => (
   <section className="bg-white d-flex flex-column align-items-center px-4">
-    <h1 className="pt-7 text-base fw-semibold text-dark-blue text-uppercase">
+    <h1 className="pt-7 text-base fw-semibold text-dark-blue text-uppercase tracking">
       PagoPA
     </h1>
     <div>
