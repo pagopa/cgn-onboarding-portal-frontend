@@ -306,7 +306,7 @@ Props) => {
               </td>
             </tr>
             <ProfileItem
-              label="Data di inizio dell'opportunità"
+              label="Data d'inizio opportunità"
               value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
             />
             <ProfileItem
