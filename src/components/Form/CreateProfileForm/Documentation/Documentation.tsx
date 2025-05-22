@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
 import { Button } from "design-react-kit";
-import React, { useEffect, useState } from "react";
-import DocumentIcon from "../../../../assets/icons/document.svg";
 import FormContainer from "../../FormContainer";
+import DocumentIcon from "../../../../assets/icons/document.svg?react";
 
 const Documentation = ({
   handleNext,
@@ -26,16 +26,16 @@ const Documentation = ({
         <h1 className="h4 font-weight-bold text-dark-blue">
           Ti diamo il benvenuto sul Portale Operatori
         </h1>
-        <p className="mt-10 text-base font-weight-normal text-black">
+        <p className="mt-10 text-base fw-normal text-black">
           Prima di iniziare, consulta la documentazione tecnica.
           <br />
           Contiene tutte le informazioni sulla Convenzione e le istruzioni
           tecniche utili per richiedere l’adesione.
         </p>
         <div className="mt-4 d-flex flex-row align-items-center">
-          <DocumentIcon className="mr-5" />
+          <DocumentIcon className="me-5" />
           <a
-            className="font-weight-semibold"
+            className="fw-semibold"
             href="https://docs.pagopa.it/carta-giovani-nazionale"
             target="_blank"
             onClick={handleClick}
@@ -44,10 +44,10 @@ const Documentation = ({
             Documentazione Tecnica
           </a>
         </div>
-        <p className="mt-8 text-sm font-weight-normal text-gray">
+        <p className="mt-8 text-sm fw-normal text-gray">
           Premendo su Continua, dichiari di aver letto e compreso l’
           <a
-            className="font-weight-semibold cursor-pointer"
+            className="fw-semibold cursor-pointer"
             href="https://io.italia.it/carta-giovani-nazionale/informativa-operatori"
             target="_blank"
             rel="noreferrer"

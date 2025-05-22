@@ -1,4 +1,3 @@
-import React from "react";
 import logoPagopa from "../../assets/images/logo-pagopa.png";
 
 const Logo = () => (

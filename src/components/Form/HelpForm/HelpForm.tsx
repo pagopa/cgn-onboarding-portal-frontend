@@ -1,4 +1,3 @@
-import React from "react";
 import { Field, Form, Formik } from "formik";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -139,7 +138,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.DataFilling}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="DataFilling"
                   >
                     Compilazione dati
@@ -153,7 +152,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.Discounts}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="Discounts"
                   >
                     Opportunità
@@ -167,7 +166,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.Documents}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="Documents"
                   >
                     Documenti
@@ -181,7 +180,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.TechnicalProblem}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="TechnicalProblem"
                   >
                     Problema tecnico
@@ -195,7 +194,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.CgnOwnerReporting}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="CgnOwnerReporting"
                   >
                     Segnalazione titolare di CGN
@@ -209,7 +208,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.Suggestions}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="Suggestions"
                   >
                     Suggerimenti
@@ -223,7 +222,7 @@ const HelpForm = () => {
                     value={HelpRequestCategoryEnum.Other}
                   />
                   <label
-                    className="text-sm font-weight-normal text-black"
+                    className="text-sm fw-normal text-black form-label"
                     htmlFor="Other"
                   >
                     Altro
@@ -237,8 +236,8 @@ const HelpForm = () => {
                 htmlFor="argomento"
                 description="Seleziona l’argomento per cui hai bisogno di aiuto"
               >
-                <div>
-                  <Field className="select" name="topic" as="select">
+                <div className="select-wrapper">
+                  <Field name="topic" as="select">
                     <>
                       {topics()
                         .find(topic => topic.key === values.category)
@@ -264,6 +263,7 @@ const HelpForm = () => {
                 as="textarea"
                 maxLength={200}
                 rows="4"
+                className="form-control"
               />
             </InputField>
             {token && <FormButtons isValid={isValid} dirty={dirty} />}
@@ -286,6 +286,7 @@ const HelpForm = () => {
                       name="referentFirstName"
                       type="text"
                       placeholder="Inserisci il nome"
+                      className="form-control"
                     />
                     <CustomErrorMessage name="referentFirstName" />
                   </InputFieldMultiple>
@@ -301,6 +302,7 @@ const HelpForm = () => {
                       name="referentLastName"
                       type="text"
                       placeholder="Inserisci il cognome"
+                      className="form-control"
                     />
                     <CustomErrorMessage name="referentLastName" />
                   </InputFieldMultiple>
@@ -317,6 +319,7 @@ const HelpForm = () => {
                     name="legalName"
                     type="text"
                     placeholder="Inserisci la denominazione e ragione sociale Operatore"
+                    className="form-control"
                   />
                   <CustomErrorMessage name="legalName" />
                 </InputFieldMultiple>
@@ -333,6 +336,7 @@ const HelpForm = () => {
                       name="emailAddress"
                       type="text"
                       placeholder="Inserisci un'indirizzo e-mail"
+                      className="form-control"
                     />
                     <CustomErrorMessage name="emailAddress" />
                   </InputFieldMultiple>
@@ -348,6 +352,7 @@ const HelpForm = () => {
                       name="confirmEmailAddress"
                       type="text"
                       placeholder="Conferma l'indirizzo e-mail"
+                      className="form-control"
                     />
                     <CustomErrorMessage name="confirmEmailAddress" />
                   </InputFieldMultiple>

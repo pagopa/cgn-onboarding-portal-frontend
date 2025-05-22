@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import Container from "../Container/Container";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import CgnLogo from "../Logo/CgnLogo";
@@ -7,7 +7,7 @@ import Layout from "./Layout";
 type Props = {
   breadcrumbLabel: string;
   title: string;
-  children: any;
+  children: ReactNode;
   breadcrumbLink?: string;
 };
 
@@ -19,14 +19,14 @@ const CreateLayout = ({
 }: Props) => (
   <Layout>
     <Container className="mt-20 mb-64">
-      <div className="col-10 offset-1">
+      <div className="col-12 px-12">
         <Breadcrumb breadcrumbLink={breadcrumbLink}>
           {breadcrumbLabel}
         </Breadcrumb>
 
         <div className="row">
           <div className="col-9">
-            <h1 className="mt-4 h3 font-weight-bold text-dark-blue">{title}</h1>
+            <h1 className="mt-4 h3 fw-bold text-dark-blue">{title}</h1>
           </div>
           <div className="col-3 d-flex justify-content-end">
             <CgnLogo />

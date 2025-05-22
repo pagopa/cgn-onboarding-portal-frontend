@@ -64,6 +64,11 @@ To run the dashboard, you should start the following code:
 $ yarn start:uat
 ```
 
+```bash
+# Start the dashboard on port 3000 and pointing to PROD environment
+$ yarn start:prod
+```
+
 ## Login in localhost 
 As soon as the dashboard is up and running, you will see a landing page where you should login. Choose what kind of login do you want (login as Operator or login as Admin).
 After that you logged in successfully, you will be redirected to UAT environment dashboard. In this case, you need to retrieve the token generated in UAT and put it in the localhost environment. You can do this in three ways:

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuthentication } from "./AuthenticationContext";
 import { adminLogoutPopup } from "./authentication";
 import { authenticationStore } from "./authenticationStore";
@@ -7,7 +7,6 @@ import { authenticationStore } from "./authenticationStore";
 
 const ALLOW_MULTIPLE_LOGIN =
   window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1" ||
   window.location.hostname === "portal.cgnonboardingportal-uat.pagopa.it";
 
 export function SessionSwitch() {

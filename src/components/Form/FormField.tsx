@@ -1,12 +1,12 @@
-import React from "react";
-import VisibleIcon from "../../assets/icons/visible.svg";
+import { ReactNode } from "react";
+import VisibleIcon from "../../assets/icons/visible.svg?react";
 
 type Props = {
   htmlFor: string;
   isTitleHeading?: boolean;
   title?: string;
   description?: string | React.ReactElement;
-  children: any;
+  children: ReactNode;
   required?: boolean;
   isVisible?: boolean;
 };
@@ -22,13 +22,13 @@ const FormField = ({
 }: Props) => (
   <div className="mt-10">
     <div>
-      <label htmlFor={htmlFor}>
+      <label htmlFor={htmlFor} className="form-label">
         <span className="d-flex flex-row align-items-center">
           <span
             className={
               isTitleHeading
-                ? "h4 font-weight-bold text-dark-blue mr-4"
-                : "text-base font-weight-bold mr-4"
+                ? "h4 fw-bold text-dark-blue me-4"
+                : "text-base fw-bold me-4"
             }
           >
             {title}
@@ -38,9 +38,7 @@ const FormField = ({
         </span>
 
         {description && (
-          <p className="mt-2 text-sm font-weight-normal text-black">
-            {description}
-          </p>
+          <p className="mt-2 text-sm fw-normal text-black">{description}</p>
         )}
       </label>
       {children}

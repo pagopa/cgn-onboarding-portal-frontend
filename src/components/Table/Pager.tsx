@@ -1,5 +1,4 @@
 import { Icon } from "design-react-kit";
-import React from "react";
 
 type Props = {
   canPreviousPage: boolean;
@@ -33,7 +32,7 @@ const Pager = (props: Props) => (
       )}
       {props.pageArray.map(page => (
         <div
-          className={`font-weight-bold mx-1 ${
+          className={`fw-bold mx-1 ${
             page !== props.pageIndex ? "cursor-pointer primary-color" : ""
           }`}
           key={page}

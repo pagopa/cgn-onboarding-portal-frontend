@@ -1,11 +1,11 @@
-import React, { ReactChildren } from "react";
+import { ReactNode } from "react";
 
 const NavItem = ({
   children,
   active,
   onClick
 }: {
-  children: ReactChildren | string;
+  children: ReactNode | string;
   active: boolean;
   onClick: () => void;
 }) => (

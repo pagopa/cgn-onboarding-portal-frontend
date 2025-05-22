@@ -1,4 +1,3 @@
-import React from "react";
 import logoCgn from "../../assets/images/logo-cgn.png";
 
 const CgnLogo = () => (

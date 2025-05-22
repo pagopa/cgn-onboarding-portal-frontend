@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
@@ -19,7 +18,7 @@ export function DeleteModal({
         <Button
           color="primary"
           onClick={() => {
-            void onDelete();
+            onDelete();
             onToggle();
           }}
           style={{ width: "100%" }}

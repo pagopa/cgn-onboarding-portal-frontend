@@ -1,13 +1,13 @@
-import React, { ComponentProps, useEffect, useRef, useState } from "react";
+import { ComponentProps, memo, useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
 import { Field } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
-import DocumentSuccess from "../../../../assets/icons/document-success.svg";
+import DocumentSuccess from "../../../../assets/icons/document-success.svg?react";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import FormField from "../../FormField";
-import bucketTemplate from "../../../../templates/test-codes.csv";
+import bucketTemplate from "../../../../templates/test-codes";
 import { BucketCodeLoadStatus } from "../../../../api/generated";
 import { remoteData } from "../../../../api/common";
 
@@ -25,8 +25,7 @@ const BucketComponent = ({
   agreementId,
   formValues,
   setFieldValue
-}: // eslint-disable-next-line sonarjs/cognitive-complexity
-Props) => {
+}: Props) => {
   const hasIndex = index !== undefined;
   const refFile = useRef<HTMLInputElement>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -127,7 +126,7 @@ Props) => {
           <br />
           Per maggiori informazioni, consultare la{" "}
           <a
-            className="font-weight-semibold"
+            className="fw-semibold"
             href="https://docs.pagopa.it/carta-giovani-nazionale"
             target="_blank"
             rel="noreferrer"
@@ -135,7 +134,13 @@ Props) => {
             Documentazione tecnica
           </a>{" "}
           o scaricare il{" "}
-          <a href={bucketTemplate} download={"template_bucket.csv"}>
+          <a
+            href={
+              "data:text/csv;charset=utf-8," +
+              encodeURIComponent(bucketTemplate)
+            }
+            download={"template_bucket.csv"}
+          >
             file di esempio
           </a>
         </>
@@ -148,7 +153,7 @@ Props) => {
           <div className="d-flex flex-row align-items-center">
             {currentDoc ? (
               <>
-                <DocumentSuccess className="mr-4" />
+                <DocumentSuccess className="me-4" />
                 <div className="d-flex flex-column ">
                   <a href="#">{currentDoc.name}</a>
                 </div>
@@ -193,7 +198,7 @@ Props) => {
                 onChange={() => {
                   const file = refFile.current?.files?.[0];
                   if (file) {
-                    void uploadBucketMutation.mutate({ file });
+                    uploadBucketMutation.mutate({ file });
                   }
                 }}
               />
@@ -240,7 +245,7 @@ const checkMemoization = (
   return false;
 };
 
-const Bucket = React.memo(BucketComponent, checkMemoization);
+const Bucket = memo(BucketComponent, checkMemoization);
 
 export default Bucket;
 
