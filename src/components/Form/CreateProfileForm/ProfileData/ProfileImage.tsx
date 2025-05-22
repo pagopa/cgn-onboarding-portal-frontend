@@ -94,7 +94,7 @@ const ProfileImage = () => {
   return (
     <FormSection
       title="Immagine operatore"
-      description="Carica un'immagine che rappresenti i beni o i servizi trattati dall'Operatore"
+      description="Carica un'immagine che rappresenti i beni o i servizi trattati dall'operatore"
       footerDescription={FooterDescription}
       isVisible
       required
@@ -148,7 +148,7 @@ const ProfileImage = () => {
                   />
                   <label htmlFor="profileImage" className="form-label">
                     <PlusIcon className="icon icon-sm" />
-                    <span>Add photo</span>
+                    <span>Carica foto</span>
                   </label>
                 </>
               )}

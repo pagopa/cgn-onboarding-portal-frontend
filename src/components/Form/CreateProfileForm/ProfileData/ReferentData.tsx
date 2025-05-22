@@ -54,6 +54,7 @@ const Referent = ({
         <Field
           id={`${referentFieldId}.firstName`}
           name={`${referentFieldName}.firstName`}
+          placeholder="Inserisci il nome del referente"
           type="text"
           className="form-control"
         />
@@ -67,6 +68,7 @@ const Referent = ({
         <Field
           id={`${referentFieldId}.lastName`}
           name={`${referentFieldName}.lastName`}
+          placeholder="Inserisci il cognome del referente"
           type="text"
           className="form-control"
         />
@@ -82,6 +84,7 @@ const Referent = ({
           name={`${referentFieldName}.role`}
           type="text"
           className="form-control"
+          placeholder="Inserisci il ruolo del referente"
         />
         <CustomErrorMessage name={`${referentFieldName}.role`} />
       </InputField>
@@ -95,6 +98,7 @@ const Referent = ({
           name={`${referentFieldName}.emailAddress`}
           type="email"
           className="form-control"
+          placeholder="Inserisci la e-mail del referente"
         />
         <CustomErrorMessage name={`${referentFieldName}.emailAddress`} />
       </InputField>
@@ -108,7 +112,7 @@ const Referent = ({
           id={`${referentFieldId}.telephoneNumber`}
           name={`${referentFieldName}.telephoneNumber`}
           type="tel"
-          placeholder="Inserisci il numero di telefono"
+          placeholder="Inserisci il numero di telefono del referente"
           className="form-control"
         />
         <CustomErrorMessage name={`${referentFieldName}.telephoneNumber`} />

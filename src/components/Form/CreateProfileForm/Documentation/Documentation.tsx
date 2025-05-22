@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "design-react-kit";
 import FormContainer from "../../FormContainer";
 import DocumentIcon from "../../../../assets/icons/document.svg?react";
-import { DASHBOARD } from "../../../../navigation/routes";
 
 const Documentation = ({
   handleNext,
@@ -25,8 +23,8 @@ const Documentation = ({
   return (
     <FormContainer className="mb-10">
       <div className="bg-white px-28 py-16">
-        <h1 className="h4 fw-bold text-dark-blue">
-          Ti diamo il benvenuto sul Portale operatori
+        <h1 className="h4 font-weight-bold text-dark-blue">
+          Ti diamo il benvenuto sul Portale Operatori
         </h1>
         <p className="mt-10 text-base fw-normal text-black">
           Prima di iniziare, consulta la documentazione tecnica.
@@ -59,9 +57,6 @@ const Documentation = ({
           relativa all’iniziativa.
         </p>
         <div className="mt-10">
-          <Link to={DASHBOARD} className="btn btn-outline-primary me-2 px-14">
-            Annulla
-          </Link>
           <Button
             className="px-14"
             color="primary"

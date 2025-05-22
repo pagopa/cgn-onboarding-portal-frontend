@@ -74,7 +74,20 @@ const SalesChannelDiscountCodeType = () => {
   return (
     <FormSection
       title={"Gestione delle opportunità per Carta Giovani Nazionale"}
-      description="Le modalità possibili sono definite nella Documentazione Tecnica. Seleziona la modalità principale:"
+      description={
+        <>
+          Le modalità possibili sono definite nella
+          <a
+            className="font-weight-semibold"
+            href="https://docs.pagopa.it/carta-giovani-nazionale"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Documentazione Tecnica
+          </a>
+          . Seleziona la modalità principale:
+        </>
+      }
       required
       isVisible={false}
     >
@@ -93,7 +106,7 @@ const SalesChannelDiscountCodeType = () => {
           >
             <span className="text-sm">
               <a
-                href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-modello-api"
+                href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/modalita-api"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -120,7 +133,7 @@ const SalesChannelDiscountCodeType = () => {
           >
             <span className="text-sm">
               <a
-                href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-codice-sconto-statico"
+                href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/modalita-codice-sconto-statico"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -145,7 +158,7 @@ const SalesChannelDiscountCodeType = () => {
           >
             <span className="text-sm">
               <a
-                href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-lista-di-codici-statici-bucket"
+                href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/modalita-lista-di-codici-statici"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -173,7 +186,7 @@ const SalesChannelDiscountCodeType = () => {
           >
             <span className="text-sm">
               <a
-                href="https://docs.pagopa.it/documentazione-tecnica-portale-operatori-1.0.0/attuazione-della-convenzione/online-landing-page"
+                href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/modalita-landing-page"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -199,7 +212,7 @@ const SalesChannelDiscountCodeType = () => {
           >
             <span className="text-sm">
               <a
-                href="https://docs.pagopa.it/carta-giovani-nazionale/attuazione-della-convenzione/presenza-fisica-del-beneficiario"
+                href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/presenza-fisica-del-beneficiario"
                 target="_blank"
                 rel="noreferrer"
               >

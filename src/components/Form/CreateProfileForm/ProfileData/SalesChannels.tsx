@@ -201,7 +201,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                 return "Inserire l'URL del proprio e-commerce o del proprio sito istituzionale";
               case EntityType.PublicAdministration:
               default:
-                return "Inserire l'URL del sito web principale dell'ente";
+                return "Inserisci l’URL del tuo e-commerce o sito per permettere alle persone di conoscere la tua attività";
             }
           })()}
           required
@@ -211,7 +211,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
             id="websiteUrl"
             name="salesChannel.websiteUrl"
             type="text"
-            placeholder="Inserisci un sito web (completo di protocollo http o https)"
+            placeholder="Inserisci un sito web (completo di protocollo https)"
             className="form-control"
           />
           <CustomErrorMessage name="salesChannel.websiteUrl" />

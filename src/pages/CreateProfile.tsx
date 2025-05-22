@@ -125,7 +125,7 @@ const CreateProfile = () => {
           completedSteps={completedSteps}
           handleChangeStep={setStep}
           steps={getSteps(entityType)}
-        ></Stepper>
+        />
       </div>
       {selectedTab()}
     </Layout>
@@ -145,7 +145,7 @@ function getSteps(entityType: EntityType | undefined) {
   };
   const discountStep = {
     key: "Discount",
-    label: "Opportunità"
+    label: "Dati opportunità"
   };
   const documentStep = {
     key: "Document",

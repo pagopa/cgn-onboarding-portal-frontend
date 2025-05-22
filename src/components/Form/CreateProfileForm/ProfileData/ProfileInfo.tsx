@@ -49,7 +49,7 @@ const ProfileInfo = ({ entityType }: Props) => {
       {formikContext.values.hasDifferentFullName && (
         <InputField
           htmlFor="profileName"
-          title="Nome Operatore visualizzato"
+          title="Nome operatore visualizzato"
           description={
             <>
               Può essere una semplificazione del nome dell&apos;Operatore più
@@ -95,7 +95,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="pecAddress"
           name="pecAddress"
           type="email"
-          placeholder="Inserisci l'indirizzo pec dell'ente"
+          placeholder="Inserisci l'indirizzo PEC dell'ente"
           className="form-control"
         />
         <CustomErrorMessage name="pecAddress" />
@@ -105,14 +105,14 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="legalOffice"
           name="legalOffice"
           type="text"
-          placeholder="Inserisci la sede legale ente"
+          placeholder="Inserisci la sede legale dell'ente"
           className="form-control"
         />
         <CustomErrorMessage name="legalOffice" />
       </InputField>
       <InputField
         htmlFor="telephoneNumber"
-        title="Numero di telefono Operatore"
+        title="Numero di telefono ente"
         required
       >
         <Field
@@ -120,7 +120,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="telephoneNumber"
           name="telephoneNumber"
           type="text"
-          placeholder="Inserisci il numero di telefono ente"
+          placeholder="Inserisci il numero di telefono dell'ente"
           className="form-control"
         />
         <CustomErrorMessage name="telephoneNumber" />
@@ -134,7 +134,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="legalRepresentativeFullName"
           name="legalRepresentativeFullName"
           type="text"
-          placeholder="Inserisci il nome e cognome del Legale rappresentante ente"
+          placeholder="Inserisci il nome e cognome del Legale rappresentante dell'ente"
           className="form-control"
         />
         <CustomErrorMessage name="legalRepresentativeFullName" />
@@ -150,7 +150,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           id="legalRepresentativeTaxCode"
           name="legalRepresentativeTaxCode"
           type="text"
-          placeholder="Inserisci il Codice fiscale del Legale rappresentante ente"
+          placeholder="Inserisci il Codice fiscale del Legale rappresentante dell'ente"
           className="form-control"
         />
         <CustomErrorMessage name="legalRepresentativeTaxCode" />

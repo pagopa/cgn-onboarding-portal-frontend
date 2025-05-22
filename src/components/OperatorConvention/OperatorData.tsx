@@ -11,7 +11,7 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
     <div>
       <h5 className="mb-7 fw-bold">Profilo</h5>
       {profile.name && (
-        <Item label="Nome Operatore visualizzato" value={profile.name} />
+        <Item label="Nome operatore visualizzato" value={profile.name} />
       )}
       <Item label="Descrizione dell'operatore" value={profile.description} />
       <Item label="Sito web" value={salesChannel.websiteUrl || "-"} />
