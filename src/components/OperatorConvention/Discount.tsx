@@ -115,7 +115,7 @@ const Discount = ({
       <Item label="Descrizione opportunità" value={discount.description} />
       <Item label="Stato" value={getBadgeStatus(discount.state)} />
       <Item
-        label="Data di inizio dell'opportunità"
+        label="Data d'inizio opportunità"
         value={format(new Date(discount.startDate), "dd/MM/yyyy")}
       />
       <Item
