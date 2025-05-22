@@ -12,6 +12,7 @@ const StaticCode = ({ children, index }: Props) => {
   return (
     <div>
       <Field
+        placeholder="Inserisci codice statico"
         id="staticCode"
         name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
         type="text"
