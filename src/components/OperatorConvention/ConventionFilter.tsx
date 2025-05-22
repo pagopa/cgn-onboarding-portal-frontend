@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
 import { saveAs } from "file-saver";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import DateModal from "./DateModal";

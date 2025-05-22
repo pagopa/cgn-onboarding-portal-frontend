@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Button, Icon } from "design-react-kit";
 import DocumentIcon from "../../assets/icons/document.svg?react";
 import DocumentSuccess from "../../assets/icons/document-success.svg?react";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { remoteData } from "../../api/common";
 import {
   Agreement,

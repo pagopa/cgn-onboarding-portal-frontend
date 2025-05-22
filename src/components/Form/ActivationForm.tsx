@@ -3,7 +3,7 @@ import { Button, Icon } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import PlusCircleIcon from "../../assets/icons/plus-circle.svg?react";
 import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   OrganizationWithReferents,
   EntityType

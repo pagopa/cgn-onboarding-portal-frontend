@@ -17,7 +17,7 @@ import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
 import { remoteData } from "../../api/common";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   AgreementApiGetAgreementsRequest,
   Agreement

@@ -6,7 +6,7 @@ import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { getEditOperatorRoute } from "../../navigation/utils";
 import DeleteModal from "./DeleteModal";

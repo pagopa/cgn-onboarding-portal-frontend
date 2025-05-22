@@ -3,7 +3,7 @@ import { Column, Row, usePagination, useSortBy, useTable } from "react-table";
 import { Button } from "design-react-kit";
 import { format } from "date-fns";
 import { remoteData } from "../../api/common";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   AgreementApiGetApprovedAgreementsRequest,
   ApprovedAgreement

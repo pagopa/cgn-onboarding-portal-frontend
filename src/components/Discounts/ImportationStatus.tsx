@@ -4,7 +4,7 @@ import { Icon, Progress } from "design-react-kit";
 import { BucketCodeLoadStatus } from "../../api/generated";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getEditDiscountRoute } from "../../navigation/utils";
 
 type Props = {

@@ -5,7 +5,7 @@ import { useTooltip, Severity } from "../../context/tooltip";
 import { Agreement, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
