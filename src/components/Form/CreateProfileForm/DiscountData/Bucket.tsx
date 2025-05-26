@@ -10,6 +10,7 @@ import FormField from "../../FormField";
 import bucketTemplate from "../../../../templates/test-codes";
 import { BucketCodeLoadStatus } from "../../../../api/generated";
 import { remoteData } from "../../../../api/common";
+import { generateCsvDataUri } from "../../../../utils/generateCsvDataUri";
 
 type Props = {
   label: string;
@@ -135,10 +136,7 @@ const BucketComponent = ({
           </a>{" "}
           o scaricare il{" "}
           <a
-            href={
-              "data:text/csv;charset=utf-8," +
-              encodeURIComponent(bucketTemplate)
-            }
+            href={generateCsvDataUri(bucketTemplate)}
             download={"template_bucket.csv"}
           >
             file di esempio
