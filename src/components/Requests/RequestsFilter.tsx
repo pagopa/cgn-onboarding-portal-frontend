@@ -1,4 +1,5 @@
 import { Form, Formik, Field } from "formik";
+import { useRef } from "react";
 import {
   AgreementApiGetAgreementsRequest,
   GetAgreementsAssigneeEnum
@@ -22,8 +23,7 @@ const RequestsFilter = ({
   getAgreements: (params: AgreementApiGetAgreementsRequest) => void;
   refForm: any;
 }) => {
-  // eslint-disable-next-line functional/no-let
-  let timeout: number | null = null;
+  const timeoutRef = useRef<number | null>(null);
 
   const initialValues: FilterFormValues = {
     profileFullName: "",
@@ -102,10 +102,10 @@ const RequestsFilter = ({
                 placeholder="Cerca Richiesta"
                 onChange={(e: { target: { value: string } }) => {
                   void setFieldValue("profileFullName", e.target.value);
-                  if (timeout) {
-                    clearTimeout(timeout);
+                  if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
                   }
-                  timeout = window.setTimeout(() => {
+                  timeoutRef.current = window.setTimeout(() => {
                     void setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);

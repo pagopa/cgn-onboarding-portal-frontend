@@ -122,7 +122,12 @@ export default tseslint.config(
       "react/jsx-key": "error",
       "react/jsx-no-bind": ["error", { allowArrowFunctions: true }],
       "functional/no-let": "error",
-      "functional/immutable-data": "error",
+      "functional/immutable-data": [
+        "error",
+        {
+          ignoreAccessorPattern: "**.*Ref.*"
+        }
+      ],
       "sonarjs/no-small-switch": "off",
       "sonarjs/no-duplicate-string": "off",
       "sonarjs/prefer-read-only-props": "off",

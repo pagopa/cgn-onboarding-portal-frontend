@@ -1,6 +1,7 @@
 import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
+import { useRef } from "react";
 import { ADMIN_PANEL_ACCESSI_CREA } from "../../navigation/routes";
 import { GetOrgsParams } from "./OperatorActivations";
 
@@ -18,8 +19,7 @@ const ActivationsFilter = ({
 }) => {
   const history = useHistory();
 
-  // eslint-disable-next-line functional/no-let
-  let timeout: number | null = null;
+  const timeoutRef = useRef<number | null>(null);
 
   const initialValues: FilterFormValues = {
     searchQuery: "",
@@ -71,10 +71,10 @@ const ActivationsFilter = ({
                 placeholder="Cerca Operatore"
                 onChange={(e: { target: { value: string } }) => {
                   void setFieldValue("searchQuery", e.target.value);
-                  if (timeout) {
-                    clearTimeout(timeout);
+                  if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
                   }
-                  timeout = window.setTimeout(() => {
+                  timeoutRef.current = window.setTimeout(() => {
                     void setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);

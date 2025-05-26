@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
 import { saveAs } from "file-saver";
@@ -24,8 +24,7 @@ const ConventionFilter = ({
   const { triggerTooltip } = useTooltip();
   const [downloadingAgreements, setDownloadingAgreements] = useState(false);
   const [downloadingEyca, setDownloadingEyca] = useState(false);
-  // eslint-disable-next-line functional/no-let
-  let timeout: number | null = null;
+  const timeoutRef = useRef<number | null>(null);
 
   const initialValues: FilterFormValues = {
     fullName: "",
@@ -146,10 +145,10 @@ const ConventionFilter = ({
                 placeholder="Cerca Operatore"
                 onChange={(e: { target: { value: string } }) => {
                   void setFieldValue("fullName", e.target.value);
-                  if (timeout) {
-                    clearTimeout(timeout);
+                  if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
                   }
-                  timeout = window.setTimeout(() => {
+                  timeoutRef.current = window.setTimeout(() => {
                     void setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);
