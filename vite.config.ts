@@ -2,6 +2,7 @@ import path from "path";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
+import { imagetools } from "vite-imagetools";
 
 const env = loadEnv("all", process.cwd(), ["CGN_"]);
 
@@ -20,7 +21,8 @@ export default defineConfig({
           floatPrecision: 2
         }
       }
-    })
+    }),
+    imagetools()
   ],
   resolve: {
     alias: {
@@ -48,10 +50,10 @@ export default defineConfig({
     }
   },
   build: {
-    sourcemap: true,
-    assetsInlineLimit(file) {
-      return !file.endsWith(".svg");
-    }
+    sourcemap: true
+    // assetsInlineLimit(file) {
+    //   return !file.endsWith(".svg");
+    // }
   },
   server: {
     proxy: {
