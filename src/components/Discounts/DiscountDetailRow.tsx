@@ -21,7 +21,7 @@ import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
 import { getEditDiscountRoute } from "../../navigation/utils";
 import ImportationStatus from "./ImportationStatus";
-import { getDiscountComponent } from "./getDiscountComponent";
+import { DiscountComponent } from "./getDiscountComponent";
 
 type Props = {
   row: Row<Discount>;
@@ -196,7 +196,7 @@ const DiscountDetailRow = ({
                 Stato opportunità
               </td>
               <td className={`border-bottom-0`}>
-                {getDiscountComponent(row.values.state)}
+                <DiscountComponent discountState={row.values.state} />
               </td>
             </tr>
             <ProfileItem

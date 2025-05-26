@@ -14,7 +14,7 @@ import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow from "./DiscountDetailRow";
-import { getDiscountComponent } from "./getDiscountComponent";
+import { DiscountComponent } from "./getDiscountComponent";
 import UnpublishModal from "./UnpublishModal";
 import TestModal from "./TestModal";
 
@@ -187,7 +187,11 @@ const Discounts = () => {
         Header: "Stato",
         accessor: "state",
         Cell({ row }) {
-          return <span>{getDiscountComponent(row.values.state)}</span>;
+          return (
+            <span>
+              <DiscountComponent discountState={row.values.state} />
+            </span>
+          );
         },
         disableSortBy: true
       },

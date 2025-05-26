@@ -1,8 +1,12 @@
 import { Badge } from "design-react-kit";
 import { DiscountState } from "../../api/generated";
 
-export const getDiscountComponent = (state: DiscountState) => {
-  switch (state) {
+export const DiscountComponent = ({
+  discountState
+}: {
+  discountState: DiscountState;
+}) => {
+  switch (discountState) {
     case "draft":
       return (
         <Badge
