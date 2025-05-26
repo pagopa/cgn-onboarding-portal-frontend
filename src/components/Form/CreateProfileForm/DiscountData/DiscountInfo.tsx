@@ -229,9 +229,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         >
           {({ field }: FieldProps) => (
             <div className="input-group col-4 p-0">
-              <div className="input-group-prepend">
-                <div className="input-group-text">%</div>
-              </div>
+              <div className="input-group-text">%</div>
               <input
                 type="text"
                 {...field}
