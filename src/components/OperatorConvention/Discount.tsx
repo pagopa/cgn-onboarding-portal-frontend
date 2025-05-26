@@ -12,7 +12,7 @@ import {
   makeProductCategoriesString
 } from "../../utils/strings";
 import BucketCodeModal from "./BucketCodeModal";
-import { getBadgeStatus } from "./getBadgeStatus";
+import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
 
 const Discount = ({
@@ -110,7 +110,10 @@ const Discount = ({
       <h5 className="mb-7 d-flex align-items-center fw-bold">Opportunità</h5>
       <Item label="Nome opportunità" value={discount.name} />
       <Item label="Descrizione opportunità" value={discount.description} />
-      <Item label="Stato" value={getBadgeStatus(discount.state)} />
+      <Item
+        label="Stato"
+        value={<BadgeStatus discountState={discount.state} />}
+      />
       <Item
         label="Data d'inizio opportunità"
         value={format(new Date(discount.startDate), "dd/MM/yyyy")}

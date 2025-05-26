@@ -14,7 +14,7 @@ import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
-import { getBadgeStatus } from "./getBadgeStatus";
+import { BadgeStatus } from "./BadgeStatus";
 
 const OperatorConvention = () => {
   const pageSize = 20;
@@ -65,7 +65,9 @@ const OperatorConvention = () => {
         Header: "TEST",
         accessor: "testPending",
         Cell: ({ row }) =>
-          row.values.testPending && getBadgeStatus(DiscountState.TestPending)
+          row.values.testPending && (
+            <BadgeStatus discountState={DiscountState.TestPending} />
+          )
       }
     ],
     []

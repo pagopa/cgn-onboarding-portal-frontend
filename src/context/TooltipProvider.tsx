@@ -26,7 +26,7 @@ export function TooltipProvider({ children }: ProviderProps): ReactElement {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    // eslint-disable-next-line functional/immutable-data
+
     timeoutRef.current = window.setTimeout(() => {
       openTooltip(false);
     }, 5000);

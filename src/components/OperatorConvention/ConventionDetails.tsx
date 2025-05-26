@@ -12,7 +12,7 @@ import Profile from "./Profile";
 import Referent from "./Referent";
 import OperatorData from "./OperatorData";
 import Discount from "./Discount";
-import { getBadgeStatus } from "./getBadgeStatus";
+import { BadgeStatus } from "./BadgeStatus";
 
 const menuLink = (
   view: string,
@@ -147,7 +147,7 @@ const ConventionDetails = ({
                               >
                                 {d.name}
                               </a>
-                              {getBadgeStatus(d.state)}
+                              <BadgeStatus discountState={d.state} />
                             </li>
                           ))}
                         </ul>

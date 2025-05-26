@@ -1,7 +1,11 @@
 import { DiscountState } from "../../api/generated";
 
-export const getBadgeStatus = (state: DiscountState) => {
-  switch (state) {
+export const BadgeStatus = ({
+  discountState
+}: {
+  discountState: DiscountState;
+}) => {
+  switch (discountState) {
     case "suspended":
       return (
         <span
