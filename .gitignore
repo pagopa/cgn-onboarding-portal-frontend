@@ -25,3 +25,8 @@ dist-ssr
 
 # Allow .js files inside the extensions folder
 !extensions/**/*.js
+
+# Generated files
+src/api/generated
+src/api/generated_backoffice
+src/api/generated_public
