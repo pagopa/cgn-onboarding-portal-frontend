@@ -27,10 +27,10 @@ const ProfileData = () => {
             <h2 className="h5 fw-bold text-dark-blue">Descrizione operatore</h2>
             <table className="table">
               <tbody>
-                {Boolean(profile.name) && (
+                {profile.name && (
                   <ProfileDataItem
                     label="Nome operatore visualizzato"
-                    value={profile.name ?? ""}
+                    value={profile.name}
                   />
                 )}
                 <MultilanguageProfileItem
