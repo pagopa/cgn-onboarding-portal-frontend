@@ -48,7 +48,7 @@ export function TooltipProvider({ children }: ProviderProps): ReactElement {
             <button
               type="button"
               className="close"
-              data-dismiss="alert"
+              data-bs-dismiss="alert"
               onClick={closeTooltip}
             >
               <span>&times;</span>
