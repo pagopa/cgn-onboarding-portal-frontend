@@ -13,10 +13,7 @@ import { authenticationStore } from "./authenticationStore";
 
 export function goToUserLoginPage() {
   const targetUri = import.meta.env.CGN_ONE_IDENTITY_LOGIN_URI;
-  const redirect_uri =
-    window.location.hostname === "localhost"
-      ? `${window.location.origin}/session`
-      : import.meta.env.CGN_ONE_IDENTITY_REDIRECT_URI;
+  const redirect_uri = import.meta.env.CGN_ONE_IDENTITY_REDIRECT_URI;
   const client_id = import.meta.env.CGN_ONE_IDENTITY_CLIENT_ID;
   const state = randomAlphaNumericString(16);
   const nonce = randomAlphaNumericString(16);
@@ -61,10 +58,7 @@ const AdminAccess = new PublicClientApplication({
       "cgnonboardingportaluat.b2clogin.com",
       "cgnonboardingportal.b2clogin.com"
     ],
-    redirectUri:
-      window.location.hostname === "localhost"
-        ? `${window.location.origin}/session`
-        : import.meta.env.CGN_MSAL_REDIRECT_URI,
+    redirectUri: import.meta.env.CGN_MSAL_REDIRECT_URI,
     postLogoutRedirectUri: LOGIN
   },
   cache: {
@@ -214,17 +208,4 @@ export function useLoginRedirect() {
       }
     });
   }, [historyPush, queryClient]);
-}
-
-// developer utility to be able to test from localhost
-if (
-  window.location.hostname === "localhost" &&
-  window.location.pathname === "/dev-auth"
-) {
-  const searchParams = new URLSearchParams(window.location.search);
-  authenticationStore.set(
-    JSON.parse(searchParams.get("authenticationState") ?? "")
-  );
-  // eslint-disable-next-line functional/immutable-data
-  window.location.href = "http://localhost:3000/";
 }

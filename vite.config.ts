@@ -4,9 +4,9 @@ import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 import { imagetools } from "vite-imagetools";
 
-const env = loadEnv("all", process.cwd(), ["CGN_"]);
+const envPrefix = "CGN_";
 
-const PROXY_API_TARGET = `https://${env.CGN_API_DOMAIN}`;
+const env = loadEnv("all", process.cwd(), [envPrefix]);
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -57,26 +57,23 @@ export default defineConfig({
   server: {
     port: 3000,
     strictPort: true,
-    proxy: {
-      "/public": {
-        target: PROXY_API_TARGET,
-        changeOrigin: true,
-        secure: false
-      },
-      "/api": {
-        target: PROXY_API_TARGET,
-        changeOrigin: true,
-        secure: false
-      },
-      "/backoffice": {
-        target: PROXY_API_TARGET,
-        changeOrigin: true,
-        secure: false
-      }
-    }
+    proxy: Object.fromEntries(
+      ["public", "api", "backoffice"].map(path => [
+        `/${path}`,
+        {
+          target: env.CGN_API_URL,
+          headers: {
+            Origin: env.CGN_FRONTEND_URL,
+            Referer: env.CGN_FRONTEND_URL + "/"
+          },
+          changeOrigin: true,
+          secure: false
+        }
+      ])
+    )
   },
   preview: {
     port: 3000
   },
-  envPrefix: "CGN_"
+  envPrefix
 });

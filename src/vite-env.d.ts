@@ -6,7 +6,8 @@ interface ViteTypeOptions {
 }
 
 interface ImportMetaEnv {
-  readonly CGN_API_DOMAIN: string;
+  readonly CGN_FRONTEND_URL: string;
+  readonly CGN_API_URL: string;
   readonly CGN_ONE_IDENTITY_CLIENT_ID: string;
   readonly CGN_ONE_IDENTITY_LOGIN_URI: string;
   readonly CGN_ONE_IDENTITY_REDIRECT_URI: string;

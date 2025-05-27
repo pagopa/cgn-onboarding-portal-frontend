@@ -15,8 +15,7 @@
   - [Run the dashboard](#run-the-dashboard)
   - [Login in localhost](#login-in-localhost)
     - [Option 1: Using the Browser Console](#option-1-using-the-browser-console)
-    - [Option 2: Pressing a button](#option-2-pressing-a-button)
-    - [Option 3: Using the Browser Extension](#option-3-using-the-browser-extension)
+    - [Option 2: Using the Browser Extension](#option-2-using-the-browser-extension)
       - [Steps to Use the Extension](#steps-to-use-the-extension)
  
 
@@ -93,11 +92,7 @@ dialog.showModal();
 ```
 - Paste the snippet that was automatically placed in the clipboard in the browser console and press enter.
 
-### Option 2: Pressing a button
-
-Visiting `https://portal.cgnonboardingportal-uat.pagopa.it/`, in the top right corner there is a dropdown containing the button `authenticate on localhost`
-
-### Option 3: Using the Browser Extension
+### Option 2: Using the Browser Extension
 
 To simplify the process, you can use the provided browser extension. This extension automates the retrieval of the token from the UAT environment and applies it to the localhost environment.
 
