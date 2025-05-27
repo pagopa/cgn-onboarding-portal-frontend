@@ -26,10 +26,12 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      // fix for bootstrap
       "@splidejs/splide/src/css/core/index": path.resolve(
         __dirname,
         "node_modules/@splidejs/splide/src/css/core/index.scss"
       ),
+      // fix for scss imports in node_modules
       "~": path.resolve(__dirname, "./node_modules")
     }
   },
@@ -51,11 +53,10 @@ export default defineConfig({
   },
   build: {
     sourcemap: true
-    // assetsInlineLimit(file) {
-    //   return !file.endsWith(".svg");
-    // }
   },
   server: {
+    port: 3000,
+    strictPort: true,
     proxy: {
       "/public": {
         target: PROXY_API_TARGET,
@@ -73,6 +74,9 @@ export default defineConfig({
         secure: false
       }
     }
+  },
+  preview: {
+    port: 3000
   },
   envPrefix: "CGN_"
 });

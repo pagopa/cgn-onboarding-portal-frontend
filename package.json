@@ -4,9 +4,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start:uat": "cp .env.uat .env.local && vite --port 3000",
-    "start:prod": "cp .env.prod .env.local && vite --port 3000",
-    "preview": "vite preview --port 3000",
+    "start:uat": "cp .env.uat .env.local && vite",
+    "start:prod": "cp .env.prod .env.local && vite",
+    "preview": "vite preview",
     "prebuild": "npm-run-all prebuild:*",
     "build": "yarn prebuild && tsc -b && vite build",
     "prebuild:generate": "yarn run generate",

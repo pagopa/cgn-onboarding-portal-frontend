@@ -69,6 +69,8 @@ $ yarn start:uat
 $ yarn start:prod
 ```
 
+to test minified bundled version of the dashboard use `yarn build:uat && yarn preview` or `yarn build:prod && yarn preview`
+
 ## Login in localhost 
 As soon as the dashboard is up and running, you will see a landing page where you should login. Choose what kind of login do you want (login as Operator or login as Admin).
 After that you logged in successfully, you will be redirected to UAT environment dashboard. In this case, you need to retrieve the token generated in UAT and put it in the localhost environment. You can do this in three ways:

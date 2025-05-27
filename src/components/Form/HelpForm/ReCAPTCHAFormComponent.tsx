@@ -43,10 +43,7 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
         <ReCAPTCHA
           ref={recaptchaRef}
           size="invisible"
-          sitekey={
-            import.meta.env.CGN_RECAPTCHA_API_KEY ??
-            "6Le93sseAAAAAGXS34PkpfmkTThwMhUdklkNtIM5"
-          }
+          sitekey={import.meta.env.CGN_RECAPTCHA_API_KEY}
         />
       )}
     </div>

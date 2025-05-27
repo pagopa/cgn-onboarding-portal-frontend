@@ -3,7 +3,7 @@ script-src 'self' https://www.google.com https://recaptcha.net https://www.gstat
 style-src 'self';
 object-src 'none';
 base-uri 'self';
-connect-src 'self' ${import.meta.env.CGN_API_DOMAIN ? `https://${import.meta.env.CGN_API_DOMAIN}` : ""} ${import.meta.env.CGN_MSAL_AUTHORITY} https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
+connect-src 'self' https://${import.meta.env.CGN_API_DOMAIN} ${import.meta.env.CGN_MSAL_AUTHORITY} https://geocode.search.hereapi.com https://autocomplete.search.hereapi.com;
 font-src 'self' data:;
 frame-src 'self' https://www.google.com https://recaptcha.net;
 img-src 'self' data: https://assets.cdn.io.italia.it ${import.meta.env.CGN_IMAGE_BASE_URL};
