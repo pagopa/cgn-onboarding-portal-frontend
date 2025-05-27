@@ -90,8 +90,5 @@
     "vite-imagetools": "^7.1.0",
     "vite-plugin-svgr": "^4.3.0"
   },
-  "packageManager": "yarn@1.22.22",
-  "engines": {
-    "node": "22.15.0"
-  }
+  "packageManager": "yarn@1.22.22"
 }
