@@ -99,6 +99,9 @@ async function onUserLoginRedirect() {
     return { type: "not-executed" } as const;
   }
   const searchParams = new URLSearchParams(window.location.search);
+  if (searchParams.get("error")) {
+    return { type: "error" } as const;
+  }
   const state = searchParams.get("state") ?? "";
   const code = searchParams.get("code") ?? "";
   try {
@@ -197,6 +200,8 @@ export function useLoginRedirect() {
         });
         resetQueries();
         historyPush(DASHBOARD);
+      } else if (state.type === "error") {
+        historyPush(LOGIN);
       }
     });
 
