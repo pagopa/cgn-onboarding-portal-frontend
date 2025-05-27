@@ -4,15 +4,10 @@ import { adminLogoutPopup } from "./authentication";
 
 // this serves only for testing purposes until multiple logins are not approved
 
-const ALLOW_MULTIPLE_LOGIN = [
-  "localhost",
-  "portal.cgnonboardingportal-uat.pagopa.it"
-].includes(window.location.hostname);
-
 export function SessionSwitch() {
   const authentication = useAuthentication();
   const [isOpen, setIsOpen] = useState(false);
-  if (!ALLOW_MULTIPLE_LOGIN) {
+  if (import.meta.env.CGN_ALLOW_MULTIPLE_LOGIN !== "true") {
     return null;
   }
   return (

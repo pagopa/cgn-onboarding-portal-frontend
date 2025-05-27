@@ -15,10 +15,7 @@ import * as GeneratedPublic from "./generated_public";
 import * as GeneratedIndex from "./generated";
 import * as GeneratedBackoffice from "./generated_backoffice";
 
-const API_DOMAIN =
-  window.location.hostname === "localhost" // use vite proxy on dev machine
-    ? ""
-    : new URL(import.meta.env.CGN_API_URL).host;
+const API_DOMAIN = import.meta.env.CGN_API_URL;
 
 export const API_PUBLIC_BASE_URL = `${API_DOMAIN}/public/v1`;
 

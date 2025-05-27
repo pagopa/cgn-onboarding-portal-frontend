@@ -61,7 +61,7 @@ export default defineConfig({
       ["public", "api", "backoffice"].map(path => [
         `/${path}`,
         {
-          target: env.CGN_API_URL,
+          target: env.CGN_API_PROXY_TARGET_URL,
           headers: {
             Origin: env.CGN_FRONTEND_URL,
             Referer: env.CGN_FRONTEND_URL + "/"

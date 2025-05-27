@@ -6,7 +6,6 @@ interface ViteTypeOptions {
 }
 
 interface ImportMetaEnv {
-  readonly CGN_FRONTEND_URL: string;
   readonly CGN_API_URL: string;
   readonly CGN_ONE_IDENTITY_CLIENT_ID: string;
   readonly CGN_ONE_IDENTITY_LOGIN_URI: string;
@@ -16,6 +15,9 @@ interface ImportMetaEnv {
   readonly CGN_MSAL_REDIRECT_URI: string;
   readonly CGN_IMAGE_BASE_URL: string;
   readonly CGN_RECAPTCHA_API_KEY: string;
+  readonly CGN_ALLOW_MULTIPLE_LOGIN?: string;
+  readonly CGN_FRONTEND_URL?: string;
+  readonly CGN_API_PROXY_TARGET_URL?: string;
 }
 
 interface ImportMeta {
