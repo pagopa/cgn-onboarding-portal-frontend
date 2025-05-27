@@ -12,5 +12,3 @@ export const envVariablesSchema = Yup.object({
   CGN_IMAGE_BASE_URL: Yup.string().required(),
   CGN_RECAPTCHA_API_KEY: Yup.string().required()
 }).required();
-
-export type EnvVariables = Readonly<Yup.InferType<typeof envVariablesSchema>>;
