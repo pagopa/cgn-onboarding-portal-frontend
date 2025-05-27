@@ -1,4 +1,4 @@
-export type AsPicture = {
+type AsPicture = {
   img: { src: string; w: number; h: number };
   sources: {
     avif?: string;

@@ -1,5 +1,11 @@
 declare module "*&as=picture" {
-  import type { AsPicture } from "../utils/vite-imagetools";
+  type AsPicture = {
+    img: { src: string; w: number; h: number };
+    sources: {
+      avif?: string;
+      webp?: string;
+    };
+  };
   const value: AsPicture;
   export default value;
 }
