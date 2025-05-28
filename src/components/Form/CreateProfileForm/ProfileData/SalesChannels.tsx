@@ -102,6 +102,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                               id="street"
                               name={`salesChannel.addresses[${index}].street`}
                               type="text"
+                              placeholder="Inserisci l'indirizzo"
                               className="form-control"
                             />
                             <CustomErrorMessage
