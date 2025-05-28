@@ -76,7 +76,7 @@ const SalesChannelDiscountCodeType = () => {
       title={"Gestione delle opportunità per Carta Giovani Nazionale"}
       description={
         <>
-          Le modalità possibili sono definite nella
+          Le modalità possibili sono definite nella&nbsp;
           <a
             className="font-weight-semibold"
             href="https://docs.pagopa.it/carta-giovani-nazionale"
