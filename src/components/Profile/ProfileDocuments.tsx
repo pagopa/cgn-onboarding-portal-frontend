@@ -66,7 +66,7 @@ const ProfileDocuments = () => {
                     Allegato 1 - Domanda di adesione alla CGN
                   </a>
                   <p className="text-sm fw-light text-dark-blue">
-                    Caricato il
+                    Caricato il{" "}
                     {formatDate(manifestationDocument.documentTimestamp)}
                   </p>
                 </div>
