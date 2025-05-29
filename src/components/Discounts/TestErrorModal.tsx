@@ -13,7 +13,7 @@ export function TestErrorModal({
       <ModalHeader toggle={onClose}>
         Hai terminato tutti i codici sconto della lista
       </ModalHeader>
-      <ModalBody>
+      <ModalBody className="mb-4">
         Per procedere con il test carica una nuova lista di codici
       </ModalBody>
     </Modal>
