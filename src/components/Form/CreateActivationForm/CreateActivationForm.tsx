@@ -1,5 +1,4 @@
 import { useHistory } from "react-router-dom";
-import React from "react";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { remoteData } from "../../../api/common";
 import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";

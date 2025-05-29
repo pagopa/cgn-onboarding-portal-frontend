@@ -1,31 +1,23 @@
-import React from "react";
 import { Field, useFormikContext } from "formik";
 import { InferType } from "yup";
+import { useEffect } from "react";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import FormSection from "../../FormSection";
-import {
-  DiscountCodeType,
-  EntityType,
-  SalesChannelType
-} from "../../../../api/generated";
+import { DiscountCodeType, SalesChannelType } from "../../../../api/generated";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 
-const SalesChannelDiscountCodeType = ({
-  entityType
-}: {
-  entityType: EntityType | undefined;
-}) => {
+const SalesChannelDiscountCodeType = () => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
   const formValues = formikContext.values;
   const formikContextSetFieldValue = formikContext.setFieldValue;
   const updateSalesChannelType = (channelType: SalesChannelType) => () => {
-    formikContext.setFieldValue("salesChannel.channelType", channelType);
+    void formikContext.setFieldValue("salesChannel.channelType", channelType);
   };
   // here we are using an effect because there is more code that uses channelType attribute on the form for checks
   // logically channelType is a derived value based on discountCodeType, addresses, allNationalAddresses
   // channelType can be factored out from the form values, but i still needs to be sent to the backend at this point
-  React.useEffect(() => {
+  useEffect(() => {
     const thereAreSomeAddresses =
       formValues.salesChannel.addresses?.some(
         address =>
@@ -46,7 +38,7 @@ const SalesChannelDiscountCodeType = ({
       thereAreSomeAddresses &&
       chosenChannelType === SalesChannelType.OfflineChannel
     ) {
-      formikContextSetFieldValue(
+      void formikContextSetFieldValue(
         "salesChannel.channelType",
         SalesChannelType.OfflineChannel
       );
@@ -55,7 +47,7 @@ const SalesChannelDiscountCodeType = ({
       thereAreSomeAddresses &&
       chosenChannelType === SalesChannelType.OnlineChannel
     ) {
-      formikContextSetFieldValue(
+      void formikContextSetFieldValue(
         "salesChannel.channelType",
         SalesChannelType.BothChannels
       );
@@ -64,7 +56,7 @@ const SalesChannelDiscountCodeType = ({
       !thereAreSomeAddresses &&
       chosenChannelType === SalesChannelType.OfflineChannel
     ) {
-      formikContextSetFieldValue(
+      void formikContextSetFieldValue(
         "salesChannel.channelType",
         SalesChannelType.OfflineChannel
       );
@@ -73,7 +65,7 @@ const SalesChannelDiscountCodeType = ({
       !thereAreSomeAddresses &&
       chosenChannelType === SalesChannelType.OnlineChannel
     ) {
-      formikContextSetFieldValue(
+      void formikContextSetFieldValue(
         "salesChannel.channelType",
         SalesChannelType.OnlineChannel
       );
@@ -84,7 +76,7 @@ const SalesChannelDiscountCodeType = ({
       title={"Gestione delle opportunità per Carta Giovani Nazionale"}
       description={
         <>
-          Le modalità possibili sono definite nella
+          Le modalità possibili sono definite nella&nbsp;
           <a
             className="font-weight-semibold"
             href="https://docs.pagopa.it/carta-giovani-nazionale"
@@ -109,7 +101,7 @@ const SalesChannelDiscountCodeType = ({
             onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
           />
           <label
-            className="text-sm font-weight-normal text-black"
+            className="text-sm fw-normal text-black form-label"
             htmlFor="api"
           >
             <span className="text-sm">
@@ -136,7 +128,7 @@ const SalesChannelDiscountCodeType = ({
             onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
           />
           <label
-            className="text-sm font-weight-normal text-black"
+            className="text-sm fw-normal text-black form-label"
             htmlFor="staticCode"
           >
             <span className="text-sm">
@@ -161,7 +153,7 @@ const SalesChannelDiscountCodeType = ({
             onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
           />
           <label
-            className="text-sm font-weight-normal text-black"
+            className="text-sm fw-normal text-black form-label"
             htmlFor="bucket"
           >
             <span className="text-sm">
@@ -189,7 +181,7 @@ const SalesChannelDiscountCodeType = ({
             onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
           />
           <label
-            className="text-sm font-weight-normal text-black"
+            className="text-sm fw-normal text-black form-label"
             htmlFor="landingPage"
           >
             <span className="text-sm">
@@ -215,7 +207,7 @@ const SalesChannelDiscountCodeType = ({
             onClick={updateSalesChannelType(SalesChannelType.OfflineChannel)}
           />
           <label
-            className="text-sm font-weight-normal text-black"
+            className="text-sm fw-normal text-black form-label"
             htmlFor="physcalPlace"
           >
             <span className="text-sm">
@@ -226,18 +218,8 @@ const SalesChannelDiscountCodeType = ({
               >
                 Sede fisica
               </a>
-              {(() => {
-                switch (entityType) {
-                  default:
-                  case EntityType.PublicAdministration:
-                    return (
-                      <>
-                        : indicherò una sede fisica dove il cittadino potrà
-                        usufruire dell’opportunità. L’indirizzo è obbligatorio.
-                      </>
-                    );
-                }
-              })()}
+              : indicherò una sede fisica dove il cittadino potrà usufruire
+              dell’opportunità. L’indirizzo è obbligatorio.
             </span>
           </label>
         </div>

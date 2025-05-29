@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import * as Msal from "@azure/msal-browser";
+import { PublicClientApplication } from "@azure/msal-browser";
 import { jwtDecode } from "jwt-decode";
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
@@ -8,12 +8,13 @@ import { OrganizationsDataApi } from "../api/generated";
 import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
 import { SessionApi } from "../api/generated_public";
 import { YupLiteral } from "../utils/yupUtils";
+import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
 import { authenticationStore } from "./authenticationStore";
 
 export function goToUserLoginPage() {
-  const targetUri = process.env.ONE_IDENTITY_LOGIN_URI ?? "";
-  const redirect_uri = process.env.ONE_IDENTITY_REDIRECT_URI ?? "";
-  const client_id = process.env.ONE_IDENTITY_CLIENT_ID ?? "";
+  const targetUri = import.meta.env.CGN_ONE_IDENTITY_LOGIN_URI;
+  const redirect_uri = import.meta.env.CGN_ONE_IDENTITY_REDIRECT_URI;
+  const client_id = import.meta.env.CGN_ONE_IDENTITY_CLIENT_ID;
   const state = randomAlphaNumericString(16);
   const nonce = randomAlphaNumericString(16);
   const targetUrl = `${targetUri}?${new URLSearchParams({
@@ -35,7 +36,7 @@ export function goToAdminLoginPage() {
   const nonce = randomAlphaNumericString(16);
   authenticationStore.setAdminNonceByState(state, nonce);
   void AdminAccess.loginRedirect({
-    scopes: ["openid", process.env.MSAL_CLIENT_ID as string],
+    scopes: ["openid", import.meta.env.CGN_MSAL_CLIENT_ID],
     state,
     nonce
   });
@@ -49,19 +50,15 @@ function randomAlphaNumericString(length: number): string {
   return Array.from(buffer, byte => choices[byte % choices.length]).join("");
 }
 
-const AdminAccess = new Msal.PublicClientApplication({
+const AdminAccess = new PublicClientApplication({
   auth: {
-    clientId: process.env.MSAL_CLIENT_ID as string,
-    authority: process.env.MSAL_AUTHORITY as string,
+    clientId: import.meta.env.CGN_MSAL_CLIENT_ID,
+    authority: import.meta.env.CGN_MSAL_AUTHORITY,
     knownAuthorities: [
-      "testcgnportalbitrock.b2clogin.com",
       "cgnonboardingportaluat.b2clogin.com",
       "cgnonboardingportal.b2clogin.com"
     ],
-    redirectUri:
-      window.location.host === "localhost:3000"
-        ? "http://localhost:3000/session"
-        : (process.env.MSAL_REDIRECT_URI as string),
+    redirectUri: import.meta.env.CGN_MSAL_REDIRECT_URI,
     postLogoutRedirectUri: LOGIN
   },
   cache: {
@@ -87,11 +84,11 @@ const adminJWTPayloadSchema = Yup.object({
   exp: Yup.number().required()
 }).required();
 
-const sessionApi = new SessionApi(undefined, process.env.BASE_PUBLIC_PATH);
+const sessionApi = new SessionApi(undefined, API_PUBLIC_BASE_URL);
 
 const organizationsDataApi = new OrganizationsDataApi(
   undefined,
-  process.env.BASE_API_PATH
+  API_INDEX_BASE_URL
 );
 
 async function onUserLoginRedirect() {
@@ -130,7 +127,7 @@ async function onUserLoginRedirect() {
       merchants: merchantTokensReponse.data.items
     });
     return { type: "success", fiscal_code } as const;
-  } catch (error) {
+  } catch {
     return { type: "error" } as const;
   }
 }
@@ -164,7 +161,7 @@ async function onAdminLoginRedirect() {
       exp
     });
     return { type: "success", name } as const;
-  } catch (error) {
+  } catch {
     return { type: "error" } as const;
   }
 }
@@ -216,17 +213,4 @@ export function useLoginRedirect() {
       }
     });
   }, [historyPush, queryClient]);
-}
-
-// developer utility to be able to test from localhost
-if (
-  process.env.NODE_ENV === "uat" &&
-  window.location.pathname === "/dev-auth"
-) {
-  const searchParams = new URLSearchParams(window.location.search);
-  authenticationStore.set(
-    JSON.parse(searchParams.get("authenticationState") ?? "")
-  );
-  // eslint-disable-next-line functional/immutable-data
-  window.location.href = "http://localhost:3000/";
 }

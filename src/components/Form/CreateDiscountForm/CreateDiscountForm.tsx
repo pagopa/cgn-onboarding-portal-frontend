@@ -1,6 +1,5 @@
 import { Button } from "design-react-kit";
 import { Form, Formik } from "formik";
-import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { remoteData } from "../../../api/common";
@@ -15,7 +14,7 @@ import { discountDataValidationSchema } from "../ValidationSchemas";
 import {
   discountEmptyInitialValues,
   sanitizeDiscountFormValues
-} from "../EditDiscountForm/EditDiscountForm";
+} from "../discountFormUtils";
 
 /**
  * These are the entry points for forms for discounts. This comment is repeated in every file.
@@ -75,7 +74,7 @@ const CreateDiscountForm = () => {
             />
             <div className="mt-10">
               <Button
-                className="px-14 mr-4"
+                className="px-14 me-4"
                 outline
                 color="primary"
                 tag="button"
@@ -85,7 +84,7 @@ const CreateDiscountForm = () => {
               </Button>
               <Button
                 type="submit"
-                className="px-14 mr-4"
+                className="px-14 me-4"
                 color="primary"
                 tag="button"
                 aria-disabled={isSubmitting}

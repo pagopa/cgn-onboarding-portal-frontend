@@ -1,7 +1,7 @@
-import React from "react";
 import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
+import { useRef } from "react";
 import { ADMIN_PANEL_ACCESSI_CREA } from "../../navigation/routes";
 import { GetOrgsParams } from "./OperatorActivations";
 
@@ -19,8 +19,7 @@ const ActivationsFilter = ({
 }) => {
   const history = useHistory();
 
-  // eslint-disable-next-line functional/no-let
-  let timeout: any = null;
+  const timeoutRef = useRef<number | null>(null);
 
   const initialValues: FilterFormValues = {
     searchQuery: "",
@@ -43,10 +42,10 @@ const ActivationsFilter = ({
         <Form>
           <div className="d-flex justify-content-between">
             {dirty ? (
-              <h2 className="h4 font-weight-bold text-dark-blue">
+              <h2 className="h4 fw-bold text-dark-blue">
                 Risultati della ricerca
                 <span
-                  className="primary-color ml-2 text-sm font-weight-regular cursor-pointer"
+                  className="primary-color ms-2 text-sm fw-regular cursor-pointer"
                   onClick={() => {
                     resetForm();
                     void submitForm();
@@ -56,7 +55,7 @@ const ActivationsFilter = ({
                 </span>
               </h2>
             ) : (
-              <h2 className="h4 font-weight-bold text-dark-blue">
+              <h2 className="h4 fw-bold text-dark-blue">
                 Impostazioni di accesso
               </h2>
             )}
@@ -70,20 +69,20 @@ const ActivationsFilter = ({
                 name="searchQuery"
                 type="text"
                 placeholder="Cerca Operatore"
-                onChange={(e: { target: { value: any } }) => {
-                  setFieldValue("searchQuery", e.target.value);
-                  if (timeout) {
-                    clearTimeout(timeout);
+                onChange={(e: { target: { value: string } }) => {
+                  void setFieldValue("searchQuery", e.target.value);
+                  if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
                   }
-                  timeout = setTimeout(() => {
-                    setFieldValue("page", 0);
+                  timeoutRef.current = window.setTimeout(() => {
+                    void setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);
                 }}
                 style={{ maxWidth: "275px" }}
               />
               <Button
-                className="ml-5 btn-sm"
+                className="ms-5 btn-sm"
                 color="primary"
                 tag="button"
                 onClick={() => history.push(ADMIN_PANEL_ACCESSI_CREA)}

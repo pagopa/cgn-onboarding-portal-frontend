@@ -1,20 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AxiosError } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormSection from "../../FormSection";
 import { setImage } from "../../../../store/agreement/agreementSlice";
-import PlusIcon from "../../../../assets/icons/plus.svg";
+import PlusIcon from "../../../../assets/icons/plus.svg?react";
 import { RootState } from "../../../../store/store";
 import { remoteData } from "../../../../api/common";
 
 const FooterDescription = (
   <div>
-    <p className="text-base font-weight-normal text-gray mb-0">
+    <p className="text-base fw-normal text-gray mb-0">
       Il file deve avere le seguenti caratteristiche:
     </p>
-    <ul className="pl-4 text-base font-weight-normal text-gray">
+    <ul className="ps-4 text-base fw-normal text-gray">
       <li>Dimensione dell’immagine: minimo 800x600px</li>
       <li>Dimensione del file: massimo 5Mb</li>
       <li>Formato del file: JPG, PNG</li>
@@ -22,21 +22,20 @@ const FooterDescription = (
   </div>
 );
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const ProfileImage = () => {
   const dispatch = useDispatch();
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const imageInput = useRef<any>();
+  const imageInput = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {
     if (
       agreement.imageUrl &&
-      !agreement.imageUrl.includes(process.env.BASE_IMAGE_PATH as string)
+      !agreement.imageUrl.includes(import.meta.env.CGN_IMAGE_BASE_URL)
     ) {
       dispatch(
-        setImage(`${process.env.BASE_IMAGE_PATH}/${agreement.imageUrl}`)
+        setImage(`${import.meta.env.CGN_IMAGE_BASE_URL}/${agreement.imageUrl}`)
       );
     }
   }, [agreement.imageUrl, dispatch]);
@@ -52,15 +51,20 @@ const ProfileImage = () => {
     }
   };
 
-  const uploadImage = async (image: any) => {
+  const uploadImage = async (image: FileList | null | undefined) => {
+    if (!image || image.length === 0) {
+      throw new Error();
+    }
     try {
       setLoading(true);
       const data = await remoteData.Index.Agreement.uploadImage.method({
         agreementId: agreement.id,
-        image: image[0]
+        image: image?.[0]
       });
       if (data.imageUrl) {
-        dispatch(setImage(`${process.env.BASE_IMAGE_PATH}/${data.imageUrl}`));
+        dispatch(
+          setImage(`${import.meta.env.CGN_IMAGE_BASE_URL}/${data.imageUrl}`)
+        );
       }
     } catch (error) {
       if (
@@ -118,13 +122,13 @@ const ProfileImage = () => {
                     ref={imageInput}
                     accept="image/png, image/jpeg"
                     onChange={() => {
-                      void uploadImage(imageInput.current.files);
+                      void uploadImage(imageInput.current?.files);
                     }}
                     style={{ display: "none" }}
                   />
                   <label
                     htmlFor="profileImage"
-                    className="ml-4 mb-0 text-primary underline cursor-pointer"
+                    className="ms-4 mb-0 text-primary text-decoration-underline cursor-pointer form-label"
                   >
                     Cambia immagine
                   </label>
@@ -139,10 +143,10 @@ const ProfileImage = () => {
                     ref={imageInput}
                     accept="image/png, image/jpeg"
                     onChange={() => {
-                      void uploadImage(imageInput.current.files);
+                      void uploadImage(imageInput.current?.files);
                     }}
                   />
-                  <label htmlFor="profileImage">
+                  <label htmlFor="profileImage" className="form-label">
                     <PlusIcon className="icon icon-sm" />
                     <span>Carica foto</span>
                   </label>

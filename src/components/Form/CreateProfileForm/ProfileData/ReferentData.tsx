@@ -1,12 +1,12 @@
-import React from "react";
 import { Field, FieldArray, useFormikContext } from "formik";
+import { Fragment } from "react";
 import { InferType } from "yup";
 import FormSection from "../../FormSection";
 import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
-import { Referent } from "../../../../api/generated";
+import type { Referent } from "../../../../api/generated";
 
 const MAX_SECONDARY_REFERENTS = 4;
 
@@ -56,6 +56,7 @@ const Referent = ({
           name={`${referentFieldName}.firstName`}
           placeholder="Inserisci il nome del referente"
           type="text"
+          className="form-control"
         />
         <CustomErrorMessage name={`${referentFieldName}.firstName`} />
       </InputField>
@@ -69,6 +70,7 @@ const Referent = ({
           name={`${referentFieldName}.lastName`}
           placeholder="Inserisci il cognome del referente"
           type="text"
+          className="form-control"
         />
         <CustomErrorMessage name={`${referentFieldName}.lastName`} />
       </InputField>
@@ -81,6 +83,7 @@ const Referent = ({
           id={`${referentFieldId}.role`}
           name={`${referentFieldName}.role`}
           type="text"
+          className="form-control"
           placeholder="Inserisci il ruolo del referente"
         />
         <CustomErrorMessage name={`${referentFieldName}.role`} />
@@ -94,6 +97,7 @@ const Referent = ({
           id={`${referentFieldId}.emailAddress`}
           name={`${referentFieldName}.emailAddress`}
           type="email"
+          className="form-control"
           placeholder="Inserisci la e-mail del referente"
         />
         <CustomErrorMessage name={`${referentFieldName}.emailAddress`} />
@@ -109,13 +113,14 @@ const Referent = ({
           name={`${referentFieldName}.telephoneNumber`}
           type="tel"
           placeholder="Inserisci il numero di telefono del referente"
+          className="form-control"
         />
         <CustomErrorMessage name={`${referentFieldName}.telephoneNumber`} />
       </InputField>
       {showAdd && (
         <div className="mt-8 cursor-pointer" onClick={onAdd}>
-          <PlusCircleIcon className="mr-2" />
-          <span className="text-base font-weight-semibold text-blue">
+          <PlusCircleIcon className="me-2" />
+          <span className="text-base fw-semibold text-blue">
             Aggiungi un referente
           </span>
         </div>
@@ -145,7 +150,7 @@ function ReferentData({ children }: { children?: React.ReactNode }) {
         const noSecondaryReferents =
           formikContext.values.secondaryReferents.length === 0;
         return (
-          <React.Fragment>
+          <Fragment>
             <Referent
               index={null}
               showAdd={noSecondaryReferents}
@@ -155,24 +160,22 @@ function ReferentData({ children }: { children?: React.ReactNode }) {
             >
               {noSecondaryReferents ? children : undefined}
             </Referent>
-            {formikContext.values.secondaryReferents.map(
-              (referent, index, array) => {
-                const isLast = index === array.length - 1;
-                return (
-                  <Referent
-                    key={index}
-                    index={index}
-                    showAdd={isLast && array.length < MAX_SECONDARY_REFERENTS}
-                    onAdd={add}
-                    showRemove={true}
-                    onRemove={() => arrayHelpers.remove(index)}
-                  >
-                    {isLast ? children : undefined}
-                  </Referent>
-                );
-              }
-            )}
-          </React.Fragment>
+            {formikContext.values.secondaryReferents.map((_, index, array) => {
+              const isLast = index === array.length - 1;
+              return (
+                <Referent
+                  key={index}
+                  index={index}
+                  showAdd={isLast && array.length < MAX_SECONDARY_REFERENTS}
+                  onAdd={add}
+                  showRemove={true}
+                  onRemove={() => arrayHelpers.remove(index)}
+                >
+                  {isLast ? children : undefined}
+                </Referent>
+              );
+            })}
+          </Fragment>
         );
       }}
     />

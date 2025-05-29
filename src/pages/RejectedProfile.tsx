@@ -1,11 +1,10 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { RootState } from "../store/store";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
-import DocumentFail from "../assets/icons/document_fail.svg";
+import DocumentFail from "../assets/icons/document_fail.svg?react";
 import { CREATE_PROFILE } from "../navigation/routes";
 import CgnLogo from "../components/Logo/CgnLogo";
 import { useAuthentication } from "../authentication/AuthenticationContext";
@@ -22,9 +21,7 @@ const RejectedProfile = () => {
             <div className="row">
               <div className="col-9">
                 <h1 className="h5">Carta Giovani Nazionale</h1>
-                <h2 className="h2 text-dark-blue font-weight-bold">
-                  Portale Operatori
-                </h2>
+                <h2 className="h2 text-dark-blue fw-bold">Portale Operatori</h2>
               </div>
               <div className="col-3 d-flex justify-content-end">
                 <CgnLogo />
@@ -32,7 +29,7 @@ const RejectedProfile = () => {
             </div>
           </div>
           <div className="p-20 mt-4 bg-white d-flex flex-column align-items-center">
-            <h2 className="h2 mb-4 text-dark-blue font-weight-bold">
+            <h2 className="h2 mb-4 text-dark-blue fw-bold">
               Richiesta di convenzione rifiutata
             </h2>
             <DocumentFail />
@@ -46,7 +43,7 @@ const RejectedProfile = () => {
             <div>
               <Button
                 color="primary"
-                className="ml-4"
+                className="ms-4"
                 outline
                 onClick={() => {
                   authentication.logout(authentication.currentSession);
@@ -57,7 +54,7 @@ const RejectedProfile = () => {
               </Button>
               <Button
                 color="primary"
-                className="ml-4"
+                className="ms-4"
                 onClick={() => history.push(CREATE_PROFILE)}
                 style={{ width: "175px" }}
               >

@@ -1,10 +1,9 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { remoteData } from "../../api/common";
 import { EDIT_PROFILE } from "../../navigation/routes";
 import { RootState } from "../../store/store";
-import { Profile, Referent } from "../../api/generated";
+import type { Profile, Referent } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import ProfileItem from "./ProfileItem";
 import ProfileDocuments from "./ProfileDocuments";
@@ -26,7 +25,7 @@ const Profile = () => {
       {profile && (
         <section className="mt-2 px-8 py-10 bg-white">
           <section>
-            <h2 className="h5 font-weight-bold text-dark-blue">
+            <h2 className="h5 fw-bold text-dark-blue">
               Dati relativi all&apos;operatore
             </h2>
             <table className="table border-bottom mb-4">
@@ -66,9 +65,7 @@ const Profile = () => {
                   : `Referente ${index + 1}`;
               return (
                 <section key={index}>
-                  <h2 className="h5 pt-8 font-weight-bold text-dark-blue">
-                    {title}
-                  </h2>
+                  <h2 className="h5 pt-8 fw-bold text-dark-blue">{title}</h2>
                   <table className="table">
                     <tbody>
                       <ProfileItem label="Nome" value={referent.firstName} />

@@ -1,12 +1,10 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Column, useExpanded, useSortBy, useTable } from "react-table";
 import { Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
 import { compareAsc, format } from "date-fns";
-import { omit } from "lodash";
+import omit from "lodash/omit";
 import { remoteData } from "../../api/common";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
@@ -15,7 +13,8 @@ import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
-import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
+import DiscountDetailRow from "./DiscountDetailRow";
+import { DiscountComponent } from "./getDiscountComponent";
 import UnpublishModal from "./UnpublishModal";
 import TestModal from "./TestModal";
 
@@ -61,7 +60,7 @@ const Discounts = () => {
     [discountsQuery.data?.items]
   );
   const invalidateDiscountsQuery = (
-    data: unknown,
+    _: unknown,
     { agreementId }: { agreementId: string }
   ) => {
     remoteData.Index.Discount.getDiscounts.invalidateQueries({
@@ -188,7 +187,11 @@ const Discounts = () => {
         Header: "Stato",
         accessor: "state",
         Cell({ row }) {
-          return <span>{getDiscountComponent(row.values.state)}</span>;
+          return (
+            <span>
+              <DiscountComponent discountState={row.values.state} />
+            </span>
+          );
         },
         disableSortBy: true
       },
@@ -315,17 +318,16 @@ const Discounts = () => {
             {rows.map(row => {
               prepareRow(row);
               return (
-                <React.Fragment key={row.getRowProps().key}>
+                <Fragment key={row.getRowProps().key}>
                   <tr
                     className="cursor-pointer"
                     onClick={() => row.toggleRowExpanded()}
                   >
                     {row.cells.map((cell, i) => (
-                      // eslint-disable-next-line react/jsx-key
                       <td
                         className={`
-                        ${i === 0 ? "pl-6" : ""}
-                        ${i === headerGroups.length - 1 ? "pr-6" : ""}
+                        ${i === 0 ? "ps-6" : ""}
+                        ${i === headerGroups.length - 1 ? "pe-6" : ""}
                         px-3 py-2 border-bottom text-sm
                         `}
                         {...cell.getCellProps()}
@@ -341,7 +343,7 @@ const Discounts = () => {
                     ))}
                   </tr>
                   {row.isExpanded ? (
-                    <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
+                    <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
                       <td colSpan={visibleColumns.length}>
                         {
                           <DiscountDetailRow
@@ -380,7 +382,7 @@ const Discounts = () => {
                       </td>
                     </tr>
                   ) : null}
-                </React.Fragment>
+                </Fragment>
               );
             })}
           </tbody>
@@ -441,15 +443,15 @@ function IsVisible({ discount }: { discount: Discount }) {
   if (isVisible) {
     return (
       <span className="d-flex flex-row align-items-center">
-        <Icon icon="it-password-visible" size="sm" className="mr-1" />
-        <span className="text-base font-weight-normal text-gray">SI</span>
+        <Icon icon="it-password-visible" size="sm" className="me-1" />
+        <span className="text-base fw-normal text-gray">SI</span>
       </span>
     );
   } else {
     return (
       <span className="d-flex flex-row align-items-center">
-        <Icon icon="it-password-invisible" size="sm" className="mr-1" />
-        <span className="text-base font-weight-normal text-gray">NO</span>
+        <Icon icon="it-password-invisible" size="sm" className="me-1" />
+        <span className="text-base fw-normal text-gray">NO</span>
       </span>
     );
   }
