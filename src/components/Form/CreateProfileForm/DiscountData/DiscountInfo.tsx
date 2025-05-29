@@ -136,7 +136,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         <div className="col-5">
           <FormField
             htmlFor="startDate"
-            title="Data di inizio dell’opportunità"
+            title="Data d'inizio opportunità"
             description="Indica la data e l’ora in cui far iniziare l’opportunità"
             isVisible
             required
