@@ -112,9 +112,9 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
             l’esito.
           </p>
         )}
-        <div className="mt-10">
+        <div className="d-flex mt-10 gap-4 flex-wrap">
           <Button
-            className="px-14 me-4"
+            className="px-14"
             color="primary"
             outline
             tag="button"

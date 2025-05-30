@@ -169,9 +169,9 @@ function OperatorDataButtons({
   isEnabled: boolean;
 }) {
   return (
-    <div className="mt-10">
+    <div className="d-flex mt-10 gap-4 flex-wrap">
       <Button
-        className="px-14 me-4"
+        className="px-14"
         outline
         color="primary"
         tag="button"
@@ -181,7 +181,7 @@ function OperatorDataButtons({
       </Button>
       <Button
         type="submit"
-        className="px-14 me-4"
+        className="px-14"
         color="primary"
         tag="button"
         disabled={!isEnabled}
