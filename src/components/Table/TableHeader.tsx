@@ -25,8 +25,9 @@ const TableHeader = ({ headerGroups }: Props) => (
               ${i === headerGroup.headers.length - 1 ? "pe-6" : ""}
               px-3 py-2 fw-bold text-gray
               text-uppercase text-nowrap
+              align-middle
             `}
-            style={{ fontSize: "0.75rem", verticalAlign: "middle" }}
+            style={{ fontSize: "0.75rem" }}
           >
             {column.render("Header")}
             <span style={{ position: "relative" }}>

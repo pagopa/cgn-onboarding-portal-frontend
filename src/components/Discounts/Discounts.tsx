@@ -278,115 +278,117 @@ const Discounts = () => {
       </div>
       {(agreement.state === AgreementState.ApprovedAgreement ||
         entityType === EntityType.Private) && (
-        <table
-          {...getTableProps()}
-          style={{ width: "100%" }}
-          className="mt-2 bg-white"
-        >
-          <TableHeader headerGroups={headerGroups} />
-          <tbody {...getTableBodyProps()}>
-            {maxPublishedDiscountsReached && (
-              <tr>
-                <td
-                  colSpan={5}
-                  style={{ padding: "24px 32px" }}
-                  className="border-bottom"
-                >
-                  <div
-                    style={{
-                      borderRadius: "4px",
-                      borderLeft: "4px solid #FFCB46",
-                      padding: "16px",
-                      gap: "16px",
-                      boxShadow:
-                        "0px 1px 10px 0px #002B551A, 0px 4px 5px 0px #002B550D, 0px 2px 4px -1px #002B551A"
-                    }}
-                    className="d-flex flex-row align-items-center"
+        <div className="table-responsive mb-0 mt-2 bg-white table">
+          <table
+            {...getTableProps()}
+            style={{ width: "100%" }}
+            className="table mb-0"
+          >
+            <TableHeader headerGroups={headerGroups} />
+            <tbody {...getTableBodyProps()}>
+              {maxPublishedDiscountsReached && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    style={{ padding: "24px 32px" }}
+                    className="border-bottom align-middle"
                   >
-                    <Icon
-                      icon="it-warning-circle"
-                      style={{ fill: "#FFCB46" }}
-                    />
-                    <div style={{ fontSize: "16px", fontWeight: 600 }}>
-                      Hai raggiunto il numero massimo di opportunità pubblicate
-                      nello stesso momento
+                    <div
+                      style={{
+                        borderRadius: "4px",
+                        borderLeft: "4px solid #FFCB46",
+                        padding: "16px",
+                        gap: "16px",
+                        boxShadow:
+                          "0px 1px 10px 0px #002B551A, 0px 4px 5px 0px #002B550D, 0px 2px 4px -1px #002B551A"
+                      }}
+                      className="d-flex flex-row align-items-center"
+                    >
+                      <Icon
+                        icon="it-warning-circle"
+                        style={{ fill: "#FFCB46" }}
+                      />
+                      <div style={{ fontSize: "16px", fontWeight: 600 }}>
+                        Hai raggiunto il numero massimo di opportunità
+                        pubblicate nello stesso momento
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            )}
-            {rows.map(row => {
-              prepareRow(row);
-              return (
-                <Fragment key={row.getRowProps().key}>
-                  <tr
-                    className="cursor-pointer"
-                    onClick={() => row.toggleRowExpanded()}
-                  >
-                    {row.cells.map((cell, i) => (
-                      <td
-                        className={`
+                  </td>
+                </tr>
+              )}
+              {rows.map(row => {
+                prepareRow(row);
+                return (
+                  <Fragment key={row.getRowProps().key}>
+                    <tr
+                      className="cursor-pointer"
+                      onClick={() => row.toggleRowExpanded()}
+                    >
+                      {row.cells.map((cell, i) => (
+                        <td
+                          className={`
                         ${i === 0 ? "ps-6" : ""}
                         ${i === headerGroups.length - 1 ? "pe-6" : ""}
-                        px-3 py-2 border-bottom text-sm
+                        px-3 py-2 border-bottom text-sm align-middle
                         `}
-                        {...cell.getCellProps()}
-                        key={i}
-                        style={
-                          cell.column.id === "expander"
-                            ? { width: "calc(32px + 0.75rem * 2)" }
-                            : {}
-                        }
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    ))}
-                  </tr>
-                  {row.isExpanded ? (
-                    <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                      <td colSpan={visibleColumns.length}>
-                        {
-                          <DiscountDetailRow
-                            row={row}
-                            agreement={agreement}
-                            profile={profile}
-                            onPublish={() => {
-                              setSelectedDiscountAction({
-                                action: "publish",
-                                discountId: row.original.id
-                              });
-                            }}
-                            onUnpublish={() => {
-                              setSelectedDiscountAction({
-                                action: "unpublish",
-                                discountId: row.original.id
-                              });
-                            }}
-                            onDelete={() => {
-                              setSelectedDiscountAction({
-                                action: "delete",
-                                discountId: row.original.id
-                              });
-                            }}
-                            onTest={() => {
-                              setSelectedDiscountAction({
-                                action: "test",
-                                discountId: row.original.id
-                              });
-                            }}
-                            maxPublishedDiscountsReached={
-                              maxPublishedDiscountsReached
-                            }
-                          />
-                        }
-                      </td>
+                          {...cell.getCellProps()}
+                          key={i}
+                          style={
+                            cell.column.id === "expander"
+                              ? { width: "calc(32px + 0.75rem * 2)" }
+                              : {}
+                          }
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      ))}
                     </tr>
-                  ) : null}
-                </Fragment>
-              );
-            })}
-          </tbody>
-        </table>
+                    {row.isExpanded ? (
+                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                        <td colSpan={visibleColumns.length}>
+                          {
+                            <DiscountDetailRow
+                              row={row}
+                              agreement={agreement}
+                              profile={profile}
+                              onPublish={() => {
+                                setSelectedDiscountAction({
+                                  action: "publish",
+                                  discountId: row.original.id
+                                });
+                              }}
+                              onUnpublish={() => {
+                                setSelectedDiscountAction({
+                                  action: "unpublish",
+                                  discountId: row.original.id
+                                });
+                              }}
+                              onDelete={() => {
+                                setSelectedDiscountAction({
+                                  action: "delete",
+                                  discountId: row.original.id
+                                });
+                              }}
+                              onTest={() => {
+                                setSelectedDiscountAction({
+                                  action: "test",
+                                  discountId: row.original.id
+                                });
+                              }}
+                              maxPublishedDiscountsReached={
+                                maxPublishedDiscountsReached
+                              }
+                            />
+                          }
+                        </td>
+                      </tr>
+                    ) : null}
+                  </Fragment>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
       {agreement.state === AgreementState.ApprovedAgreement ? (
         <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
