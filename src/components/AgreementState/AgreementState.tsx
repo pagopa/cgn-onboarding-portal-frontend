@@ -7,7 +7,7 @@ import Check from "../../assets/icons/check.svg";
 
 type Props = {
   state: AgreementStateType;
-  startDate: any;
+  startDate?: string;
 };
 
 const DateLabel = ({ className = "", title, date }: any) => {
