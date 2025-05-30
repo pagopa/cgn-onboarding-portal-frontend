@@ -68,9 +68,9 @@ const SelectCompany = () => {
                   </label>
                 </div>
               ))}
-              <div className="mt-10 d-flex flex-row">
+              <div className="mt-10 d-flex flex-row gap-4 flex-wrap">
                 <Button
-                  className="px-14 me-4"
+                  className="px-14"
                   outline
                   color="primary"
                   tag="button"
@@ -82,7 +82,7 @@ const SelectCompany = () => {
                 </Button>
                 <Button
                   disabled={!selectedCompany}
-                  className="px-14 me-4"
+                  className="px-14"
                   color="primary"
                   tag="button"
                   onClick={onConfirmSelection}
