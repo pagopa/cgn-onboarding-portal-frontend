@@ -123,9 +123,9 @@ const FileRow = ({
       <div className="d-flex flex-row justify-content-between align-items-center">
         <div className="d-flex flex-row align-items-center">
           {!uploadedDoc ? (
-            <DocumentIcon className="me-4" />
+            <DocumentIcon className="me-4" style={{ flexShrink: 0 }} />
           ) : (
-            <DocumentSuccess className="me-4" />
+            <DocumentSuccess className="me-4" style={{ flexShrink: 0 }} />
           )}
           {uploadedDoc ? (
             <div className="d-flex flex-column ">
