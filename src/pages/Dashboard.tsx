@@ -58,7 +58,6 @@ const Dashboard = () => {
             <AgreementState
               state={agreement.state}
               startDate={agreement.startDate}
-              endDate={agreement.endDate}
             />
           </div>
         )}
