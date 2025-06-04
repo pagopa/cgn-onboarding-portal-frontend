@@ -128,7 +128,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
               </>
             ) : (
               <>
-                La modalità {discountOption} non è al momento compatibile con
+                La modalità {discountOption()} non è al momento compatibile con
                 EYCA. <br /> Puoi comunque manifestare il tuo interesse ad
                 aderire e definire i dettagli con il Dipartimento in un secondo
                 momento.
@@ -153,13 +153,13 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
               }
               type="checkbox"
               onChange={(event: { target: { checked: boolean } }) => {
+                setFieldValue(
+                  hasIndex
+                    ? `discounts[${index}].visibleOnEyca`
+                    : `visibleOnEyca`,
+                  event.target.checked
+                );
                 if (isEycaSupported) {
-                  setFieldValue(
-                    hasIndex
-                      ? `discounts[${index}].visibleOnEyca`
-                      : `visibleOnEyca`,
-                    event.target.checked
-                  );
                   if (event.target.checked) {
                     openModal();
                   }
