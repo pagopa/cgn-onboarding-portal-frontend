@@ -17,7 +17,6 @@ export const createAgreement = createAsyncThunk(
 interface ExtendedAgreement extends Agreement {
   reasonMessage?: string;
   startDate?: string;
-  endDate?: string;
 }
 
 interface AgreementState {

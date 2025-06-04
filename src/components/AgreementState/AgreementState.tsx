@@ -6,8 +6,7 @@ import Check from "../../assets/icons/check.svg?react";
 
 type Props = {
   state: AgreementStateType;
-  startDate: string | undefined;
-  endDate: string | undefined;
+  startDate?: string;
 };
 
 const DateLabel = ({
@@ -28,7 +27,7 @@ const DateLabel = ({
   );
 };
 
-const AgreementState = ({ state, startDate, endDate }: Props) => (
+const AgreementState = ({ state, startDate }: Props) => (
   <section className="bg-white d-flex flex-column align-items-center px-4">
     <h1 className="pt-7 text-base fw-semibold text-dark-blue text-uppercase tracking">
       PagoPA
@@ -60,7 +59,6 @@ const AgreementState = ({ state, startDate, endDate }: Props) => (
         style={{ width: "100%" }}
       >
         <DateLabel title="Data di inizio" date={startDate} />
-        <DateLabel title="Data di fine" date={endDate} />
       </div>
     )}
     {state === AgreementStateType.PendingAgreement && (

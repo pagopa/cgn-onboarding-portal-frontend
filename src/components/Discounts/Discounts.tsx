@@ -17,6 +17,7 @@ import DiscountDetailRow from "./DiscountDetailRow";
 import { DiscountComponent } from "./getDiscountComponent";
 import UnpublishModal from "./UnpublishModal";
 import TestModal from "./TestModal";
+import { TestErrorModal } from "./TestErrorModal";
 
 const Discounts = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
@@ -121,6 +122,9 @@ const Discounts = () => {
     });
   };
 
+  const [showTestBucketErrorModal, setShowTestBucketErrorModal] =
+    useState(false);
+
   const testDiscountMutation =
     remoteData.Index.Discount.testDiscount.useMutation({
       onSuccess: invalidateDiscountsQuery,
@@ -132,6 +136,12 @@ const Discounts = () => {
           throwErrorTooltip(
             "Le date di validità dell'opportunità sono scadute. Aggiorna le date e riprova."
           );
+        } else if (
+          error.status === 400 &&
+          error.response?.data ===
+            "CANNOT_PROCEED_WITH_DISCOUNT_WITH_EMPTY_BUCKET"
+        ) {
+          setShowTestBucketErrorModal(true);
         } else {
           throwErrorTooltip(
             "Errore durante la richiesta di test dell'opportunità"
@@ -274,6 +284,10 @@ const Discounts = () => {
               deleteDiscount(selectedDiscountAction.discountId);
             }
           }}
+        />
+        <TestErrorModal
+          isOpen={showTestBucketErrorModal}
+          onClose={() => setShowTestBucketErrorModal(false)}
         />
       </div>
       {(agreement.state === AgreementState.ApprovedAgreement ||

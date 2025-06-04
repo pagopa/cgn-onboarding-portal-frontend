@@ -63,7 +63,7 @@ const DiscountDetailRow = ({
     <div className={"mt-10 d-flex flex-row justify-content-end"}>
       <Button
         color="danger"
-        className={"me-2 d-flex align-items-center"}
+        className="me-2 d-flex align-items-center"
         outline
         icon
         tag="button"
