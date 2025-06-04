@@ -93,7 +93,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                   {formValues.salesChannel?.allNationalAddresses === false && (
                     <>
                       <div className="mt-10 row">
-                        <div className="col-9">
+                        <div className="col-7">
                           <InputFieldMultiple
                             htmlFor="street"
                             title="Indirizzo"
@@ -110,7 +110,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                             />
                           </InputFieldMultiple>
                         </div>
-                        <div className="col-3">
+                        <div className="col-2 offset-1">
                           <InputFieldMultiple htmlFor="zipCode" title="CAP">
                             <Field
                               id="zipCode"
@@ -126,7 +126,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                         </div>
                       </div>
                       <div className="mt-10 row">
-                        <div className="col-9">
+                        <div className="col-6">
                           <InputFieldMultiple htmlFor="city" title="Città">
                             <Field
                               id="city"
@@ -140,7 +140,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                             />
                           </InputFieldMultiple>
                         </div>
-                        <div className="col-3">
+                        <div className="col-3 offset-1">
                           <InputFieldMultiple
                             htmlFor="district"
                             title="Provincia"

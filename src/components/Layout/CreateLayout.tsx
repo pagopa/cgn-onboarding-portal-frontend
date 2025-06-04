@@ -19,7 +19,7 @@ const CreateLayout = ({
 }: Props) => (
   <Layout>
     <Container className="mt-20 mb-64">
-      <div className="col-12 px-12">
+      <div className="col-10 offset-1">
         <Breadcrumb breadcrumbLink={breadcrumbLink}>
           {breadcrumbLabel}
         </Breadcrumb>
