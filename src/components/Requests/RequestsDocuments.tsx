@@ -45,8 +45,8 @@ const CheckedDocument = ({
             className="d-flex flex-row align-items-center cursor-pointer"
             onClick={() => deleteDocument(doc.documentType)}
           >
-            <Icon icon="it-delete" size="sm" color="primary" />
-            <span className="text-sm text-blue">Elimina</span>
+            <Icon icon="it-delete" size="sm" color="danger" />
+            <span className="text-sm text-danger">Elimina</span>
           </span>
         )}
       </div>

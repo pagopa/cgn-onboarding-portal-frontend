@@ -62,14 +62,14 @@ const DiscountDetailRow = ({
   const getDiscountButtons = (row: Row<Discount>) => (
     <div className={"mt-10 d-flex flex-row justify-content-end"}>
       <Button
-        color={"secondary"}
+        color="danger"
         className={"me-2 d-flex align-items-center"}
         outline
         icon
         tag="button"
         onClick={onDelete}
       >
-        <TrashIcon fill={"#5C6F82"} />
+        <TrashIcon fill={"#CC334D"} />
         Elimina
       </Button>
       <Button
