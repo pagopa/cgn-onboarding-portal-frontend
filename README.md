@@ -68,7 +68,7 @@ $ yarn start:uat
 $ yarn start:prod
 ```
 
-to test minified bundled version of the dashboard use `yarn preview:uat` or `yarn preview:prod` depending on which backend you want to point to.
+to test minified bundled version of the dashboard use `yarn build:uat-local && yarn preview` or `yarn build:prod-local && yarn preview` depending on which backend you want to point to.
 
 ## Login in localhost 
 As soon as the dashboard is up and running, you will see a landing page where you should login. Choose what kind of login do you want (login as Operator or login as Admin).

@@ -6,8 +6,7 @@
   "scripts": {
     "start:uat": "cp .env.uat-local .env.local && vite",
     "start:prod": "cp .env.prod-local .env.local && vite",
-    "preview:uat": "cp .env.uat-local .env.local && yarn build && vite preview",
-    "preview:prod": "cp .env.prod-local .env.local && yarn build && vite preview",
+    "preview": "vite preview",
     "prebuild": "npm-run-all prebuild:*",
     "build": "yarn prebuild && tsc -b && vite build",
     "prebuild:generate": "yarn run generate",
@@ -15,6 +14,8 @@
     "prebuild:tsc": "tsc -b --noEmit",
     "build:prod": "cp .env.prod .env.local && yarn build",
     "build:uat": "cp .env.uat .env.local && yarn build",
+    "build:prod-local": "cp .env.prod-local .env.local && yarn build",
+    "build:uat-local": "cp .env.uat-local .env.local && yarn build",
     "test": "jest --passWithNoTests",
     "test:coverage": "jest --passWithNoTests --coverage --coverageReporters=cobertura",
     "lint": "eslint .",
