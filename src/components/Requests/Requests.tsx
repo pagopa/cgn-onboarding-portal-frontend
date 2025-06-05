@@ -20,13 +20,16 @@ import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   AgreementApiGetAgreementsRequest,
-  Agreement
+  Agreement,
+  AssignedAgreement
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
+
+type BackofficeAgreement = Partial<AssignedAgreement> & Agreement;
 
 const Requests = () => {
   const pageSize = 20;
@@ -53,9 +56,12 @@ const Requests = () => {
 
   const isLoading = agreementsQuery.isLoading;
 
-  const data = useMemo(() => agreements?.items || [], [agreements]);
+  const data = useMemo(
+    () => agreements?.items || [],
+    [agreements]
+  ) as Array<BackofficeAgreement>;
   const columns = useMemo(
-    (): Array<Column<Agreement>> => [
+    (): Array<Column<BackofficeAgreement>> => [
       {
         Header: "Operatore",
         accessor: data => data.profile?.fullName
@@ -73,7 +79,7 @@ const Requests = () => {
       },
       {
         Header: "Revisore",
-        accessor: data => (data as any).assignee?.fullName
+        accessor: data => data.assignee?.fullName
       },
       {
         Header: () => null,
@@ -116,7 +122,7 @@ const Requests = () => {
     nextPage,
     previousPage,
     state: { pageIndex, sortBy }
-  } = useTable<Agreement>(
+  } = useTable<BackofficeAgreement>(
     {
       columns,
       data,
