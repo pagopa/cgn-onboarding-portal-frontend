@@ -8,7 +8,7 @@ export const createAgreement = createAsyncThunk(
   async () => {
     try {
       return await remoteData.Index.Agreement.createAgreement.method(undefined);
-    } catch (error) {
+    } catch {
       return undefined;
     }
   }

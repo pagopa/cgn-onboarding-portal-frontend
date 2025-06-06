@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { AgreementState as AgreementStateType } from "../api/generated";
 import AgreementState from "../components/AgreementState/AgreementState";
@@ -18,7 +18,7 @@ const Dashboard = () => {
   const authentication = useAuthentication();
   const user = authentication.currentUserSession;
 
-  function hasStateSection(state: any) {
+  function hasStateSection(state: AgreementStateType) {
     return (
       state === AgreementStateType.PendingAgreement ||
       state === AgreementStateType.ApprovedAgreement

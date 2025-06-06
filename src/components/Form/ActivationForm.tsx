@@ -1,10 +1,9 @@
 import { Field, FieldArray, FieldArrayRenderProps, Form, Formik } from "formik";
 import { Button, Icon } from "design-react-kit";
-import React from "react";
 import { useHistory } from "react-router-dom";
-import PlusCircleIcon from "../../assets/icons/plus-circle.svg";
+import PlusCircleIcon from "../../assets/icons/plus-circle.svg?react";
 import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   OrganizationWithReferents,
   EntityType
@@ -50,6 +49,7 @@ const ActivationForm = (props: Props) => {
                 id="organizationName"
                 name="organizationName"
                 type="text"
+                className="form-control"
               />
               <CustomErrorMessage name="organizationName" />
             </InputField>
@@ -69,7 +69,7 @@ const ActivationForm = (props: Props) => {
                   disabled={!props.canChangeEntityType}
                 />
                 <label
-                  className="text-sm font-weight-normal text-black"
+                  className="text-sm fw-normal text-black form-label"
                   htmlFor="entityTypePrivato"
                 >
                   <span className="text-sm">Privato</span>
@@ -85,7 +85,7 @@ const ActivationForm = (props: Props) => {
                   disabled={!props.canChangeEntityType}
                 />
                 <label
-                  className="text-sm font-weight-normal text-black"
+                  className="text-sm fw-normal text-black form-label"
                   htmlFor="entityTypePubblico"
                 >
                   <span className="text-sm">Pubblico</span>
@@ -103,11 +103,12 @@ const ActivationForm = (props: Props) => {
                 id="organizationFiscalCode"
                 name="organizationFiscalCode"
                 type="text"
+                className="form-control"
               />
               <CustomErrorMessage name="organizationFiscalCode" />
             </InputField>
             <InputField htmlFor="pec" title="Indirizzo PEC" required>
-              <Field id="pec" name="pec" type="text" />
+              <Field id="pec" name="pec" type="text" className="form-control" />
               <CustomErrorMessage name="pec" />
             </InputField>
           </FormSection>
@@ -135,11 +136,12 @@ const ActivationForm = (props: Props) => {
                               id={`referents[${i}]`}
                               name={`referents[${i}]`}
                               type="text"
+                              className="form-control"
                             />
                           </div>
                           {i !== 0 && (
                             <Button
-                              className="mr-4"
+                              className="me-4"
                               color="link"
                               tag="button"
                               onClick={() => remove(i)}
@@ -153,17 +155,17 @@ const ActivationForm = (props: Props) => {
                     </div>
                   ))}
                   <div className="mt-8 cursor-pointer" onClick={() => push("")}>
-                    <PlusCircleIcon className="mr-2" />
-                    <span className="text-base font-weight-semibold text-blue">
+                    <PlusCircleIcon className="me-2" />
+                    <span className="text-base fw-semibold text-blue">
                       Aggiungi
                     </span>
                   </div>
                 </>
               )}
             />
-            <div className="mt-10">
+            <div className="d-flex mt-10 gap-4 flex-wrap">
               <Button
-                className="px-14 mr-4"
+                className="px-14"
                 outline
                 color="primary"
                 tag="button"
@@ -173,7 +175,7 @@ const ActivationForm = (props: Props) => {
               </Button>
               <Button
                 type="submit"
-                className="px-14 mr-4"
+                className="px-14"
                 color="primary"
                 disabled={props.isSubmitting}
                 tag="button"

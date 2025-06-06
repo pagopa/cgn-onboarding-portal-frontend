@@ -1,6 +1,5 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 import { Form, Formik } from "formik";
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../../../api/common";
@@ -18,7 +17,7 @@ import {
   defaultSalesChannel,
   profileDefaultInitialValues,
   sanitizeProfileFromValues
-} from "../../EditOperatorDataForm/EditOperatorDataForm";
+} from "../../EditOperatorDataForm/operatorDataUtils";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
@@ -211,9 +210,9 @@ function OperatorDataButtons({
   isEnabled: boolean;
 }) {
   return (
-    <div className="mt-10">
+    <div className="d-flex mt-10 gap-4 flex-wrap">
       <Button
-        className="px-14 mr-4"
+        className="px-14"
         outline
         color="primary"
         tag="button"
@@ -223,7 +222,7 @@ function OperatorDataButtons({
       </Button>
       <Button
         type="submit"
-        className="px-14 mr-4"
+        className="px-14"
         color="primary"
         tag="button"
         disabled={!isEnabled}

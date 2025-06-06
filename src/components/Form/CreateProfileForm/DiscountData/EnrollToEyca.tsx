@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Field } from "formik";
 import { Button, FormGroup } from "design-react-kit";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
@@ -118,7 +118,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
                 <br />
                 Per maggiori informazioni, consultare la{" "}
                 <a
-                  className="font-weight-semibold"
+                  className="fw-semibold"
                   href="https://docs.pagopa.it/carta-giovani-nazionale/le-opportunita/riconoscimento-delle-opportunita-ai-titolari-di-eyca"
                   target="_blank"
                   rel="noreferrer"
@@ -128,13 +128,13 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
               </>
             ) : (
               <>
-                La modalità {discountOption} non è al momento compatibile con
+                La modalità {discountOption()} non è al momento compatibile con
                 EYCA. <br /> Puoi comunque manifestare il tuo interesse ad
                 aderire e definire i dettagli con il Dipartimento in un secondo
                 momento.
                 <br /> Per maggiori informazioni, consultare la{" "}
                 <a
-                  className="font-weight-semibold"
+                  className="fw-semibold"
                   href="https://docs.pagopa.it/carta-giovani-nazionale"
                   target="_blank"
                   rel="noreferrer"
@@ -153,13 +153,13 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
               }
               type="checkbox"
               onChange={(event: { target: { checked: boolean } }) => {
+                setFieldValue(
+                  hasIndex
+                    ? `discounts[${index}].visibleOnEyca`
+                    : `visibleOnEyca`,
+                  event.target.checked
+                );
                 if (isEycaSupported) {
-                  setFieldValue(
-                    hasIndex
-                      ? `discounts[${index}].visibleOnEyca`
-                      : `visibleOnEyca`,
-                    event.target.checked
-                  );
                   if (event.target.checked) {
                     openModal();
                   }
@@ -170,6 +170,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
               check
               for={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
               tag="label"
+              className="text-info"
             >
               Sì, voglio che questa opportunità sia valida anche per il circuito
               EYCA
@@ -193,7 +194,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
           cui potranno accedere esclusivamente i beneficiari di EYCA. Per
           maggiori informazioni, consulta la{" "}
           <a
-            className="font-weight-semibold"
+            className="fw-semibold"
             href="https://docs.pagopa.it/carta-giovani-nazionale"
             target="_blank"
             rel="noreferrer"

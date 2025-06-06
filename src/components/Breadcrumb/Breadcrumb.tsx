@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import { DASHBOARD } from "../../navigation/routes";
 
@@ -10,7 +9,7 @@ type Props = {
 const Breadcrumb = ({ children, breadcrumbLink }: Props) => (
   <nav className="breadcrumb-container" aria-label="breadcrumb">
     <ol className="breadcrumb">
-      <li className="breadcrumb-item no-underline">
+      <li className="breadcrumb-item text-decoration-none">
         <NavLink to={breadcrumbLink ?? DASHBOARD}>Home</NavLink>
         <span className="separator">/</span>
       </li>

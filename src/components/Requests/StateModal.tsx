@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Icon } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
@@ -43,7 +43,7 @@ const StateModal = ({
               e.stopPropagation();
               setFieldValue("page", 0);
               setFieldValue("states", undefined);
-              void submitForm();
+              submitForm();
             }}
           >
             <Icon color="" icon="it-close" size="" />
@@ -64,7 +64,7 @@ const StateModal = ({
                 checked={statesField === "PendingAgreement"}
               />
               <label
-                className="text-sm font-weight-normal text-black"
+                className="text-sm fw-normal text-black form-label"
                 htmlFor="PendingAgreement"
               >
                 <span className="text-sm">
@@ -82,7 +82,7 @@ const StateModal = ({
                 checked={statesField === "AssignedAgreementMe"}
               />
               <label
-                className="text-sm font-weight-normal text-black"
+                className="text-sm fw-normal text-black form-label"
                 htmlFor="AssignedAgreementMe"
               >
                 <span className="text-sm">
@@ -100,7 +100,7 @@ const StateModal = ({
                 checked={statesField === "AssignedAgreementOthers"}
               />
               <label
-                className="text-sm font-weight-normal text-black"
+                className="text-sm fw-normal text-black form-label"
                 htmlFor="AssignedAgreementOthers"
               >
                 <span className="text-sm">
@@ -115,7 +115,7 @@ const StateModal = ({
             color="primary"
             onClick={() => {
               setFieldValue("states", statesField);
-              void submitForm();
+              submitForm();
               toggleStateModal();
             }}
           >

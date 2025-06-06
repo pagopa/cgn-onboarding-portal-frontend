@@ -1,9 +1,7 @@
-import React from "react";
 import { Field, FieldArray, useFormikContext } from "formik";
-import { Icon } from "design-react-kit";
 import { InferType } from "yup";
 import FormSection from "../../FormSection";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import ToggleField from "../../ToggleField";
 import InputFieldMultiple from "../../InputFieldMultiple";
@@ -16,7 +14,6 @@ type Props = {
   children?: React.ReactNode;
 };
 
-/* eslint-disable sonarjs/cognitive-complexity */
 const SalesChannels = ({ entityType, children }: Props) => {
   type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
@@ -28,12 +25,12 @@ const SalesChannels = ({ entityType, children }: Props) => {
     hasOnlineOrBothChannels || entityType === EntityType.PublicAdministration;
   return (
     <>
-      <SalesChannelDiscountCodeType entityType={entityType} />
+      <SalesChannelDiscountCodeType />
       <FieldArray
         name="salesChannel.addresses"
         render={arrayHelpers => (
           <>
-            {formValues.salesChannel?.addresses?.map((_: any, index, array) => (
+            {formValues.salesChannel?.addresses?.map((_, index, array) => (
               <FormSection
                 key={index}
                 title={index + 1 >= 2 ? `Indirizzo ${index + 1}` : `Indirizzo`}
@@ -49,7 +46,6 @@ const SalesChannels = ({ entityType, children }: Props) => {
                           SalesChannelType.OfflineChannel && index + 1 === 1
                       );
                     }
-                    default:
                     case EntityType.PublicAdministration: {
                       return (
                         formValues.salesChannel.channelType === "OfflineChannel"
@@ -58,6 +54,8 @@ const SalesChannels = ({ entityType, children }: Props) => {
                   }
                 })()}
                 isVisible
+                hasRemove={index !== 0}
+                onRemove={() => arrayHelpers.remove(index)}
               >
                 {index === 0 && (
                   <ToggleField
@@ -67,8 +65,8 @@ const SalesChannels = ({ entityType, children }: Props) => {
                       switch (entityType) {
                         case EntityType.Private:
                           return "Rappresenti un franchising e vuoi che le opportunità valgano in tutti i punti vendita presenti sul territorio nazionale?";
-                        default:
                         case EntityType.PublicAdministration:
+                        default:
                           return "Rappresenti un ente e vuoi che le opportunità valgano in tutti i punti vendita presenti sul territorio nazionale?";
                       }
                     })()}
@@ -92,23 +90,10 @@ const SalesChannels = ({ entityType, children }: Props) => {
                 )}
 
                 <div key={index}>
-                  {!!index &&
-                    formValues.salesChannel?.allNationalAddresses === false && (
-                      <Icon
-                        icon="it-close"
-                        style={{
-                          position: "absolute",
-                          right: "0",
-                          top: "40px",
-                          cursor: "pointer"
-                        }}
-                        onClick={() => arrayHelpers.remove(index)}
-                      />
-                    )}
                   {formValues.salesChannel?.allNationalAddresses === false && (
                     <>
                       <div className="mt-10 row">
-                        <div className="col-7">
+                        <div className="col-6">
                           <InputFieldMultiple
                             htmlFor="street"
                             title="Indirizzo"
@@ -117,19 +102,22 @@ const SalesChannels = ({ entityType, children }: Props) => {
                               id="street"
                               name={`salesChannel.addresses[${index}].street`}
                               type="text"
+                              placeholder="Inserisci l'indirizzo"
+                              className="form-control"
                             />
                             <CustomErrorMessage
                               name={`salesChannel.addresses[${index}].street`}
                             />
                           </InputFieldMultiple>
                         </div>
-                        <div className="col-2 offset-1">
+                        <div className="col-6">
                           <InputFieldMultiple htmlFor="zipCode" title="CAP">
                             <Field
                               id="zipCode"
                               name={`salesChannel.addresses[${index}].zipCode`}
                               type="text"
                               placeholder="Inserisci il CAP"
+                              className="form-control"
                             />
                             <CustomErrorMessage
                               name={`salesChannel.addresses[${index}].zipCode`}
@@ -145,13 +133,14 @@ const SalesChannels = ({ entityType, children }: Props) => {
                               name={`salesChannel.addresses[${index}].city`}
                               type="text"
                               placeholder="Inserisci la città"
+                              className="form-control"
                             />
                             <CustomErrorMessage
                               name={`salesChannel.addresses[${index}].city`}
                             />
                           </InputFieldMultiple>
                         </div>
-                        <div className="col-3 offset-1">
+                        <div className="col-6">
                           <InputFieldMultiple
                             htmlFor="district"
                             title="Provincia"
@@ -162,6 +151,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                               name={`salesChannel.addresses[${index}].district`}
                               type="text"
                               placeholder="Inserisci la provincia"
+                              className="form-control"
                             />
                             <CustomErrorMessage
                               name={`salesChannel.addresses[${index}].district`}
@@ -186,8 +176,8 @@ const SalesChannels = ({ entityType, children }: Props) => {
                             })
                           }
                         >
-                          <PlusCircleIcon className="mr-2" />
-                          <span className="text-base font-weight-semibold text-blue">
+                          <PlusCircleIcon className="me-2" />
+                          <span className="text-base fw-semibold text-blue">
                             Aggiungi un indirizzo
                           </span>
                         </div>
@@ -223,6 +213,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
             name="salesChannel.websiteUrl"
             type="text"
             placeholder="Inserisci un sito web (completo di protocollo https)"
+            className="form-control"
           />
           <CustomErrorMessage name="salesChannel.websiteUrl" />
           {children}

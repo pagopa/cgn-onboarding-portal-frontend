@@ -1,5 +1,4 @@
 import { Field, useFormikContext } from "formik";
-import React from "react";
 import { InferType } from "yup";
 import { EntityType } from "../../../../api/generated";
 import CustomErrorMessage from "../../CustomErrorMessage";
@@ -23,21 +22,29 @@ const ProfileInfo = ({ entityType }: Props) => {
         description="Inserisci il nome completo dell'Operatore. Sarà visibile in app e nella lista dei partner."
         required
       >
-        <Field id="fullName" name="fullName" type="text" disabled />
+        <Field
+          id="fullName"
+          name="fullName"
+          type="text"
+          disabled
+          className="form-control"
+        />
         <CustomErrorMessage name="fullName" />
       </InputField>
       {entityType === EntityType.Private && (
-        <ToggleField
-          small={true}
-          htmlFor="hasDifferentFullName"
-          text="Vuoi visualizzare un nome diverso dentro l’app?"
-        >
-          <Field
-            id="hasDifferentFullName"
-            name="hasDifferentFullName"
-            type="checkbox"
-          />
-        </ToggleField>
+        <div className="mt-10">
+          <ToggleField
+            small={true}
+            htmlFor="hasDifferentFullName"
+            text="Vuoi visualizzare un nome diverso dentro l’app?"
+          >
+            <Field
+              id="hasDifferentFullName"
+              name="hasDifferentFullName"
+              type="checkbox"
+            />
+          </ToggleField>
+        </div>
       )}
       {formikContext.values.hasDifferentFullName && (
         <InputField
@@ -56,17 +63,23 @@ const ProfileInfo = ({ entityType }: Props) => {
         >
           <div className="row">
             <div className="col-6">
-              <p className="text-sm font-weight-normal text-black mb-0">
-                Italiano 🇮🇹
-              </p>
-              <Field id="name" name="name" type="text" />
+              <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
+              <Field
+                id="name"
+                name="name"
+                type="text"
+                className="form-control"
+              />
               <CustomErrorMessage name="name" />
             </div>
             <div className="col-6">
-              <p className="text-sm font-weight-normal text-black mb-0">
-                Inglese 🇬🇧
-              </p>
-              <Field id="name_en" name="name_en" type="text" />
+              <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
+              <Field
+                id="name_en"
+                name="name_en"
+                type="text"
+                className="form-control"
+              />
               <CustomErrorMessage name="name_en" />
             </div>
           </div>
@@ -78,7 +91,13 @@ const ProfileInfo = ({ entityType }: Props) => {
         required
         // NICE_TO_HAVE: aggiungere validazione della partita iva (può essere nazionale o estera, non può essere codice fiscale)
       >
-        <Field id="taxCodeOrVat" name="taxCodeOrVat" type="text" disabled />
+        <Field
+          id="taxCodeOrVat"
+          name="taxCodeOrVat"
+          type="text"
+          disabled
+          className="form-control"
+        />
         <CustomErrorMessage name="taxCodeOrVat" />
       </InputField>
       <InputField htmlFor="pecAddress" title="Indirizzo PEC" required>
@@ -87,6 +106,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="pecAddress"
           type="email"
           placeholder="Inserisci l'indirizzo PEC dell'ente"
+          className="form-control"
         />
         <CustomErrorMessage name="pecAddress" />
       </InputField>
@@ -96,6 +116,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="legalOffice"
           type="text"
           placeholder="Inserisci la sede legale dell'ente"
+          className="form-control"
         />
         <CustomErrorMessage name="legalOffice" />
       </InputField>
@@ -110,6 +131,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="telephoneNumber"
           type="text"
           placeholder="Inserisci il numero di telefono dell'ente"
+          className="form-control"
         />
         <CustomErrorMessage name="telephoneNumber" />
       </InputField>
@@ -123,6 +145,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="legalRepresentativeFullName"
           type="text"
           placeholder="Inserisci il nome e cognome del Legale rappresentante dell'ente"
+          className="form-control"
         />
         <CustomErrorMessage name="legalRepresentativeFullName" />
       </InputField>
@@ -138,6 +161,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           name="legalRepresentativeTaxCode"
           type="text"
           placeholder="Inserisci il Codice fiscale del Legale rappresentante dell'ente"
+          className="form-control"
         />
         <CustomErrorMessage name="legalRepresentativeTaxCode" />
       </InputField>

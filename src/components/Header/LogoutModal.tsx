@@ -1,11 +1,10 @@
-import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 type Props = {
-  isOpen: any;
-  toggle: any;
-  logout: () => void;
+  isOpen: boolean;
+  toggle(): void;
+  logout(): void;
 };
 
 const LogoutModal = ({ isOpen, toggle, logout }: Props) => (

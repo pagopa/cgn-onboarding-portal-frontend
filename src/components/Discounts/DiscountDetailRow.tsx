@@ -1,17 +1,17 @@
 import { format } from "date-fns";
-import { Badge, Button, Icon } from "design-react-kit";
-import React, { useMemo, useState } from "react";
+import { Button, Icon } from "design-react-kit";
+import { Fragment, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Row } from "react-table";
 import {
+  Agreement,
   BucketCodeLoadStatus,
   Discount,
-  DiscountState,
   Profile
 } from "../../api/generated";
-import EditIcon from "../../assets/icons/edit.svg";
-import TestIcon from "../../assets/icons/magic-wand.svg";
-import TrashIcon from "../../assets/icons/trashcan.svg";
+import EditIcon from "../../assets/icons/edit.svg?react";
+import TestIcon from "../../assets/icons/magic-wand.svg?react";
+import TrashIcon from "../../assets/icons/trashcan.svg?react";
 import {
   formatPercentage,
   makeProductCategoriesString
@@ -21,121 +21,17 @@ import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
 import { getEditDiscountRoute } from "../../navigation/utils";
 import ImportationStatus from "./ImportationStatus";
+import { DiscountComponent } from "./getDiscountComponent";
 
 type Props = {
   row: Row<Discount>;
-  agreement: any;
+  agreement: Agreement;
   onPublish: () => void;
   onUnpublish: () => void;
   onDelete: () => void;
   onTest: () => void;
   profile?: Profile;
   maxPublishedDiscountsReached: boolean;
-};
-
-export const getDiscountComponent = (state: DiscountState) => {
-  switch (state) {
-    case "draft":
-      return (
-        <Badge
-          className="font-weight-normal"
-          pill
-          tag="span"
-          style={{
-            backgroundColor: "white",
-            color: "#5C6F82",
-            border: "1px solid #5C6F82"
-          }}
-        >
-          Bozza
-        </Badge>
-      );
-
-    case "published":
-      return (
-        <Badge className="font-weight-normal" color="primary" pill tag="span">
-          Pubblicata
-        </Badge>
-      );
-
-    case "suspended":
-      return (
-        <Badge
-          className="font-weight-normal"
-          pill
-          tag="span"
-          style={{
-            backgroundColor: "#EA7614",
-            border: "1px solid #EA7614",
-            color: "white"
-          }}
-        >
-          Sospesa
-        </Badge>
-      );
-
-    case "expired":
-      return (
-        <Badge
-          className="font-weight-normal"
-          pill
-          tag="span"
-          style={{
-            backgroundColor: "white",
-            border: "1px solid #C02927",
-            color: "#C02927"
-          }}
-        >
-          Scaduta
-        </Badge>
-      );
-
-    case "test_pending":
-      return (
-        <Badge
-          className="font-weight-normal"
-          pill
-          tag="span"
-          style={{
-            backgroundColor: "white",
-            border: "1px solid #EA7614",
-            color: "#EA7614"
-          }}
-        >
-          In test
-        </Badge>
-      );
-    case "test_failed":
-      return (
-        <Badge
-          className="font-weight-normal"
-          pill
-          tag="span"
-          style={{
-            backgroundColor: "white",
-            border: "1px solid #C02927",
-            color: "#C02927"
-          }}
-        >
-          Test fallito
-        </Badge>
-      );
-    case "test_passed":
-      return (
-        <Badge
-          className="font-weight-normal"
-          pill
-          tag="span"
-          style={{
-            backgroundColor: "white",
-            border: "1px solid #008255",
-            color: "#008255"
-          }}
-        >
-          Test superato
-        </Badge>
-      );
-  }
 };
 
 const DiscountDetailRow = ({
@@ -147,12 +43,10 @@ const DiscountDetailRow = ({
   onDelete,
   onTest,
   maxPublishedDiscountsReached
-}: // eslint-disable-next-line sonarjs/cognitive-complexity
-Props) => {
+}: Props) => {
   const history = useHistory();
   const [canBePublished, setCanBePublished] = useState(
-    row.original.lastBucketCodeLoadStatus !== null &&
-      row.original.lastBucketCodeLoadStatus !== undefined
+    row.original.lastBucketCodeLoadStatus !== undefined
       ? row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
       : true
   );
@@ -169,17 +63,17 @@ Props) => {
     <div className={"mt-10 d-flex flex-row justify-content-end"}>
       <Button
         color="danger"
-        className="mr-2 d-flex align-items-center"
+        className="me-2 d-flex align-items-center"
         outline
         icon
         tag="button"
         onClick={onDelete}
       >
-        <TrashIcon fill={"#d9364f"} />
+        <TrashIcon fill={"#CC334D"} />
         Elimina
       </Button>
       <Button
-        className="mr-2 d-flex align-items-center"
+        className="me-2 d-flex align-items-center"
         color={"primary"}
         outline
         tag="button"
@@ -204,7 +98,7 @@ Props) => {
           row.original.state === "test_failed" ||
           row.original.state === "draft") && (
           <Button
-            className="mr-2 d-flex align-items-center"
+            className="me-2 d-flex align-items-center"
             color="primary"
             tag="button"
             outline
@@ -219,7 +113,7 @@ Props) => {
         row.original.state !== "suspended" &&
         row.original.state !== "expired" && (
           <Button
-            className="mr-2"
+            className="me-2"
             color="primary"
             tag="button"
             onClick={onPublish}
@@ -230,7 +124,7 @@ Props) => {
         )}
       {row.original.state === "published" && (
         <Button
-          className="mr-2"
+          className="me-2"
           color="primary"
           tag="button"
           onClick={onUnpublish}
@@ -256,11 +150,11 @@ Props) => {
             type={"danger"}
             title="Questa opportunità è stata sospesa"
             body={
-              <React.Fragment>
+              <Fragment>
                 <div>{row.original.suspendedReasonMessage}</div>
                 <div>
                   <button
-                    className="btn btn-link font-weight-bold p-0 my-2"
+                    className="btn btn-link fw-bold p-0 my-2"
                     onClick={() => {
                       history.push(getEditDiscountRoute(row.original.id));
                     }}
@@ -268,11 +162,11 @@ Props) => {
                     Modifica opportunità
                   </button>
                 </div>
-              </React.Fragment>
+              </Fragment>
             }
           />
         )}
-        {row.original.lastBucketCodeLoadUid !== null &&
+        {row.original.lastBucketCodeLoadUid != null &&
           row.original.lastBucketCodeLoadStatus &&
           !canBePublished && (
             <ImportationStatus
@@ -282,7 +176,7 @@ Props) => {
               onPollingComplete={() => setCanBePublished(true)}
             />
           )}
-        <h1 className="h5 font-weight-bold text-dark-blue">Dettagli</h1>
+        <h1 className="h5 fw-bold text-dark-blue">Dettagli</h1>
         <table className="table">
           <tbody>
             <MultilanguageProfileItem
@@ -302,7 +196,7 @@ Props) => {
                 Stato opportunità
               </td>
               <td className={`border-bottom-0`}>
-                {getDiscountComponent(row.values.state)}
+                <DiscountComponent discountState={row.values.state} />
               </td>
             </tr>
             <ProfileItem

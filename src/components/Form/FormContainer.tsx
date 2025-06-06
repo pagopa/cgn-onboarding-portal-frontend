@@ -1,9 +1,9 @@
-import React from "react";
+import { ReactNode } from "react";
 import Container from "../Container/Container";
 
 type Props = {
   className?: string;
-  children: any;
+  children: ReactNode;
 };
 
 const FormContainer = ({ className = "", children }: Props) => (

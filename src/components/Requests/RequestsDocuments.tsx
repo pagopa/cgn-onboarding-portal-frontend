@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Button, Icon } from "design-react-kit";
-import DocumentIcon from "../../assets/icons/document.svg";
-import DocumentSuccess from "../../assets/icons/document-success.svg";
-import CenteredLoading from "../CenteredLoading";
+import DocumentIcon from "../../assets/icons/document.svg?react";
+import DocumentSuccess from "../../assets/icons/document-success.svg?react";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { remoteData } from "../../api/common";
 import {
   Agreement,
@@ -33,7 +33,7 @@ const CheckedDocument = ({
         <div>
           <div className="mb-3 text-gray">{label}</div>
           <div className="d-flex flex-row align-items-center">
-            <DocumentSuccess className="mr-4" />
+            <DocumentSuccess className="me-4" />
             <a href={doc.documentUrl} target="_blank" rel="noreferrer">
               {label.replace(" ", "_")}.pdf
             </a>
@@ -67,7 +67,7 @@ const UncheckedDocument = ({
   uploadDocument: (type: DocumentType, file: File) => void;
   assignedToMe: boolean;
 }) => {
-  const uploadInputRef = useRef<any>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
   const label =
     doc.documentType === "Agreement"
       ? "Convenzione"
@@ -78,7 +78,7 @@ const UncheckedDocument = ({
         <div>
           <div className="mb-3 text-gray">{label}</div>
           <div className="d-flex flex-row align-items-center">
-            <DocumentIcon className="mr-4" />
+            <DocumentIcon className="me-4" />
             <a href={doc.documentUrl} target="_blank" rel="noreferrer">
               {label.replace(" ", "_")}.pdf
             </a>
@@ -98,7 +98,7 @@ const UncheckedDocument = ({
               icon="it-upload"
               padding={false}
               size="xs"
-              className="mr-2"
+              className="me-2"
             />
             Carica controfirmato
           </Button>
@@ -155,7 +155,7 @@ const RequestDocuments = ({
       }
     });
   const deleteDocument = (documentType: DocumentType) => {
-    void deleteDocumentMutation.mutate({
+    deleteDocumentMutation.mutate({
       agreementId: original.id,
       documentType
     });
@@ -168,7 +168,7 @@ const RequestDocuments = ({
 
   return (
     <>
-      <h1 className="h5 font-weight-bold text-dark-blue mb-5">Documenti</h1>
+      <h1 className="h5 fw-bold text-dark-blue mb-5">Documenti</h1>
       {isLoading ? (
         <CenteredLoading />
       ) : (

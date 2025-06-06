@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Icon } from "design-react-kit";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
@@ -16,7 +15,7 @@ const Login = () => (
           <section className="px-20 py-28 bg-white">
             <div className="row">
               <div className="col-9">
-                <h1 className="h2 font-weight-bold text-dark-blue">
+                <h1 className="h2 fw-bold text-dark-blue">
                   Ti diamo il benvenuto sul Portale operatori Carta Giovani
                   Nazionale
                 </h1>
@@ -58,7 +57,7 @@ const Login = () => (
               </div>
               <div className="col">
                 <h2 className="h3 text-dark-blue">Sei un amministratore?</h2>
-                <span className="text-sm font-weight-normal text-dark-blue text-uppercase">
+                <span className="text-sm fw-normal text-dark-blue text-uppercase">
                   Accedi con le tue credenziali
                 </span>
                 <Button

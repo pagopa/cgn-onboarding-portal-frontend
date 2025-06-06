@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Button } from "design-react-kit";
 import { useDispatch, useSelector } from "react-redux";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { remoteData } from "../../../../api/common";
 import { RootState } from "../../../../store/store";
-import { Documents, EntityType } from "../../../../api/generated";
+import type { Documents } from "../../../../api/generated";
+import { EntityType } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
 import { createAgreement } from "../../../../store/agreement/agreementSlice";
 import FileRow from "./FileRow";
@@ -71,11 +72,11 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
   return (
     <FormContainer className="mb-20">
       <div className="bg-white px-28 py-16">
-        <p className="text-base font-weight-normal text-black">
+        <p className="text-base fw-normal text-black">
           Per inviare la richiesta di convenzione, scarica e firma digitalmente
           in{" "}
           <a
-            className="font-weight-semibold"
+            className="fw-semibold"
             target="_blank"
             rel="noreferrer"
             href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/il-convenzionamento/firma-della-convenzione"
@@ -83,10 +84,10 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
             modalità PAdES
           </a>{" "}
           i documenti. Una volta fatto, carica i documenti firmati in{" "}
-          <span className="font-weight-bold">formato .pdf</span> sul portale. I
-          documenti sono già compilati con i dati inseriti fino a questo
-          momento. Se desideri apportare delle modifiche, puoi farlo prima di
-          procedere, tornando alla fase di compilazione.
+          <span className="fw-bold">formato .pdf</span> sul portale. I documenti
+          sono già compilati con i dati inseriti fino a questo momento. Se
+          desideri apportare delle modifiche, puoi farlo prima di procedere,
+          tornando alla fase di compilazione.
         </p>
         <FileRow
           getFiles={getFiles}
@@ -111,9 +112,9 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
             l’esito.
           </p>
         )}
-        <div className="mt-10">
+        <div className="d-flex mt-10 gap-4 flex-wrap">
           <Button
-            className="px-14 mr-4"
+            className="px-14"
             color="primary"
             outline
             tag="button"

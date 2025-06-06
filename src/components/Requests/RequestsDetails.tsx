@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { Fragment, useState } from "react";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import { useTooltip, Severity } from "../../context/tooltip";
 import { Agreement, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -90,7 +90,7 @@ const RequestsDetails = ({
   if (isLoading) {
     return (
       <section className="px-6 py-4 bg-white">
-        <h1 className="h5 font-weight-bold text-dark-blue mb-5">Dettagli</h1>
+        <h1 className="h5 fw-bold text-dark-blue mb-5">Dettagli</h1>
         <div className="container">
           <CenteredLoading />
         </div>
@@ -100,7 +100,7 @@ const RequestsDetails = ({
 
   return (
     <section className="px-6 py-4 bg-white">
-      <h1 className="h5 font-weight-bold text-dark-blue mb-5">Dettagli</h1>
+      <h1 className="h5 fw-bold text-dark-blue mb-5">Dettagli</h1>
       <div className="container">
         <RequestItem
           label="Ragione sociale operatore"
@@ -111,13 +111,13 @@ const RequestsDetails = ({
           value={getEntityTypeLabel(entityType)}
         />
         {entityType === EntityType.Private && (
-          <React.Fragment>
+          <Fragment>
             <RequestItem
               label="Numero opportunità proposte"
               value={original.discounts?.length}
             />
-            <div className="ml-3">
-              {original.discounts?.map((doc: { name: any }, i: number) => (
+            <div className="ms-3">
+              {original.discounts?.map((doc, i: number) => (
                 <RequestItem
                   key={i}
                   label={`Opportunità #${i + 1}`}
@@ -125,10 +125,10 @@ const RequestsDetails = ({
                 />
               ))}
             </div>
-          </React.Fragment>
+          </Fragment>
         )}
       </div>
-      <h1 className="h5 font-weight-bold text-dark-blue mb-5">
+      <h1 className="h5 fw-bold text-dark-blue mb-5">
         Dati del referente incaricato
       </h1>
       <div className="container">
@@ -158,7 +158,7 @@ const RequestsDetails = ({
             l’esercente non può essere convenzionato in questo momento. La nota
             sarà visibile all’operatore.
           </p>
-          <div className="form-group">
+          <div className="mb-12">
             <textarea
               id="rejectMessage"
               value={rejectMessage}
@@ -166,13 +166,14 @@ const RequestsDetails = ({
               rows={5}
               maxLength={250}
               placeholder="Inserisci una descrizione"
+              className="form-control"
             />
           </div>
           <Button
             color="primary"
             outline
             tag="button"
-            className="ml-4"
+            className="ms-4"
             onClick={() => {
               setRejectMode(false);
               setRejectMessage("");
@@ -183,7 +184,7 @@ const RequestsDetails = ({
           <Button
             color="primary"
             tag="button"
-            className="ml-4"
+            className="ms-4"
             onClick={rejectAgreement}
             disabled={!rejectMessage.length}
           >
@@ -196,7 +197,7 @@ const RequestsDetails = ({
             color="primary"
             outline
             tag="button"
-            className="ml-4"
+            className="ms-4"
             onClick={() => setRejectMode(true)}
             disabled={!assignedToMe}
           >
@@ -205,7 +206,7 @@ const RequestsDetails = ({
           <Button
             color="primary"
             tag="button"
-            className="ml-4"
+            className="ms-4"
             onClick={approveAgreement}
             disabled={
               !assignedToMe ||

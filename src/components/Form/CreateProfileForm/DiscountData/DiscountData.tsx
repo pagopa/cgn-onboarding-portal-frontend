@@ -1,15 +1,14 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { FieldArray, Form, Formik } from "formik";
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import {
   CreateDiscount,
   Discount,
   ProductCategory
 } from "../../../../api/generated";
-import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg";
+import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import {
@@ -26,7 +25,7 @@ import { remoteData } from "../../../../api/common";
 import {
   discountEmptyInitialValues,
   updateDiscountMutationOnError
-} from "../../EditDiscountForm/EditDiscountForm";
+} from "../../discountFormUtils";
 
 const emptyInitialValues = {
   discounts: [discountEmptyInitialValues]
@@ -233,7 +232,7 @@ const DiscountData = ({
             name="discounts"
             render={arrayHelpers => (
               <>
-                {values.discounts.map((discount: any, index: number) => (
+                {values.discounts.map((discount, index: number) => (
                   <FormContainer
                     key={index}
                     className={index <= 1 ? "mb-20" : ""}
@@ -244,7 +243,10 @@ const DiscountData = ({
                       handleClose={() => {
                         if (index >= 1) {
                           if (isCompleted) {
-                            deleteDiscount(agreement.id, discount.id);
+                            deleteDiscount(
+                              agreement.id,
+                              (discount as { id: string }).id
+                            );
                           }
                           arrayHelpers.remove(index);
                         }
@@ -281,14 +283,14 @@ const DiscountData = ({
                               })
                             }
                           >
-                            <PlusCircleIcon className="mr-2" />
-                            <span className="text-base font-weight-semibold text-blue">
+                            <PlusCircleIcon className="me-2" />
+                            <span className="text-base fw-semibold text-blue">
                               {"Aggiungi un'altra opportunità"}
                             </span>
                           </div>
-                          <div className="mt-10">
+                          <div className="d-flex mt-10 gap-4 flex-wrap">
                             <Button
-                              className="px-14 mr-4"
+                              className="px-14"
                               outline
                               color="primary"
                               tag="button"
@@ -298,7 +300,7 @@ const DiscountData = ({
                             </Button>
                             <Button
                               type="submit"
-                              className="px-14 mr-4"
+                              className="px-14"
                               color="primary"
                               tag="button"
                               aria-disabled={isSubmitting}
