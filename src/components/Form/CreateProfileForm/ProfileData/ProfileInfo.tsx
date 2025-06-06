@@ -64,12 +64,22 @@ const ProfileInfo = ({ entityType }: Props) => {
           <div className="row">
             <div className="col-6">
               <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
-              <Field id="name" name="name" type="text" />
+              <Field
+                id="name"
+                name="name"
+                type="text"
+                className="form-control"
+              />
               <CustomErrorMessage name="name" />
             </div>
             <div className="col-6">
               <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
-              <Field id="name_en" name="name_en" type="text" />
+              <Field
+                id="name_en"
+                name="name_en"
+                type="text"
+                className="form-control"
+              />
               <CustomErrorMessage name="name_en" />
             </div>
           </div>
