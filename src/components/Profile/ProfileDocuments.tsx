@@ -1,5 +1,6 @@
 import { Icon, LinkList, LinkListItem } from "design-react-kit";
 import { useSelector } from "react-redux";
+import { Fragment } from "react";
 import { remoteData } from "../../api/common";
 import { formatDate } from "../../utils/dates";
 import { EntityType } from "../../api/generated";
@@ -52,27 +53,29 @@ const ProfileDocuments = () => {
             </LinkListItem>
             <LinkListItem divider tag="a" />
             {entityType === EntityType.Private && (
-              <LinkListItem
-                tag="div"
-                className="d-flex flex-row align-items-center"
-              >
-                <Icon icon="it-file" color="primary" className="me-4" />
-                <div className="flex flex-row justify-items-start">
-                  <a
-                    className="text-sm fw-semibold text-blue"
-                    href={manifestationDocument.documentUrl}
-                    style={{ padding: 0 }}
-                  >
-                    Allegato 1 - Domanda di adesione alla CGN
-                  </a>
-                  <p className="text-sm fw-light text-dark-blue">
-                    Caricato il{" "}
-                    {formatDate(manifestationDocument.documentTimestamp)}
-                  </p>
-                </div>
-              </LinkListItem>
+              <Fragment>
+                <LinkListItem
+                  tag="div"
+                  className="d-flex flex-row align-items-center"
+                >
+                  <Icon icon="it-file" color="primary" className="me-4" />
+                  <div className="flex flex-row justify-items-start">
+                    <a
+                      className="text-sm fw-semibold text-blue"
+                      href={manifestationDocument.documentUrl}
+                      style={{ padding: 0 }}
+                    >
+                      Allegato 1 - Domanda di adesione alla CGN
+                    </a>
+                    <p className="text-sm fw-light text-dark-blue">
+                      Caricato il{" "}
+                      {formatDate(manifestationDocument.documentTimestamp)}
+                    </p>
+                  </div>
+                </LinkListItem>
+                <LinkListItem divider tag="a" />
+              </Fragment>
             )}
-            <LinkListItem divider tag="a" />
             <LinkListItem
               tag="div"
               className="d-flex flex-row align-items-center"

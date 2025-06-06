@@ -233,6 +233,7 @@ const Discount = ({
               rows={5}
               maxLength={250}
               placeholder="Inserisci una descrizione"
+              className="form-control"
             />
           </div>
           <Button

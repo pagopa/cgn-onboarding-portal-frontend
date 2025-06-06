@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
 import { saveAs } from "file-saver";
-import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import DateModal from "./DateModal";
@@ -129,7 +128,7 @@ const ConventionFilter = ({
             )}
 
             <div
-              className="d-flex justify-content-end flex-grow-1 flex-wrap"
+              className="d-flex justify-content-end flex-grow-1 flex-wrap align-items-center"
               style={{ rowGap: "0.75rem" }}
             >
               <DateModal
@@ -163,11 +162,7 @@ const ConventionFilter = ({
                   onClick={getExport}
                   disabled={downloadingAgreements}
                 >
-                  {downloadingAgreements ? (
-                    <CenteredLoading />
-                  ) : (
-                    <span>Export convenzioni</span>
-                  )}
+                  <span>Export convenzioni</span>
                 </Button>
                 <Button
                   className="ms-5 btn-sm"
@@ -176,11 +171,7 @@ const ConventionFilter = ({
                   onClick={getExportEyca}
                   disabled={downloadingEyca}
                 >
-                  {downloadingEyca ? (
-                    <CenteredLoading />
-                  ) : (
-                    <span>Export EYCA</span>
-                  )}
+                  <span>Export EYCA</span>
                 </Button>
               </div>
             </div>
