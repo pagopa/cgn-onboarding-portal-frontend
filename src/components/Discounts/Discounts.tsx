@@ -1,12 +1,10 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Column, useExpanded, useSortBy, useTable } from "react-table";
 import { Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
 import { compareAsc, format } from "date-fns";
-import { omit } from "lodash";
+import omit from "lodash/omit";
 import { remoteData } from "../../api/common";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
@@ -15,7 +13,8 @@ import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
-import DiscountDetailRow, { getDiscountComponent } from "./DiscountDetailRow";
+import DiscountDetailRow from "./DiscountDetailRow";
+import { DiscountComponent } from "./getDiscountComponent";
 import UnpublishModal from "./UnpublishModal";
 import TestModal from "./TestModal";
 import { TestErrorModal } from "./TestErrorModal";
@@ -62,7 +61,7 @@ const Discounts = () => {
     [discountsQuery.data?.items]
   );
   const invalidateDiscountsQuery = (
-    data: unknown,
+    _: unknown,
     { agreementId }: { agreementId: string }
   ) => {
     remoteData.Index.Discount.getDiscounts.invalidateQueries({
@@ -198,7 +197,11 @@ const Discounts = () => {
         Header: "Stato",
         accessor: "state",
         Cell({ row }) {
-          return <span>{getDiscountComponent(row.values.state)}</span>;
+          return (
+            <span>
+              <DiscountComponent discountState={row.values.state} />
+            </span>
+          );
         },
         disableSortBy: true
       },
@@ -289,116 +292,117 @@ const Discounts = () => {
       </div>
       {(agreement.state === AgreementState.ApprovedAgreement ||
         entityType === EntityType.Private) && (
-        <table
-          {...getTableProps()}
-          style={{ width: "100%" }}
-          className="mt-2 bg-white"
-        >
-          <TableHeader headerGroups={headerGroups} />
-          <tbody {...getTableBodyProps()}>
-            {maxPublishedDiscountsReached && (
-              <tr>
-                <td
-                  colSpan={5}
-                  style={{ padding: "24px 32px" }}
-                  className="border-bottom"
-                >
-                  <div
-                    style={{
-                      borderRadius: "4px",
-                      borderLeft: "4px solid #FFCB46",
-                      padding: "16px",
-                      gap: "16px",
-                      boxShadow:
-                        "0px 1px 10px 0px #002B551A, 0px 4px 5px 0px #002B550D, 0px 2px 4px -1px #002B551A"
-                    }}
-                    className="d-flex flex-row align-items-center"
+        <div className="table-responsive mb-0 mt-2 bg-white table">
+          <table
+            {...getTableProps()}
+            style={{ width: "100%" }}
+            className="table mb-0"
+          >
+            <TableHeader headerGroups={headerGroups} />
+            <tbody {...getTableBodyProps()}>
+              {maxPublishedDiscountsReached && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    style={{ padding: "24px 32px" }}
+                    className="border-bottom align-middle"
                   >
-                    <Icon
-                      icon="it-warning-circle"
-                      style={{ fill: "#FFCB46" }}
-                    />
-                    <div style={{ fontSize: "16px", fontWeight: 600 }}>
-                      Hai raggiunto il numero massimo di opportunità pubblicate
-                      nello stesso momento
+                    <div
+                      style={{
+                        borderRadius: "4px",
+                        borderLeft: "4px solid #FFCB46",
+                        padding: "16px",
+                        gap: "16px",
+                        boxShadow:
+                          "0px 1px 10px 0px #002B551A, 0px 4px 5px 0px #002B550D, 0px 2px 4px -1px #002B551A"
+                      }}
+                      className="d-flex flex-row align-items-center"
+                    >
+                      <Icon
+                        icon="it-warning-circle"
+                        style={{ fill: "#FFCB46" }}
+                      />
+                      <div style={{ fontSize: "16px", fontWeight: 600 }}>
+                        Hai raggiunto il numero massimo di opportunità
+                        pubblicate nello stesso momento
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            )}
-            {rows.map(row => {
-              prepareRow(row);
-              return (
-                <React.Fragment key={row.getRowProps().key}>
-                  <tr
-                    className="cursor-pointer"
-                    onClick={() => row.toggleRowExpanded()}
-                  >
-                    {row.cells.map((cell, i) => (
-                      // eslint-disable-next-line react/jsx-key
-                      <td
-                        className={`
-                        ${i === 0 ? "pl-6" : ""}
-                        ${i === headerGroups.length - 1 ? "pr-6" : ""}
-                        px-3 py-2 border-bottom text-sm
+                  </td>
+                </tr>
+              )}
+              {rows.map(row => {
+                prepareRow(row);
+                return (
+                  <Fragment key={row.getRowProps().key}>
+                    <tr
+                      className="cursor-pointer"
+                      onClick={() => row.toggleRowExpanded()}
+                    >
+                      {row.cells.map((cell, i) => (
+                        <td
+                          className={`
+                        ${i === 0 ? "ps-6" : ""}
+                        ${i === headerGroups.length - 1 ? "pe-6" : ""}
+                        px-3 py-2 border-bottom text-sm align-middle
                         `}
-                        {...cell.getCellProps()}
-                        key={i}
-                        style={
-                          cell.column.id === "expander"
-                            ? { width: "calc(32px + 0.75rem * 2)" }
-                            : {}
-                        }
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    ))}
-                  </tr>
-                  {row.isExpanded ? (
-                    <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
-                      <td colSpan={visibleColumns.length}>
-                        {
-                          <DiscountDetailRow
-                            row={row}
-                            agreement={agreement}
-                            profile={profile}
-                            onPublish={() => {
-                              setSelectedDiscountAction({
-                                action: "publish",
-                                discountId: row.original.id
-                              });
-                            }}
-                            onUnpublish={() => {
-                              setSelectedDiscountAction({
-                                action: "unpublish",
-                                discountId: row.original.id
-                              });
-                            }}
-                            onDelete={() => {
-                              setSelectedDiscountAction({
-                                action: "delete",
-                                discountId: row.original.id
-                              });
-                            }}
-                            onTest={() => {
-                              setSelectedDiscountAction({
-                                action: "test",
-                                discountId: row.original.id
-                              });
-                            }}
-                            maxPublishedDiscountsReached={
-                              maxPublishedDiscountsReached
-                            }
-                          />
-                        }
-                      </td>
+                          {...cell.getCellProps()}
+                          key={i}
+                          style={
+                            cell.column.id === "expander"
+                              ? { width: "calc(32px + 0.75rem * 2)" }
+                              : {}
+                          }
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      ))}
                     </tr>
-                  ) : null}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
+                    {row.isExpanded ? (
+                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                        <td colSpan={visibleColumns.length}>
+                          {
+                            <DiscountDetailRow
+                              row={row}
+                              agreement={agreement}
+                              profile={profile}
+                              onPublish={() => {
+                                setSelectedDiscountAction({
+                                  action: "publish",
+                                  discountId: row.original.id
+                                });
+                              }}
+                              onUnpublish={() => {
+                                setSelectedDiscountAction({
+                                  action: "unpublish",
+                                  discountId: row.original.id
+                                });
+                              }}
+                              onDelete={() => {
+                                setSelectedDiscountAction({
+                                  action: "delete",
+                                  discountId: row.original.id
+                                });
+                              }}
+                              onTest={() => {
+                                setSelectedDiscountAction({
+                                  action: "test",
+                                  discountId: row.original.id
+                                });
+                              }}
+                              maxPublishedDiscountsReached={
+                                maxPublishedDiscountsReached
+                              }
+                            />
+                          }
+                        </td>
+                      </tr>
+                    ) : null}
+                  </Fragment>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
       {agreement.state === AgreementState.ApprovedAgreement ? (
         <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
@@ -455,15 +459,15 @@ function IsVisible({ discount }: { discount: Discount }) {
   if (isVisible) {
     return (
       <span className="d-flex flex-row align-items-center">
-        <Icon icon="it-password-visible" size="sm" className="mr-1" />
-        <span className="text-base font-weight-normal text-gray">SI</span>
+        <Icon icon="it-password-visible" size="sm" className="me-1" />
+        <span className="text-base fw-normal text-gray">SI</span>
       </span>
     );
   } else {
     return (
       <span className="d-flex flex-row align-items-center">
-        <Icon icon="it-password-invisible" size="sm" className="mr-1" />
-        <span className="text-base font-weight-normal text-gray">NO</span>
+        <Icon icon="it-password-invisible" size="sm" className="me-1" />
+        <span className="text-base fw-normal text-gray">NO</span>
       </span>
     );
   }

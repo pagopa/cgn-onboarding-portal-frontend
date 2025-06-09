@@ -1,7 +1,6 @@
-import React from "react";
 import { format } from "date-fns";
-import { Document } from "../../api/generated_backoffice";
-import DocumentIcon from "../../assets/icons/document.svg";
+import type { Document } from "../../api/generated_backoffice";
+import DocumentIcon from "../../assets/icons/document.svg?react";
 
 const Document = ({ doc }: { doc: Document }) => {
   const label =
@@ -12,7 +11,7 @@ const Document = ({ doc }: { doc: Document }) => {
     <div className="mb-5">
       <div className="mb-3 text-gray">{label}</div>
       <div className="d-flex flex-row align-items-center">
-        <DocumentIcon className="mr-4" />
+        <DocumentIcon className="me-4" />
         <div>
           <div>
             <a href={doc.documentUrl} target="_blank" rel="noreferrer">
@@ -30,7 +29,7 @@ const Document = ({ doc }: { doc: Document }) => {
 
 const Documents = ({ documents }: { documents: Array<Document> }) => (
   <div>
-    <h5 className="mb-7 font-weight-bold">Documenti</h5>
+    <h5 className="mb-7 fw-bold">Documenti</h5>
     {documents.map((doc, i) => (
       <Document key={i} doc={doc} />
     ))}

@@ -1,4 +1,3 @@
-import React from "react";
 import { Field } from "formik";
 import { FormGroup } from "design-react-kit";
 import { Label } from "reactstrap";
@@ -18,12 +17,6 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
     ? `discounts[${index}].productCategories`
     : `productCategories`;
 
-  const nameLabelStyle = {
-    fontWeight: 700,
-    marginRight: "5px",
-    marginBottom: 0
-  };
-
   const isCheckboxDisabled = (category: ProductCategory) =>
     selectedCategories &&
     selectedCategories.length >= MAX_SELECTABLE_CATEGORIES &&
@@ -40,18 +33,13 @@ const ProductCategories = ({ selectedCategories, index }: Props) => {
             value={categoryKey}
             type="checkbox"
           />
-          <Label
-            check
-            for={`${name}.${categoryKey}`}
-            tag="label"
-            style={{ height: "auto" }}
-          >
-            <div className="row ml-1">
-              <p style={nameLabelStyle}>
-                {categoriesMap[categoryKey as ProductCategory].name}{" "}
-              </p>{" "}
+          <Label check for={`${name}.${categoryKey}`} tag="label">
+            <span className="fw-bold">
+              {categoriesMap[categoryKey as ProductCategory].name}{" "}
+            </span>{" "}
+            <span className="fw-light text-secondary">
               {categoriesMap[categoryKey as ProductCategory].description}
-            </div>
+            </span>
           </Label>
         </FormGroup>
       ))}

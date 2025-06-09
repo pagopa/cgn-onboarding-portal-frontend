@@ -1,4 +1,3 @@
-import React from "react";
 import { Field } from "formik";
 import CustomErrorMessage from "../../CustomErrorMessage";
 
@@ -18,13 +17,14 @@ const LandingPage = ({ children, index }: Props) => {
         }
         placeholder="Inserisci indirizzo (completo di protocollo http o https)"
         type="text"
+        className="form-control"
       />
       <CustomErrorMessage
         name={
           hasIndex ? `discounts[${index}].landingPageUrl` : "landingPageUrl"
         }
       />
-      <p className="mt-4 text-sm font-weight-normal text-black">
+      <p className="mt-4 text-sm fw-normal text-black">
         {
           "Inserisci il valore del parametro referrer da trasmettere alla pagina web"
         }
@@ -38,6 +38,7 @@ const LandingPage = ({ children, index }: Props) => {
         }
         placeholder="Inserisci valore referrer"
         type="text"
+        className="form-control"
       />
       <CustomErrorMessage
         name={

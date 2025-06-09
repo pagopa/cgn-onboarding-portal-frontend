@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from "react";
+import { useState, forwardRef } from "react";
 import { Button, Icon } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Field, FieldInputProps } from "formik";
@@ -45,17 +45,17 @@ const DateModal = ({
 
   const DatePickerInput = forwardRef((fieldProps: any, ref: any) => (
     <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
-      <div className="form-group">
-        <input
-          {...fieldProps}
-          ref={ref}
-          className="form-control it-date-datepicker"
-          id={fieldProps.name}
-          type="text"
-          placeholder="gg/mm/aaaa"
-        />
-        <label htmlFor={fieldProps.name}>{fieldProps.label}</label>
-      </div>
+      <input
+        {...fieldProps}
+        ref={ref}
+        className="form-control it-date-datepicker"
+        id={fieldProps.name}
+        type="text"
+        placeholder="gg/mm/aaaa"
+      />
+      <label htmlFor={fieldProps.name} className="form-label">
+        {fieldProps.label}
+      </label>
     </div>
   ));
 
@@ -75,7 +75,7 @@ const DateModal = ({
               setFieldValue("page", 0);
               setFieldValue("lastUpdateDateFrom", undefined);
               setFieldValue("lastUpdateDateTo", undefined);
-              void submitForm();
+              submitForm();
             }}
           >
             <Icon color="" icon="it-close" size="" />
@@ -96,8 +96,10 @@ const DateModal = ({
                     {...field}
                     dateFormat="dd/MM/yyyy"
                     selected={dateFrom}
-                    onChange={(val: Date) =>
-                      setDateFrom(new Date(format(val, "yyyy-MM-dd")))
+                    onChange={val =>
+                      setDateFrom(
+                        val ? new Date(format(val, "yyyy-MM-dd")) : undefined
+                      )
                     }
                     selectsStart
                     startDate={dateFrom}
@@ -116,8 +118,10 @@ const DateModal = ({
                     {...field}
                     dateFormat="dd/MM/yyyy"
                     selected={dateTo}
-                    onChange={(val: Date) =>
-                      setDateTo(new Date(format(val, "yyyy-MM-dd")))
+                    onChange={val =>
+                      setDateTo(
+                        val ? new Date(format(val, "yyyy-MM-dd")) : undefined
+                      )
                     }
                     selectsEnd
                     startDate={dateFrom}
@@ -136,7 +140,7 @@ const DateModal = ({
             onClick={() => {
               setFieldValue("lastUpdateDateFrom", dateFrom);
               setFieldValue("lastUpdateDateTo", dateTo);
-              void submitForm();
+              submitForm();
               toggleDateModal();
             }}
           >

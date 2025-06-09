@@ -1,5 +1,5 @@
-import React from "react";
-import Step from "./Step";
+import { Icon } from "design-react-kit";
+import { Fragment } from "react";
 
 interface Step {
   label: string;
@@ -9,7 +9,7 @@ interface Step {
 type Props = {
   activeStep: number;
   completedSteps: Array<string>;
-  handleChangeStep: any;
+  handleChangeStep(step: number): void;
   steps: Array<Step>;
 };
 
@@ -29,31 +29,51 @@ const Stepper = ({
   };
 
   return (
-    <div className="steppers bg-white shadow-sm">
-      <div className="container">
-        <ul className="steppers-header">
-          {steps.map((step: Step, index: number) => (
-            <Step
-              key={step.key}
-              index={index + 1}
-              stepType={
-                activeStep === index
-                  ? "active"
-                  : completedSteps.includes(step.key)
-                    ? "confirmed"
-                    : ""
-              }
-              handleChangeStep={changeStep(step.key, index)}
-            >
-              {step.label}
-            </Step>
-          ))}
-          <li className="steppers-index" aria-hidden="true">
-            {steps.map((step: Step, index: number) => (
-              <span key={step.key}>{index}</span>
+    <div className="container">
+      <div className="steppers">
+        <div className="steppers-header">
+          <ul className="mb-0">
+            {steps.map((step, index) => {
+              const isActive = index === activeStep;
+              const isConfirmed = completedSteps.includes(step.key);
+              return (
+                <li
+                  key={step.key}
+                  className={`${isActive ? "active" : ""} ${isConfirmed ? "confirmed" : ""} cursor-pointer`}
+                  onClick={changeStep(step.key, index)}
+                >
+                  <span className="steppers-number">
+                    {(isActive || !isConfirmed) && (
+                      <Fragment>
+                        <span className="visually-hidden">Step </span>
+                        {index + 1}
+                      </Fragment>
+                    )}
+                    {isConfirmed && !isActive && (
+                      <Fragment>
+                        <Icon icon="it-check" aria-hidden />
+                        <span className="visually-hidden">Confermato</span>
+                      </Fragment>
+                    )}
+                  </span>
+                  {step.label}{" "}
+                  {isActive && <span className="visually-hidden">Attivo</span>}
+                </li>
+              );
+            })}
+          </ul>
+          <span className="steppers-index" aria-hidden="true">
+            {steps.map((step, index) => (
+              <span
+                key={step.key}
+                className={index === activeStep ? "active" : ""}
+                onClick={changeStep(step.key, index)}
+              >
+                {index + 1}
+              </span>
             ))}
-          </li>
-        </ul>
+          </span>
+        </div>
       </div>
     </div>
   );

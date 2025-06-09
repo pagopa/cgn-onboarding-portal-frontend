@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { createAgreement } from "../store/agreement/agreementSlice";
@@ -97,7 +97,14 @@ const RouterConfig = () => {
     );
   }
   if (!authentication.currentSession.merchantFiscalCode) {
-    return <SelectCompany />;
+    return (
+      <Switch>
+        <Route exact path={LOGIN} component={Login} />
+        <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
+        <Route exact path={HELP} component={Help} />
+        <Route path="*" component={SelectCompany} />
+      </Switch>
+    );
   }
   if (loading) {
     return <CenteredLoading />;

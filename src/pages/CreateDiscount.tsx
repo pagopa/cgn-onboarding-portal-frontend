@@ -1,4 +1,3 @@
-import React from "react";
 import CreateLayout from "../components/Layout/CreateLayout";
 import CreateDiscountForm from "../components/Form/CreateDiscountForm/CreateDiscountForm";
 

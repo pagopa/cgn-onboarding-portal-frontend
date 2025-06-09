@@ -1,12 +1,12 @@
 import { format } from "date-fns";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { getEditOperatorRoute } from "../../navigation/utils";
 import DeleteModal from "./DeleteModal";
@@ -72,7 +72,7 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
             <td className={`border-bottom-0`}>
               {operator.referents.map((referent, index) => (
                 <div className="d-flex flex-row mb-3" key={index}>
-                  <p className="m-0 mr-4">{referent}</p>
+                  <p className="m-0 me-4">{referent}</p>
                 </div>
               ))}
             </td>
@@ -81,7 +81,7 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
       </table>
       <div className="mt-10 d-flex flex-row">
         <Button
-          className="mr-4 btn-sm"
+          className="me-4 btn-sm"
           color="danger"
           outline
           tag="button"
@@ -94,7 +94,7 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           )}
         </Button>
         <Button
-          className="mr-4 btn-sm"
+          className="me-4 btn-sm"
           color="primary"
           outline
           tag="button"

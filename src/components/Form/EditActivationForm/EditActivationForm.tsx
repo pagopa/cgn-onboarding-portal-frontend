@@ -1,10 +1,10 @@
 import { useHistory, useParams } from "react-router-dom";
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { remoteData } from "../../../api/common";
 import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
 import { OrganizationWithReferents } from "../../../api/generated_backoffice";
-import CenteredLoading from "../../CenteredLoading";
+import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import ActivationForm from "../ActivationForm";
 
 const emptyInitialValues: OrganizationWithReferents = {

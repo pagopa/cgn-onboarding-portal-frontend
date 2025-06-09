@@ -1,10 +1,10 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button, Icon, Progress } from "design-react-kit";
 import { saveAs } from "file-saver";
 import { AxiosError, AxiosProgressEvent } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
-import DocumentIcon from "../../../../assets/icons/document.svg";
-import DocumentSuccess from "../../../../assets/icons/document-success.svg";
+import DocumentIcon from "../../../../assets/icons/document.svg?react";
+import DocumentSuccess from "../../../../assets/icons/document-success.svg?react";
 import { Document } from "../../../../api/generated";
 import { formatDate } from "../../../../utils/dates";
 import { remoteData } from "../../../../api/common";
@@ -18,9 +18,13 @@ type Props = {
   agreementId: string;
 };
 
-const FileRow = (
-  { type, label, uploadedDoc, getFiles, agreementId }: Props // eslint-disable-next-line sonarjs/cognitive-complexity
-) => {
+const FileRow = ({
+  type,
+  label,
+  uploadedDoc,
+  getFiles,
+  agreementId
+}: Props) => {
   const refFile = useRef<HTMLInputElement>(null);
   const [loadingTemplate, setLoadingTemplate] = useState(false);
   const [loadingDoc, setLoadingDoc] = useState(false);
@@ -119,9 +123,9 @@ const FileRow = (
       <div className="d-flex flex-row justify-content-between align-items-center">
         <div className="d-flex flex-row align-items-center">
           {!uploadedDoc ? (
-            <DocumentIcon className="mr-4" />
+            <DocumentIcon className="me-4" style={{ flexShrink: 0 }} />
           ) : (
-            <DocumentSuccess className="mr-4" />
+            <DocumentSuccess className="me-4" style={{ flexShrink: 0 }} />
           )}
           {uploadedDoc ? (
             <div className="d-flex flex-column ">
@@ -144,7 +148,7 @@ const FileRow = (
                     icon
                     size="sm"
                     tag="button"
-                    className="mr-2"
+                    className="me-2"
                     onClick={getTemplates}
                   >
                     <Icon
@@ -167,7 +171,7 @@ const FileRow = (
                       icon="it-upload"
                       padding={false}
                       size="xs"
-                      className="mr-2"
+                      className="me-2"
                     />
                     Carica
                     <input

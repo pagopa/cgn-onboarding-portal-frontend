@@ -1,16 +1,16 @@
 import { Icon } from "design-react-kit";
-import React, { ReactElement } from "react";
-import VisibleIcon from "../../assets/icons/visible.svg";
+import { ReactNode } from "react";
+import VisibleIcon from "../../assets/icons/visible.svg?react";
 
 type Props = {
   hasIntroduction?: boolean;
   title?: string;
-  description?: string | ReactElement;
-  children: any;
+  description?: ReactNode;
+  children: ReactNode;
   required?: boolean;
   isVisible?: boolean;
-  footerDescription?: any;
-  className?: any;
+  footerDescription?: ReactNode;
+  className?: string;
   hasClose?: boolean;
   handleClose?(): void;
   hasRemove?: boolean;
@@ -33,7 +33,7 @@ const FormSection = ({
   isVisible = true,
   footerDescription = "",
   children,
-  className,
+  className = "",
   hasClose = false,
   handleClose,
   hasRemove = false,
@@ -73,7 +73,7 @@ const FormSection = ({
         )}
         {title && (
           <div className="d-flex flex-row align-items-center">
-            <h1 className="h4 font-weight-bold text-dark-blue mr-4">
+            <h1 className="h4 fw-bold text-dark-blue me-4">
               {title}
               {required && "*"}
             </h1>
@@ -81,7 +81,7 @@ const FormSection = ({
           </div>
         )}
         {description && (
-          <p className="text-sm font-weight-normal text-black">{description}</p>
+          <p className="text-sm fw-normal text-black">{description}</p>
         )}
         {children}
         {footerDescription !== "" && footerDescription}

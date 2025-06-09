@@ -1,5 +1,5 @@
-import React from "react";
 import { Button } from "design-react-kit";
+import { useState } from "react";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import CgnLogo from "../components/Logo/CgnLogo";
@@ -7,9 +7,7 @@ import { useAuthentication } from "../authentication/AuthenticationContext";
 
 const SelectCompany = () => {
   const authentication = useAuthentication();
-  const [selectedCompany, setSelectedCompany] = React.useState<string | null>(
-    null
-  );
+  const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const merchants = authentication.currentUserSession?.merchants;
   const onConfirmSelection = () => {
     if (authentication.currentSession.type === "user" && selectedCompany) {
@@ -28,7 +26,7 @@ const SelectCompany = () => {
             <section className="p-20 bg-white">
               <div className="row">
                 <div className="col-9">
-                  <h1 className="h2 font-weight-bold text-dark-blue">
+                  <h1 className="h2 fw-bold text-dark-blue">
                     Società Operante
                   </h1>
                   <p>
@@ -56,20 +54,23 @@ const SelectCompany = () => {
                       selectedCompany === company.organization_fiscal_code
                     }
                   />
-                  <label htmlFor={`organization_fiscal_code_${i}`}>
+                  <label
+                    htmlFor={`organization_fiscal_code_${i}`}
+                    className="form-label"
+                  >
                     <strong>{company.organization_name}</strong>
                     <small
                       id={`organization_fiscal_code_${i}`}
-                      className="form-text"
+                      className="form-text d-block"
                     >
                       CF/PIVA {company.organization_fiscal_code}
                     </small>
                   </label>
                 </div>
               ))}
-              <div className="mt-10 d-flex flex-row">
+              <div className="mt-10 d-flex flex-row gap-4 flex-wrap">
                 <Button
-                  className="px-14 mr-4"
+                  className="px-14"
                   outline
                   color="primary"
                   tag="button"
@@ -81,7 +82,7 @@ const SelectCompany = () => {
                 </Button>
                 <Button
                   disabled={!selectedCompany}
-                  className="px-14 mr-4"
+                  className="px-14"
                   color="primary"
                   tag="button"
                   onClick={onConfirmSelection}

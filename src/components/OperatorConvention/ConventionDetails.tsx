@@ -1,25 +1,25 @@
-import React, { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Icon } from "design-react-kit";
 import { format } from "date-fns";
 import { remoteData } from "../../api/common";
-import CenteredLoading from "../CenteredLoading";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   ApprovedAgreementDetail,
   ApprovedAgreement
 } from "../../api/generated_backoffice";
-import { DiscountState } from "../../api/generated";
 import Documents from "./Documents";
 import Profile from "./Profile";
 import Referent from "./Referent";
 import OperatorData from "./OperatorData";
 import Discount from "./Discount";
+import { BadgeStatus } from "./BadgeStatus";
 
 const menuLink = (
   view: string,
   setView: (key: string) => void,
   viewKey: string,
   label: string,
-  child?: any
+  child?: ReactNode
 ) => (
   <li className={`nav-item ${view.includes(viewKey) ? "active" : ""}`}>
     <a
@@ -32,59 +32,6 @@ const menuLink = (
   </li>
 );
 
-export const getBadgeStatus = (state: DiscountState) => {
-  switch (state) {
-    case "suspended":
-      return (
-        <span
-          className="badge badge-pill badge-outline-warning"
-          style={{ fontSize: "12px" }}
-        >
-          Sospesa
-        </span>
-      );
-    case "test_pending":
-      return (
-        <span
-          className="badge badge-pill badge-outline-warning"
-          style={{ fontSize: "12px" }}
-        >
-          Test
-        </span>
-      );
-    case "test_passed":
-      return (
-        <span
-          className="badge badge-pill badge-outline-success"
-          style={{ fontSize: "12px" }}
-        >
-          Test superato
-        </span>
-      );
-    case "test_failed":
-      return (
-        <span
-          className="badge badge-pill badge-outline-danger"
-          style={{ fontSize: "12px" }}
-        >
-          Test fallito
-        </span>
-      );
-    case "published":
-      return (
-        <span
-          className="badge badge-pill badge-outline-primary"
-          style={{ fontSize: "12px" }}
-        >
-          Pubblicata
-        </span>
-      );
-    default:
-      return null;
-  }
-};
-
-/* eslint-disable sonarjs/cognitive-complexity */
 const getView = (
   details: ApprovedAgreementDetail | undefined,
   view: string,
@@ -107,7 +54,7 @@ const getView = (
       } else {
         return (
           <div>
-            <h5 className="mb-5 font-weight-bold">Opportunità</h5>
+            <h5 className="mb-5 fw-bold">Opportunità</h5>
             <p className="text-center text-gray">
               Non è presente nessuna opportunità.
             </p>
@@ -171,7 +118,7 @@ const ConventionDetails = ({
       </div>
       <div className="d-flex mt-2">
         <div className="col-4 p-0">
-          <div className="mr-1 px-8 py-10 bg-white">
+          <div className="me-1 px-8 py-10 bg-white">
             <nav className="navbar it-navscroll-wrapper navbar-expand-lg it-left-side">
               <div className="menu-wrapper">
                 <div className="link-list-wrapper">
@@ -186,21 +133,21 @@ const ConventionDetails = ({
                         <ul className="link-list">
                           {details?.discounts?.map((d, i: number) => (
                             <li
-                              className="nav-link d-flex flex-row align-items-center flex-nowrap"
+                              className="nav-link d-flex flex-row align-items-center flex-nowrap ps-3"
                               key={i}
                             >
                               <a
                                 className={`
                                   nav-link primary-color cursor-pointer ${
                                     view.includes(`agevolazione${i + 1}`)
-                                      ? "font-weight-bold"
+                                      ? "fw-bold"
                                       : ""
                                   }`}
                                 onClick={() => setView(`agevolazione${i + 1}`)}
                               >
                                 {d.name}
                               </a>
-                              {getBadgeStatus(d.state)}
+                              <BadgeStatus discountState={d.state} />
                             </li>
                           ))}
                         </ul>
@@ -216,7 +163,7 @@ const ConventionDetails = ({
           </div>
         </div>
         <div className="col-8 p-0">
-          <div className="ml-1 px-8 py-10 bg-white">
+          <div className="ms-1 px-8 py-10 bg-white">
             {getView(details, view, () => refetch(), agreement)}
           </div>
         </div>

@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useRef, useState } from "react";
 import { Form, Formik, Field } from "formik";
 import { Button } from "design-react-kit";
 import { saveAs } from "file-saver";
-import CenteredLoading from "../CenteredLoading";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import DateModal from "./DateModal";
@@ -24,8 +23,7 @@ const ConventionFilter = ({
   const { triggerTooltip } = useTooltip();
   const [downloadingAgreements, setDownloadingAgreements] = useState(false);
   const [downloadingEyca, setDownloadingEyca] = useState(false);
-  // eslint-disable-next-line functional/no-let
-  let timeout: any = null;
+  const timeoutRef = useRef<number | null>(null);
 
   const initialValues: FilterFormValues = {
     fullName: "",
@@ -54,7 +52,7 @@ const ConventionFilter = ({
           today.getMonth() + 1
         }/${today.getFullYear()}`
       );
-    } catch (error) {
+    } catch {
       triggerTooltip({
         severity: Severity.DANGER,
         text: "Errore durante il download del file"
@@ -85,7 +83,7 @@ const ConventionFilter = ({
           today.getMonth() + 1
         }/${today.getFullYear()}`
       );
-    } catch (error) {
+    } catch {
       triggerTooltip({
         severity: Severity.DANGER,
         text: "Errore durante il download del file"
@@ -111,10 +109,10 @@ const ConventionFilter = ({
         <Form>
           <div className="d-flex justify-content-between">
             {dirty ? (
-              <h2 className="h4 font-weight-bold text-dark-blue">
+              <h2 className="h4 fw-bold text-dark-blue">
                 Risultati della ricerca
                 <span
-                  className="primary-color ml-2 text-sm font-weight-regular cursor-pointer"
+                  className="primary-color ms-2 text-sm fw-regular cursor-pointer"
                   onClick={() => {
                     resetForm();
                     void submitForm();
@@ -124,13 +122,13 @@ const ConventionFilter = ({
                 </span>
               </h2>
             ) : (
-              <h2 className="h4 font-weight-bold text-dark-blue">
+              <h2 className="h4 fw-bold text-dark-blue">
                 Operatori convenzionati
               </h2>
             )}
 
             <div
-              className="d-flex justify-content-end flex-grow-1 flex-wrap"
+              className="d-flex justify-content-end flex-grow-1 flex-wrap align-items-center"
               style={{ rowGap: "0.75rem" }}
             >
               <DateModal
@@ -144,13 +142,13 @@ const ConventionFilter = ({
                 name="fullName"
                 type="text"
                 placeholder="Cerca Operatore"
-                onChange={(e: { target: { value: any } }) => {
-                  setFieldValue("fullName", e.target.value);
-                  if (timeout) {
-                    clearTimeout(timeout);
+                onChange={(e: { target: { value: string } }) => {
+                  void setFieldValue("fullName", e.target.value);
+                  if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
                   }
-                  timeout = setTimeout(() => {
-                    setFieldValue("page", 0);
+                  timeoutRef.current = window.setTimeout(() => {
+                    void setFieldValue("page", 0);
                     void submitForm();
                   }, 1000);
                 }}
@@ -158,30 +156,22 @@ const ConventionFilter = ({
               />
               <div>
                 <Button
-                  className="ml-5 btn-sm"
+                  className="ms-5 btn-sm"
                   color="primary"
                   tag="button"
                   onClick={getExport}
                   disabled={downloadingAgreements}
                 >
-                  {downloadingAgreements ? (
-                    <CenteredLoading />
-                  ) : (
-                    <span>Export convenzioni</span>
-                  )}
+                  <span>Export convenzioni</span>
                 </Button>
                 <Button
-                  className="ml-5 btn-sm"
+                  className="ms-5 btn-sm"
                   color="primary"
                   tag="button"
                   onClick={getExportEyca}
                   disabled={downloadingEyca}
                 >
-                  {downloadingEyca ? (
-                    <CenteredLoading />
-                  ) : (
-                    <span>Export EYCA</span>
-                  )}
+                  <span>Export EYCA</span>
                 </Button>
               </div>
             </div>

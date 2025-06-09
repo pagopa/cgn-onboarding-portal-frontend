@@ -1,31 +1,36 @@
-import React, {
+import {
   useState,
   useEffect,
   useMemo,
   useCallback,
-  useRef
+  useRef,
+  Fragment
 } from "react";
 import {
   useTable,
   useExpanded,
-  Row,
-  UseExpandedRowProps,
   usePagination,
-  useSortBy
+  useSortBy,
+  Column
 } from "react-table";
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
-import { omit } from "lodash";
+import omit from "lodash/omit";
 import { remoteData } from "../../api/common";
-import CenteredLoading from "../CenteredLoading";
-import { AgreementApiGetAgreementsRequest } from "../../api/generated_backoffice";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
+import {
+  AgreementApiGetAgreementsRequest,
+  Agreement,
+  AssignedAgreement
+} from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
+type BackofficeAgreement = Partial<AssignedAgreement> & Agreement;
+
 const Requests = () => {
   const pageSize = 20;
   const refForm = useRef<any>(null);
@@ -51,32 +56,35 @@ const Requests = () => {
 
   const isLoading = agreementsQuery.isLoading;
 
-  const data = useMemo(() => agreements?.items || [], [agreements]);
+  const data = useMemo(
+    () => agreements?.items || [],
+    [agreements]
+  ) as Array<BackofficeAgreement>;
   const columns = useMemo(
-    () => [
+    (): Array<Column<BackofficeAgreement>> => [
       {
         Header: "Operatore",
-        accessor: "profile.fullName"
+        accessor: data => data.profile?.fullName
       },
       {
         Header: "Data Richiesta",
         accessor: "requestDate",
-        Cell: ({ row }: { row: Row }) =>
+        Cell: ({ row }) =>
           format(new Date(row.values.requestDate), "dd/MM/yyyy")
       },
       {
         Header: "Stato",
         accessor: "state",
-        Cell: ({ row }: { row: Row }) => RequestStateBadge(row.values.state)
+        Cell: ({ row }) => RequestStateBadge(row.values.state)
       },
       {
         Header: "Revisore",
-        accessor: "assignee.fullName"
+        accessor: data => data.assignee?.fullName
       },
       {
         Header: () => null,
         id: "expander",
-        Cell: ({ row }: { row: UseExpandedRowProps<Row> }) => (
+        Cell: ({ row }) => (
           <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
             {row.isExpanded ? (
               <Icon icon="it-expand" color="primary" />
@@ -91,7 +99,7 @@ const Requests = () => {
   );
 
   const renderRowSubComponent = useCallback(
-    ({ row: { original } }) => (
+    ({ row: { original } }: { row: { original: Agreement } }) => (
       <RequestsDetails
         updateList={() => refForm.current?.submitForm()}
         original={original}
@@ -114,7 +122,7 @@ const Requests = () => {
     nextPage,
     previousPage,
     state: { pageIndex, sortBy }
-  } = useTable<any>(
+  } = useTable<BackofficeAgreement>(
     {
       columns,
       data,
@@ -200,7 +208,7 @@ const Requests = () => {
               {page.map(row => {
                 prepareRow(row);
                 return (
-                  <React.Fragment key={row.getRowProps().key}>
+                  <Fragment key={row.getRowProps().key}>
                     <tr
                       className="cursor-pointer"
                       onClick={() => row.toggleRowExpanded()}
@@ -208,8 +216,8 @@ const Requests = () => {
                       {row.cells.map((cell, i) => (
                         <td
                           className={`
-                          ${i === 0 ? "pl-6" : ""}
-                          ${i === headerGroups.length - 1 ? "pr-6" : ""}
+                          ${i === 0 ? "ps-6" : ""}
+                          ${i === headerGroups.length - 1 ? "pe-6" : ""}
                           px-3 py-2 border-bottom text-sm
                           `}
                           {...cell.getCellProps()}
@@ -225,13 +233,13 @@ const Requests = () => {
                       ))}
                     </tr>
                     {row.isExpanded ? (
-                      <tr className="px-8 py-4 border-bottom text-sm font-weight-normal text-black">
+                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
                         <td colSpan={visibleColumns.length}>
                           {renderRowSubComponent({ row })}
                         </td>
                       </tr>
                     ) : null}
-                  </React.Fragment>
+                  </Fragment>
                 );
               })}
             </tbody>

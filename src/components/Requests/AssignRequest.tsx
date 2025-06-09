@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Agreement } from "../../api/generated_backoffice";
 
 const AssignRequest = ({
   assignedToMe,
@@ -8,7 +9,7 @@ const AssignRequest = ({
   assignAgreements
 }: {
   assignedToMe: boolean;
-  original: any;
+  original: Agreement;
   assignAgreements(): void;
 }) => {
   const [isOpen, toggleAssign] = useState(false);
@@ -24,7 +25,7 @@ const AssignRequest = ({
         <Button
           color="primary"
           tag="button"
-          className="ml-4"
+          className="ms-4"
           onClick={checkAssign()}
         >
           Prendi in carico

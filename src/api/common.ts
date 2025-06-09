@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   QueryClient,
   UseQueryOptions,
@@ -13,75 +15,65 @@ import * as GeneratedPublic from "./generated_public";
 import * as GeneratedIndex from "./generated";
 import * as GeneratedBackoffice from "./generated_backoffice";
 
+const API_DOMAIN = import.meta.env.CGN_API_URL;
+
+export const API_PUBLIC_BASE_URL = `${API_DOMAIN}/public/v1`;
+
 const PublicApi = {
-  Help: new GeneratedPublic.HelpApi(undefined, process.env.BASE_PUBLIC_PATH)
+  Help: new GeneratedPublic.HelpApi(undefined, API_PUBLIC_BASE_URL)
 };
 
+export const API_INDEX_BASE_URL = `${API_DOMAIN}/api/v1`;
+
 const IndexApi = {
-  Agreement: new GeneratedIndex.AgreementApi(
-    undefined,
-    process.env.BASE_API_PATH
-  ),
-  Profile: new GeneratedIndex.ProfileApi(undefined, process.env.BASE_API_PATH),
-  Discount: new GeneratedIndex.DiscountApi(
-    undefined,
-    process.env.BASE_API_PATH
-  ),
-  Bucket: new GeneratedIndex.BucketApi(undefined, process.env.BASE_API_PATH),
-  Document: new GeneratedIndex.DocumentApi(
-    undefined,
-    process.env.BASE_API_PATH
-  ),
+  Agreement: new GeneratedIndex.AgreementApi(undefined, API_INDEX_BASE_URL),
+  Profile: new GeneratedIndex.ProfileApi(undefined, API_INDEX_BASE_URL),
+  Discount: new GeneratedIndex.DiscountApi(undefined, API_INDEX_BASE_URL),
+  Bucket: new GeneratedIndex.BucketApi(undefined, API_INDEX_BASE_URL),
+  Document: new GeneratedIndex.DocumentApi(undefined, API_INDEX_BASE_URL),
   DocumentTemplate: new GeneratedIndex.DocumentTemplateApi(
     undefined,
-    process.env.BASE_API_PATH
+    API_INDEX_BASE_URL
   ),
-  ApiToken: new GeneratedIndex.ApiTokenApi(
-    undefined,
-    process.env.BASE_API_PATH
-  ),
-  Help: new GeneratedIndex.HelpApi(undefined, process.env.BASE_API_PATH),
+  ApiToken: new GeneratedIndex.ApiTokenApi(undefined, API_INDEX_BASE_URL),
+  Help: new GeneratedIndex.HelpApi(undefined, API_INDEX_BASE_URL),
   GeolocationToken: new GeneratedIndex.GeolocationTokenApi(
     undefined,
-    process.env.BASE_API_PATH
+    API_INDEX_BASE_URL
   ),
   DiscountBucketLoadingProgress:
     new GeneratedIndex.DiscountBucketLoadingProgressApi(
       undefined,
-      process.env.BASE_API_PATH
+      API_INDEX_BASE_URL
     )
 };
+
+const API_BACKOFFICE_BASE_URL = `${API_DOMAIN}/backoffice/v1`;
 
 const BackofficeApi = {
   Agreement: new GeneratedBackoffice.AgreementApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   ),
   Discount: new GeneratedBackoffice.DiscountApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   ),
   Document: new GeneratedBackoffice.DocumentApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   ),
   Exports: new GeneratedBackoffice.ExportsApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   ),
   AttributeAuthority: new GeneratedBackoffice.AttributeauthorityApi(
     undefined,
-    process.env.BASE_BACKOFFICE_PATH
+    API_BACKOFFICE_BASE_URL
   )
 };
 
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: process.env.NODE_ENV === "production"
-    }
-  }
-});
+export const queryClient = new QueryClient({});
 
 type VariablesOf<AxiosParams extends Array<any>> = AxiosParams extends [
   RawAxiosRequestConfig?
@@ -203,14 +195,16 @@ function makeReactQueries<
   >;
 } {
   return Object.fromEntries(
-    Object.keys(Object.getPrototypeOf(methods)).map(methodName => [
-      methodName,
-      makeReactQuery(
-        [queryKeyNameLevel1, queryKeyNameLevel2, methodName],
-        (...args) => methods[methodName](...args),
-        getToken
-      )
-    ])
+    Object.getOwnPropertyNames(Object.getPrototypeOf(methods)).map(
+      methodName => [
+        methodName,
+        makeReactQuery(
+          [queryKeyNameLevel1, queryKeyNameLevel2, methodName],
+          (...args) => methods[methodName](...args),
+          getToken
+        )
+      ]
+    )
   ) as any;
 }
 

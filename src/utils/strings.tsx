@@ -91,9 +91,9 @@ export function getEntityTypeLabel(
     case EntityTypeA.Private:
     case EntityTypeB.Private:
       return "Privato";
-    default:
     case EntityTypeA.PublicAdministration:
     case EntityTypeB.PublicAdministration:
+    default:
       return "Pubblico";
   }
 }

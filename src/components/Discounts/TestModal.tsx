@@ -1,11 +1,10 @@
-import React from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 type Props = {
-  isOpen: any;
-  toggle: any;
-  testRequest: any;
+  isOpen: boolean;
+  toggle(): void;
+  testRequest(): void;
 };
 
 const TestModal = ({ isOpen, toggle, testRequest }: Props) => (

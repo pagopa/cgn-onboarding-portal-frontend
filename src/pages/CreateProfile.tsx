@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Layout from "../components/Layout/Layout";
 import Stepper from "../components/Stepper/Stepper";
@@ -13,7 +13,6 @@ import CgnLogo from "../components/Logo/CgnLogo";
 
 type ExtendedCompletedStep = CompletedStep | "Guide";
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const CreateProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const [step, setStep] = useState<number>(agreement.completedSteps.length);
@@ -114,9 +113,7 @@ const CreateProfile = () => {
           <div className="row">
             <div className="col-9">
               <h1 className="h5 text-gray">Carta Giovani Nazionale</h1>
-              <h2 className="h2 text-dark-blue font-weight-bold">
-                Portale Operatori
-              </h2>
+              <h2 className="h2 text-dark-blue fw-bold">Portale Operatori</h2>
             </div>
             <div className="col-3 d-flex justify-content-end">
               <CgnLogo />

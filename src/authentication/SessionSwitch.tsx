@@ -1,19 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuthentication } from "./AuthenticationContext";
 import { adminLogoutPopup } from "./authentication";
-import { authenticationStore } from "./authenticationStore";
 
 // this serves only for testing purposes until multiple logins are not approved
-
-const ALLOW_MULTIPLE_LOGIN =
-  window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1" ||
-  window.location.hostname === "portal.cgnonboardingportal-uat.pagopa.it";
 
 export function SessionSwitch() {
   const authentication = useAuthentication();
   const [isOpen, setIsOpen] = useState(false);
-  if (!ALLOW_MULTIPLE_LOGIN) {
+  if (import.meta.env.CGN_ALLOW_MULTIPLE_LOGIN !== "true") {
     return null;
   }
   return (
@@ -41,26 +35,6 @@ export function SessionSwitch() {
             padding: 8
           }}
         >
-          {
-            // developer utility to be able to test from localhost
-            window.location.host ===
-              "portal.cgnonboardingportal-uat.pagopa.it" && (
-              <button
-                onClick={() => {
-                  // eslint-disable-next-line functional/immutable-data
-                  window.location.href = `http://localhost:3000/dev-auth?${new URLSearchParams(
-                    {
-                      authenticationState: JSON.stringify(
-                        authenticationStore.get()
-                      )
-                    }
-                  )}`;
-                }}
-              >
-                authenticate on localhost
-              </button>
-            )
-          }
           <button
             onClick={() => {
               adminLogoutPopup();

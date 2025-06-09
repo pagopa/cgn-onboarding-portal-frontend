@@ -1,4 +1,3 @@
-import React from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import Layout from "../components/Layout/Layout";
 import { ContainerFluid } from "../components/Container/Container";

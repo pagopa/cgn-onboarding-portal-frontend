@@ -1,5 +1,4 @@
 import { Icon } from "design-react-kit";
-import React from "react";
 import { HeaderGroup } from "react-table";
 
 type Props = {
@@ -22,12 +21,13 @@ const TableHeader = ({ headerGroups }: Props) => (
             {...column.getHeaderProps(column.getSortByToggleProps())}
             key={i}
             className={`
-              ${i === 0 ? "pl-6" : ""}
-              ${i === headerGroup.headers.length - 1 ? "pr-6" : ""}
-              px-3 py-2 font-weight-bold text-gray
+              ${i === 0 ? "ps-6" : ""}
+              ${i === headerGroup.headers.length - 1 ? "pe-6" : ""}
+              px-3 py-2 fw-bold text-gray
               text-uppercase text-nowrap
+              align-middle
             `}
-            style={{ fontSize: "0.75rem", verticalAlign: "middle" }}
+            style={{ fontSize: "0.75rem" }}
           >
             {column.render("Header")}
             <span style={{ position: "relative" }}>

@@ -1,5 +1,5 @@
 import { Icon } from "design-react-kit";
-import React, { CSSProperties } from "react";
+import { CSSProperties } from "react";
 
 const styles: Record<string, CSSProperties> = {
   container: {
