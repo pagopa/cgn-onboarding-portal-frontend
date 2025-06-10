@@ -18,7 +18,7 @@ type Props = {
 };
 
 const FormAlertInfoContent = () => (
-  <p className="mb-10 text-base font-weight-normal text-black">
+  <p className="alert alert-primary mb-10 text-base font-weight-normal text-black">
     Le domande contrassegnate con il simbolo * sono obbligatorie
     <br /> Le informazioni contrassegnate con il simbolo <VisibleIcon /> saranno
     visibili in app.
