@@ -60,7 +60,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
     .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
     .required(REQUIRED_FIELD),
   legalRepresentativeTaxCode: Yup.string()
-    .min(4, "Deve essere al minimo di 4 caratteri")
+    .min(4, "Inserisci un codice fiscale valido")
     .max(20, "Deve essere al massimo di 20 caratteri")
     .required(REQUIRED_FIELD),
   referent: ReferentValidationSchema,
