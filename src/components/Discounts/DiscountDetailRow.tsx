@@ -136,155 +136,152 @@ const DiscountDetailRow = ({
   );
 
   return (
-    <>
-      <section className="px-6 py-4 bg-white">
-        {row.original.state === "test_failed" && (
-          <Callout
-            type={"danger"}
-            title="IL TEST PER QUESTA OPPORTUNITA' È FALLITO"
-            body={row.original.testFailureReason}
+    <section className="px-6 py-4 bg-white">
+      {row.original.state === "test_failed" && (
+        <Callout
+          type={"danger"}
+          title="IL TEST PER QUESTA OPPORTUNITA' È FALLITO"
+          body={row.original.testFailureReason}
+        />
+      )}
+      {row.original.state === "suspended" && (
+        <Callout
+          type={"danger"}
+          title="Questa opportunità è stata sospesa"
+          body={
+            <Fragment>
+              <div>{row.original.suspendedReasonMessage}</div>
+              <div>
+                <button
+                  className="btn btn-link fw-bold p-0 my-2"
+                  onClick={() => {
+                    history.push(getEditDiscountRoute(row.original.id));
+                  }}
+                >
+                  Modifica opportunità
+                </button>
+              </div>
+            </Fragment>
+          }
+        />
+      )}
+      {row.original.lastBucketCodeLoadUid != null &&
+        row.original.lastBucketCodeLoadStatus &&
+        !canBePublished && (
+          <ImportationStatus
+            discountId={row.original.id}
+            agreementId={agreement.id}
+            status={row.original.lastBucketCodeLoadStatus}
+            onPollingComplete={() => setCanBePublished(true)}
           />
         )}
-        {row.original.state === "suspended" && (
-          <Callout
-            type={"danger"}
-            title="Questa opportunità è stata sospesa"
-            body={
-              <Fragment>
-                <div>{row.original.suspendedReasonMessage}</div>
-                <div>
-                  <button
-                    className="btn btn-link fw-bold p-0 my-2"
-                    onClick={() => {
-                      history.push(getEditDiscountRoute(row.original.id));
-                    }}
-                  >
-                    Modifica opportunità
-                  </button>
-                </div>
-              </Fragment>
-            }
+      <h1 className="h5 fw-bold text-dark-blue">Dettagli</h1>
+      <table className="table">
+        <tbody>
+          <MultilanguageProfileItem
+            label="Nome opportunità"
+            value={row.original.name}
+            value_en={row.original.name_en}
           />
-        )}
-        {row.original.lastBucketCodeLoadUid != null &&
-          row.original.lastBucketCodeLoadStatus &&
-          !canBePublished && (
-            <ImportationStatus
-              discountId={row.original.id}
-              agreementId={agreement.id}
-              status={row.original.lastBucketCodeLoadStatus}
-              onPollingComplete={() => setCanBePublished(true)}
+          {row.original.description && row.original.description_en && (
+            <MultilanguageProfileItem
+              label="Descrizione opportunità"
+              value={row.original.description}
+              value_en={row.original.description_en}
             />
           )}
-        <h1 className="h5 fw-bold text-dark-blue">Dettagli</h1>
-        <table className="table">
-          <tbody>
-            <MultilanguageProfileItem
-              label="Nome opportunità"
-              value={row.original.name}
-              value_en={row.original.name_en}
-            />
-            {row.original.description && row.original.description_en && (
-              <MultilanguageProfileItem
-                label="Descrizione opportunità"
-                value={row.original.description}
-                value_en={row.original.description_en}
-              />
-            )}
-            <tr>
-              <td className={`px-0 text-gray border-bottom-0`}>
-                Stato opportunità
-              </td>
-              <td className={`border-bottom-0`}>
-                <DiscountComponent discountState={row.values.state} />
-              </td>
-            </tr>
-            <ProfileItem
-              label="Data d'inizio opportunità"
-              value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
-            />
-            <ProfileItem
-              label="Data di fine opportunità"
-              value={format(new Date(row.original.endDate), "dd/MM/yyyy")}
-            />
-            <ProfileItem
-              label="Entità dello sconto"
-              value={formatPercentage(row.original.discount)}
-            />
-            <tr>
-              <td className={`px-0 text-gray border-bottom-0`}>
-                Categorie merceologiche
-              </td>
-              <td className={`border-bottom-0`}>
-                {makeProductCategoriesString(
-                  row.original.productCategories
-                ).map((productCategory, index) =>
+          <tr>
+            <td className={`px-0 text-gray border-bottom-0`}>
+              Stato opportunità
+            </td>
+            <td className={`border-bottom-0`}>
+              <DiscountComponent discountState={row.values.state} />
+            </td>
+          </tr>
+          <ProfileItem
+            label="Data d'inizio opportunità"
+            value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
+          />
+          <ProfileItem
+            label="Data di fine opportunità"
+            value={format(new Date(row.original.endDate), "dd/MM/yyyy")}
+          />
+          <ProfileItem
+            label="Entità dello sconto"
+            value={formatPercentage(row.original.discount)}
+          />
+          <tr>
+            <td className={`px-0 text-gray border-bottom-0`}>
+              Categorie merceologiche
+            </td>
+            <td className={`border-bottom-0`}>
+              {makeProductCategoriesString(row.original.productCategories).map(
+                (productCategory, index) =>
                   productCategory ? <p key={index}>{productCategory}</p> : null
-                )}
-              </td>
-            </tr>
-            {row.original.condition && row.original.condition_en && (
-              <MultilanguageProfileItem
-                label="Condizioni dell'opportunità"
-                value={row.original.condition}
-                value_en={row.original.condition_en}
-              />
-            )}
-            {row.original.discountUrl && (
-              <ProfileItem
-                label="Link all'opportunità"
-                value={
-                  <a
-                    href={row.original.discountUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {row.original.discountUrl}
-                  </a>
-                }
-              />
-            )}
-            {row.original.staticCode && (
-              <ProfileItem
-                label="Codice sconto statico"
-                value={row.original.staticCode}
-              />
-            )}
-            {row.original.landingPageUrl && (
-              <ProfileItem
-                label="Link alla landing page"
-                value={row.original.landingPageUrl}
-              />
-            )}
-            {row.original.landingPageReferrer && (
-              <ProfileItem
-                label="Landing Page referer"
-                value={row.original.landingPageReferrer}
-              />
-            )}
-            <ProfileItem
-              label="EYCA"
-              value={row.original.visibleOnEyca ? "Sì" : "No"}
+              )}
+            </td>
+          </tr>
+          {row.original.condition && row.original.condition_en && (
+            <MultilanguageProfileItem
+              label="Condizioni dell'opportunità"
+              value={row.original.condition}
+              value_en={row.original.condition_en}
             />
-            {row.original.eycaLandingPageUrl && (
-              <ProfileItem
-                label="Link EYCA"
-                value={
-                  <a
-                    href={row.original.eycaLandingPageUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {row.original.eycaLandingPageUrl}
-                  </a>
-                }
-              />
-            )}
-          </tbody>
-        </table>
-        {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
-      </section>
-    </>
+          )}
+          {row.original.discountUrl && (
+            <ProfileItem
+              label="Link all'opportunità"
+              value={
+                <a
+                  href={row.original.discountUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {row.original.discountUrl}
+                </a>
+              }
+            />
+          )}
+          {row.original.staticCode && (
+            <ProfileItem
+              label="Codice sconto statico"
+              value={row.original.staticCode}
+            />
+          )}
+          {row.original.landingPageUrl && (
+            <ProfileItem
+              label="Link alla landing page"
+              value={row.original.landingPageUrl}
+            />
+          )}
+          {row.original.landingPageReferrer && (
+            <ProfileItem
+              label="Landing Page referer"
+              value={row.original.landingPageReferrer}
+            />
+          )}
+          <ProfileItem
+            label="EYCA"
+            value={row.original.visibleOnEyca ? "Sì" : "No"}
+          />
+          {row.original.eycaLandingPageUrl && (
+            <ProfileItem
+              label="Link EYCA"
+              value={
+                <a
+                  href={row.original.eycaLandingPageUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {row.original.eycaLandingPageUrl}
+                </a>
+              }
+            />
+          )}
+        </tbody>
+      </table>
+      {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
+    </section>
   );
 };
 
