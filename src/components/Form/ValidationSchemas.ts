@@ -30,7 +30,7 @@ const ReferentValidationSchema = Yup.object().shape({
     .required(REQUIRED_FIELD),
   telephoneNumber: Yup.string()
     .matches(/^\d*$/, ONLY_NUMBER)
-    .min(4, "Deve essere di 4 caratteri")
+    .min(4, "Inserisci un numero di telefono valido")
     .required(REQUIRED_FIELD)
 });
 
@@ -54,7 +54,7 @@ export const ProfileDataValidationSchema = Yup.object().shape({
   legalOffice: Yup.string().required(REQUIRED_FIELD),
   telephoneNumber: Yup.string()
     .matches(/^\d*$/, ONLY_NUMBER)
-    .min(4, "Deve essere di 4 caratteri")
+    .min(4, "Inserisci un numero di telefono valido")
     .required(REQUIRED_FIELD),
   legalRepresentativeFullName: Yup.string()
     .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
