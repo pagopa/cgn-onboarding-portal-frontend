@@ -24,12 +24,12 @@ const SelectCompany = () => {
         <Container className="mt-20 mb-20">
           <div className="col-10 offset-1">
             <section className="p-20 bg-white">
-              <div className="row">
+              <div className="row" style={{ marginBottom: "40px" }}>
                 <div className="col-9">
                   <h1 className="h2 fw-bold text-dark-blue">
                     Società Operante
                   </h1>
-                  <p>
+                  <p style={{ marginTop: "20px" }}>
                     Per completare l’accesso, seleziona la società per la quale
                     intendi operare
                   </p>
@@ -42,7 +42,11 @@ const SelectCompany = () => {
                 <div
                   key={i}
                   className="form-check pb-4"
-                  style={{ borderBottom: "1px solid lightgray" }}
+                  style={{
+                    marginBottom: "16px",
+                    borderBottom:
+                      i < merchants.length - 1 ? "1px solid lightgray" : "none"
+                  }}
                 >
                   <input
                     name={`organization_fiscal_code_${i}`}
