@@ -173,8 +173,8 @@ const Discounts = () => {
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
-                width: "calc(190px - 1.5rem)",
-                height: "calc(56px - 0.5rem)",
+                maxWidth: "calc(190px - 1.5rem)",
+                maxHeight: "calc(56px - 0.5rem)",
                 overflow: "hidden",
                 wordBreak: "break-all"
               }}
