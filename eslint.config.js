@@ -8,7 +8,7 @@ import sonarjs from "eslint-plugin-sonarjs";
 import prettier from "eslint-plugin-prettier/recommended";
 import importPlugin from "eslint-plugin-import";
 import functional from "eslint-plugin-functional";
-import stylisticTs from "@stylistic/eslint-plugin-ts";
+import stylistic from "@stylistic/eslint-plugin";
 
 export default tseslint.config(
   {
@@ -43,7 +43,7 @@ export default tseslint.config(
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       react,
-      "@stylistic/ts": stylisticTs,
+      "@stylistic": stylistic,
       functional,
       import: importPlugin
     },
@@ -96,7 +96,7 @@ export default tseslint.config(
       "@typescript-eslint/await-thenable": "error",
       "@typescript-eslint/consistent-type-assertions": "error",
       "@typescript-eslint/dot-notation": "error",
-      "@stylistic/ts/member-delimiter-style": [
+      "@stylistic/member-delimiter-style": [
         "error",
         {
           multiline: {
@@ -115,7 +115,7 @@ export default tseslint.config(
       "@typescript-eslint/prefer-function-type": "error",
       "@typescript-eslint/restrict-plus-operands": "error",
       semi: "off",
-      "@stylistic/ts/semi": ["error"],
+      "@stylistic/semi": ["error"],
       "@typescript-eslint/unified-signatures": "error",
       "react/prop-types": "off",
       "react/display-name": "off",
