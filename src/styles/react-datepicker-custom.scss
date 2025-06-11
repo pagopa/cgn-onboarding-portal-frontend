@@ -1,5 +1,13 @@
+.react-datepicker {
+  font-family: var(--bs-body-font-family) !important;
+}
+
+.react-datepicker__month-read-view--down-arrow {
+  top: 3px !important;
+}
+
 .react-datepicker__current-month {
-  line-height: initial;
+  display: none;
 }
 
 .react-datepicker-wrapper {
