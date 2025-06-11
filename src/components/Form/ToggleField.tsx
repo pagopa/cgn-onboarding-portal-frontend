@@ -8,18 +8,18 @@ type Props = {
   required?: boolean;
 };
 
-const ToggleField = ({ htmlFor, text, children, small }: Props) => (
-  <div className="d-flex">
-    <div className={`form-check ${small ? "col-6" : "col-10"}`}>
-      <label htmlFor={htmlFor} className="form-label">
+const ToggleField = ({ htmlFor, text, children }: Props) => (
+  <div className="d-flex justify-content-between align-items-center gap-2">
+    <div className="form-check mb-0">
+      <label htmlFor={htmlFor} className="form-label mb-0">
         <span className="text-base fw-normal text-black">{text}</span>
       </label>
     </div>
-    <div className={`form-check ${small ? "col-3" : "col-2"}`}>
+    <div className="form-check my-0">
       <div className="toggles">
-        <label className="form-label">
+        <label className="form-label mb-0" style={{ height: "min-content" }}>
           {children}
-          <span className="lever"></span>
+          <span className="lever mx-0 mt-2"></span>
         </label>
       </div>
     </div>

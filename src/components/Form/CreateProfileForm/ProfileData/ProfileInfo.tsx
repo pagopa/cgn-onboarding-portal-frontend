@@ -32,9 +32,8 @@ const ProfileInfo = ({ entityType }: Props) => {
         <CustomErrorMessage name="fullName" />
       </InputField>
       {entityType === EntityType.Private && (
-        <div className="mt-6" style={{ marginBottom: "-16px" }}>
+        <div className="mt-6">
           <ToggleField
-            small={true}
             htmlFor="hasDifferentFullName"
             text="Vuoi visualizzare un nome diverso dentro l’app?"
           >

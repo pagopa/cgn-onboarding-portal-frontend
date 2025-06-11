@@ -59,7 +59,6 @@ const SalesChannels = ({ entityType, children }: Props) => {
               >
                 {index === 0 && (
                   <ToggleField
-                    small={false}
                     htmlFor="allNationalAddresses"
                     text={(() => {
                       switch (entityType) {
