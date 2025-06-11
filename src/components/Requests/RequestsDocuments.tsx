@@ -162,9 +162,9 @@ const RequestDocuments = ({
   };
 
   const isLoading =
-    documentsQuery.isLoading ||
-    uploadDocumentMutation.isLoading ||
-    deleteDocumentMutation.isLoading;
+    documentsQuery.isPending ||
+    uploadDocumentMutation.isPending ||
+    deleteDocumentMutation.isPending;
 
   return (
     <>

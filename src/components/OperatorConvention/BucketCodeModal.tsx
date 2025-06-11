@@ -16,14 +16,18 @@ const BucketCodeModal = ({
   agreementId,
   discountId
 }: Props) => {
-  const { data, isLoading, isError, error } =
-    remoteData.Backoffice.Discount.getDiscountBucketCode.useQuery(
-      {
-        agreementId,
-        discountId
-      },
-      { enabled: isOpen, retry: false }
-    );
+  const {
+    data,
+    isPending: isLoading,
+    isError,
+    error
+  } = remoteData.Backoffice.Discount.getDiscountBucketCode.useQuery(
+    {
+      agreementId,
+      discountId
+    },
+    { enabled: isOpen, retry: false }
+  );
 
   const renderContent = () => {
     if (isLoading) {

@@ -86,7 +86,7 @@ const ConventionDetails = ({
 
   const {
     data: details,
-    isLoading,
+    isPending: isLoading,
     refetch
   } = remoteData.Backoffice.Agreement.getApprovedAgreement.useQuery({
     agreementId: agreement?.agreementId || ""

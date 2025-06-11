@@ -133,7 +133,7 @@ const ImportationStatus = ({
     return null;
   }
 
-  if (loadingProgressQuery.isLoading) {
+  if (loadingProgressQuery.isPending) {
     return <CenteredLoading />;
   }
 

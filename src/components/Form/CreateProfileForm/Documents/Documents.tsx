@@ -65,7 +65,7 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
     }
   })();
 
-  if (documentsQuery.isLoading) {
+  if (documentsQuery.isPending) {
     return <CenteredLoading />;
   }
 

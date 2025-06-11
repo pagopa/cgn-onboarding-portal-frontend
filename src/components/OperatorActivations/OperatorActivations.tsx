@@ -40,7 +40,7 @@ const OperatorActivations = () => {
   const [params, setParams] = useState<GetOrgsParams>();
   const {
     data: operators,
-    isLoading,
+    isPending: isLoading,
     refetch
   } = remoteData.Backoffice.AttributeAuthority.getOrganizations.useQuery({
     searchQuery: params?.searchQuery,

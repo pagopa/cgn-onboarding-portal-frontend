@@ -94,7 +94,7 @@ const EditDiscountForm = () => {
     };
   }, [discount]);
 
-  const isLoading = profileQuery.isLoading || discountQuery.isLoading;
+  const isLoading = profileQuery.isPending || discountQuery.isPending;
 
   if (isLoading) {
     return <CenteredLoading />;
@@ -141,7 +141,7 @@ const EditDiscountForm = () => {
                     className="px-14"
                     color="primary"
                     tag="button"
-                    disabled={updateDiscountMutation.isLoading}
+                    disabled={updateDiscountMutation.isPending}
                   >
                     Salva
                   </Button>
@@ -163,7 +163,7 @@ const EditDiscountForm = () => {
                     color="primary"
                     outline
                     tag="button"
-                    disabled={updateDiscountMutation.isLoading}
+                    disabled={updateDiscountMutation.isPending}
                   >
                     Salva
                   </Button>

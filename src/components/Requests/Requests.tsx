@@ -16,6 +16,7 @@ import {
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
+import { keepPreviousData } from "@tanstack/react-query";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -40,7 +41,7 @@ const Requests = () => {
   const agreementsQuery =
     remoteData.Backoffice.Agreement.getAgreements.useQuery(
       { ...agreementsQueryParams, pageSize },
-      { keepPreviousData: true, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
+      { placeholderData: keepPreviousData, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
     );
   const updateAgreementsQueryParams = useCallback(
     (params: AgreementApiGetAgreementsRequest) => {
@@ -54,7 +55,7 @@ const Requests = () => {
   );
   const agreements = agreementsQuery.data;
 
-  const isLoading = agreementsQuery.isLoading;
+  const isLoading = agreementsQuery.isPending;
 
   const data = useMemo(
     () => agreements?.items || [],
