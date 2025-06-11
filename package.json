@@ -57,7 +57,7 @@
     "@svgr/plugin-svgo": "^8.1.0",
     "@types/file-saver": "^2.0.2",
     "@types/jest": "^29.5.14",
-    "@types/node": "^14.14.9",
+    "@types/node": "^24.0.0",
     "@types/react": "^19.0.10",
     "@types/react-datepicker": "^7.0.0",
     "@types/react-dom": "^19.0.4",
