@@ -32,7 +32,7 @@
     "@tanstack/react-query": "^5.80.6",
     "axios": "^1.8.4",
     "bootstrap-italia": "^2.14.0",
-    "date-fns": "^2.16.1",
+    "date-fns": "^4.1.0",
     "design-react-kit": "^5.7.1",
     "file-saver": "^2.0.5",
     "formik": "^2.2.6",
