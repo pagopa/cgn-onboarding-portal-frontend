@@ -18,8 +18,7 @@ export default tseslint.config(
       "src/vite-env.d.ts",
       "src/api/generated",
       "src/api/generated_backoffice",
-      "src/api/generated_public",
-      "Dangerfile.ts"
+      "src/api/generated_public"
     ]
   },
   {
