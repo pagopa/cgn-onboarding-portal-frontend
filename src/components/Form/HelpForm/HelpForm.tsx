@@ -274,7 +274,7 @@ const HelpForm = () => {
               description="Inserisci i tuoi dati, ci serviranno per ricontattarti e offrirti la nostra assistenza"
               isVisible={false}
             >
-              <div className="mt-10 row">
+              <div className="mt-6 row">
                 <div className="col-5">
                   <InputFieldMultiple
                     htmlFor="referentFirstName"
@@ -308,7 +308,7 @@ const HelpForm = () => {
                   </InputFieldMultiple>
                 </div>
               </div>
-              <div className="mt-10 row">
+              <div className="mt-6 row">
                 <InputFieldMultiple
                   htmlFor="legalName"
                   title="Denominazione e ragione sociale operatore"
@@ -324,7 +324,7 @@ const HelpForm = () => {
                   <CustomErrorMessage name="legalName" />
                 </InputFieldMultiple>
               </div>
-              <div className="mt-10 row">
+              <div className="mt-6 row">
                 <div className="col-5">
                   <InputFieldMultiple
                     htmlFor="emailAddress"

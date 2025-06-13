@@ -32,9 +32,8 @@ const ProfileInfo = ({ entityType }: Props) => {
         <CustomErrorMessage name="fullName" />
       </InputField>
       {entityType === EntityType.Private && (
-        <div className="mt-10">
+        <div className="mt-6">
           <ToggleField
-            small={true}
             htmlFor="hasDifferentFullName"
             text="Vuoi visualizzare un nome diverso dentro l’app?"
           >
@@ -42,6 +41,7 @@ const ProfileInfo = ({ entityType }: Props) => {
               id="hasDifferentFullName"
               name="hasDifferentFullName"
               type="checkbox"
+              className="mb-0"
             />
           </ToggleField>
         </div>

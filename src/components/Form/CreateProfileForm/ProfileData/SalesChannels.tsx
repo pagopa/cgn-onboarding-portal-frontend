@@ -59,7 +59,6 @@ const SalesChannels = ({ entityType, children }: Props) => {
               >
                 {index === 0 && (
                   <ToggleField
-                    small={false}
                     htmlFor="allNationalAddresses"
                     text={(() => {
                       switch (entityType) {
@@ -92,7 +91,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                 <div key={index}>
                   {formValues.salesChannel?.allNationalAddresses === false && (
                     <>
-                      <div className="mt-10 row">
+                      <div className="mt-6 row">
                         <div className="col-6">
                           <InputFieldMultiple
                             htmlFor="street"
@@ -125,7 +124,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                           </InputFieldMultiple>
                         </div>
                       </div>
-                      <div className="mt-10 row">
+                      <div className="mt-6 row">
                         <div className="col-6">
                           <InputFieldMultiple htmlFor="city" title="Città">
                             <Field
