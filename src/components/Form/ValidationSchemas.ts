@@ -316,6 +316,7 @@ export const activationValidationSchema = Yup.object().shape({
         .min(4, "Deve essere al minimo di 4 caratteri")
         .max(20, "Deve essere al massimo di 20 caratteri")
         .matches(
+          // NOSONAR: This is a secure regex to get an italian fiscal code
           /^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/i,
           "Il codice fiscale inserito non è corretto"
         )
