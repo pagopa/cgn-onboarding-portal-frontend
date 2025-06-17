@@ -1,16 +1,16 @@
-import * as Yup from "yup";
+import { z } from "zod";
 
-export const EmptyAddresses = Yup.array(
-  Yup.object({
-    street: Yup.string().oneOf([""]),
-    zipCode: Yup.string().oneOf([""]),
-    city: Yup.string().oneOf([""]),
-    district: Yup.string().oneOf([""]),
-    coordinates: Yup.object({
-      latitude: Yup.string().oneOf([""]),
-      longitude: Yup.string().oneOf([""])
+export const EmptyAddresses = z.array(
+  z.object({
+    street: z.string().refine(val => val === ""),
+    zipCode: z.string().refine(val => val === ""),
+    city: z.string().refine(val => val === ""),
+    district: z.string().refine(val => val === ""),
+    coordinates: z.object({
+      latitude: z.string().refine(val => val === ""),
+      longitude: z.string().refine(val => val === "")
     })
   })
 );
 
-export type EmptyAddresses = Yup.InferType<typeof EmptyAddresses>;
+export type EmptyAddresses = z.infer<typeof EmptyAddresses>;
