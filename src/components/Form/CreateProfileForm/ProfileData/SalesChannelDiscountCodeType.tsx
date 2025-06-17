@@ -1,13 +1,31 @@
 import { Field, useFormikContext } from "formik";
-import { InferType } from "yup";
 import { useEffect } from "react";
+import { z } from "zod";
+import { DiscountCodeType, SalesChannelType } from "../../../../api/generated";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import FormSection from "../../FormSection";
-import { DiscountCodeType, SalesChannelType } from "../../../../api/generated";
-import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+
+export const ProfileDataValidationSchema = z.object({
+  salesChannel: z.object({
+    discountCodeType: z.nativeEnum(DiscountCodeType),
+    channelType: z.nativeEnum(SalesChannelType).optional(),
+    addresses: z
+      .array(
+        z.object({
+          street: z.string().optional(),
+          zipCode: z.string().optional(),
+          city: z.string().optional(),
+          district: z.string().optional()
+        })
+      )
+      .optional(),
+    allNationalAddresses: z.boolean().optional()
+  })
+});
+
+type Values = z.infer<typeof ProfileDataValidationSchema>;
 
 const SalesChannelDiscountCodeType = () => {
-  type Values = InferType<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
   const formValues = formikContext.values;
   const formikContextSetFieldValue = formikContext.setFieldValue;
@@ -71,6 +89,7 @@ const SalesChannelDiscountCodeType = () => {
       );
     }
   }, [formValues, formikContextSetFieldValue]);
+
   return (
     <FormSection
       title={"Gestione delle opportunità per Carta Giovani Nazionale"}
