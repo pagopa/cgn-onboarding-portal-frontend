@@ -20,7 +20,7 @@ const onlyNumberRegex = /^\d*$/;
 const streetRegex = /^[A-Za-z0-9\s]*$/;
 const zipCodeRegex = /^\d*$/;
 const fiscalCodeRegex =
-  /^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/i;
+  /^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/i; // NOSONAR: This is a secure regex to get an italian fiscal code
 
 const ReferentValidationSchema = z.object({
   firstName: z
