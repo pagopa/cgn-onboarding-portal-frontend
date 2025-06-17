@@ -1,4 +1,4 @@
-import * as Yup from "yup";
+import { z } from "zod";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { jwtDecode } from "jwt-decode";
 import { useHistory } from "react-router-dom";
@@ -7,9 +7,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { OrganizationsDataApi } from "../api/generated";
 import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
 import { SessionApi } from "../api/generated_public";
-import { YupLiteral } from "../utils/yupUtils";
 import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
 import { authenticationStore } from "./authenticationStore";
+
+// Zod literal helper
+const zodLiteral = <T extends string>(value: T) => z.literal(value);
 
 export function goToUserLoginPage() {
   const targetUri = import.meta.env.CGN_ONE_IDENTITY_LOGIN_URI;
@@ -26,7 +28,6 @@ export function goToUserLoginPage() {
     redirect_uri
   }).toString()}`;
   authenticationStore.setUserNonceByState(state, nonce);
-  // using window.location.href intead of link hreh since nonce must be different on every click
   // eslint-disable-next-line functional/immutable-data
   window.location.href = targetUrl;
 }
@@ -67,22 +68,22 @@ const AdminAccess = new PublicClientApplication({
   }
 });
 
-const userJWTPayloadSchema = Yup.object({
-  role: YupLiteral("ROLE_MERCHANT").required(),
-  fiscal_code: Yup.string().required(),
-  first_name: Yup.string().required(),
-  last_name: Yup.string().required(),
-  iat: Yup.number().required(),
-  exp: Yup.number().required()
-}).required();
+const userJWTPayloadSchema = z.object({
+  role: zodLiteral("ROLE_MERCHANT"),
+  fiscal_code: z.string(),
+  first_name: z.string(),
+  last_name: z.string(),
+  iat: z.number(),
+  exp: z.number()
+});
 
-const adminJWTPayloadSchema = Yup.object({
-  role: YupLiteral("ROLE_ADMIN").required(),
-  first_name: Yup.string().required(),
-  last_name: Yup.string().required(),
-  iat: Yup.number().required(),
-  exp: Yup.number().required()
-}).required();
+const adminJWTPayloadSchema = z.object({
+  role: zodLiteral("ROLE_ADMIN"),
+  first_name: z.string(),
+  last_name: z.string(),
+  iat: z.number(),
+  exp: z.number()
+});
 
 const sessionApi = new SessionApi(undefined, API_PUBLIC_BASE_URL);
 
@@ -111,9 +112,7 @@ async function onUserLoginRedirect() {
       createJwtSessionTokenRequest: { requestType: "oi", nonce, code }
     });
     const { fiscal_code, first_name, last_name, exp } =
-      userJWTPayloadSchema.validateSync(
-        jwtDecode<unknown>(userTokenResponse.data)
-      );
+      userJWTPayloadSchema.parse(jwtDecode<unknown>(userTokenResponse.data));
     const merchantTokensReponse = await organizationsDataApi.getOrganizations({
       headers: {
         Authorization: `Bearer ${userTokenResponse.data}`
@@ -150,7 +149,7 @@ async function onAdminLoginRedirect() {
         nonce
       }
     });
-    const { first_name, last_name, exp } = adminJWTPayloadSchema.validateSync(
+    const { first_name, last_name, exp } = adminJWTPayloadSchema.parse(
       jwtDecode<unknown>(adminTokenResponse.data)
     );
     const name = `${first_name} ${last_name}`;
