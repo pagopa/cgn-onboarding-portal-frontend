@@ -9,7 +9,7 @@ import type { Referent } from "../../../../api/generated";
 
 const MAX_SECONDARY_REFERENTS = 4;
 
-export const ProfileDataValidationSchema = z.object({
+const ProfileDataValidationSchema = z.object({
   referent: z.object({
     firstName: z.string().min(1, "Il nome è obbligatorio"),
     lastName: z.string().min(1, "Il cognome è obbligatorio"),

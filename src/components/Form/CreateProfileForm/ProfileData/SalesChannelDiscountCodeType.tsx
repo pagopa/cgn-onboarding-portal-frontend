@@ -5,7 +5,7 @@ import { DiscountCodeType, SalesChannelType } from "../../../../api/generated";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import FormSection from "../../FormSection";
 
-export const ProfileDataValidationSchema = z.object({
+const ProfileDataValidationSchema = z.object({
   salesChannel: z.object({
     discountCodeType: z.nativeEnum(DiscountCodeType),
     channelType: z.nativeEnum(SalesChannelType).optional(),
