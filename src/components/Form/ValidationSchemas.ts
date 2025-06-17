@@ -1,4 +1,4 @@
-import * as Yup from "yup";
+import { z } from "zod";
 import { HelpRequestCategoryEnum, SalesChannelType } from "../../api/generated";
 import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
@@ -15,315 +15,415 @@ const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_SELECTABLE_CATEGORI
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
 
-const ReferentValidationSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-    .required(REQUIRED_FIELD),
-  lastName: Yup.string()
-    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-    .required(REQUIRED_FIELD),
-  role: Yup.string()
-    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-    .required(REQUIRED_FIELD),
-  emailAddress: Yup.string()
+const onlyStringRegex = /^[a-zA-Z\s]*$/;
+const onlyNumberRegex = /^\d*$/;
+const streetRegex = /^[A-Za-z0-9\s]*$/;
+const zipCodeRegex = /^\d*$/;
+const fiscalCodeRegex =
+  /^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/i;
+
+const ReferentValidationSchema = z.object({
+  firstName: z
+    .string()
+    .regex(onlyStringRegex, ONLY_STRING)
+    .min(1, REQUIRED_FIELD),
+  lastName: z
+    .string()
+    .regex(onlyStringRegex, ONLY_STRING)
+    .min(1, REQUIRED_FIELD),
+  role: z.string().regex(onlyStringRegex, ONLY_STRING).min(1, REQUIRED_FIELD),
+  emailAddress: z
+    .string()
     .email(INCORRECT_EMAIL_ADDRESS)
-    .required(REQUIRED_FIELD),
-  telephoneNumber: Yup.string()
-    .matches(/^\d*$/, ONLY_NUMBER)
+    .min(1, REQUIRED_FIELD),
+  telephoneNumber: z
+    .string()
+    .regex(onlyNumberRegex, ONLY_NUMBER)
     .min(4, "Inserisci un numero di telefono valido")
-    .required(REQUIRED_FIELD)
+    .min(1, REQUIRED_FIELD)
 });
 
-export const ProfileDataValidationSchema = Yup.object().shape({
-  hasDifferentName: Yup.boolean(),
-  name: Yup.string().when(["hasDifferentName"], {
-    is: true,
-    then: Yup.string().required(REQUIRED_FIELD)
-  }),
-  name_en: Yup.string().when(["hasDifferentName"], {
-    is: true,
-    then: Yup.string().required(REQUIRED_FIELD)
-  }),
-  name_de: Yup.string().when(["hasDifferentName"], {
-    is: true,
-    then: Yup.string().required(REQUIRED_FIELD)
-  }),
-  pecAddress: Yup.string()
-    .email(INCORRECT_EMAIL_ADDRESS)
-    .required(REQUIRED_FIELD),
-  legalOffice: Yup.string().required(REQUIRED_FIELD),
-  telephoneNumber: Yup.string()
-    .matches(/^\d*$/, ONLY_NUMBER)
-    .min(4, "Inserisci un numero di telefono valido")
-    .required(REQUIRED_FIELD),
-  legalRepresentativeFullName: Yup.string()
-    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-    .required(REQUIRED_FIELD),
-  legalRepresentativeTaxCode: Yup.string()
-    .min(4, "Inserisci un codice fiscale valido")
-    .max(20, "Deve essere al massimo di 20 caratteri")
-    .required(REQUIRED_FIELD),
-  referent: ReferentValidationSchema,
-  secondaryReferents: Yup.array()
-    .of(ReferentValidationSchema)
-    .required(REQUIRED_FIELD),
-  description: Yup.string().required(REQUIRED_FIELD),
-  description_en: Yup.string().required(REQUIRED_FIELD),
-  description_de: Yup.string().required(REQUIRED_FIELD),
-  salesChannel: Yup.object().shape({
-    channelType: Yup.mixed().oneOf([
-      "OnlineChannel",
-      "OfflineChannel",
-      "BothChannels"
-    ]),
-    websiteUrl: Yup.string()
-      .nullable()
-      .when("channelType", {
-        is: (val: string) => val === "OnlineChannel" || val === "BothChannels",
-        then: schema =>
-          schema.url(INCORRECT_WEBSITE_URL).required(REQUIRED_FIELD)
-      }),
-    discountCodeType: Yup.string().when("channelType", {
-      is: (val: string) => val === "OnlineChannel" || val === "BothChannels",
-      then: Yup.string().required(REQUIRED_FIELD)
-    }),
-    allNationalAddresses: Yup.boolean().required(REQUIRED_FIELD),
-    addresses: Yup.array().when(["channelType", "allNationalAddresses"], {
-      is: (channel: string, allNationalAddresses: boolean) =>
-        (channel === SalesChannelType.OfflineChannel ||
-          channel === SalesChannelType.BothChannels) &&
-        !allNationalAddresses,
-      then: Yup.array()
-        .of(
-          Yup.object().shape({
-            street: Yup.string()
-              .matches(/^[A-Za-z0-9\s]*$/, "Solo lettere o numeri")
-              .required(REQUIRED_FIELD),
-            zipCode: Yup.string()
-              .matches(/^\d*$/, ONLY_NUMBER)
+export const ProfileDataValidationSchema = z
+  .object({
+    hasDifferentName: z.boolean().optional(),
+    name: z.string().optional(),
+    name_en: z.string().optional(),
+    name_de: z.string().optional(),
+    pecAddress: z
+      .string()
+      .email(INCORRECT_EMAIL_ADDRESS)
+      .min(1, REQUIRED_FIELD),
+    legalOffice: z.string().min(1, REQUIRED_FIELD),
+    telephoneNumber: z
+      .string()
+      .regex(onlyNumberRegex, ONLY_NUMBER)
+      .min(4, "Inserisci un numero di telefono valido")
+      .min(1, REQUIRED_FIELD),
+    legalRepresentativeFullName: z
+      .string()
+      .regex(onlyStringRegex, ONLY_STRING)
+      .min(1, REQUIRED_FIELD),
+    legalRepresentativeTaxCode: z
+      .string()
+      .min(4, "Inserisci un codice fiscale valido")
+      .max(20, "Deve essere al massimo di 20 caratteri")
+      .min(1, REQUIRED_FIELD),
+    referent: ReferentValidationSchema,
+    secondaryReferents: z
+      .array(ReferentValidationSchema)
+      .min(1, REQUIRED_FIELD),
+    description: z.string().min(1, REQUIRED_FIELD),
+    description_en: z.string().min(1, REQUIRED_FIELD),
+    description_de: z.string().min(1, REQUIRED_FIELD),
+    salesChannel: z.object({
+      channelType: z.enum(["OnlineChannel", "OfflineChannel", "BothChannels"]),
+      websiteUrl: z.string().url(INCORRECT_WEBSITE_URL).optional().nullable(),
+      discountCodeType: z.string().optional(),
+      allNationalAddresses: z.boolean(),
+      addresses: z
+        .array(
+          z.object({
+            street: z
+              .string()
+              .regex(streetRegex, "Solo lettere o numeri")
+              .min(1, REQUIRED_FIELD),
+            zipCode: z
+              .string()
+              .regex(zipCodeRegex, ONLY_NUMBER)
               .min(5, "Deve essere di 5 caratteri")
               .max(5, "Deve essere di 5 caratteri")
-              .required(REQUIRED_FIELD),
-            city: Yup.string().required(REQUIRED_FIELD),
-            district: Yup.string().required(REQUIRED_FIELD),
-            coordinates: Yup.object().shape({
-              latitude: Yup.string().notRequired(),
-              longitude: Yup.string().notRequired()
+              .min(1, REQUIRED_FIELD),
+            city: z.string().min(1, REQUIRED_FIELD),
+            district: z.string().min(1, REQUIRED_FIELD),
+            coordinates: z.object({
+              latitude: z.string().optional(),
+              longitude: z.string().optional()
             }),
-            label: Yup.string(),
-            value: Yup.string()
+            label: z.string().optional(),
+            value: z.string().optional()
           })
         )
-        .required(REQUIRED_FIELD),
-      otherwise: Yup.array().notRequired()
+        .optional()
     })
   })
-});
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  .superRefine((data, ctx) => {
+    if (data.hasDifferentName) {
+      if (!data.name) {
+        ctx.addIssue({
+          path: ["name"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (!data.name_en) {
+        ctx.addIssue({
+          path: ["name_en"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (!data.name_de) {
+        ctx.addIssue({
+          path: ["name_de"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+    }
+    const channelType = data.salesChannel.channelType;
+    if (channelType === "OnlineChannel" || channelType === "BothChannels") {
+      if (!data.salesChannel.websiteUrl) {
+        ctx.addIssue({
+          path: ["salesChannel", "websiteUrl"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (!data.salesChannel.discountCodeType) {
+        ctx.addIssue({
+          path: ["salesChannel", "discountCodeType"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+    }
+    if (
+      (channelType === SalesChannelType.OfflineChannel ||
+        channelType === SalesChannelType.BothChannels) &&
+      !data.salesChannel.allNationalAddresses
+    ) {
+      if (
+        !data.salesChannel.addresses ||
+        data.salesChannel.addresses.length === 0
+      ) {
+        ctx.addIssue({
+          path: ["salesChannel", "addresses"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+    }
+  });
 
-/**
- * Check if Eyca Landing Page URL is different from Discount URL
- */
 const checkEycaLandingDifferentFromLandingPageUrl = (
-  landingPageUrl: string,
-  schema: Yup.StringSchema
-) => {
-  if (landingPageUrl) {
-    return schema.notOneOf(
-      [landingPageUrl],
-      "L'url della EYCA non può essere uguale all'url della landing page"
-    );
-  }
-  return schema;
-};
+  eycaLandingPageUrl: string | undefined,
+  landingPageUrl: string | undefined
+) =>
+  !(
+    eycaLandingPageUrl &&
+    landingPageUrl &&
+    eycaLandingPageUrl === landingPageUrl
+  );
 
 export const discountDataValidationSchema = (
   staticCheck: boolean,
   landingCheck: boolean,
   bucketCheck: boolean
 ) =>
-  Yup.object().shape(
-    {
-      name: Yup.string().max(100).required(REQUIRED_FIELD),
-      name_en: Yup.string().max(100).required(REQUIRED_FIELD),
-      name_de: Yup.string().max(100).required(REQUIRED_FIELD),
-      description: Yup.string().when(["description_en"], {
-        is: (_?: string) => _ && _.length > 0,
-        then: Yup.string().required(REQUIRED_FIELD).max(250)
-      }),
-      description_en: Yup.string().when(["description"], {
-        is: (_?: string) => _ && _.length > 0,
-        then: Yup.string().required(REQUIRED_FIELD).max(250)
-      }),
-      description_de: Yup.string().when(["description"], {
-        is: (_?: string) => _ && _.length > 0,
-        then: Yup.string().required(REQUIRED_FIELD).max(250)
-      }),
-      discountUrl: Yup.string().url(INCORRECT_WEBSITE_URL),
-      startDate: Yup.string().required(REQUIRED_FIELD),
-      endDate: Yup.string().required(REQUIRED_FIELD),
-      discount: Yup.number()
-        .typeError(DISCOUNT_RANGE)
-        .integer(DISCOUNT_RANGE)
+  z
+    .object({
+      name: z.string().max(100).min(1, REQUIRED_FIELD),
+      name_en: z.string().max(100).min(1, REQUIRED_FIELD),
+      name_de: z.string().max(100).min(1, REQUIRED_FIELD),
+      description: z.string().max(250).optional(),
+      description_en: z.string().max(250).optional(),
+      description_de: z.string().max(250).optional(),
+      discountUrl: z.string().url(INCORRECT_WEBSITE_URL).optional(),
+      startDate: z.string().min(1, REQUIRED_FIELD),
+      endDate: z.string().min(1, REQUIRED_FIELD),
+      discount: z
+        .number()
+        .int(DISCOUNT_RANGE)
         .min(1, DISCOUNT_RANGE)
         .max(100, DISCOUNT_RANGE)
-        .notRequired(),
-      productCategories: Yup.array()
+        .optional(),
+      productCategories: z
+        .array(z.any())
         .min(1, PRODUCT_CATEGORIES_ONE)
-        .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX)
-        .required(REQUIRED_FIELD),
-      condition: Yup.string().when(["condition_en"], {
-        is: (_?: string) => _ && _.length > 0,
-        then: Yup.string().required(REQUIRED_FIELD)
-      }),
-      condition_en: Yup.string().when(["condition"], {
-        is: (_?: string) => _ && _.length > 0,
-        then: Yup.string().required(REQUIRED_FIELD)
-      }),
-      condition_de: Yup.string().when(["condition"], {
-        is: (_?: string) => _ && _.length > 0,
-        then: Yup.string().required(REQUIRED_FIELD)
-      }),
-      staticCode: Yup.string().when("condition", {
-        is: () => staticCheck,
-        then: Yup.string().required(REQUIRED_FIELD),
-        otherwise: Yup.string()
-      }),
-      landingPageUrl: Yup.string().when("condition", {
-        is: () => landingCheck,
-        then: Yup.string().url(INCORRECT_WEBSITE_URL).required(REQUIRED_FIELD),
-        otherwise: Yup.string()
-      }),
-      landingPageReferrer: Yup.string().when("condition", {
-        is: () => landingCheck,
-        then: Yup.string().required(REQUIRED_FIELD),
-        otherwise: Yup.string()
-      }),
-      lastBucketCodeLoadUid: Yup.string().when("condition", {
-        is: () => bucketCheck,
-        then: Yup.string().required(REQUIRED_FIELD),
-        otherwise: Yup.string()
-      }),
-      lastBucketCodeLoadFileName: Yup.string().when("condition", {
-        is: () => bucketCheck,
-        then: Yup.string().required(REQUIRED_FIELD),
-        otherwise: Yup.string()
-      }),
-      visibleOnEyca: Yup.boolean(),
-      eycaLandingPageUrl: Yup.string().when("visibleOnEyca", {
-        is: (visibleOnEyca: boolean) => visibleOnEyca && landingCheck,
-        then: schema =>
-          schema
-            .url(INCORRECT_WEBSITE_URL)
-            .when(
-              "landingPageUrl",
-              checkEycaLandingDifferentFromLandingPageUrl
-            ),
-        otherwise: schema => schema.nullable().oneOf([undefined, null, ""])
-      })
-    },
-    [
-      ["description", "description_en"],
-      ["condition", "condition_en"]
-    ]
-  );
+        .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX),
+      condition: z.string().optional(),
+      condition_en: z.string().optional(),
+      condition_de: z.string().optional(),
+      staticCode: z.string().optional(),
+      landingPageUrl: z.string().url(INCORRECT_WEBSITE_URL).optional(),
+      landingPageReferrer: z.string().optional(),
+      lastBucketCodeLoadUid: z.string().optional(),
+      lastBucketCodeLoadFileName: z.string().optional(),
+      visibleOnEyca: z.boolean().optional(),
+      eycaLandingPageUrl: z
+        .string()
+        .url(INCORRECT_WEBSITE_URL)
+        .optional()
+        .nullable()
+    })
+    // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
+    .superRefine((data, ctx) => {
+      // Description/condition required if their translations are present
+      if (data.description_en && !data.description) {
+        ctx.addIssue({
+          path: ["description"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (data.description && !data.description_en) {
+        ctx.addIssue({
+          path: ["description_en"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (data.description && !data.description_de) {
+        ctx.addIssue({
+          path: ["description_de"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (data.condition_en && !data.condition) {
+        ctx.addIssue({
+          path: ["condition"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (data.condition && !data.condition_en) {
+        ctx.addIssue({
+          path: ["condition_en"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (data.condition && !data.condition_de) {
+        ctx.addIssue({
+          path: ["condition_de"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (staticCheck && !data.staticCode) {
+        ctx.addIssue({
+          path: ["staticCode"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+      if (landingCheck) {
+        if (!data.landingPageUrl) {
+          ctx.addIssue({
+            path: ["landingPageUrl"],
+            code: z.ZodIssueCode.custom,
+            message: REQUIRED_FIELD
+          });
+        }
+        if (!data.landingPageReferrer) {
+          ctx.addIssue({
+            path: ["landingPageReferrer"],
+            code: z.ZodIssueCode.custom,
+            message: REQUIRED_FIELD
+          });
+        }
+      }
+      if (bucketCheck) {
+        if (!data.lastBucketCodeLoadUid) {
+          ctx.addIssue({
+            path: ["lastBucketCodeLoadUid"],
+            code: z.ZodIssueCode.custom,
+            message: REQUIRED_FIELD
+          });
+        }
+        if (!data.lastBucketCodeLoadFileName) {
+          ctx.addIssue({
+            path: ["lastBucketCodeLoadFileName"],
+            code: z.ZodIssueCode.custom,
+            message: REQUIRED_FIELD
+          });
+        }
+      }
+      if (data.visibleOnEyca && landingCheck) {
+        if (!data.eycaLandingPageUrl) {
+          ctx.addIssue({
+            path: ["eycaLandingPageUrl"],
+            code: z.ZodIssueCode.custom,
+            message: REQUIRED_FIELD
+          });
+        }
+        if (
+          !checkEycaLandingDifferentFromLandingPageUrl(
+            data.eycaLandingPageUrl ?? undefined,
+            data.landingPageUrl ?? undefined
+          )
+        ) {
+          ctx.addIssue({
+            path: ["eycaLandingPageUrl"],
+            code: z.ZodIssueCode.custom,
+            message:
+              "L'url della EYCA non può essere uguale all'url della landing page"
+          });
+        }
+      }
+    });
 
 export const discountsListDataValidationSchema = (
   staticCheck: boolean,
   landingCheck: boolean,
   bucketCheck: boolean
 ) =>
-  Yup.object().shape({
-    discounts: Yup.array().of(
+  z.object({
+    discounts: z.array(
       discountDataValidationSchema(staticCheck, landingCheck, bucketCheck)
     )
   });
 
-export const loggedHelpValidationSchema = Yup.object().shape({
-  category: Yup.string()
-    .oneOf([
-      HelpRequestCategoryEnum.Access,
-      HelpRequestCategoryEnum.CgnOwnerReporting,
-      HelpRequestCategoryEnum.DataFilling,
-      HelpRequestCategoryEnum.Discounts,
-      HelpRequestCategoryEnum.Documents,
-      HelpRequestCategoryEnum.Other,
-      HelpRequestCategoryEnum.Suggestions,
-      HelpRequestCategoryEnum.TechnicalProblem
-    ])
-    .required(REQUIRED_FIELD),
-  topic: Yup.string().when(["category"], {
-    is:
-      HelpRequestCategoryEnum.Discounts ||
-      HelpRequestCategoryEnum.Documents ||
-      HelpRequestCategoryEnum.DataFilling,
-    then: Yup.string().required(REQUIRED_FIELD)
-  }),
-  message: Yup.string().required(REQUIRED_FIELD)
-});
+const helpCategoryEnum = z.nativeEnum(HelpRequestCategoryEnum);
 
-export const notLoggedHelpValidationSchema = Yup.object().shape({
-  category: Yup.string()
-    .oneOf([
-      HelpRequestCategoryEnum.Access,
-      HelpRequestCategoryEnum.CgnOwnerReporting,
-      HelpRequestCategoryEnum.DataFilling,
-      HelpRequestCategoryEnum.Discounts,
-      HelpRequestCategoryEnum.Documents,
-      HelpRequestCategoryEnum.Other,
-      HelpRequestCategoryEnum.Suggestions,
-      HelpRequestCategoryEnum.TechnicalProblem
-    ])
-    .required(REQUIRED_FIELD),
-  topic: Yup.string().when(["category"], {
-    is:
-      HelpRequestCategoryEnum.Discounts ||
-      HelpRequestCategoryEnum.Documents ||
-      HelpRequestCategoryEnum.DataFilling,
-    then: Yup.string().required(REQUIRED_FIELD)
-  }),
-  message: Yup.string().required(REQUIRED_FIELD),
-  referentFirstName: Yup.string()
-    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-    .required(REQUIRED_FIELD),
-  referentLastName: Yup.string()
-    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-    .required(REQUIRED_FIELD),
-  legalName: Yup.string()
-    .matches(/^[a-zA-Z\s]*$/, ONLY_STRING)
-    .required(REQUIRED_FIELD),
-  emailAddress: Yup.string()
-    .email(INCORRECT_EMAIL_ADDRESS)
-    .required(REQUIRED_FIELD),
-  confirmEmailAddress: Yup.string()
-    .email(INCORRECT_EMAIL_ADDRESS)
-    .when("emailAddress", {
-      is: (email: string) => email.length > 0,
-      then: Yup.string()
-        .oneOf([Yup.ref("emailAddress")], INCORRECT_CONFIRM_EMAIL_ADDRESS)
-        .required(REQUIRED_FIELD)
-    }),
-  recaptchaToken: Yup.string().required(REQUIRED_FIELD)
-});
+export const loggedHelpValidationSchema = z
+  .object({
+    category: helpCategoryEnum,
+    topic: z.string().optional(),
+    message: z.string().min(1, REQUIRED_FIELD)
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.category === HelpRequestCategoryEnum.Discounts ||
+      data.category === HelpRequestCategoryEnum.Documents ||
+      data.category === HelpRequestCategoryEnum.DataFilling
+    ) {
+      if (!data.topic) {
+        ctx.addIssue({
+          path: ["topic"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+    }
+  });
 
-export const activationValidationSchema = Yup.object().shape({
-  keyOrganizationFiscalCode: Yup.string(),
-  organizationFiscalCode: Yup.string().required(REQUIRED_FIELD),
-  organizationName: Yup.string().required(REQUIRED_FIELD),
-  pec: Yup.string().email(INCORRECT_EMAIL_ADDRESS).required(REQUIRED_FIELD),
-  referents: Yup.array()
-    .of(
-      Yup.string()
+export const notLoggedHelpValidationSchema = z
+  .object({
+    category: helpCategoryEnum,
+    topic: z.string().optional(),
+    message: z.string().min(1, REQUIRED_FIELD),
+    referentFirstName: z
+      .string()
+      .regex(onlyStringRegex, ONLY_STRING)
+      .min(1, REQUIRED_FIELD),
+    referentLastName: z
+      .string()
+      .regex(onlyStringRegex, ONLY_STRING)
+      .min(1, REQUIRED_FIELD),
+    legalName: z
+      .string()
+      .regex(onlyStringRegex, ONLY_STRING)
+      .min(1, REQUIRED_FIELD),
+    emailAddress: z
+      .string()
+      .email(INCORRECT_EMAIL_ADDRESS)
+      .min(1, REQUIRED_FIELD),
+    confirmEmailAddress: z.string().email(INCORRECT_EMAIL_ADDRESS).optional(),
+    recaptchaToken: z.string().min(1, REQUIRED_FIELD)
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.category === HelpRequestCategoryEnum.Discounts ||
+      data.category === HelpRequestCategoryEnum.Documents ||
+      data.category === HelpRequestCategoryEnum.DataFilling
+    ) {
+      if (!data.topic) {
+        ctx.addIssue({
+          path: ["topic"],
+          code: z.ZodIssueCode.custom,
+          message: REQUIRED_FIELD
+        });
+      }
+    }
+    if (data.emailAddress && data.confirmEmailAddress) {
+      if (data.emailAddress !== data.confirmEmailAddress) {
+        ctx.addIssue({
+          path: ["confirmEmailAddress"],
+          code: z.ZodIssueCode.custom,
+          message: INCORRECT_CONFIRM_EMAIL_ADDRESS
+        });
+      }
+    }
+  });
+
+export const activationValidationSchema = z.object({
+  keyOrganizationFiscalCode: z.string().optional(),
+  organizationFiscalCode: z.string().min(1, REQUIRED_FIELD),
+  organizationName: z.string().min(1, REQUIRED_FIELD),
+  pec: z.string().email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
+  referents: z
+    .array(
+      z
+        .string()
         .min(4, "Deve essere al minimo di 4 caratteri")
         .max(20, "Deve essere al massimo di 20 caratteri")
-        .matches(
-          /^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/i, // NOSONAR: This is a secure regex to get an italian fiscal code
-          "Il codice fiscale inserito non è corretto"
-        )
-        .required(REQUIRED_FIELD)
+        .regex(fiscalCodeRegex, "Il codice fiscale inserito non è corretto")
+        .min(1, REQUIRED_FIELD)
     )
-    .required(REQUIRED_FIELD),
-  insertedAt: Yup.string(),
-  entityType: Yup.string()
-    .oneOf(Object.values(EntityType), REQUIRED_FIELD)
-    .required(REQUIRED_FIELD)
+    .min(1, REQUIRED_FIELD),
+  insertedAt: z.string().optional(),
+  entityType: z.nativeEnum(EntityType)
 });
