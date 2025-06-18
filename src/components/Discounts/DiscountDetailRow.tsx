@@ -46,7 +46,7 @@ const DiscountDetailRow = ({
 }: Props) => {
   const history = useHistory();
   const [canBePublished, setCanBePublished] = useState(
-    row.original.lastBucketCodeLoadStatus !== undefined
+    row.original.lastBucketCodeLoadStatus
       ? row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
       : true
   );
