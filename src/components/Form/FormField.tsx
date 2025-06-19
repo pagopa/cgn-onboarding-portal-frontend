@@ -20,7 +20,7 @@ const FormField = ({
   required = false,
   isVisible = false
 }: Props) => (
-  <div className="mt-10">
+  <div className={isTitleHeading ? "mt-10" : "mt-6"}>
     <div>
       <label htmlFor={htmlFor} className="form-label">
         <span className="d-flex flex-row align-items-center">
