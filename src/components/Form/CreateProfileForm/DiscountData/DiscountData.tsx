@@ -167,7 +167,7 @@ const DiscountData = ({
   };
 
   const isLoading =
-    profileQuery.isLoading || (isCompleted ? discountsQuery.isLoading : false);
+    profileQuery.isPending || (isCompleted ? discountsQuery.isPending : false);
 
   if (isLoading) {
     return <CenteredLoading />;

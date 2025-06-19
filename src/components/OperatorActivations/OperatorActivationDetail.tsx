@@ -87,7 +87,7 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           tag="button"
           onClick={toggleModal}
         >
-          {deleteActivationMutation.isLoading ? (
+          {deleteActivationMutation.isPending ? (
             <CenteredLoading />
           ) : (
             <span> Rimuovi </span>

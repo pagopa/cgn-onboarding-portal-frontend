@@ -26,7 +26,7 @@ const OperatorConvention = () => {
 
   const [params, setParams] =
     useState<AgreementApiGetApprovedAgreementsRequest>({});
-  const { data: conventions, isLoading } =
+  const { data: conventions, isPending: isLoading } =
     remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery({
       ...params,
       pageSize

@@ -21,7 +21,7 @@ const CreateActivationForm = () => {
   const history = useHistory();
   const { triggerTooltip } = useTooltip();
 
-  const { mutate, isLoading } =
+  const { mutate, isPending: isLoading } =
     remoteData.Backoffice.AttributeAuthority.upsertOrganization.useMutation({
       onSuccess() {
         history.push(ADMIN_PANEL_ACCESSI);

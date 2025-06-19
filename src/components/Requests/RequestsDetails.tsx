@@ -83,9 +83,9 @@ const RequestsDetails = ({
   };
 
   const isLoading =
-    approveAgreementMutation.isLoading ||
-    rejectAgreementMutation.isLoading ||
-    assignAgreementsMutation.isLoading;
+    approveAgreementMutation.isPending ||
+    rejectAgreementMutation.isPending ||
+    assignAgreementsMutation.isPending;
 
   if (isLoading) {
     return (
