@@ -1,17 +1,15 @@
-import { z } from "zod";
 import { PublicClientApplication } from "@azure/msal-browser";
-import { jwtDecode } from "jwt-decode";
-import { useHistory } from "react-router-dom";
-import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { OrganizationsDataApi } from "../api/generated";
-import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
-import { SessionApi } from "../api/generated_public";
+import { jwtDecode } from "jwt-decode";
+import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { z } from "zod";
 import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
+import { OrganizationsDataApi } from "../api/generated";
+import { SessionApi } from "../api/generated_public";
+import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
+import { zodLiteral } from "../utils/zod";
 import { authenticationStore } from "./authenticationStore";
-
-// Zod literal helper
-const zodLiteral = <T extends string>(value: T) => z.literal(value);
 
 export function goToUserLoginPage() {
   const targetUri = import.meta.env.CGN_ONE_IDENTITY_LOGIN_URI;
