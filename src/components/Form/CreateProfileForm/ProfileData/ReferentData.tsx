@@ -1,14 +1,38 @@
 import { Field, FieldArray, useFormikContext } from "formik";
 import { Fragment } from "react";
-import { InferType } from "yup";
+import { z } from "zod";
 import FormSection from "../../FormSection";
 import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
-import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 import type { Referent } from "../../../../api/generated";
 
 const MAX_SECONDARY_REFERENTS = 4;
+
+const ProfileDataValidationSchema = z.object({
+  referent: z.object({
+    firstName: z.string().min(1, "Il nome è obbligatorio"),
+    lastName: z.string().min(1, "Il cognome è obbligatorio"),
+    role: z.string().min(1, "Il ruolo è obbligatorio"),
+    emailAddress: z.string().email("Email non valida"),
+    telephoneNumber: z.string().min(1, "Il numero di telefono è obbligatorio")
+  }),
+  secondaryReferents: z
+    .array(
+      z.object({
+        firstName: z.string().min(1, "Il nome è obbligatorio"),
+        lastName: z.string().min(1, "Il cognome è obbligatorio"),
+        role: z.string().min(1, "Il ruolo è obbligatorio"),
+        emailAddress: z.string().email("Email non valida"),
+        telephoneNumber: z
+          .string()
+          .min(1, "Il numero di telefono è obbligatorio")
+      })
+    )
+    .max(MAX_SECONDARY_REFERENTS)
+});
+
+type ProfileData = z.infer<typeof ProfileDataValidationSchema>;
 
 type Props = {
   index: number | null;
@@ -18,9 +42,6 @@ type Props = {
   onRemove(): void;
   children?: React.ReactNode;
 };
-
-/* eslint complexity: ["error", 20000] */
-/* eslint sonarjs/cognitive-complexity: ["error", 20000] */
 
 const Referent = ({
   index,
@@ -131,8 +152,7 @@ const Referent = ({
 };
 
 function ReferentData({ children }: { children?: React.ReactNode }) {
-  type Values = InferType<typeof ProfileDataValidationSchema>;
-  const formikContext = useFormikContext<Values>();
+  const formikContext = useFormikContext<ProfileData>();
   return (
     <FieldArray
       name="secondaryReferents"

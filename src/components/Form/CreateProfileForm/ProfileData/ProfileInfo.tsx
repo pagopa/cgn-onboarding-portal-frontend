@@ -1,5 +1,5 @@
 import { Field, useFormikContext } from "formik";
-import { InferType } from "yup";
+import { z } from "zod";
 import { EntityType } from "../../../../api/generated";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import InputField from "../../FormField";
@@ -12,7 +12,7 @@ type Props = {
 };
 
 const ProfileInfo = ({ entityType }: Props) => {
-  type Values = InferType<typeof ProfileDataValidationSchema>;
+  type Values = z.infer<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
   return (
     <FormSection hasIntroduction isVisible={false} title="Dati dell’operatore">
@@ -46,7 +46,7 @@ const ProfileInfo = ({ entityType }: Props) => {
           </ToggleField>
         </div>
       )}
-      {formikContext.values.hasDifferentFullName && (
+      {formikContext.values.hasDifferentName && (
         <InputField
           htmlFor="profileName"
           title="Nome operatore visualizzato"

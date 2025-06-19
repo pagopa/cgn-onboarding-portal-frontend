@@ -1,72 +1,74 @@
-import * as Yup from "yup";
-import { YupLiteral, YupRecord, YupUnion } from "../utils/yupUtils";
+import { z } from "zod";
 
-const merchantInfoSchema = Yup.object({
-  organization_name: Yup.string().required(),
-  organization_fiscal_code: Yup.string().required(),
-  email: Yup.string().required(),
-  token: Yup.string().required()
-}).required();
+// Merchant Info Schema
+const merchantInfoSchema = z.object({
+  organization_name: z.string(),
+  organization_fiscal_code: z.string(),
+  email: z.string(),
+  token: z.string()
+});
 
-export type MerchantInfo = Yup.InferType<typeof merchantInfoSchema>;
+export type MerchantInfo = z.infer<typeof merchantInfoSchema>;
 
-const currentSessionSchema = YupUnion([
-  Yup.object({
-    type: YupLiteral("admin").required(),
-    name: Yup.string().required()
-  }).required(),
-  Yup.object({
-    type: YupLiteral("user").required(),
-    userFiscalCode: Yup.string().required(),
-    merchantFiscalCode: Yup.string().optional()
-  }).required(),
-  Yup.object({
-    type: YupLiteral("none").required()
-  }).required()
-]).required();
+// Current Session Schema
+const currentSessionSchema = z.union([
+  z.object({
+    type: z.literal("admin"),
+    name: z.string()
+  }),
+  z.object({
+    type: z.literal("user"),
+    userFiscalCode: z.string(),
+    merchantFiscalCode: z.string().optional()
+  }),
+  z.object({
+    type: z.literal("none")
+  })
+]);
 
-export type CurrentSession = Yup.InferType<typeof currentSessionSchema>;
+export type CurrentSession = z.infer<typeof currentSessionSchema>;
 
-const userSessionSchema = Yup.object({
-  token: Yup.string().required(),
-  first_name: Yup.string().required(),
-  last_name: Yup.string().required(),
-  exp: Yup.number().required(),
-  merchants: Yup.array(merchantInfoSchema).required()
-}).required();
+// User Session Schema
+const userSessionSchema = z.object({
+  token: z.string(),
+  first_name: z.string(),
+  last_name: z.string(),
+  exp: z.number(),
+  merchants: z.array(merchantInfoSchema)
+});
 
-export type UserSession = Yup.InferType<typeof userSessionSchema>;
+export type UserSession = z.infer<typeof userSessionSchema>;
 
-const adminSessionSchema = Yup.object({
-  token: Yup.string().required(),
-  first_name: Yup.string().required(),
-  last_name: Yup.string().required(),
-  exp: Yup.number().required()
-}).required();
+// Admin Session Schema
+const adminSessionSchema = z.object({
+  token: z.string(),
+  first_name: z.string(),
+  last_name: z.string(),
+  exp: z.number()
+});
 
-export type AdminSession = Yup.InferType<typeof adminSessionSchema>;
+export type AdminSession = z.infer<typeof adminSessionSchema>;
 
-export const authenticationStateSchema = Yup.object({
-  userNonceByState: YupRecord(
-    Yup.object({
-      nonce: Yup.string().required(),
-      exp: Yup.number().required()
-    }).required()
-  ).required(),
-  userSessionByFiscalCode: YupRecord(userSessionSchema).required(),
-  adminNonceByState: YupRecord(
-    Yup.object({
-      nonce: Yup.string().required(),
-      exp: Yup.number().required()
-    }).required()
-  ).required(),
-  adminSessionByName: YupRecord(adminSessionSchema).required(),
+// Authentication State Schema
+export const authenticationStateSchema = z.object({
+  userNonceByState: z.record(
+    z.object({
+      nonce: z.string(),
+      exp: z.number()
+    })
+  ),
+  userSessionByFiscalCode: z.record(userSessionSchema),
+  adminNonceByState: z.record(
+    z.object({
+      nonce: z.string(),
+      exp: z.number()
+    })
+  ),
+  adminSessionByName: z.record(adminSessionSchema),
   currentSession: currentSessionSchema
-}).required();
+});
 
-export type AuthenticationState = Yup.InferType<
-  typeof authenticationStateSchema
->;
+export type AuthenticationState = z.infer<typeof authenticationStateSchema>;
 
 export const empty: AuthenticationState = {
   userNonceByState: {},
