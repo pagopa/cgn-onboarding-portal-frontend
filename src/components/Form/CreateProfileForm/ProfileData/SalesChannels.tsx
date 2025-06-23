@@ -1,5 +1,5 @@
 import { Field, FieldArray, useFormikContext } from "formik";
-import { InferType } from "yup";
+import { z } from "zod";
 import FormSection from "../../FormSection";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import CustomErrorMessage from "../../CustomErrorMessage";
@@ -15,7 +15,7 @@ type Props = {
 };
 
 const SalesChannels = ({ entityType, children }: Props) => {
-  type Values = InferType<typeof ProfileDataValidationSchema>;
+  type Values = z.infer<typeof ProfileDataValidationSchema>;
   const formikContext = useFormikContext<Values>();
   const formValues = formikContext.values;
   const hasOnlineOrBothChannels =

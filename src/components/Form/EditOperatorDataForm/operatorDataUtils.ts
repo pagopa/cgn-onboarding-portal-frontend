@@ -59,7 +59,7 @@ function getSalesChannel(
       return {
         ...OfflineChannel,
         addresses:
-          EmptyAddresses.isValidSync(OfflineChannel.addresses) ||
+          EmptyAddresses.safeParse(OfflineChannel.addresses).success ||
           OfflineChannel.allNationalAddresses
             ? []
             : OfflineChannel.addresses.map((add: any) => ({
@@ -72,7 +72,7 @@ function getSalesChannel(
       return {
         ...salesChannel,
         addresses:
-          EmptyAddresses.isValidSync(salesChannel.addresses) ||
+          EmptyAddresses.safeParse(salesChannel.addresses).success ||
           salesChannel.allNationalAddresses
             ? []
             : salesChannel.addresses.map((add: any) => ({
