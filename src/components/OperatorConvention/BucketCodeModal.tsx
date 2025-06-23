@@ -16,21 +16,17 @@ const BucketCodeModal = ({
   agreementId,
   discountId
 }: Props) => {
-  const {
-    data,
-    isPending: isLoading,
-    isError,
-    error
-  } = remoteData.Backoffice.Discount.getDiscountBucketCode.useQuery(
-    {
-      agreementId,
-      discountId
-    },
-    { enabled: isOpen, retry: false }
-  );
+  const { data, isPending, isError, error } =
+    remoteData.Backoffice.Discount.getDiscountBucketCode.useQuery(
+      {
+        agreementId,
+        discountId
+      },
+      { enabled: isOpen, retry: false }
+    );
 
   const renderContent = () => {
-    if (isLoading) {
+    if (isPending) {
       return <CenteredLoading />;
     }
     if (data?.code && !isError) {

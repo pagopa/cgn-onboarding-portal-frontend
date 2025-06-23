@@ -40,7 +40,7 @@ const OperatorActivations = () => {
   const [params, setParams] = useState<GetOrgsParams>();
   const {
     data: operators,
-    isPending: isLoading,
+    isPending,
     refetch
   } = remoteData.Backoffice.AttributeAuthority.getOrganizations.useQuery({
     searchQuery: params?.searchQuery,
@@ -201,7 +201,7 @@ const OperatorActivations = () => {
   return (
     <section className="mt-2 px-8 py-10 bg-white">
       <ActivationsFilter refForm={refForm} getActivations={setParams} />
-      {isLoading ? (
+      {isPending ? (
         <CenteredLoading />
       ) : (
         <>

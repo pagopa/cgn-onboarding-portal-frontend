@@ -56,13 +56,10 @@ const CreateActivationForm = () => {
     createActivationMutation.mutate({ body: organization });
   };
 
-  const {
-    data,
-    error,
-    isPending: isLoading
-  } = remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery({
-    keyOrganizationFiscalCode: operatorFiscalCode
-  });
+  const { data, error, isPending } =
+    remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery({
+      keyOrganizationFiscalCode: operatorFiscalCode
+    });
   useEffect(() => {
     if (error) {
       throwErrorTooltip(
@@ -73,7 +70,7 @@ const CreateActivationForm = () => {
 
   const initialValues = data ?? emptyInitialValues;
 
-  if (isLoading) {
+  if (isPending) {
     return <CenteredLoading />;
   }
 

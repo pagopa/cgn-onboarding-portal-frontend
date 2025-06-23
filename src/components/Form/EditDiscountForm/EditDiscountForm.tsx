@@ -94,9 +94,9 @@ const EditDiscountForm = () => {
     };
   }, [discount]);
 
-  const isLoading = profileQuery.isPending || discountQuery.isPending;
+  const isPending = profileQuery.isPending || discountQuery.isPending;
 
-  if (isLoading) {
+  if (isPending) {
     return <CenteredLoading />;
   }
 

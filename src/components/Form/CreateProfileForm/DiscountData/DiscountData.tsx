@@ -166,10 +166,10 @@ const DiscountData = ({
     deleteDiscountMutation.mutate({ agreementId, discountId });
   };
 
-  const isLoading =
+  const isPending =
     profileQuery.isPending || (isCompleted ? discountsQuery.isPending : false);
 
-  if (isLoading) {
+  if (isPending) {
     return <CenteredLoading />;
   }
 

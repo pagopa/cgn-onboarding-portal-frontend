@@ -161,7 +161,7 @@ const RequestDocuments = ({
     });
   };
 
-  const isLoading =
+  const isPending =
     documentsQuery.isPending ||
     uploadDocumentMutation.isPending ||
     deleteDocumentMutation.isPending;
@@ -169,7 +169,7 @@ const RequestDocuments = ({
   return (
     <>
       <h1 className="h5 fw-bold text-dark-blue mb-5">Documenti</h1>
-      {isLoading ? (
+      {isPending ? (
         <CenteredLoading />
       ) : (
         original.documents?.map((doc, i) => {

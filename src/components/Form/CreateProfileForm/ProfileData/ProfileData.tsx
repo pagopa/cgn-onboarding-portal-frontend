@@ -147,11 +147,11 @@ const ProfileData = ({
 
   const entityType = agreement.entityType;
 
-  const isLoading = isCompleted && profileQuery.isPending;
+  const isPending = isCompleted && profileQuery.isPending;
 
   const authentication = useAuthentication();
 
-  if (isLoading) {
+  if (isPending) {
     return <CenteredLoading />;
   }
 

@@ -53,9 +53,8 @@ const Requests = () => {
     },
     []
   );
-  const agreements = agreementsQuery.data;
 
-  const isLoading = agreementsQuery.isPending;
+  const { data: agreements, isPending } = agreementsQuery;
 
   const data = useMemo(
     () => agreements?.items || [],
@@ -183,7 +182,7 @@ const Requests = () => {
         getAgreements={updateAgreementsQueryParams}
         refForm={refForm}
       />
-      {isLoading ? (
+      {isPending ? (
         <CenteredLoading />
       ) : (
         <>
