@@ -99,7 +99,7 @@ export const EditOperatorForm = ({
 
   const authentication = useAuthentication();
 
-  if (profileQuery.isLoading) {
+  if (profileQuery.isPending) {
     return <CenteredLoading />;
   }
 

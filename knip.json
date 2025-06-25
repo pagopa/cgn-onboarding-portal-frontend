@@ -5,7 +5,6 @@
   ],
   "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
   "ignore": [
-    "Dangerfile.ts",
     "src/api/generated/**",
     "src/api/generated_backoffice/**",
     "src/api/generated_public/**",

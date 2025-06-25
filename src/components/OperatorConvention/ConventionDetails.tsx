@@ -86,13 +86,13 @@ const ConventionDetails = ({
 
   const {
     data: details,
-    isLoading,
+    isPending,
     refetch
   } = remoteData.Backoffice.Agreement.getApprovedAgreement.useQuery({
     agreementId: agreement?.agreementId || ""
   });
 
-  return isLoading ? (
+  return isPending ? (
     <div className="mt-2 px-8 py-10 bg-white">
       <CenteredLoading />
     </div>
