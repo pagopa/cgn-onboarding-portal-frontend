@@ -1,5 +1,3 @@
-import { debounce } from "lodash";
-import { useMemo } from "react";
 import DateModal from "./DateModal";
 import StateModal from "./StateModal";
 import { RequestsFilterFormValues } from "./Requests";
@@ -19,24 +17,6 @@ function RequestsFilter({
   onReset(): void;
   isDirty: boolean;
 }) {
-  const setProfileFullNameDebounced = useMemo(
-    () =>
-      debounce(
-        (profileFullName: string) => {
-          onChange(values => ({
-            ...values,
-            profileFullName
-          }));
-        },
-        1000,
-        {
-          leading: false,
-          trailing: true,
-          maxWait: 5000
-        }
-      ),
-    [onChange]
-  );
   return (
     <form>
       <div className="d-flex justify-content-between">
@@ -86,8 +66,13 @@ function RequestsFilter({
             name="profileFullName"
             type="text"
             placeholder="Cerca Richiesta"
+            value={values.profileFullName || ""}
             onChange={event => {
-              setProfileFullNameDebounced(event.currentTarget.value);
+              const profileFullName = event.currentTarget.value;
+              onChange(values => ({
+                ...values,
+                profileFullName
+              }));
             }}
             style={{ maxWidth: "275px" }}
           />

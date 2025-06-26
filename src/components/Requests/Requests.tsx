@@ -10,6 +10,7 @@ import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
 import { isEqual } from "lodash";
+import { useDebounce } from "@uidotdev/usehooks";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -58,11 +59,13 @@ const Requests = () => {
 
   const [pageParam, setPageParam] = useState<number>(0);
 
+  const debouncedProfileFullName = useDebounce(values.profileFullName, 500);
+
   const params = useMemo((): AgreementApiGetAgreementsRequest => {
     const requestAssignedAgreements =
       values.states?.includes("AssignedAgreement");
     return {
-      profileFullName: values.profileFullName || undefined,
+      profileFullName: debouncedProfileFullName,
       requestDateFrom: values.requestDateFrom?.toISOString(),
       requestDateTo: values.requestDateTo?.toISOString(),
       assignee: requestAssignedAgreements
@@ -76,7 +79,15 @@ const Requests = () => {
       page: pageParam,
       pageSize
     };
-  }, [values, pageParam]);
+  }, [
+    values.states,
+    values.requestDateFrom,
+    values.requestDateTo,
+    values.sortColumn,
+    values.sortDirection,
+    debouncedProfileFullName,
+    pageParam
+  ]);
 
   const agreementsQuery =
     remoteData.Backoffice.Agreement.getAgreements.useQuery(
