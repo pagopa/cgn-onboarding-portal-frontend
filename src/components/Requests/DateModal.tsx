@@ -8,13 +8,14 @@ import DatePicker from "react-datepicker";
 const DateModal = ({
   requestDateFrom,
   requestDateTo,
-  setFieldValue,
-  submitForm
+  onSubmit
 }: {
   requestDateFrom?: Date;
   requestDateTo?: Date;
-  setFieldValue: any;
-  submitForm: any;
+  onSubmit(
+    requestDateFrom: Date | undefined,
+    requestDateTo: Date | undefined
+  ): void;
 }) => {
   const [dateFrom, setDateFrom] = useState<Date | undefined>(requestDateFrom);
   const [dateTo, setDateTo] = useState<Date | undefined>(requestDateTo);
@@ -70,10 +71,7 @@ const DateModal = ({
           <button
             onClick={e => {
               e.stopPropagation();
-              setFieldValue("page", 0);
-              setFieldValue("requestDateFrom", undefined);
-              setFieldValue("requestDateTo", undefined);
-              submitForm();
+              onSubmit(undefined, undefined);
             }}
           >
             <Icon color="" icon="it-close" size="" />
@@ -134,9 +132,7 @@ const DateModal = ({
           <Button
             color="primary"
             onClick={() => {
-              setFieldValue("requestDateFrom", dateFrom);
-              setFieldValue("requestDateTo", dateTo);
-              submitForm();
+              onSubmit(dateFrom, dateTo);
               toggleDateModal();
             }}
           >

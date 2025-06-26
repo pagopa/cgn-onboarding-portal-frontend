@@ -1,11 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-  Fragment
-} from "react";
+import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
 import {
   useTable,
   useExpanded,
@@ -16,12 +9,15 @@ import {
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
+import { isEqual } from "lodash";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   AgreementApiGetAgreementsRequest,
   Agreement,
-  AssignedAgreement
+  AssignedAgreement,
+  GetAgreementsAssigneeEnum,
+  GetAgreementsSortColumnEnum
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
@@ -31,27 +27,63 @@ import RequestsDetails from "./RequestsDetails";
 
 type BackofficeAgreement = Partial<AssignedAgreement> & Agreement;
 
+export type RequestsFilterFormValues = {
+  profileFullName: string | undefined;
+  requestDateFrom: Date | undefined;
+  requestDateTo: Date | undefined;
+  states: string | undefined;
+  assignee: GetAgreementsAssigneeEnum | undefined;
+  sortColumn: GetAgreementsSortColumnEnum | undefined;
+  sortDirection: "ASC" | "DESC" | undefined;
+};
+
+const requestFilterFormInitialValues: RequestsFilterFormValues = {
+  profileFullName: "",
+  requestDateFrom: undefined,
+  requestDateTo: undefined,
+  states: undefined,
+  assignee: undefined,
+  sortColumn: undefined,
+  sortDirection: undefined
+};
+
 const Requests = () => {
   const pageSize = 20;
-  const refForm = useRef<any>(null);
 
-  const [agreementsQueryParams, setAgreementsQueryParams] =
-    useState<AgreementApiGetAgreementsRequest>({});
+  const [values, setValues] = useState<RequestsFilterFormValues>(
+    requestFilterFormInitialValues
+  );
+
+  const isDirty = !isEqual(values, requestFilterFormInitialValues);
+
+  const [pageParam, setPageParam] = useState<number>(0);
+
+  const params = useMemo((): AgreementApiGetAgreementsRequest => {
+    const requestAssignedAgreements =
+      values.states?.includes("AssignedAgreement");
+    return {
+      profileFullName: values.profileFullName || undefined,
+      requestDateFrom: values.requestDateFrom?.toISOString(),
+      requestDateTo: values.requestDateTo?.toISOString(),
+      assignee: requestAssignedAgreements
+        ? (values.states
+            ?.split("AssignedAgreement")
+            .at(-1) as GetAgreementsAssigneeEnum)
+        : undefined,
+      states: requestAssignedAgreements ? "AssignedAgreement" : values.states,
+      sortColumn: values.sortColumn,
+      sortDirection: values.sortDirection,
+      page: pageParam,
+      pageSize
+    };
+  }, [values, pageParam]);
+
   const agreementsQuery =
     remoteData.Backoffice.Agreement.getAgreements.useQuery(
-      { ...agreementsQueryParams, pageSize },
+      params,
       { keepPreviousData: true, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
     );
-  const updateAgreementsQueryParams = useCallback(
-    (params: AgreementApiGetAgreementsRequest) => {
-      setAgreementsQueryParams(params);
-      remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({
-        ...params,
-        pageSize
-      });
-    },
-    []
-  );
+
   const agreements = agreementsQuery.data;
 
   const isLoading = agreementsQuery.isLoading;
@@ -101,7 +133,9 @@ const Requests = () => {
   const renderRowSubComponent = useCallback(
     ({ row: { original } }: { row: { original: Agreement } }) => (
       <RequestsDetails
-        updateList={() => refForm.current?.submitForm()}
+        updateList={() => {
+          remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({});
+        }}
         original={original}
       />
     ),
@@ -153,18 +187,28 @@ const Requests = () => {
   useEffect(() => {
     const sortField = sortBy[0];
     if (sortField) {
-      refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
-      refForm.current?.setFieldValue(
-        "sortDirection",
-        sortField.desc ? "DESC" : "ASC"
-      );
+      setValues(values => ({
+        ...values,
+        sortColumn: getSortColumn(sortField.id),
+        sortDirection: sortField.desc ? "DESC" : "ASC"
+      }));
     } else {
-      refForm.current?.setFieldValue("sortColumn", undefined);
-      refForm.current?.setFieldValue("sortDirection", undefined);
+      setValues(values => ({
+        ...values,
+        sortColumn: undefined,
+        sortDirection: undefined
+      }));
     }
-    refForm.current?.setFieldValue("page", pageIndex);
-    refForm.current?.submitForm();
-  }, [pageIndex, sortBy]);
+  }, [sortBy]);
+
+  useEffect(() => {
+    setPageParam(pageIndex);
+  }, [pageIndex]);
+
+  useEffect(() => {
+    gotoPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values]);
 
   const startRowIndex: number = pageIndex * pageSize + 1;
   // eslint-disable-next-line functional/no-let
@@ -179,8 +223,12 @@ const Requests = () => {
   return (
     <section className="mt-2 px-8 py-10 bg-white">
       <RequestFilter
-        getAgreements={updateAgreementsQueryParams}
-        refForm={refForm}
+        values={values}
+        onChange={setValues}
+        onReset={() => {
+          setValues(requestFilterFormInitialValues);
+        }}
+        isDirty={isDirty}
       />
       {isLoading ? (
         <CenteredLoading />
@@ -245,7 +293,7 @@ const Requests = () => {
             </tbody>
           </table>
           {!agreements?.items.length &&
-            (refForm.current?.dirty ? (
+            (isDirty ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
                 <Button
@@ -254,8 +302,7 @@ const Requests = () => {
                   tag="button"
                   className="mt-3"
                   onClick={() => {
-                    refForm.current?.resetForm();
-                    setAgreementsQueryParams({});
+                    setValues(requestFilterFormInitialValues);
                   }}
                 >
                   Reimposta Tutto
