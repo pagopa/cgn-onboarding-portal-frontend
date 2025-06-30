@@ -2952,10 +2952,10 @@ dequal@^2.0.3:
   resolved "https://registry.yarnpkg.com/dequal/-/dequal-2.0.3.tgz#2644214f1997d39ed0ee0ece72335490a7ac67be"
   integrity sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==
 
-design-react-kit@^5.8.1:
-  version "5.8.1"
-  resolved "https://registry.yarnpkg.com/design-react-kit/-/design-react-kit-5.8.1.tgz#ce8a0fc88d07da711796d20c0435dfebddfc4e2a"
-  integrity sha512-N63q1f9jYaf6+BHKMbBJ8ucba9BPd2DLkMTswoFogmx4OTObmKaNebVV8OgbbLuX+79/I+jkte04lui3yzXZXg==
+design-react-kit@^5.8.2:
+  version "5.8.2"
+  resolved "https://registry.yarnpkg.com/design-react-kit/-/design-react-kit-5.8.2.tgz#c14dad52cbd200e5a505bb500141a4e950e6881b"
+  integrity sha512-/fswj71x84TONo8uZMc0Il24OlZHWilJQvtyGPRfcXRuXVXhaHw9owGyuftCIyLTWrHgU195TDls6VuMaVKPdA==
   dependencies:
     "@splidejs/react-splide" "^0.7.12"
     accessible-autocomplete "^3.0.1"
