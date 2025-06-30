@@ -8,13 +8,14 @@ import DatePicker from "react-datepicker";
 const DateModal = ({
   lastUpdateDateFrom,
   lastUpdateDateTo,
-  setFieldValue,
-  submitForm
+  onSubmit
 }: {
   lastUpdateDateFrom?: Date;
   lastUpdateDateTo?: Date;
-  setFieldValue: any;
-  submitForm: any;
+  onSubmit(
+    lastUpdateDateFrom: Date | undefined,
+    lastUpdateDateTo: Date | undefined
+  ): void;
 }) => {
   const [dateFrom, setDateFrom] = useState<Date | undefined>(
     lastUpdateDateFrom
@@ -72,10 +73,7 @@ const DateModal = ({
           <button
             onClick={e => {
               e.stopPropagation();
-              setFieldValue("page", 0);
-              setFieldValue("lastUpdateDateFrom", undefined);
-              setFieldValue("lastUpdateDateTo", undefined);
-              submitForm();
+              onSubmit(undefined, undefined);
             }}
           >
             <Icon color="" icon="it-close" size="" />
@@ -138,9 +136,7 @@ const DateModal = ({
           <Button
             color="primary"
             onClick={() => {
-              setFieldValue("lastUpdateDateFrom", dateFrom);
-              setFieldValue("lastUpdateDateTo", dateTo);
-              submitForm();
+              onSubmit(dateFrom, dateTo);
               toggleDateModal();
             }}
           >
