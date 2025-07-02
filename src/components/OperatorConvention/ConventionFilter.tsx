@@ -3,7 +3,7 @@ import { Button } from "design-react-kit";
 import { saveAs } from "file-saver";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
-import DateModal from "./DateModal";
+import DateModal from "../DateModal";
 import { ConventionFilterFormValues } from "./OperatorConvention";
 
 const ConventionFilter = ({
@@ -108,8 +108,10 @@ const ConventionFilter = ({
           style={{ rowGap: "0.75rem" }}
         >
           <DateModal
-            lastUpdateDateFrom={values.lastUpdateDateFrom}
-            lastUpdateDateTo={values.lastUpdateDateTo}
+            label="Data ultima modifica"
+            title="Filtra per data di ultima modifica"
+            from={values.lastUpdateDateFrom}
+            to={values.lastUpdateDateTo}
             onSubmit={(lastUpdateDateFrom, lastUpdateDateTo) => {
               onChange({
                 ...values,

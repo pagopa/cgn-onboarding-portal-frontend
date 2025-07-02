@@ -1,4 +1,4 @@
-import DateModal from "./DateModal";
+import DateModal from "../DateModal";
 import StateModal from "./StateModal";
 import { RequestsFilterFormValues } from "./Requests";
 
@@ -40,8 +40,10 @@ function RequestsFilter({
 
         <div className="d-flex justify-content-end flex-grow-1 flex-wrap">
           <DateModal
-            requestDateFrom={values.requestDateFrom}
-            requestDateTo={values.requestDateTo}
+            label="Data"
+            title="Filtra per data"
+            from={values.requestDateFrom}
+            to={values.requestDateTo}
             onSubmit={(requestDateFrom, requestDateTo) => {
               onChange(values => ({
                 ...values,
