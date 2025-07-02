@@ -3,7 +3,6 @@ import { Column, Row, usePagination, useSortBy, useTable } from "react-table";
 import { Button } from "design-react-kit";
 import { format } from "date-fns";
 import { isEqual } from "lodash";
-import { useDebounce } from "@uidotdev/usehooks";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -15,6 +14,7 @@ import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
+import { useDebouncedValue } from "../../utils/useDebounce";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
 import { BadgeStatus } from "./BadgeStatus";
@@ -50,7 +50,13 @@ const OperatorConvention = () => {
 
   const isDirty = !isEqual(values, conventionFilterFormInitialValues);
 
-  const fullNameDebounced = useDebounce(values.fullName, 500);
+  const fullNameDebounced = useDebouncedValue({
+    value: values.fullName,
+    delay: 500,
+    leading: false,
+    trailing: true,
+    maxWait: 3000
+  });
 
   const params = useMemo(
     (): AgreementApiGetApprovedAgreementsRequest => ({

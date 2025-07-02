@@ -10,7 +10,6 @@ import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
 import { isEqual } from "lodash";
-import { useDebounce } from "@uidotdev/usehooks";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -24,6 +23,7 @@ import {
   getEntityTypeLabel,
   makeOrganizationStatusReadable
 } from "../../utils/strings";
+import { useDebouncedValue } from "../../utils/useDebounce";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
@@ -50,7 +50,13 @@ const OperatorActivations = () => {
 
   const isDirty = !isEqual(values, activationsFilterFormInitialValues);
 
-  const searchQueryDebounced = useDebounce(values.searchQuery, 500);
+  const searchQueryDebounced = useDebouncedValue({
+    value: values.searchQuery,
+    delay: 500,
+    leading: false,
+    trailing: true,
+    maxWait: 3000
+  });
 
   const params = useMemo(
     (): AttributeauthorityApiGetOrganizationsRequest => ({

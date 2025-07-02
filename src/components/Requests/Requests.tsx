@@ -10,7 +10,6 @@ import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
 import { isEqual } from "lodash";
-import { useDebounce } from "@uidotdev/usehooks";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -22,6 +21,7 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import { useDebouncedValue } from "../../utils/useDebounce";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
@@ -59,7 +59,13 @@ const Requests = () => {
 
   const [pageParam, setPageParam] = useState<number>(0);
 
-  const debouncedProfileFullName = useDebounce(values.profileFullName, 500);
+  const debouncedProfileFullName = useDebouncedValue({
+    value: values.profileFullName,
+    delay: 500,
+    leading: false,
+    trailing: true,
+    maxWait: 3000
+  });
 
   const params = useMemo((): AgreementApiGetAgreementsRequest => {
     const requestAssignedAgreements =
