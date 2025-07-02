@@ -37,6 +37,18 @@ export type ActivationsFilterFormValues = {
   sortDirection?: "ASC" | "DESC";
 };
 
+const getSortColumn = (id: string): OrderType => {
+  switch (id) {
+    case "organizationFiscalCode":
+      return "fiscalCode";
+    case "insertedAt":
+      return "insertedAt";
+    case "organizationName":
+    default:
+      return "name";
+  }
+};
+
 const activationsFilterFormInitialValues: ActivationsFilterFormValues = {
   searchQuery: undefined
 };
@@ -186,18 +198,6 @@ const OperatorActivations = () => {
     useExpanded,
     usePagination
   );
-
-  const getSortColumn = (id: string): OrderType => {
-    switch (id) {
-      case "organizationFiscalCode":
-        return "fiscalCode";
-      case "insertedAt":
-        return "insertedAt";
-      case "organizationName":
-      default:
-        return "name";
-    }
-  };
 
   useEffect(() => {
     const sortField = sortBy[0];

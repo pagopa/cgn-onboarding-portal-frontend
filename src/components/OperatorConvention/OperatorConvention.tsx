@@ -35,6 +35,19 @@ const conventionFilterFormInitialValues: ConventionFilterFormValues = {
   sortDirection: undefined
 };
 
+const getSortColumn = (id: string) => {
+  switch (id) {
+    case "fullName":
+      return "Operator";
+    case "agreementStartDate":
+      return "AgreementDate";
+    case "agreementLastUpdateDate":
+      return "LastModifyDate";
+    case "publishedDiscounts":
+      return "PublishedDiscounts";
+  }
+};
+
 const OperatorConvention = () => {
   const pageSize = 20;
   const [showDetails, setShowDetails] = useState(false);
@@ -150,19 +163,6 @@ const OperatorConvention = () => {
     useSortBy,
     usePagination
   );
-
-  const getSortColumn = (id: string) => {
-    switch (id) {
-      case "fullName":
-        return "Operator";
-      case "agreementStartDate":
-        return "AgreementDate";
-      case "agreementLastUpdateDate":
-        return "LastModifyDate";
-      case "publishedDiscounts":
-        return "PublishedDiscounts";
-    }
-  };
 
   useEffect(() => {
     const sortField = sortBy[0];

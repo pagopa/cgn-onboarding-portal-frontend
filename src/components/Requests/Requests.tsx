@@ -48,6 +48,19 @@ const requestFilterFormInitialValues: RequestsFilterFormValues = {
   sortDirection: undefined
 };
 
+const getSortColumn = (id: string) => {
+  switch (id) {
+    case "profile.fullName":
+      return "Operator";
+    case "requestDate":
+      return "RequestDate";
+    case "state":
+      return "State";
+    case "assignee.fullName":
+      return "Assignee";
+  }
+};
+
 const Requests = () => {
   const pageSize = 20;
 
@@ -187,19 +200,6 @@ const Requests = () => {
     useExpanded,
     usePagination
   );
-
-  const getSortColumn = (id: string) => {
-    switch (id) {
-      case "profile.fullName":
-        return "Operator";
-      case "requestDate":
-        return "RequestDate";
-      case "state":
-        return "State";
-      case "assignee.fullName":
-        return "Assignee";
-    }
-  };
 
   useEffect(() => {
     const sortField = sortBy[0];
