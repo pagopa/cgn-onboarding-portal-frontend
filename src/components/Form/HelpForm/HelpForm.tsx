@@ -17,13 +17,7 @@ import { useAuthentication } from "../../../authentication/AuthenticationContext
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
-const loggedInitialValues = {
-  category: "",
-  topic: "",
-  message: ""
-};
-
-const notLoggedInitialValues = {
+const initialValues = {
   category: "",
   topic: "",
   message: "",
@@ -76,7 +70,6 @@ const HelpForm = () => {
       severity: Severity.DANGER,
       text: "C'è stato un errore durante la sottomissione del form"
     });
-
   const createLoggedHelpMutation =
     remoteData.Index.Help.sendHelpRequest.useMutation({
       onSuccess() {
@@ -84,7 +77,6 @@ const HelpForm = () => {
       },
       onError: onErrorTooltip
     });
-
   const createNotLoggedHelpMutation =
     remoteData.Public.Help.sendHelpRequest.useMutation({
       onSuccess() {
@@ -100,19 +92,22 @@ const HelpForm = () => {
 
   return (
     <Formik
-      initialValues={token ? loggedInitialValues : notLoggedInitialValues}
+      initialValues={initialValues}
       validationSchema={
         token ? loggedHelpValidationSchema : notLoggedHelpValidationSchema
       }
-      onSubmit={(values: any) => {
-        const { confirmEmailAddress, ...helpRequest } = values;
+      onSubmit={values => {
         if (token) {
+          const helpRequest = loggedHelpValidationSchema.parse(values);
           createLoggedHelpMutation.mutate({
             agreementId: agreement.id,
-            helpRequest: values
+            helpRequest
           });
         } else {
-          createNotLoggedHelpMutation.mutate({ helpRequest });
+          const helpRequest = notLoggedHelpValidationSchema.parse(values);
+          createNotLoggedHelpMutation.mutate({
+            helpRequest
+          });
         }
       }}
     >
