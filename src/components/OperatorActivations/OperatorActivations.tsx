@@ -34,7 +34,7 @@ type OrderType = "fiscalCode" | "name" | "pec" | "insertedAt";
 
 export type ActivationsFilterFormValues = {
   searchQuery: string | undefined;
-  sortBy?: OrderType;
+  sortColumn?: OrderType;
   sortDirection?: "ASC" | "DESC";
 };
 
@@ -76,10 +76,10 @@ const OperatorActivations = () => {
       searchQuery: searchQueryDebounced,
       page: pageParam,
       pageSize: PAGE_SIZE,
-      sortBy: values.sortBy,
+      sortBy: values.sortColumn,
       sortDirection: values.sortDirection
     }),
-    [pageParam, searchQueryDebounced, values.sortBy, values.sortDirection]
+    [pageParam, searchQueryDebounced, values.sortColumn, values.sortDirection]
   );
 
   const {
@@ -205,13 +205,13 @@ const OperatorActivations = () => {
     if (sortField) {
       setValues(values => ({
         ...values,
-        sortBy: getSortColumn(sortField.id),
+        sortColumn: getSortColumn(sortField.id),
         sortDirection: sortField.desc ? "DESC" : "ASC"
       }));
     } else {
       setValues(values => ({
         ...values,
-        sortBy: undefined,
+        sortColumn: undefined,
         sortDirection: undefined
       }));
     }
