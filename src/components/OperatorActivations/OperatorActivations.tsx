@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, Fragment } from "react";
+import { useState, useEffect, useMemo, Fragment } from "react";
 import {
   useTable,
   usePagination,
@@ -9,9 +9,11 @@ import {
 import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
+import isEqual from "lodash/isEqual";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
+  AttributeauthorityApiGetOrganizationsRequest,
   OrganizationStatus,
   OrganizationWithReferentsAndStatus
 } from "../../api/generated_backoffice";
@@ -21,6 +23,8 @@ import {
   getEntityTypeLabel,
   makeOrganizationStatusReadable
 } from "../../utils/strings";
+import { useDebouncedValue } from "../../utils/useDebounce";
+import { useStableValue } from "../../utils/useStableValue";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
@@ -28,27 +32,63 @@ const PAGE_SIZE = 20;
 
 type OrderType = "fiscalCode" | "name" | "pec" | "insertedAt";
 
-export type GetOrgsParams = {
-  searchQuery?: string;
-  page?: number;
+export type ActivationsFilterFormValues = {
+  searchQuery: string | undefined;
   sortColumn?: OrderType;
   sortDirection?: "ASC" | "DESC";
 };
-const OperatorActivations = () => {
-  const refForm = useRef<any>(null);
 
-  const [params, setParams] = useState<GetOrgsParams>();
+const getActivationsSortColumn = (id: string): OrderType => {
+  switch (id) {
+    case "organizationFiscalCode":
+      return "fiscalCode";
+    case "insertedAt":
+      return "insertedAt";
+    case "organizationName":
+    default:
+      return "name";
+  }
+};
+
+const activationsFilterFormInitialValues: ActivationsFilterFormValues = {
+  searchQuery: undefined
+};
+
+const OperatorActivations = () => {
+  const [pageParam, setPageParam] = useState(0);
+
+  const [values, setValues] = useState<ActivationsFilterFormValues>(
+    activationsFilterFormInitialValues
+  );
+
+  const isDirty = !isEqual(values, activationsFilterFormInitialValues);
+
+  const searchQueryDebounced = useDebouncedValue({
+    value: values.searchQuery,
+    delay: 500,
+    leading: false,
+    trailing: true,
+    maxWait: 3000
+  });
+
+  const params = useMemo(
+    (): AttributeauthorityApiGetOrganizationsRequest => ({
+      searchQuery: searchQueryDebounced,
+      page: pageParam,
+      pageSize: PAGE_SIZE,
+      sortBy: values.sortColumn,
+      sortDirection: values.sortDirection
+    }),
+    [pageParam, searchQueryDebounced, values.sortColumn, values.sortDirection]
+  );
+
   const {
     data: operators,
     isLoading,
     refetch
-  } = remoteData.Backoffice.AttributeAuthority.getOrganizations.useQuery({
-    searchQuery: params?.searchQuery,
-    page: params?.page,
-    pageSize: PAGE_SIZE,
-    sortBy: params?.sortColumn,
-    sortDirection: params?.sortDirection
-  });
+  } = remoteData.Backoffice.AttributeAuthority.getOrganizations.useQuery(
+    params
+  );
 
   const columns = useMemo(
     (): Array<Column<OrganizationWithReferentsAndStatus>> => [
@@ -160,33 +200,31 @@ const OperatorActivations = () => {
     usePagination
   );
 
-  const getSortColumn = (id: string): OrderType => {
-    switch (id) {
-      case "organizationFiscalCode":
-        return "fiscalCode";
-      case "insertedAt":
-        return "insertedAt";
-      case "organizationName":
-      default:
-        return "name";
-    }
-  };
-
   useEffect(() => {
     const sortField = sortBy[0];
     if (sortField) {
-      refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
-      refForm.current?.setFieldValue(
-        "sortDirection",
-        sortField.desc ? "DESC" : "ASC"
-      );
+      setValues(values => ({
+        ...values,
+        sortColumn: getActivationsSortColumn(sortField.id),
+        sortDirection: sortField.desc ? "DESC" : "ASC"
+      }));
     } else {
-      refForm.current?.setFieldValue("sortColumn", undefined);
-      refForm.current?.setFieldValue("sortDirection", undefined);
+      setValues(values => ({
+        ...values,
+        sortColumn: undefined,
+        sortDirection: undefined
+      }));
     }
-    refForm.current?.setFieldValue("page", pageIndex);
-    refForm.current?.submitForm();
-  }, [pageIndex, sortBy]);
+  }, [sortBy]);
+
+  useEffect(() => {
+    setPageParam(pageIndex);
+  }, [pageIndex]);
+
+  useEffect(() => {
+    gotoPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useStableValue(values)]);
 
   const startRowIndex: number = pageIndex * PAGE_SIZE + 1;
   // eslint-disable-next-line functional/no-let
@@ -200,7 +238,14 @@ const OperatorActivations = () => {
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <ActivationsFilter refForm={refForm} getActivations={setParams} />
+      <ActivationsFilter
+        values={values}
+        onChange={setValues}
+        isDirty={isDirty}
+        onReset={() => {
+          setValues(activationsFilterFormInitialValues);
+        }}
+      />
       {isLoading ? (
         <CenteredLoading />
       ) : (
@@ -267,7 +312,7 @@ const OperatorActivations = () => {
             </tbody>
           </table>
           {!operators?.items?.length &&
-            (refForm.current?.dirty ? (
+            (isDirty ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
                 <Button
@@ -276,8 +321,7 @@ const OperatorActivations = () => {
                   tag="button"
                   className="mt-3"
                   onClick={() => {
-                    refForm.current?.resetForm();
-                    setParams({});
+                    setValues(activationsFilterFormInitialValues);
                   }}
                 >
                   Reimposta Tutto

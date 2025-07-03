@@ -6,20 +6,20 @@ import { format } from "date-fns";
 import DatePicker from "react-datepicker";
 
 const DateModal = ({
-  lastUpdateDateFrom,
-  lastUpdateDateTo,
-  setFieldValue,
-  submitForm
+  from: propDateFrom,
+  to: propDateTo,
+  onSubmit,
+  label,
+  title
 }: {
-  lastUpdateDateFrom?: Date;
-  lastUpdateDateTo?: Date;
-  setFieldValue: any;
-  submitForm: any;
+  from?: Date;
+  to?: Date;
+  onSubmit(propDateFrom: Date | undefined, propDateTo: Date | undefined): void;
+  label: string;
+  title: string;
 }) => {
-  const [dateFrom, setDateFrom] = useState<Date | undefined>(
-    lastUpdateDateFrom
-  );
-  const [dateTo, setDateTo] = useState<Date | undefined>(lastUpdateDateTo);
+  const [dateFrom, setDateFrom] = useState<Date | undefined>(propDateFrom);
+  const [dateTo, setDateTo] = useState<Date | undefined>(propDateTo);
   const [isOpenDateModal, setOpenDateModal] = useState(false);
 
   const toggleDateModal = () => {
@@ -27,20 +27,20 @@ const DateModal = ({
   };
 
   const getDateLabel = (
-    lastUpdateDateFrom: Date | undefined,
-    lastUpdateDateTo: Date | undefined
+    propDateFrom: Date | undefined,
+    propDateTo: Date | undefined
   ): string => {
-    if (lastUpdateDateFrom && lastUpdateDateTo) {
-      return `Dal ${format(lastUpdateDateFrom, "dd/MM/yyyy")} al ${format(
-        lastUpdateDateTo,
+    if (propDateFrom && propDateTo) {
+      return `Dal ${format(propDateFrom, "dd/MM/yyyy")} al ${format(
+        propDateTo,
         "dd/MM/yyyy"
       )}`;
-    } else if (lastUpdateDateFrom) {
-      return `Dal ${format(lastUpdateDateFrom, "dd/MM/yyyy")}`;
-    } else if (lastUpdateDateTo) {
-      return `Al ${format(lastUpdateDateTo, "dd/MM/yyyy")}`;
+    } else if (propDateFrom) {
+      return `Dal ${format(propDateFrom, "dd/MM/yyyy")}`;
+    } else if (propDateTo) {
+      return `Al ${format(propDateTo, "dd/MM/yyyy")}`;
     }
-    return "Data ultima modifica";
+    return label;
   };
 
   const DatePickerInput = forwardRef((fieldProps: any, ref: any) => (
@@ -66,16 +66,13 @@ const DateModal = ({
         onClick={toggleDateModal}
       >
         <span className="chip-label">
-          {getDateLabel(lastUpdateDateFrom, lastUpdateDateTo)}
+          {getDateLabel(propDateFrom, propDateTo)}
         </span>
-        {(lastUpdateDateFrom || lastUpdateDateTo) && (
+        {(propDateFrom || propDateTo) && (
           <button
             onClick={e => {
               e.stopPropagation();
-              setFieldValue("page", 0);
-              setFieldValue("lastUpdateDateFrom", undefined);
-              setFieldValue("lastUpdateDateTo", undefined);
-              submitForm();
+              onSubmit(undefined, undefined);
             }}
           >
             <Icon color="" icon="it-close" size="" />
@@ -84,13 +81,11 @@ const DateModal = ({
       </div>
 
       <Modal isOpen={isOpenDateModal} toggle={toggleDateModal}>
-        <ModalHeader toggle={toggleDateModal}>
-          Filtra per data di ultima modifica
-        </ModalHeader>
+        <ModalHeader toggle={toggleDateModal}>{title}</ModalHeader>
         <ModalBody>
           <div className="d-flex flex-column mt-4">
             <div className="form-check">
-              <Field name="lastUpdateDateFrom">
+              <Field name="propDateFrom">
                 {({ field }: { field: FieldInputProps<any> }) => (
                   <DatePicker
                     {...field}
@@ -112,7 +107,7 @@ const DateModal = ({
               </Field>
             </div>
             <div className="form-check">
-              <Field name="lastUpdateDateTo">
+              <Field name="propDateTo">
                 {({ field }: { field: FieldInputProps<any> }) => (
                   <DatePicker
                     {...field}
@@ -138,9 +133,7 @@ const DateModal = ({
           <Button
             color="primary"
             onClick={() => {
-              setFieldValue("lastUpdateDateFrom", dateFrom);
-              setFieldValue("lastUpdateDateTo", dateTo);
-              submitForm();
+              onSubmit(dateFrom, dateTo);
               toggleDateModal();
             }}
           >
