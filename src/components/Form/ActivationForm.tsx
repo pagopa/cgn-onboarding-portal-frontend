@@ -1,4 +1,4 @@
-import { Field, FieldArray, FieldArrayRenderProps, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik } from "formik";
 import { Button, Icon } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import PlusCircleIcon from "../../assets/icons/plus-circle.svg?react";
@@ -121,9 +121,9 @@ const ActivationForm = (props: Props) => {
           >
             <FieldArray
               name="referents"
-              render={({ push, remove }: FieldArrayRenderProps) => (
+              render={({ push, remove }) => (
                 <>
-                  {values.referents.map((_: string, i: number) => (
+                  {values.referents.map((_, i) => (
                     <div key={i}>
                       <InputField
                         htmlFor={`referents[${i}]`}
