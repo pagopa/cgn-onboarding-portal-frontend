@@ -9,7 +9,7 @@ import {
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
-import { isEqual } from "lodash";
+import isEqual from "lodash/isEqual";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -22,6 +22,7 @@ import {
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { useDebouncedValue } from "../../utils/useDebounce";
+import { useStableValue } from "../../utils/useStableValue";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
@@ -225,7 +226,7 @@ const Requests = () => {
   useEffect(() => {
     gotoPage(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values]);
+  }, [useStableValue(values)]);
 
   const startRowIndex: number = pageIndex * pageSize + 1;
   // eslint-disable-next-line functional/no-let

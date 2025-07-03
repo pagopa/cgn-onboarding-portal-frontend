@@ -2,7 +2,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { Column, Row, usePagination, useSortBy, useTable } from "react-table";
 import { Button } from "design-react-kit";
 import { format } from "date-fns";
-import { isEqual } from "lodash";
+import isEqual from "lodash/isEqual";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -15,6 +15,7 @@ import TableHeader from "../Table/TableHeader";
 import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
+import { useStableValue } from "../../utils/useStableValue";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
 import { BadgeStatus } from "./BadgeStatus";
@@ -179,15 +180,16 @@ const OperatorConvention = () => {
         sortDirection: undefined
       }));
     }
-  }, [pageIndex, sortBy]);
+  }, [sortBy]);
 
   useEffect(() => {
     setPageParam(pageIndex);
   }, [pageIndex]);
 
   useEffect(() => {
-    setPageParam(0);
-  }, [values]);
+    gotoPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useStableValue(values)]);
 
   if (showDetails && selectedConvention) {
     return (

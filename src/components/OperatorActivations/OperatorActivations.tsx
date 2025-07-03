@@ -9,7 +9,7 @@ import {
 import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
-import { isEqual } from "lodash";
+import isEqual from "lodash/isEqual";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -24,6 +24,7 @@ import {
   makeOrganizationStatusReadable
 } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
+import { useStableValue } from "../../utils/useStableValue";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
@@ -217,13 +218,13 @@ const OperatorActivations = () => {
   }, [sortBy]);
 
   useEffect(() => {
-    gotoPage(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values]);
-
-  useEffect(() => {
     setPageParam(pageIndex);
   }, [pageIndex]);
+
+  useEffect(() => {
+    gotoPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useStableValue(values)]);
 
   const startRowIndex: number = pageIndex * PAGE_SIZE + 1;
   // eslint-disable-next-line functional/no-let
