@@ -38,7 +38,7 @@ export type ActivationsFilterFormValues = {
   sortDirection?: "ASC" | "DESC";
 };
 
-const getSortColumn = (id: string): OrderType => {
+const getActivationsSortColumn = (id: string): OrderType => {
   switch (id) {
     case "organizationFiscalCode":
       return "fiscalCode";
@@ -205,7 +205,7 @@ const OperatorActivations = () => {
     if (sortField) {
       setValues(values => ({
         ...values,
-        sortColumn: getSortColumn(sortField.id),
+        sortColumn: getActivationsSortColumn(sortField.id),
         sortDirection: sortField.desc ? "DESC" : "ASC"
       }));
     } else {

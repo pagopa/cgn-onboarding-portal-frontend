@@ -36,7 +36,7 @@ const conventionFilterFormInitialValues: ConventionFilterFormValues = {
   sortDirection: undefined
 };
 
-const getSortColumn = (id: string) => {
+const getConventionSortColumn = (id: string) => {
   switch (id) {
     case "fullName":
       return "Operator";
@@ -170,7 +170,7 @@ const OperatorConvention = () => {
     if (sortField) {
       setValues(values => ({
         ...values,
-        sortColumn: getSortColumn(sortField.id),
+        sortColumn: getConventionSortColumn(sortField.id),
         sortDirection: sortField.desc ? "DESC" : "ASC"
       }));
     } else {

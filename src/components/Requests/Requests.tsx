@@ -49,7 +49,7 @@ const requestFilterFormInitialValues: RequestsFilterFormValues = {
   sortDirection: undefined
 };
 
-const getSortColumn = (id: string) => {
+const getRequetsSortColumn = (id: string) => {
   switch (id) {
     case "profile.fullName":
       return "Operator";
@@ -207,7 +207,7 @@ const Requests = () => {
     if (sortField) {
       setValues(values => ({
         ...values,
-        sortColumn: getSortColumn(sortField.id),
+        sortColumn: getRequetsSortColumn(sortField.id),
         sortDirection: sortField.desc ? "DESC" : "ASC"
       }));
     } else {
