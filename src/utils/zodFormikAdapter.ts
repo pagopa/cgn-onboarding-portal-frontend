@@ -1,5 +1,7 @@
 import { z } from "zod/v4";
 
+z.config({ jitless: true }); // this is needed for CSP errors
+
 // Inspired by https://github.com/robertLichtnow/zod-formik-adapter
 
 /**
