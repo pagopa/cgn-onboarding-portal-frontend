@@ -4,7 +4,7 @@ import {
   OnlineChannel,
   SalesChannel
 } from "../../../api/generated";
-import { EmptyAddresses } from "../../../utils/form_types";
+import { EmptyAddresses } from "../ValidationSchemas";
 import {
   clearIfReferenceIsBlank,
   withNormalizedSpaces

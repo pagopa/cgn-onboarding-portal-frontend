@@ -24,6 +24,62 @@ const fiscalCodeRegex =
 
 const undefinedRequired = () => REQUIRED_FIELD;
 
+const emptyAddress = z.object({
+  street: z.literal(""),
+  zipCode: z.literal(""),
+  city: z.literal(""),
+  district: z.literal(""),
+  coordinates: z.object({
+    latitude: z.literal(""),
+    longitude: z.literal("")
+  })
+});
+
+const optionalAddress = z.object({
+  street: z.string().optional(),
+  zipCode: z.string().optional(),
+  city: z.string().optional(),
+  district: z.string().optional(),
+  coordinates: z
+    .object({
+      latitude: z.string().optional(),
+      longitude: z.string().optional()
+    })
+    .optional()
+});
+
+const requiredAddress = z.object({
+  street: z
+    .string({ error: undefinedRequired })
+    .trim()
+    .regex(streetRegex, "Solo lettere o numeri")
+    .min(1, REQUIRED_FIELD),
+  zipCode: z
+    .string({ error: undefinedRequired })
+    .trim()
+    .regex(zipCodeRegex, ONLY_NUMBER)
+    .min(5, "Deve essere di 5 caratteri")
+    .max(5, "Deve essere di 5 caratteri")
+    .min(1, REQUIRED_FIELD),
+  city: z.string({ error: undefinedRequired }).trim().min(1, REQUIRED_FIELD),
+  district: z
+    .string({ error: undefinedRequired })
+    .trim()
+    .min(1, REQUIRED_FIELD),
+  coordinates: z
+    .object({
+      latitude: z.string().optional(),
+      longitude: z.string().optional()
+    })
+    .optional(),
+  label: z.string().optional(),
+  value: z.string().optional()
+});
+
+export const EmptyAddresses = z.array(emptyAddress);
+
+export type EmptyAddresses = z.infer<typeof EmptyAddresses>;
+
 const ReferentValidationSchema = z.object({
   firstName: z
     .string({ error: undefinedRequired })
@@ -95,43 +151,10 @@ export const ProfileDataValidationSchema = z
       websiteUrl: z.url(INCORRECT_WEBSITE_URL).optional().nullable(),
       discountCodeType: z.string().optional(),
       allNationalAddresses: z.boolean(),
-      addresses: z
-        .array(
-          z.object({
-            street: z
-              .string({ error: undefinedRequired })
-              .trim()
-              .regex(streetRegex, "Solo lettere o numeri")
-              .min(1, REQUIRED_FIELD),
-            zipCode: z
-              .string({ error: undefinedRequired })
-              .trim()
-              .regex(zipCodeRegex, ONLY_NUMBER)
-              .min(5, "Deve essere di 5 caratteri")
-              .max(5, "Deve essere di 5 caratteri")
-              .min(1, REQUIRED_FIELD),
-            city: z
-              .string({ error: undefinedRequired })
-              .trim()
-              .min(1, REQUIRED_FIELD),
-            district: z
-              .string({ error: undefinedRequired })
-              .trim()
-              .min(1, REQUIRED_FIELD),
-            coordinates: z
-              .object({
-                latitude: z.string().optional(),
-                longitude: z.string().optional()
-              })
-              .optional(),
-            label: z.string().optional(),
-            value: z.string().optional()
-          })
-        )
-        .optional()
+      addresses: z.array(optionalAddress).optional()
     })
   })
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+
   .check(ctx => {
     if (ctx.value.hasDifferentName) {
       if (!ctx.value.name) {
@@ -188,18 +211,16 @@ export const ProfileDataValidationSchema = z
         channelType === SalesChannelType.BothChannels) &&
       !ctx.value.salesChannel.allNationalAddresses
     ) {
-      if (
-        !ctx.value.salesChannel.addresses ||
-        ctx.value.salesChannel.addresses.length === 0
-      ) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          path: ["salesChannel", "addresses"],
-          code: "custom",
-          input: ctx.value.salesChannel.addresses,
-          message: REQUIRED_FIELD
+      z.array(requiredAddress)
+        .min(1, REQUIRED_FIELD)
+        .safeParse(ctx.value.salesChannel.addresses)
+        .error?.issues.forEach(issue => {
+          // eslint-disable-next-line functional/immutable-data
+          ctx.issues.push({
+            ...issue,
+            path: ["salesChannel", "addresses", ...issue.path]
+          });
         });
-      }
     }
   });
 
