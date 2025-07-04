@@ -211,7 +211,8 @@ export const ProfileDataValidationSchema = z
         channelType === SalesChannelType.BothChannels) &&
       !ctx.value.salesChannel.allNationalAddresses
     ) {
-      z.array(requiredAddress)
+      z
+        .array(requiredAddress)
         .min(1, REQUIRED_FIELD)
         .safeParse(ctx.value.salesChannel.addresses)
         .error?.issues.forEach(issue => {
@@ -430,6 +431,29 @@ export const discountsListDataValidationSchema = (
 
 const helpCategoryEnum = z.enum(HelpRequestCategoryEnum);
 
+function helpTopicValidation(
+  ctx: z.core.ParsePayload<{
+    category: HelpRequestCategoryEnum;
+    topic?: string | undefined;
+  }>
+) {
+  if (
+    ctx.value.category === HelpRequestCategoryEnum.Discounts ||
+    ctx.value.category === HelpRequestCategoryEnum.Documents ||
+    ctx.value.category === HelpRequestCategoryEnum.DataFilling
+  ) {
+    if (!ctx.value.topic) {
+      // eslint-disable-next-line functional/immutable-data
+      ctx.issues.push({
+        path: ["topic"],
+        code: "custom",
+        input: ctx.value.topic,
+        message: REQUIRED_FIELD
+      });
+    }
+  }
+}
+
 export const loggedHelpValidationSchema = z
   .object({
     category: helpCategoryEnum,
@@ -440,21 +464,7 @@ export const loggedHelpValidationSchema = z
       .min(1, REQUIRED_FIELD)
   })
   .check(ctx => {
-    if (
-      ctx.value.category === HelpRequestCategoryEnum.Discounts ||
-      ctx.value.category === HelpRequestCategoryEnum.Documents ||
-      ctx.value.category === HelpRequestCategoryEnum.DataFilling
-    ) {
-      if (!ctx.value.topic) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          path: ["topic"],
-          code: "custom",
-          input: ctx.value.topic,
-          message: REQUIRED_FIELD
-        });
-      }
-    }
+    helpTopicValidation(ctx);
   });
 
 export const notLoggedHelpValidationSchema = z
@@ -488,21 +498,7 @@ export const notLoggedHelpValidationSchema = z
       .min(1, REQUIRED_FIELD)
   })
   .check(ctx => {
-    if (
-      ctx.value.category === HelpRequestCategoryEnum.Discounts ||
-      ctx.value.category === HelpRequestCategoryEnum.Documents ||
-      ctx.value.category === HelpRequestCategoryEnum.DataFilling
-    ) {
-      if (!ctx.value.topic) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          path: ["topic"],
-          code: "custom",
-          input: ctx.value.topic,
-          message: REQUIRED_FIELD
-        });
-      }
-    }
+    helpTopicValidation(ctx);
     if (ctx.value.emailAddress && ctx.value.confirmEmailAddress) {
       if (ctx.value.emailAddress !== ctx.value.confirmEmailAddress) {
         // eslint-disable-next-line functional/immutable-data
