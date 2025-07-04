@@ -1,14 +1,14 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const EmptyAddresses = z.array(
   z.object({
-    street: z.string().refine(val => val === ""),
-    zipCode: z.string().refine(val => val === ""),
-    city: z.string().refine(val => val === ""),
-    district: z.string().refine(val => val === ""),
+    street: z.literal(""),
+    zipCode: z.literal(""),
+    city: z.literal(""),
+    district: z.literal(""),
     coordinates: z.object({
-      latitude: z.string().refine(val => val === ""),
-      longitude: z.string().refine(val => val === "")
+      latitude: z.literal(""),
+      longitude: z.literal("")
     })
   })
 );

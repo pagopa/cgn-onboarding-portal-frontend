@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { HelpRequestCategoryEnum, SalesChannelType } from "../../api/generated";
 import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
@@ -15,29 +15,31 @@ const PRODUCT_CATEGORIES_MAX = `Selezionare al massimo ${MAX_SELECTABLE_CATEGORI
 const INCORRECT_WEBSITE_URL =
   "L’indirizzo inserito non è corretto, inserire la URL comprensiva di protocollo";
 
-const onlyStringRegex = /^[a-zA-Z\s]*$/;
+const onlyAlphaRegex = /^[a-zA-Z\s]*$/;
 const onlyNumberRegex = /^\d*$/;
 const streetRegex = /^[A-Za-z0-9\s]*$/;
 const zipCodeRegex = /^\d*$/;
 const fiscalCodeRegex =
   /^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/i; // NOSONAR: This is a secure regex to get an italian fiscal code
 
+const undefinedRequired = () => REQUIRED_FIELD;
+
 const ReferentValidationSchema = z.object({
   firstName: z
-    .string()
-    .regex(onlyStringRegex, ONLY_STRING)
+    .string({ error: undefinedRequired })
+    .trim()
+    .regex(onlyAlphaRegex, ONLY_STRING)
     .min(1, REQUIRED_FIELD),
   lastName: z
-    .string()
-    .regex(onlyStringRegex, ONLY_STRING)
+    .string({ error: undefinedRequired })
+    .trim()
+    .regex(onlyAlphaRegex, ONLY_STRING)
     .min(1, REQUIRED_FIELD),
-  role: z.string().regex(onlyStringRegex, ONLY_STRING).min(1, REQUIRED_FIELD),
-  emailAddress: z
-    .string()
-    .email(INCORRECT_EMAIL_ADDRESS)
-    .min(1, REQUIRED_FIELD),
+  role: z.string().regex(onlyAlphaRegex, ONLY_STRING).min(1, REQUIRED_FIELD),
+  emailAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
   telephoneNumber: z
-    .string()
+    .string({ error: undefinedRequired })
+    .trim()
     .regex(onlyNumberRegex, ONLY_NUMBER)
     .min(4, "Inserisci un numero di telefono valido")
     .min(1, REQUIRED_FIELD)
@@ -46,55 +48,73 @@ const ReferentValidationSchema = z.object({
 export const ProfileDataValidationSchema = z
   .object({
     hasDifferentName: z.boolean().optional(),
-    name: z.string().optional(),
-    name_en: z.string().optional(),
-    name_de: z.string().optional(),
-    pecAddress: z
-      .string()
-      .email(INCORRECT_EMAIL_ADDRESS)
+    name: z.string().trim().optional(),
+    name_en: z.string().trim().optional(),
+    name_de: z.string().trim().optional(),
+    pecAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
+    legalOffice: z
+      .string({ error: undefinedRequired })
+      .trim()
       .min(1, REQUIRED_FIELD),
-    legalOffice: z.string().min(1, REQUIRED_FIELD),
     telephoneNumber: z
-      .string()
+      .string({ error: undefinedRequired })
+      .trim()
       .regex(onlyNumberRegex, ONLY_NUMBER)
       .min(4, "Inserisci un numero di telefono valido")
       .min(1, REQUIRED_FIELD),
     legalRepresentativeFullName: z
-      .string()
-      .regex(onlyStringRegex, ONLY_STRING)
+      .string({ error: undefinedRequired })
+      .trim()
+      .regex(onlyAlphaRegex, ONLY_STRING)
       .min(1, REQUIRED_FIELD),
     legalRepresentativeTaxCode: z
-      .string()
+      .string({ error: undefinedRequired })
+      .trim()
       .min(4, "Inserisci un codice fiscale valido")
       .max(20, "Deve essere al massimo di 20 caratteri")
       .min(1, REQUIRED_FIELD),
     referent: ReferentValidationSchema,
-    secondaryReferents: z
-      .array(ReferentValidationSchema)
+    secondaryReferents: z.array(ReferentValidationSchema),
+    description: z
+      .string({ error: undefinedRequired })
+      .trim()
       .min(1, REQUIRED_FIELD),
-    description: z.string().min(1, REQUIRED_FIELD),
-    description_en: z.string().min(1, REQUIRED_FIELD),
-    description_de: z.string().min(1, REQUIRED_FIELD),
+    description_en: z
+      .string({ error: undefinedRequired })
+      .trim()
+      .min(1, REQUIRED_FIELD),
+    description_de: z
+      .string({ error: undefinedRequired })
+      .trim()
+      .min(1, REQUIRED_FIELD),
     salesChannel: z.object({
       channelType: z.enum(["OnlineChannel", "OfflineChannel", "BothChannels"]),
-      websiteUrl: z.string().url(INCORRECT_WEBSITE_URL).optional().nullable(),
+      websiteUrl: z.url(INCORRECT_WEBSITE_URL).optional().nullable(),
       discountCodeType: z.string().optional(),
       allNationalAddresses: z.boolean(),
       addresses: z
         .array(
           z.object({
             street: z
-              .string()
+              .string({ error: undefinedRequired })
+              .trim()
               .regex(streetRegex, "Solo lettere o numeri")
               .min(1, REQUIRED_FIELD),
             zipCode: z
-              .string()
+              .string({ error: undefinedRequired })
+              .trim()
               .regex(zipCodeRegex, ONLY_NUMBER)
               .min(5, "Deve essere di 5 caratteri")
               .max(5, "Deve essere di 5 caratteri")
               .min(1, REQUIRED_FIELD),
-            city: z.string().min(1, REQUIRED_FIELD),
-            district: z.string().min(1, REQUIRED_FIELD),
+            city: z
+              .string({ error: undefinedRequired })
+              .trim()
+              .min(1, REQUIRED_FIELD),
+            district: z
+              .string({ error: undefinedRequired })
+              .trim()
+              .min(1, REQUIRED_FIELD),
             coordinates: z.object({
               latitude: z.string().optional(),
               longitude: z.string().optional()
@@ -107,43 +127,53 @@ export const ProfileDataValidationSchema = z
     })
   })
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  .superRefine((data, ctx) => {
-    if (data.hasDifferentName) {
-      if (!data.name) {
-        ctx.addIssue({
+  .check(ctx => {
+    if (ctx.value.hasDifferentName) {
+      if (!ctx.value.name) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["name"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.name,
           message: REQUIRED_FIELD
         });
       }
-      if (!data.name_en) {
-        ctx.addIssue({
+      if (!ctx.value.name_en) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["name_en"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.name_en,
           message: REQUIRED_FIELD
         });
       }
-      if (!data.name_de) {
-        ctx.addIssue({
+      if (!ctx.value.name_de) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["name_de"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.name_de,
           message: REQUIRED_FIELD
         });
       }
     }
-    const channelType = data.salesChannel.channelType;
+    const channelType = ctx.value.salesChannel.channelType;
     if (channelType === "OnlineChannel" || channelType === "BothChannels") {
-      if (!data.salesChannel.websiteUrl) {
-        ctx.addIssue({
+      if (!ctx.value.salesChannel.websiteUrl) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["salesChannel", "websiteUrl"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.salesChannel.websiteUrl,
           message: REQUIRED_FIELD
         });
       }
-      if (!data.salesChannel.discountCodeType) {
-        ctx.addIssue({
+      if (!ctx.value.salesChannel.discountCodeType) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["salesChannel", "discountCodeType"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.salesChannel.discountCodeType,
           message: REQUIRED_FIELD
         });
       }
@@ -151,15 +181,17 @@ export const ProfileDataValidationSchema = z
     if (
       (channelType === SalesChannelType.OfflineChannel ||
         channelType === SalesChannelType.BothChannels) &&
-      !data.salesChannel.allNationalAddresses
+      !ctx.value.salesChannel.allNationalAddresses
     ) {
       if (
-        !data.salesChannel.addresses ||
-        data.salesChannel.addresses.length === 0
+        !ctx.value.salesChannel.addresses ||
+        ctx.value.salesChannel.addresses.length === 0
       ) {
-        ctx.addIssue({
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["salesChannel", "addresses"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.salesChannel.addresses,
           message: REQUIRED_FIELD
         });
       }
@@ -183,15 +215,27 @@ export const discountDataValidationSchema = (
 ) =>
   z
     .object({
-      name: z.string().max(100).min(1, REQUIRED_FIELD),
-      name_en: z.string().max(100).min(1, REQUIRED_FIELD),
-      name_de: z.string().max(100).min(1, REQUIRED_FIELD),
+      name: z
+        .string({ error: undefinedRequired })
+        .trim()
+        .max(100)
+        .min(1, REQUIRED_FIELD),
+      name_en: z
+        .string({ error: undefinedRequired })
+        .trim()
+        .max(100)
+        .min(1, REQUIRED_FIELD),
+      name_de: z
+        .string({ error: undefinedRequired })
+        .trim()
+        .max(100)
+        .min(1, REQUIRED_FIELD),
       description: z.string().max(250).optional(),
       description_en: z.string().max(250).optional(),
       description_de: z.string().max(250).optional(),
-      discountUrl: z.string().url(INCORRECT_WEBSITE_URL).optional(),
-      startDate: z.string().min(1, REQUIRED_FIELD),
-      endDate: z.string().min(1, REQUIRED_FIELD),
+      discountUrl: z.url(INCORRECT_WEBSITE_URL).optional(),
+      startDate: z.date({ error: undefinedRequired }),
+      endDate: z.date({ error: undefinedRequired }),
       discount: z
         .number()
         .int(DISCOUNT_RANGE)
@@ -206,118 +250,140 @@ export const discountDataValidationSchema = (
       condition_en: z.string().optional(),
       condition_de: z.string().optional(),
       staticCode: z.string().optional(),
-      landingPageUrl: z.string().url(INCORRECT_WEBSITE_URL).optional(),
+      landingPageUrl: z.url(INCORRECT_WEBSITE_URL).optional(),
       landingPageReferrer: z.string().optional(),
       lastBucketCodeLoadUid: z.string().optional(),
       lastBucketCodeLoadFileName: z.string().optional(),
       visibleOnEyca: z.boolean().optional(),
-      eycaLandingPageUrl: z
-        .string()
-        .url(INCORRECT_WEBSITE_URL)
-        .optional()
-        .nullable()
+      eycaLandingPageUrl: z.url(INCORRECT_WEBSITE_URL).optional().nullable()
     })
     // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
-    .superRefine((data, ctx) => {
+    .check(ctx => {
       // Description/condition required if their translations are present
-      if (data.description_en && !data.description) {
-        ctx.addIssue({
+      if (ctx.value.description_en && !ctx.value.description) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["description"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.description,
           message: REQUIRED_FIELD
         });
       }
-      if (data.description && !data.description_en) {
-        ctx.addIssue({
+      if (ctx.value.description && !ctx.value.description_en) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["description_en"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.description_en,
           message: REQUIRED_FIELD
         });
       }
-      if (data.description && !data.description_de) {
-        ctx.addIssue({
+      if (ctx.value.description && !ctx.value.description_de) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["description_de"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.description_de,
           message: REQUIRED_FIELD
         });
       }
-      if (data.condition_en && !data.condition) {
-        ctx.addIssue({
+      if (ctx.value.condition_en && !ctx.value.condition) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["condition"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.condition,
           message: REQUIRED_FIELD
         });
       }
-      if (data.condition && !data.condition_en) {
-        ctx.addIssue({
+      if (ctx.value.condition && !ctx.value.condition_en) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["condition_en"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.condition_en,
           message: REQUIRED_FIELD
         });
       }
-      if (data.condition && !data.condition_de) {
-        ctx.addIssue({
+      if (ctx.value.condition && !ctx.value.condition_de) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["condition_de"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.condition_de,
           message: REQUIRED_FIELD
         });
       }
-      if (staticCheck && !data.staticCode) {
-        ctx.addIssue({
+      if (staticCheck && !ctx.value.staticCode) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["staticCode"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.staticCode,
           message: REQUIRED_FIELD
         });
       }
       if (landingCheck) {
-        if (!data.landingPageUrl) {
-          ctx.addIssue({
+        if (!ctx.value.landingPageUrl) {
+          // eslint-disable-next-line functional/immutable-data
+          ctx.issues.push({
             path: ["landingPageUrl"],
-            code: z.ZodIssueCode.custom,
+            code: "custom",
+            input: ctx.value.landingPageUrl,
             message: REQUIRED_FIELD
           });
         }
-        if (!data.landingPageReferrer) {
-          ctx.addIssue({
+        if (!ctx.value.landingPageReferrer) {
+          // eslint-disable-next-line functional/immutable-data
+          ctx.issues.push({
             path: ["landingPageReferrer"],
-            code: z.ZodIssueCode.custom,
+            code: "custom",
+            input: ctx.value.landingPageReferrer,
             message: REQUIRED_FIELD
           });
         }
       }
       if (bucketCheck) {
-        if (!data.lastBucketCodeLoadUid) {
-          ctx.addIssue({
+        if (!ctx.value.lastBucketCodeLoadUid) {
+          // eslint-disable-next-line functional/immutable-data
+          ctx.issues.push({
             path: ["lastBucketCodeLoadUid"],
-            code: z.ZodIssueCode.custom,
+            code: "custom",
+            input: ctx.value.lastBucketCodeLoadUid,
             message: REQUIRED_FIELD
           });
         }
-        if (!data.lastBucketCodeLoadFileName) {
-          ctx.addIssue({
+        if (!ctx.value.lastBucketCodeLoadFileName) {
+          // eslint-disable-next-line functional/immutable-data
+          ctx.issues.push({
             path: ["lastBucketCodeLoadFileName"],
-            code: z.ZodIssueCode.custom,
+            code: "custom",
+            input: ctx.value.lastBucketCodeLoadFileName,
             message: REQUIRED_FIELD
           });
         }
       }
-      if (data.visibleOnEyca && landingCheck) {
-        if (!data.eycaLandingPageUrl) {
-          ctx.addIssue({
+      if (ctx.value.visibleOnEyca && landingCheck) {
+        if (!ctx.value.eycaLandingPageUrl) {
+          // eslint-disable-next-line functional/immutable-data
+          ctx.issues.push({
             path: ["eycaLandingPageUrl"],
-            code: z.ZodIssueCode.custom,
+            code: "custom",
+            input: ctx.value.eycaLandingPageUrl,
             message: REQUIRED_FIELD
           });
         }
         if (
           !checkEycaLandingDifferentFromLandingPageUrl(
-            data.eycaLandingPageUrl ?? undefined,
-            data.landingPageUrl ?? undefined
+            ctx.value.eycaLandingPageUrl ?? undefined,
+            ctx.value.landingPageUrl ?? undefined
           )
         ) {
-          ctx.addIssue({
+          // eslint-disable-next-line functional/immutable-data
+          ctx.issues.push({
             path: ["eycaLandingPageUrl"],
-            code: z.ZodIssueCode.custom,
+            code: "custom",
+            input: ctx.value.eycaLandingPageUrl,
             message:
               "L'url della EYCA non può essere uguale all'url della landing page"
           });
@@ -336,24 +402,29 @@ export const discountsListDataValidationSchema = (
     )
   });
 
-const helpCategoryEnum = z.nativeEnum(HelpRequestCategoryEnum);
+const helpCategoryEnum = z.enum(HelpRequestCategoryEnum);
 
 export const loggedHelpValidationSchema = z
   .object({
     category: helpCategoryEnum,
     topic: z.string().optional(),
-    message: z.string().min(1, REQUIRED_FIELD)
+    message: z
+      .string({ error: undefinedRequired })
+      .trim()
+      .min(1, REQUIRED_FIELD)
   })
-  .superRefine((data, ctx) => {
+  .check(ctx => {
     if (
-      data.category === HelpRequestCategoryEnum.Discounts ||
-      data.category === HelpRequestCategoryEnum.Documents ||
-      data.category === HelpRequestCategoryEnum.DataFilling
+      ctx.value.category === HelpRequestCategoryEnum.Discounts ||
+      ctx.value.category === HelpRequestCategoryEnum.Documents ||
+      ctx.value.category === HelpRequestCategoryEnum.DataFilling
     ) {
-      if (!data.topic) {
-        ctx.addIssue({
+      if (!ctx.value.topic) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["topic"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.topic,
           message: REQUIRED_FIELD
         });
       }
@@ -364,45 +435,55 @@ export const notLoggedHelpValidationSchema = z
   .object({
     category: helpCategoryEnum,
     topic: z.string().optional(),
-    message: z.string().min(1, REQUIRED_FIELD),
+    message: z
+      .string({ error: undefinedRequired })
+      .trim()
+      .min(1, REQUIRED_FIELD),
     referentFirstName: z
-      .string()
-      .regex(onlyStringRegex, ONLY_STRING)
+      .string({ error: undefinedRequired })
+      .trim()
+      .regex(onlyAlphaRegex, ONLY_STRING)
       .min(1, REQUIRED_FIELD),
     referentLastName: z
-      .string()
-      .regex(onlyStringRegex, ONLY_STRING)
+      .string({ error: undefinedRequired })
+      .trim()
+      .regex(onlyAlphaRegex, ONLY_STRING)
       .min(1, REQUIRED_FIELD),
     legalName: z
-      .string()
-      .regex(onlyStringRegex, ONLY_STRING)
+      .string({ error: undefinedRequired })
+      .trim()
+      .regex(onlyAlphaRegex, ONLY_STRING)
       .min(1, REQUIRED_FIELD),
-    emailAddress: z
-      .string()
-      .email(INCORRECT_EMAIL_ADDRESS)
-      .min(1, REQUIRED_FIELD),
-    confirmEmailAddress: z.string().email(INCORRECT_EMAIL_ADDRESS).optional(),
-    recaptchaToken: z.string().min(1, REQUIRED_FIELD)
+    emailAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
+    confirmEmailAddress: z.email(INCORRECT_EMAIL_ADDRESS).optional(),
+    recaptchaToken: z
+      .string({ error: undefinedRequired })
+      .trim()
+      .min(1, REQUIRED_FIELD)
   })
-  .superRefine((data, ctx) => {
+  .check(ctx => {
     if (
-      data.category === HelpRequestCategoryEnum.Discounts ||
-      data.category === HelpRequestCategoryEnum.Documents ||
-      data.category === HelpRequestCategoryEnum.DataFilling
+      ctx.value.category === HelpRequestCategoryEnum.Discounts ||
+      ctx.value.category === HelpRequestCategoryEnum.Documents ||
+      ctx.value.category === HelpRequestCategoryEnum.DataFilling
     ) {
-      if (!data.topic) {
-        ctx.addIssue({
+      if (!ctx.value.topic) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["topic"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.topic,
           message: REQUIRED_FIELD
         });
       }
     }
-    if (data.emailAddress && data.confirmEmailAddress) {
-      if (data.emailAddress !== data.confirmEmailAddress) {
-        ctx.addIssue({
+    if (ctx.value.emailAddress && ctx.value.confirmEmailAddress) {
+      if (ctx.value.emailAddress !== ctx.value.confirmEmailAddress) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
           path: ["confirmEmailAddress"],
-          code: z.ZodIssueCode.custom,
+          code: "custom",
+          input: ctx.value.confirmEmailAddress,
           message: INCORRECT_CONFIRM_EMAIL_ADDRESS
         });
       }
@@ -411,13 +492,20 @@ export const notLoggedHelpValidationSchema = z
 
 export const activationValidationSchema = z.object({
   keyOrganizationFiscalCode: z.string().optional(),
-  organizationFiscalCode: z.string().min(1, REQUIRED_FIELD),
-  organizationName: z.string().min(1, REQUIRED_FIELD),
-  pec: z.string().email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
+  organizationFiscalCode: z
+    .string({ error: undefinedRequired })
+    .trim()
+    .min(1, REQUIRED_FIELD),
+  organizationName: z
+    .string({ error: undefinedRequired })
+    .trim()
+    .min(1, REQUIRED_FIELD),
+  pec: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
   referents: z
     .array(
       z
-        .string()
+        .string({ error: undefinedRequired })
+        .trim()
         .min(4, "Deve essere al minimo di 4 caratteri")
         .max(20, "Deve essere al massimo di 20 caratteri")
         .regex(fiscalCodeRegex, "Il codice fiscale inserito non è corretto")
@@ -425,5 +513,5 @@ export const activationValidationSchema = z.object({
     )
     .min(1, REQUIRED_FIELD),
   insertedAt: z.string().optional(),
-  entityType: z.nativeEnum(EntityType)
+  entityType: z.enum(EntityType)
 });

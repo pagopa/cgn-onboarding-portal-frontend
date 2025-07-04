@@ -3,12 +3,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
 import { OrganizationsDataApi } from "../api/generated";
 import { SessionApi } from "../api/generated_public";
 import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
-import { zodLiteral } from "../utils/zod";
 import { authenticationStore } from "./authenticationStore";
 
 export function goToUserLoginPage() {
@@ -67,7 +66,7 @@ const AdminAccess = new PublicClientApplication({
 });
 
 const userJWTPayloadSchema = z.object({
-  role: zodLiteral("ROLE_MERCHANT"),
+  role: z.literal("ROLE_MERCHANT"),
   fiscal_code: z.string(),
   first_name: z.string(),
   last_name: z.string(),
@@ -76,7 +75,7 @@ const userJWTPayloadSchema = z.object({
 });
 
 const adminJWTPayloadSchema = z.object({
-  role: zodLiteral("ROLE_ADMIN"),
+  role: z.literal("ROLE_ADMIN"),
   first_name: z.string(),
   last_name: z.string(),
   iat: z.number(),

@@ -1,5 +1,5 @@
 import { Field, useFormikContext } from "formik";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { EntityType } from "../../../../api/generated";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import InputField from "../../FormField";

@@ -26,6 +26,7 @@ import {
   discountEmptyInitialValues,
   updateDiscountMutationOnError
 } from "../../discountFormUtils";
+import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
 
 const emptyInitialValues = {
   discounts: [discountEmptyInitialValues]
@@ -177,10 +178,12 @@ const DiscountData = ({
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={discountsListDataValidationSchema(
-        checkStaticCode,
-        checkLanding,
-        checkBucket
+      validationSchema={zodSchemaToFormikValidationSchema(
+        discountsListDataValidationSchema(
+          checkStaticCode,
+          checkLanding,
+          checkBucket
+        )
       )}
       onSubmit={values => {
         const newValues: { discounts: ReadonlyArray<Discount> } = {

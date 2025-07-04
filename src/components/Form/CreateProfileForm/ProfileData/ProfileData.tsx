@@ -19,6 +19,7 @@ import {
   sanitizeProfileFromValues
 } from "../../EditOperatorDataForm/operatorDataUtils";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
+import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -170,7 +171,9 @@ const ProfileData = ({
           authentication.currentUserFiscalCode ??
           ""
       }}
-      validationSchema={ProfileDataValidationSchema}
+      validationSchema={zodSchemaToFormikValidationSchema(
+        ProfileDataValidationSchema
+      )}
       onSubmit={values => {
         const profileData = sanitizeProfileFromValues(values);
         if (isCompleted) {

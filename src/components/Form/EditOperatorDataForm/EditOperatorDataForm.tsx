@@ -19,6 +19,7 @@ import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 import { UpdateProfile } from "../../../api/generated";
 import { useAuthentication } from "../../../authentication/AuthenticationContext";
+import { zodSchemaToFormikValidationSchema } from "../../../utils/zodFormikAdapter";
 import {
   profileDefaultInitialValues,
   defaultSalesChannel,
@@ -120,7 +121,9 @@ export const EditOperatorForm = ({
           authentication.currentUserFiscalCode ??
           ""
       }}
-      validationSchema={ProfileDataValidationSchema}
+      validationSchema={zodSchemaToFormikValidationSchema(
+        ProfileDataValidationSchema
+      )}
       onSubmit={values => {
         const profileData = sanitizeProfileFromValues(values);
         void editProfile(profileData);
