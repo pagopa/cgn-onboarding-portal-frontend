@@ -142,7 +142,7 @@ const ProfileData = ({
                     ]
             }
           : profile.salesChannel,
-      hasDifferentFullName: !!profile.name
+      hasDifferentName: !!profile.name
     };
   }, [profile]);
 

@@ -35,7 +35,10 @@ const ReferentValidationSchema = z.object({
     .trim()
     .regex(onlyAlphaRegex, ONLY_STRING)
     .min(1, REQUIRED_FIELD),
-  role: z.string().regex(onlyAlphaRegex, ONLY_STRING).min(1, REQUIRED_FIELD),
+  role: z
+    .string({ error: undefinedRequired })
+    .regex(onlyAlphaRegex, ONLY_STRING)
+    .min(1, REQUIRED_FIELD),
   emailAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
   telephoneNumber: z
     .string({ error: undefinedRequired })
@@ -115,10 +118,12 @@ export const ProfileDataValidationSchema = z
               .string({ error: undefinedRequired })
               .trim()
               .min(1, REQUIRED_FIELD),
-            coordinates: z.object({
-              latitude: z.string().optional(),
-              longitude: z.string().optional()
-            }),
+            coordinates: z
+              .object({
+                latitude: z.string().optional(),
+                longitude: z.string().optional()
+              })
+              .optional(),
             label: z.string().optional(),
             value: z.string().optional()
           })

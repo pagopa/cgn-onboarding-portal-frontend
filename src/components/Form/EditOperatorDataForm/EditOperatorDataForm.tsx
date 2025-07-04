@@ -84,7 +84,7 @@ export const EditOperatorForm = ({
                   )
             }
           : profile.salesChannel,
-      hasDifferentFullName: !!profile.name
+      hasDifferentName: !!profile.name
     };
   }, [profile]);
 
