@@ -15,6 +15,7 @@ import {
   discountEmptyInitialValues,
   sanitizeDiscountFormValues
 } from "../discountFormUtils";
+import { zodSchemaToFormikValidationSchema } from "../../../utils/zodFormikAdapter";
 
 /**
  * These are the entry points for forms for discounts. This comment is repeated in every file.
@@ -57,7 +58,13 @@ const CreateDiscountForm = () => {
     <Formik
       initialValues={{ ...discountEmptyInitialValues, discount: undefined }}
       validationSchema={() =>
-        discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
+        zodSchemaToFormikValidationSchema(
+          discountDataValidationSchema(
+            checkStaticCode,
+            checkLanding,
+            checkBucket
+          )
+        )
       }
       onSubmit={values => {
         const newValues = sanitizeDiscountFormValues(values);

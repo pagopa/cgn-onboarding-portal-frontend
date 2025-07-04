@@ -4,7 +4,7 @@ import {
   OnlineChannel,
   SalesChannel
 } from "../../../api/generated";
-import { EmptyAddresses } from "../../../utils/form_types";
+import { EmptyAddresses } from "../ValidationSchemas";
 import {
   clearIfReferenceIsBlank,
   withNormalizedSpaces
@@ -23,7 +23,7 @@ export const defaultSalesChannel = {
 
 export const profileDefaultInitialValues = {
   fullName: "",
-  hasDifferentFullName: false,
+  hasDifferentName: false,
   name: "",
   name_en: "",
   name_de: "-",
@@ -85,13 +85,13 @@ function getSalesChannel(
 }
 
 export function sanitizeProfileFromValues(values: any) {
-  const { hasDifferentFullName, ...profile } = values;
+  const { hasDifferentName, ...profile } = values;
   const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
   return {
     ...profile,
-    name: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name),
-    name_en: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name_en),
-    name_de: !hasDifferentFullName ? "" : cleanedIfNameIsBlank(profile.name_de),
+    name: !hasDifferentName ? "" : cleanedIfNameIsBlank(profile.name),
+    name_en: !hasDifferentName ? "" : cleanedIfNameIsBlank(profile.name_en),
+    name_de: !hasDifferentName ? "" : cleanedIfNameIsBlank(profile.name_de),
     description: withNormalizedSpaces(profile.description),
     description_en: withNormalizedSpaces(profile.description_en),
     description_de: withNormalizedSpaces(profile.description_de),

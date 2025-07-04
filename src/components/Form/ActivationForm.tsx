@@ -8,6 +8,7 @@ import {
   OrganizationWithReferents,
   EntityType
 } from "../../api/generated_backoffice";
+import { zodSchemaToFormikValidationSchema } from "../../utils/zodFormikAdapter";
 import FormSection from "./FormSection";
 import InputField from "./FormField";
 import CustomErrorMessage from "./CustomErrorMessage";
@@ -28,7 +29,9 @@ const ActivationForm = (props: Props) => {
       enableReinitialize={props.enableReinitialize}
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
-      validationSchema={activationValidationSchema}
+      validationSchema={zodSchemaToFormikValidationSchema(
+        activationValidationSchema
+      )}
     >
       {({ values }) => (
         <Form autoComplete="off">

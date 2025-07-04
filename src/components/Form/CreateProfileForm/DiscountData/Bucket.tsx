@@ -160,7 +160,7 @@ const BucketComponent = ({
               <i>{label}</i>
             )}
           </div>
-          {!uploadBucketMutation.isLoading && canUploadFile && (
+          {!uploadBucketMutation.isPending && canUploadFile && (
             <Button
               color="primary"
               icon
@@ -203,7 +203,7 @@ const BucketComponent = ({
             </Button>
           )}
         </div>
-        {uploadBucketMutation.isLoading && (
+        {uploadBucketMutation.isPending && (
           <div className="pt-3">
             <Progress
               value={uploadProgress}

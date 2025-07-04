@@ -26,6 +26,7 @@ import {
   discountEmptyInitialValues,
   updateDiscountMutationOnError
 } from "../../discountFormUtils";
+import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
 
 const emptyInitialValues = {
   discounts: [discountEmptyInitialValues]
@@ -166,10 +167,10 @@ const DiscountData = ({
     deleteDiscountMutation.mutate({ agreementId, discountId });
   };
 
-  const isLoading =
-    profileQuery.isLoading || (isCompleted ? discountsQuery.isLoading : false);
+  const isPending =
+    profileQuery.isPending || (isCompleted ? discountsQuery.isPending : false);
 
-  if (isLoading) {
+  if (isPending) {
     return <CenteredLoading />;
   }
 
@@ -177,10 +178,12 @@ const DiscountData = ({
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={discountsListDataValidationSchema(
-        checkStaticCode,
-        checkLanding,
-        checkBucket
+      validationSchema={zodSchemaToFormikValidationSchema(
+        discountsListDataValidationSchema(
+          checkStaticCode,
+          checkLanding,
+          checkBucket
+        )
       )}
       onSubmit={values => {
         const newValues: { discounts: ReadonlyArray<Discount> } = {

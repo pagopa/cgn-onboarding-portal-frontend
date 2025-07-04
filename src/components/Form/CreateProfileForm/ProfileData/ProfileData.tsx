@@ -19,6 +19,7 @@ import {
   sanitizeProfileFromValues
 } from "../../EditOperatorDataForm/operatorDataUtils";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
+import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -141,17 +142,17 @@ const ProfileData = ({
                     ]
             }
           : profile.salesChannel,
-      hasDifferentFullName: !!profile.name
+      hasDifferentName: !!profile.name
     };
   }, [profile]);
 
   const entityType = agreement.entityType;
 
-  const isLoading = isCompleted && profileQuery.isLoading;
+  const isPending = isCompleted && profileQuery.isPending;
 
   const authentication = useAuthentication();
 
-  if (isLoading) {
+  if (isPending) {
     return <CenteredLoading />;
   }
 
@@ -170,7 +171,9 @@ const ProfileData = ({
           authentication.currentUserFiscalCode ??
           ""
       }}
-      validationSchema={ProfileDataValidationSchema}
+      validationSchema={zodSchemaToFormikValidationSchema(
+        ProfileDataValidationSchema
+      )}
       onSubmit={values => {
         const profileData = sanitizeProfileFromValues(values);
         if (isCompleted) {

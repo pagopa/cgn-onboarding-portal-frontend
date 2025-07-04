@@ -19,6 +19,7 @@ import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
 import { UpdateProfile } from "../../../api/generated";
 import { useAuthentication } from "../../../authentication/AuthenticationContext";
+import { zodSchemaToFormikValidationSchema } from "../../../utils/zodFormikAdapter";
 import {
   profileDefaultInitialValues,
   defaultSalesChannel,
@@ -83,7 +84,7 @@ export const EditOperatorForm = ({
                   )
             }
           : profile.salesChannel,
-      hasDifferentFullName: !!profile.name
+      hasDifferentName: !!profile.name
     };
   }, [profile]);
 
@@ -99,7 +100,7 @@ export const EditOperatorForm = ({
 
   const authentication = useAuthentication();
 
-  if (profileQuery.isLoading) {
+  if (profileQuery.isPending) {
     return <CenteredLoading />;
   }
 
@@ -120,7 +121,9 @@ export const EditOperatorForm = ({
           authentication.currentUserFiscalCode ??
           ""
       }}
-      validationSchema={ProfileDataValidationSchema}
+      validationSchema={zodSchemaToFormikValidationSchema(
+        ProfileDataValidationSchema
+      )}
       onSubmit={values => {
         const profileData = sanitizeProfileFromValues(values);
         void editProfile(profileData);

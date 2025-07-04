@@ -1,5 +1,5 @@
 import { Field, FieldArray, useFormikContext } from "formik";
-import { z } from "zod";
+import { z } from "zod/v4";
 import FormSection from "../../FormSection";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import CustomErrorMessage from "../../CustomErrorMessage";
@@ -88,7 +88,7 @@ const SalesChannels = ({ entityType, children }: Props) => {
                   </ToggleField>
                 )}
 
-                <div key={index}>
+                <div>
                   {formValues.salesChannel?.allNationalAddresses === false && (
                     <>
                       <div className="mt-6 row">
