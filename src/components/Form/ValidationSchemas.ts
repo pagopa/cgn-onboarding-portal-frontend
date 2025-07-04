@@ -241,8 +241,8 @@ export const discountDataValidationSchema = (
       discountUrl: z.url(INCORRECT_WEBSITE_URL).optional(),
       startDate: z.date({ error: undefinedRequired }),
       endDate: z.date({ error: undefinedRequired }),
-      discount: z
-        .number()
+      discount: z.coerce
+        .number(DISCOUNT_RANGE)
         .int(DISCOUNT_RANGE)
         .min(1, DISCOUNT_RANGE)
         .max(100, DISCOUNT_RANGE)
