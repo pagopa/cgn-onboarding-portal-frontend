@@ -211,8 +211,7 @@ export const ProfileDataValidationSchema = z
         channelType === SalesChannelType.BothChannels) &&
       !ctx.value.salesChannel.allNationalAddresses
     ) {
-      z
-        .array(requiredAddress)
+      z.array(requiredAddress)
         .min(1, REQUIRED_FIELD)
         .safeParse(ctx.value.salesChannel.addresses)
         .error?.issues.forEach(issue => {
@@ -434,7 +433,7 @@ const helpCategoryEnum = z.enum(HelpRequestCategoryEnum);
 function helpTopicValidation(
   ctx: z.core.ParsePayload<{
     category: HelpRequestCategoryEnum;
-    topic?: string | undefined;
+    topic?: string;
   }>
 ) {
   if (
