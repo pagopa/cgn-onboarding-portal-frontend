@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 // Merchant Info Schema
 const merchantInfoSchema = z.object({
@@ -52,19 +52,21 @@ export type AdminSession = z.infer<typeof adminSessionSchema>;
 // Authentication State Schema
 export const authenticationStateSchema = z.object({
   userNonceByState: z.record(
+    z.string(),
     z.object({
       nonce: z.string(),
       exp: z.number()
     })
   ),
-  userSessionByFiscalCode: z.record(userSessionSchema),
+  userSessionByFiscalCode: z.record(z.string(), userSessionSchema),
   adminNonceByState: z.record(
+    z.string(),
     z.object({
       nonce: z.string(),
       exp: z.number()
     })
   ),
-  adminSessionByName: z.record(adminSessionSchema),
+  adminSessionByName: z.record(z.string(), adminSessionSchema),
   currentSession: currentSessionSchema
 });
 

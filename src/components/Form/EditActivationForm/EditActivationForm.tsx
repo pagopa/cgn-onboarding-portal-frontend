@@ -56,7 +56,7 @@ const CreateActivationForm = () => {
     createActivationMutation.mutate({ body: organization });
   };
 
-  const { data, error, isLoading } =
+  const { data, error, isPending } =
     remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery({
       keyOrganizationFiscalCode: operatorFiscalCode
     });
@@ -70,7 +70,7 @@ const CreateActivationForm = () => {
 
   const initialValues = data ?? emptyInitialValues;
 
-  if (isLoading) {
+  if (isPending) {
     return <CenteredLoading />;
   }
 
@@ -79,7 +79,7 @@ const CreateActivationForm = () => {
       enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={createActivation}
-      isSubmitting={createActivationMutation.isLoading}
+      isSubmitting={createActivationMutation.isPending}
       canChangeEntityType={false}
     />
   );

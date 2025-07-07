@@ -26,7 +26,7 @@ const OperatorConvention = () => {
 
   const [params, setParams] =
     useState<AgreementApiGetApprovedAgreementsRequest>({});
-  const { data: conventions, isLoading } =
+  const { data: conventions, isPending } =
     remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery({
       ...params,
       pageSize
@@ -157,7 +157,7 @@ const OperatorConvention = () => {
   return (
     <section className="mt-2 px-8 py-10 bg-white">
       <ConventionFilter refForm={refForm} getConventions={setParams} />
-      {isLoading ? (
+      {isPending ? (
         <CenteredLoading />
       ) : (
         <>

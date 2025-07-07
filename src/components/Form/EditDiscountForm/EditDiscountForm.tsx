@@ -22,6 +22,7 @@ import {
   discountEmptyInitialValues,
   sanitizeDiscountFormValues
 } from "../discountFormUtils";
+import { zodSchemaToFormikValidationSchema } from "../../../utils/zodFormikAdapter";
 
 /**
  * These are the entry points for forms for discounts. This comment is repeated in every file.
@@ -94,9 +95,9 @@ const EditDiscountForm = () => {
     };
   }, [discount]);
 
-  const isLoading = profileQuery.isLoading || discountQuery.isLoading;
+  const isPending = profileQuery.isPending || discountQuery.isPending;
 
-  if (isLoading) {
+  if (isPending) {
     return <CenteredLoading />;
   }
 
@@ -106,10 +107,12 @@ const EditDiscountForm = () => {
         enableReinitialize
         initialValues={initialValues}
         validationSchema={() =>
-          discountDataValidationSchema(
-            checkStaticCode,
-            checkLanding,
-            checkBucket
+          zodSchemaToFormikValidationSchema(
+            discountDataValidationSchema(
+              checkStaticCode,
+              checkLanding,
+              checkBucket
+            )
           )
         }
         onSubmit={values => {
@@ -141,7 +144,7 @@ const EditDiscountForm = () => {
                     className="px-14"
                     color="primary"
                     tag="button"
-                    disabled={updateDiscountMutation.isLoading}
+                    disabled={updateDiscountMutation.isPending}
                   >
                     Salva
                   </Button>
@@ -163,7 +166,7 @@ const EditDiscountForm = () => {
                     color="primary"
                     outline
                     tag="button"
-                    disabled={updateDiscountMutation.isLoading}
+                    disabled={updateDiscountMutation.isPending}
                   >
                     Salva
                   </Button>

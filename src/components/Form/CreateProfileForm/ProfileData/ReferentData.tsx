@@ -1,6 +1,5 @@
 import { Field, FieldArray, useFormikContext } from "formik";
 import { Fragment } from "react";
-import { z } from "zod";
 import FormSection from "../../FormSection";
 import InputField from "../../FormField";
 import CustomErrorMessage from "../../CustomErrorMessage";
@@ -9,30 +8,13 @@ import type { Referent } from "../../../../api/generated";
 
 const MAX_SECONDARY_REFERENTS = 4;
 
-const ProfileDataValidationSchema = z.object({
-  referent: z.object({
-    firstName: z.string().min(1, "Il nome è obbligatorio"),
-    lastName: z.string().min(1, "Il cognome è obbligatorio"),
-    role: z.string().min(1, "Il ruolo è obbligatorio"),
-    emailAddress: z.string().email("Email non valida"),
-    telephoneNumber: z.string().min(1, "Il numero di telefono è obbligatorio")
-  }),
-  secondaryReferents: z
-    .array(
-      z.object({
-        firstName: z.string().min(1, "Il nome è obbligatorio"),
-        lastName: z.string().min(1, "Il cognome è obbligatorio"),
-        role: z.string().min(1, "Il ruolo è obbligatorio"),
-        emailAddress: z.string().email("Email non valida"),
-        telephoneNumber: z
-          .string()
-          .min(1, "Il numero di telefono è obbligatorio")
-      })
-    )
-    .max(MAX_SECONDARY_REFERENTS)
-});
-
-type ProfileData = z.infer<typeof ProfileDataValidationSchema>;
+type ReferentData = {
+  firstName: string;
+  lastName: string;
+  role: string;
+  emailAddress: string;
+  telephoneNumber: string;
+};
 
 type Props = {
   index: number | null;
@@ -152,7 +134,10 @@ const Referent = ({
 };
 
 function ReferentData({ children }: { children?: React.ReactNode }) {
-  const formikContext = useFormikContext<ProfileData>();
+  const formikContext = useFormikContext<{
+    referent: Referent;
+    secondaryReferents: Array<Referent>;
+  }>();
   return (
     <FieldArray
       name="secondaryReferents"
