@@ -1,7 +1,6 @@
 import { useState, forwardRef } from "react";
 import { Button, Icon } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Field, FieldInputProps } from "formik";
 import { format } from "date-fns";
 import DatePicker from "react-datepicker";
 
@@ -85,47 +84,41 @@ const DateModal = ({
         <ModalBody>
           <div className="d-flex flex-column mt-4">
             <div className="form-check">
-              <Field name="propDateFrom">
-                {({ field }: { field: FieldInputProps<any> }) => (
-                  <DatePicker
-                    {...field}
-                    dateFormat="dd/MM/yyyy"
-                    selected={dateFrom}
-                    onChange={val =>
-                      setDateFrom(
-                        val ? new Date(format(val, "yyyy-MM-dd")) : undefined
-                      )
-                    }
-                    selectsStart
-                    startDate={dateFrom}
-                    endDate={dateTo}
-                    customInput={
-                      <DatePickerInput label="A partire dal giorno" />
-                    }
-                  />
-                )}
-              </Field>
+              <DatePicker
+                name="propDateFrom"
+                dateFormat="dd/MM/yyyy"
+                showYearDropdown
+                showMonthDropdown
+                selected={dateFrom}
+                onChange={val =>
+                  setDateFrom(
+                    val ? new Date(format(val, "yyyy-MM-dd")) : undefined
+                  )
+                }
+                selectsStart
+                startDate={dateFrom}
+                endDate={dateTo}
+                customInput={<DatePickerInput label="A partire dal giorno" />}
+              />
             </div>
             <div className="form-check">
-              <Field name="propDateTo">
-                {({ field }: { field: FieldInputProps<any> }) => (
-                  <DatePicker
-                    {...field}
-                    dateFormat="dd/MM/yyyy"
-                    selected={dateTo}
-                    onChange={val =>
-                      setDateTo(
-                        val ? new Date(format(val, "yyyy-MM-dd")) : undefined
-                      )
-                    }
-                    selectsEnd
-                    startDate={dateFrom}
-                    endDate={dateTo}
-                    minDate={dateFrom}
-                    customInput={<DatePickerInput label="Fino al giorno" />}
-                  />
-                )}
-              </Field>
+              <DatePicker
+                name="propDateTo"
+                dateFormat="dd/MM/yyyy"
+                showYearDropdown
+                showMonthDropdown
+                selected={dateTo}
+                onChange={val =>
+                  setDateTo(
+                    val ? new Date(format(val, "yyyy-MM-dd")) : undefined
+                  )
+                }
+                selectsEnd
+                startDate={dateFrom}
+                endDate={dateTo}
+                minDate={dateFrom}
+                customInput={<DatePickerInput label="Fino al giorno" />}
+              />
             </div>
           </div>
         </ModalBody>

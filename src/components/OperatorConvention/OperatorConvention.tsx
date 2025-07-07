@@ -75,8 +75,12 @@ const OperatorConvention = () => {
   const params = useMemo(
     (): AgreementApiGetApprovedAgreementsRequest => ({
       profileFullName: fullNameDebounced,
-      lastUpdateDateFrom: values.lastUpdateDateFrom?.toISOString(),
-      lastUpdateDateTo: values.lastUpdateDateTo?.toISOString(),
+      lastUpdateDateFrom: values.lastUpdateDateFrom
+        ? format(values.lastUpdateDateFrom, "yyyy-MM-dd")
+        : undefined,
+      lastUpdateDateTo: values.lastUpdateDateTo
+        ? format(values.lastUpdateDateTo, "yyyy-MM-dd")
+        : undefined,
       sortColumn: values.sortColumn,
       sortDirection: values.sortDirection,
       pageSize,
@@ -238,43 +242,45 @@ const OperatorConvention = () => {
             pageArray={pageArray}
             total={conventions?.total}
           />
-          <table
-            {...getTableProps()}
-            style={{ width: "100%" }}
-            className="mt-2 bg-white"
-          >
-            <TableHeader headerGroups={headerGroups} />
-            <tbody {...getTableBodyProps()}>
-              {page.map(row => {
-                prepareRow(row);
-                return (
-                  <Fragment key={row.getRowProps().key}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setShowDetails(true);
-                        setSelectedConvention(row.original);
-                      }}
-                    >
-                      {row.cells.map((cell, i) => (
-                        <td
-                          className={`
+          <div className="overflow-auto">
+            <table
+              {...getTableProps()}
+              style={{ width: "100%" }}
+              className="mt-2 bg-white"
+            >
+              <TableHeader headerGroups={headerGroups} />
+              <tbody {...getTableBodyProps()}>
+                {page.map(row => {
+                  prepareRow(row);
+                  return (
+                    <Fragment key={row.getRowProps().key}>
+                      <tr
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setShowDetails(true);
+                          setSelectedConvention(row.original);
+                        }}
+                      >
+                        {row.cells.map((cell, i) => (
+                          <td
+                            className={`
                           ${i === 0 ? "ps-6" : ""}
                           ${i === headerGroups.length - 1 ? "pe-6" : ""}
                           px-3 py-2 border-bottom text-sm
                           `}
-                          {...cell.getCellProps()}
-                          key={i}
-                        >
-                          {cell.render("Cell")}
-                        </td>
-                      ))}
-                    </tr>
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
+                            {...cell.getCellProps()}
+                            key={i}
+                          >
+                            {cell.render("Cell")}
+                          </td>
+                        ))}
+                      </tr>
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
           {!conventions?.items.length &&
             (isDirty ? (
               <div className="m-8 d-flex flex-column align-items-center">

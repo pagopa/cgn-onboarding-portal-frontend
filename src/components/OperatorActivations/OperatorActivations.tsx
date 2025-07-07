@@ -34,8 +34,8 @@ type OrderType = "fiscalCode" | "name" | "pec" | "insertedAt";
 
 export type ActivationsFilterFormValues = {
   searchQuery: string | undefined;
-  sortColumn?: OrderType;
-  sortDirection?: "ASC" | "DESC";
+  sortColumn: OrderType | undefined;
+  sortDirection: "ASC" | "DESC" | undefined;
 };
 
 const getActivationsSortColumn = (id: string): OrderType => {
@@ -51,7 +51,9 @@ const getActivationsSortColumn = (id: string): OrderType => {
 };
 
 const activationsFilterFormInitialValues: ActivationsFilterFormValues = {
-  searchQuery: undefined
+  searchQuery: undefined,
+  sortColumn: undefined,
+  sortDirection: undefined
 };
 
 const OperatorActivations = () => {
@@ -262,55 +264,57 @@ const OperatorActivations = () => {
             pageArray={pageArray}
             total={operators?.count}
           />
-          <table
-            {...getTableProps()}
-            style={{ width: "100%" }}
-            className="mt-2 bg-white"
-          >
-            <TableHeader headerGroups={headerGroups} />
-            <tbody {...getTableBodyProps()}>
-              {page.map(row => {
-                prepareRow(row);
-                return (
-                  <Fragment key={row.getRowProps().key}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => row.toggleRowExpanded()}
-                    >
-                      {row.cells.map((cell, i) => (
-                        <td
-                          className={`
+          <div className="overflow-auto">
+            <table
+              {...getTableProps()}
+              style={{ width: "100%" }}
+              className="mt-2 bg-white"
+            >
+              <TableHeader headerGroups={headerGroups} />
+              <tbody {...getTableBodyProps()}>
+                {page.map(row => {
+                  prepareRow(row);
+                  return (
+                    <Fragment key={row.getRowProps().key}>
+                      <tr
+                        className="cursor-pointer"
+                        onClick={() => row.toggleRowExpanded()}
+                      >
+                        {row.cells.map((cell, i) => (
+                          <td
+                            className={`
                           ${i === 0 ? "ps-6" : ""}
                           ${i === headerGroups.length - 1 ? "pe-6" : ""}
                           px-3 py-2 border-bottom text-sm
                           `}
-                          {...cell.getCellProps()}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : {}
-                          }
-                          key={i}
-                        >
-                          {cell.render("Cell")}
-                        </td>
-                      ))}
-                    </tr>
-                    {row.isExpanded && (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                        <td colSpan={visibleColumns.length}>
-                          <OperatorActivationDetail
-                            operator={row.original}
-                            getActivations={() => refetch()}
-                          />
-                        </td>
+                            {...cell.getCellProps()}
+                            style={
+                              cell.column.id === "expander"
+                                ? { width: "calc(32px + 0.75rem * 2)" }
+                                : {}
+                            }
+                            key={i}
+                          >
+                            {cell.render("Cell")}
+                          </td>
+                        ))}
                       </tr>
-                    )}
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
+                      {row.isExpanded && (
+                        <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                          <td colSpan={visibleColumns.length}>
+                            <OperatorActivationDetail
+                              operator={row.original}
+                              getActivations={() => refetch()}
+                            />
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
           {!operators?.items?.length &&
             (isDirty ? (
               <div className="m-8 d-flex flex-column align-items-center">
