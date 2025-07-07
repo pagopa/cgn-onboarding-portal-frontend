@@ -10,6 +10,7 @@ import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
 import isEqual from "lodash/isEqual";
+import { keepPreviousData } from "@tanstack/react-query";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -109,15 +110,11 @@ const Requests = () => {
     pageParam
   ]);
 
-  const agreementsQuery =
+  const { data: agreements, isPending } =
     remoteData.Backoffice.Agreement.getAgreements.useQuery(
       params,
-      { keepPreviousData: true, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
+      { placeholderData: keepPreviousData, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
     );
-
-  const agreements = agreementsQuery.data;
-
-  const isLoading = agreementsQuery.isLoading;
 
   const data = useMemo(
     () => agreements?.items || [],
@@ -248,7 +245,7 @@ const Requests = () => {
         }}
         isDirty={isDirty}
       />
-      {isLoading ? (
+      {isPending ? (
         <CenteredLoading />
       ) : (
         <>

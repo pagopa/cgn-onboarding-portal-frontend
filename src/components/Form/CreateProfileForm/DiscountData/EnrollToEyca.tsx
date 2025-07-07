@@ -214,6 +214,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
               : "eycaLandingPageUrl"
           }
           placeholder="Inserisci indirizzo (completo di protocollo http o https)"
+          className="form-control"
           type="text"
         />
         <CustomErrorMessage

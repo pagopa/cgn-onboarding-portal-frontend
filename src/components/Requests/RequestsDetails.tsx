@@ -82,12 +82,12 @@ const RequestsDetails = ({
     assignAgreementsMutation.mutate({ agreementId: original.id });
   };
 
-  const isLoading =
-    approveAgreementMutation.isLoading ||
-    rejectAgreementMutation.isLoading ||
-    assignAgreementsMutation.isLoading;
+  const isPending =
+    approveAgreementMutation.isPending ||
+    rejectAgreementMutation.isPending ||
+    assignAgreementsMutation.isPending;
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <section className="px-6 py-4 bg-white">
         <h1 className="h5 fw-bold text-dark-blue mb-5">Dettagli</h1>

@@ -2,7 +2,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
-import it from "date-fns/locale/it";
+import { it } from "date-fns/locale/it";
 import RouterConfig from "./navigation/RouterConfig";
 import "./styles/bootstrap-italia-fonts.scss";
 import "./styles/bootstrap-italia-custom.scss";

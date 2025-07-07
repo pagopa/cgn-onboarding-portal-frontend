@@ -92,7 +92,7 @@ const OperatorConvention = () => {
     ]
   );
 
-  const { data: conventions, isLoading } =
+  const { data: conventions, isPending } =
     remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(params);
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
@@ -222,7 +222,7 @@ const OperatorConvention = () => {
         isDirty={isDirty}
         onReset={() => setValues(conventionFilterFormInitialValues)}
       />
-      {isLoading ? (
+      {isPending ? (
         <CenteredLoading />
       ) : (
         <>
