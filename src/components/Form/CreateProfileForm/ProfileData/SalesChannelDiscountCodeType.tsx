@@ -1,29 +1,22 @@
 import { Field, useFormikContext } from "formik";
 import { useEffect } from "react";
-import { z } from "zod";
 import { DiscountCodeType, SalesChannelType } from "../../../../api/generated";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import FormSection from "../../FormSection";
 
-const ProfileDataValidationSchema = z.object({
-  salesChannel: z.object({
-    discountCodeType: z.nativeEnum(DiscountCodeType),
-    channelType: z.nativeEnum(SalesChannelType).optional(),
-    addresses: z
-      .array(
-        z.object({
-          street: z.string().optional(),
-          zipCode: z.string().optional(),
-          city: z.string().optional(),
-          district: z.string().optional()
-        })
-      )
-      .optional(),
-    allNationalAddresses: z.boolean().optional()
-  })
-});
-
-type Values = z.infer<typeof ProfileDataValidationSchema>;
+type Values = {
+  salesChannel: {
+    discountCodeType: DiscountCodeType;
+    channelType?: SalesChannelType;
+    addresses?: Array<{
+      street?: string;
+      zipCode?: string;
+      city?: string;
+      district?: string;
+    }>;
+    allNationalAddresses?: boolean;
+  };
+};
 
 const SalesChannelDiscountCodeType = () => {
   const formikContext = useFormikContext<Values>();

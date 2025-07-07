@@ -97,13 +97,13 @@ type ReactQueryHelpers<Params, Result> = {
   };
   useQuery(
     params: Params,
-    options?: Exclude<
+    options?: Omit<
       UseQueryOptions<Result, AxiosError<unknown>>,
       "queryKey" | "queryFn"
     >
   ): UseQueryResult<Result, AxiosError<unknown>>;
   useMutation(
-    options?: Exclude<
+    options?: Omit<
       UseMutationOptions<Result, AxiosError<unknown>, Params>,
       "mutationFn"
     >
@@ -154,9 +154,9 @@ function makeReactQuery<AxiosParams extends Array<any>, Result>(
       return self.method(params);
     },
     invalidateQueries(params) {
-      return queryClient.invalidateQueries(
-        self.queryKey(params as VariablesOf<AxiosParams>) as any
-      );
+      return queryClient.invalidateQueries({
+        queryKey: self.queryKey(params as VariablesOf<AxiosParams>) as any
+      });
     },
     queryOptions(params) {
       return {
@@ -166,9 +166,12 @@ function makeReactQuery<AxiosParams extends Array<any>, Result>(
     },
     useQuery(params, options) {
       return reactQueryUseQuery({
-        ...(options as Record<string, never>),
+        ...options,
         queryKey: self.queryKey(params),
-        queryFn: self.queryFn
+        queryFn: ({ queryKey }) =>
+          self.queryFn({
+            queryKey: queryKey as QueryKeyType<VariablesOf<AxiosParams>>
+          })
       });
     },
     useMutation(options) {

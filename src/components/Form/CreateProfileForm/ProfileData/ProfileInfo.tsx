@@ -1,5 +1,5 @@
 import { Field, useFormikContext } from "formik";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { EntityType } from "../../../../api/generated";
 import CustomErrorMessage from "../../CustomErrorMessage";
 import InputField from "../../FormField";
@@ -34,12 +34,12 @@ const ProfileInfo = ({ entityType }: Props) => {
       {entityType === EntityType.Private && (
         <div className="mt-6">
           <ToggleField
-            htmlFor="hasDifferentFullName"
+            htmlFor="hasDifferentName"
             text="Vuoi visualizzare un nome diverso dentro l’app?"
           >
             <Field
-              id="hasDifferentFullName"
-              name="hasDifferentFullName"
+              id="hasDifferentName"
+              name="hasDifferentName"
               type="checkbox"
               className="mb-0"
             />

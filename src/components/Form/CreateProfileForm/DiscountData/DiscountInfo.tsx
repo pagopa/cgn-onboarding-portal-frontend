@@ -237,6 +237,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
               <input
                 type="text"
                 {...field}
+                value={field.value || ""}
                 className="form-control"
                 id="input-group-2"
                 name="input-group-2"

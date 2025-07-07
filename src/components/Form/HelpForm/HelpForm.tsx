@@ -14,6 +14,7 @@ import InputFieldMultiple from "../InputFieldMultiple";
 import CustomErrorMessage from "../CustomErrorMessage";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { useAuthentication } from "../../../authentication/AuthenticationContext";
+import { zodSchemaToFormikValidationSchema } from "../../../utils/zodFormikAdapter";
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
@@ -93,9 +94,9 @@ const HelpForm = () => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={
+      validationSchema={zodSchemaToFormikValidationSchema(
         token ? loggedHelpValidationSchema : notLoggedHelpValidationSchema
-      }
+      )}
       onSubmit={values => {
         if (token) {
           const helpRequest = loggedHelpValidationSchema.parse(values);
