@@ -13,7 +13,7 @@ import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import {
   discountEmptyInitialValues,
-  sanitizeDiscountFormValues
+  discountFormValuesToRequest
 } from "../discountFormUtils";
 import { zodSchemaToFormikValidationSchema } from "../../../utils/zodFormikAdapter";
 
@@ -49,14 +49,12 @@ const CreateDiscountForm = () => {
       }
     });
 
-  const createDiscount = async (
-    agreementId: string,
-    discount: CreateDiscount
-  ) => createDiscountMutation.mutate({ agreementId, discount });
+  const createDiscount = (agreementId: string, discount: CreateDiscount) =>
+    createDiscountMutation.mutate({ agreementId, discount });
 
   return (
     <Formik
-      initialValues={{ ...discountEmptyInitialValues, discount: undefined }}
+      initialValues={discountEmptyInitialValues}
       validationSchema={() =>
         zodSchemaToFormikValidationSchema(
           discountDataValidationSchema(
@@ -67,8 +65,8 @@ const CreateDiscountForm = () => {
         )
       }
       onSubmit={values => {
-        const newValues = sanitizeDiscountFormValues(values);
-        void createDiscount(agreement.id, newValues);
+        const newValues = discountFormValuesToRequest(values);
+        createDiscount(agreement.id, newValues);
       }}
     >
       {({ values, setFieldValue, isSubmitting }) => (
