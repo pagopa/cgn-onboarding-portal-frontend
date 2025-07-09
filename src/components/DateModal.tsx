@@ -19,10 +19,10 @@ const DateModal = ({
 }) => {
   const [dateFrom, setDateFrom] = useState<Date | undefined>(propDateFrom);
   const [dateTo, setDateTo] = useState<Date | undefined>(propDateTo);
-  const [isOpenDateModal, setOpenDateModal] = useState(false);
+  const [showOpenDateModal, setShowOpenDateModal] = useState(false);
 
   const toggleDateModal = () => {
-    setOpenDateModal(!isOpenDateModal);
+    setShowOpenDateModal(!showOpenDateModal);
   };
 
   const getDateLabel = (
@@ -79,7 +79,7 @@ const DateModal = ({
         )}
       </div>
 
-      <Modal isOpen={isOpenDateModal} toggle={toggleDateModal}>
+      <Modal isOpen={showOpenDateModal} toggle={toggleDateModal}>
         <ModalHeader toggle={toggleDateModal}>{title}</ModalHeader>
         <ModalBody>
           <div className="d-flex flex-column mt-4">

@@ -62,7 +62,7 @@ const OperatorConvention = () => {
     conventionFilterFormInitialValues
   );
 
-  const isDirty = !isEqual(values, conventionFilterFormInitialValues);
+  const hasActiveFitlers = !isEqual(values, conventionFilterFormInitialValues);
 
   const fullNameDebounced = useDebouncedValue({
     value: values.fullName,
@@ -223,7 +223,7 @@ const OperatorConvention = () => {
       <ConventionFilter
         values={values}
         onChange={setValues}
-        isDirty={isDirty}
+        hasActiveFitlers={hasActiveFitlers}
         onReset={() => setValues(conventionFilterFormInitialValues)}
       />
       {isPending ? (
@@ -282,7 +282,7 @@ const OperatorConvention = () => {
             </table>
           </div>
           {!conventions?.items.length &&
-            (isDirty ? (
+            (hasActiveFitlers ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
                 <Button

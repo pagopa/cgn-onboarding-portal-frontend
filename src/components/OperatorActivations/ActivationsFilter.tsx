@@ -7,7 +7,7 @@ function ActivationsFilter({
   values,
   onChange,
   onReset,
-  isDirty
+  hasActiveFitlers
 }: {
   values: ActivationsFilterFormValues;
   onChange(
@@ -16,14 +16,14 @@ function ActivationsFilter({
       | ((values: ActivationsFilterFormValues) => ActivationsFilterFormValues)
   ): void;
   onReset(): void;
-  isDirty: boolean;
+  hasActiveFitlers: boolean;
 }) {
   const history = useHistory();
 
   return (
     <form>
       <div className="d-flex justify-content-between">
-        {isDirty ? (
+        {hasActiveFitlers ? (
           <h2 className="h4 fw-bold text-dark-blue">
             Risultati della ricerca
             <span

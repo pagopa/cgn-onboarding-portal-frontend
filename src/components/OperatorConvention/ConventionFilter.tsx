@@ -9,7 +9,7 @@ import { ConventionFilterFormValues } from "./OperatorConvention";
 const ConventionFilter = ({
   values,
   onChange,
-  isDirty,
+  hasActiveFitlers,
   onReset
 }: {
   values: ConventionFilterFormValues;
@@ -19,7 +19,7 @@ const ConventionFilter = ({
       | ((values: ConventionFilterFormValues) => ConventionFilterFormValues)
   ): void;
   onReset(): void;
-  isDirty: boolean;
+  hasActiveFitlers: boolean;
 }) => {
   const { triggerTooltip } = useTooltip();
   const [downloadingAgreements, setDownloadingAgreements] = useState(false);
@@ -89,7 +89,7 @@ const ConventionFilter = ({
   return (
     <form>
       <div className="d-flex justify-content-between">
-        {isDirty ? (
+        {hasActiveFitlers ? (
           <h2 className="h4 fw-bold text-dark-blue">
             Risultati della ricerca
             <span

@@ -70,7 +70,7 @@ const Requests = () => {
     requestFilterFormInitialValues
   );
 
-  const isDirty = !isEqual(values, requestFilterFormInitialValues);
+  const hasActiveFitlers = !isEqual(values, requestFilterFormInitialValues);
 
   const [pageParam, setPageParam] = useState<number>(0);
 
@@ -247,7 +247,7 @@ const Requests = () => {
         onReset={() => {
           setValues(requestFilterFormInitialValues);
         }}
-        isDirty={isDirty}
+        hasActiveFitlers={hasActiveFitlers}
       />
       {isPending ? (
         <CenteredLoading />
@@ -314,7 +314,7 @@ const Requests = () => {
             </table>
           </div>
           {!agreements?.items.length &&
-            (isDirty ? (
+            (hasActiveFitlers ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
                 <Button

@@ -63,7 +63,7 @@ const OperatorActivations = () => {
     activationsFilterFormInitialValues
   );
 
-  const isDirty = !isEqual(values, activationsFilterFormInitialValues);
+  const hasActiveFitlers = !isEqual(values, activationsFilterFormInitialValues);
 
   const searchQueryDebounced = useDebouncedValue({
     value: values.searchQuery,
@@ -243,7 +243,7 @@ const OperatorActivations = () => {
       <ActivationsFilter
         values={values}
         onChange={setValues}
-        isDirty={isDirty}
+        hasActiveFitlers={hasActiveFitlers}
         onReset={() => {
           setValues(activationsFilterFormInitialValues);
         }}
@@ -316,7 +316,7 @@ const OperatorActivations = () => {
             </table>
           </div>
           {!operators?.items?.length &&
-            (isDirty ? (
+            (hasActiveFitlers ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
                 <Button

@@ -6,7 +6,7 @@ function RequestsFilter({
   values,
   onChange,
   onReset,
-  isDirty
+  hasActiveFitlers
 }: {
   values: RequestsFilterFormValues;
   onChange(
@@ -15,12 +15,12 @@ function RequestsFilter({
       | ((values: RequestsFilterFormValues) => void)
   ): void;
   onReset(): void;
-  isDirty: boolean;
+  hasActiveFitlers: boolean;
 }) {
   return (
     <form>
       <div className="d-flex justify-content-between">
-        {isDirty ? (
+        {hasActiveFitlers ? (
           <h2 className="h4 fw-bold text-dark-blue">
             Risultati della ricerca
             <span
