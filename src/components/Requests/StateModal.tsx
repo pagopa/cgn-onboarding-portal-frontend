@@ -3,13 +3,11 @@ import { Button, Icon } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 const StateModal = ({
-  setFieldValue,
-  submitForm,
-  states
+  states,
+  onSubmit
 }: {
-  setFieldValue: any;
-  submitForm: any;
-  states?: string;
+  states: string | undefined;
+  onSubmit(states: string | undefined): void;
 }) => {
   const [isOpenStateModal, setOpenStateModal] = useState(false);
   const [statesField, setFieldStates] = useState<string | undefined>(states);
@@ -41,9 +39,7 @@ const StateModal = ({
           <button
             onClick={e => {
               e.stopPropagation();
-              setFieldValue("page", 0);
-              setFieldValue("states", undefined);
-              submitForm();
+              onSubmit(undefined);
             }}
           >
             <Icon color="" icon="it-close" size="" />
@@ -114,8 +110,7 @@ const StateModal = ({
           <Button
             color="primary"
             onClick={() => {
-              setFieldValue("states", statesField);
-              submitForm();
+              onSubmit(statesField);
               toggleStateModal();
             }}
           >

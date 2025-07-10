@@ -1,20 +1,53 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Column, Row, usePagination, useSortBy, useTable } from "react-table";
 import { Button } from "design-react-kit";
 import { format } from "date-fns";
+import isEqual from "lodash/isEqual";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   AgreementApiGetApprovedAgreementsRequest,
-  ApprovedAgreement
+  ApprovedAgreement,
+  GetApprovedAgreementsSortColumnEnum
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
+import { useDebouncedValue } from "../../utils/useDebounce";
+import { useStableValue } from "../../utils/useStableValue";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
 import { BadgeStatus } from "./BadgeStatus";
+
+export type ConventionFilterFormValues = {
+  fullName: string | undefined;
+  lastUpdateDateFrom: Date | undefined;
+  lastUpdateDateTo: Date | undefined;
+  sortColumn: GetApprovedAgreementsSortColumnEnum | undefined;
+  sortDirection: "ASC" | "DESC" | undefined;
+};
+
+const conventionFilterFormInitialValues: ConventionFilterFormValues = {
+  fullName: undefined,
+  lastUpdateDateFrom: undefined,
+  lastUpdateDateTo: undefined,
+  sortColumn: undefined,
+  sortDirection: undefined
+};
+
+const getConventionSortColumn = (id: string) => {
+  switch (id) {
+    case "fullName":
+      return "Operator";
+    case "agreementStartDate":
+      return "AgreementDate";
+    case "agreementLastUpdateDate":
+      return "LastModifyDate";
+    case "publishedDiscounts":
+      return "PublishedDiscounts";
+  }
+};
 
 const OperatorConvention = () => {
   const pageSize = 20;
@@ -22,15 +55,49 @@ const OperatorConvention = () => {
   const [selectedConvention, setSelectedConvention] = useState<
     ApprovedAgreement | undefined
   >();
-  const refForm = useRef<any>(null);
 
-  const [params, setParams] =
-    useState<AgreementApiGetApprovedAgreementsRequest>({});
+  const [pageParam, setPageParam] = useState(0);
+
+  const [values, setValues] = useState<ConventionFilterFormValues>(
+    conventionFilterFormInitialValues
+  );
+
+  const hasActiveFitlers = !isEqual(values, conventionFilterFormInitialValues);
+
+  const fullNameDebounced = useDebouncedValue({
+    value: values.fullName,
+    delay: 500,
+    leading: false,
+    trailing: true,
+    maxWait: 3000
+  });
+
+  const params = useMemo(
+    (): AgreementApiGetApprovedAgreementsRequest => ({
+      profileFullName: fullNameDebounced,
+      lastUpdateDateFrom: values.lastUpdateDateFrom
+        ? format(values.lastUpdateDateFrom, "yyyy-MM-dd")
+        : undefined,
+      lastUpdateDateTo: values.lastUpdateDateTo
+        ? format(values.lastUpdateDateTo, "yyyy-MM-dd")
+        : undefined,
+      sortColumn: values.sortColumn,
+      sortDirection: values.sortDirection,
+      pageSize,
+      page: pageParam
+    }),
+    [
+      fullNameDebounced,
+      pageParam,
+      values.lastUpdateDateFrom,
+      values.lastUpdateDateTo,
+      values.sortColumn,
+      values.sortDirection
+    ]
+  );
+
   const { data: conventions, isPending } =
-    remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery({
-      ...params,
-      pageSize
-    });
+    remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(params);
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
   const columns = useMemo(
@@ -102,34 +169,31 @@ const OperatorConvention = () => {
     usePagination
   );
 
-  const getSortColumn = (id: string) => {
-    switch (id) {
-      case "fullName":
-        return "Operator";
-      case "agreementStartDate":
-        return "AgreementDate";
-      case "agreementLastUpdateDate":
-        return "LastModifyDate";
-      case "publishedDiscounts":
-        return "PublishedDiscounts";
-    }
-  };
-
   useEffect(() => {
     const sortField = sortBy[0];
     if (sortField) {
-      refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
-      refForm.current?.setFieldValue(
-        "sortDirection",
-        sortField.desc ? "DESC" : "ASC"
-      );
+      setValues(values => ({
+        ...values,
+        sortColumn: getConventionSortColumn(sortField.id),
+        sortDirection: sortField.desc ? "DESC" : "ASC"
+      }));
     } else {
-      refForm.current?.setFieldValue("sortColumn", undefined);
-      refForm.current?.setFieldValue("sortDirection", undefined);
+      setValues(values => ({
+        ...values,
+        sortColumn: undefined,
+        sortDirection: undefined
+      }));
     }
-    refForm.current?.setFieldValue("page", pageIndex);
-    refForm.current?.submitForm();
-  }, [pageIndex, sortBy]);
+  }, [sortBy]);
+
+  useEffect(() => {
+    setPageParam(pageIndex);
+  }, [pageIndex]);
+
+  useEffect(() => {
+    gotoPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useStableValue(values)]);
 
   if (showDetails && selectedConvention) {
     return (
@@ -138,7 +202,7 @@ const OperatorConvention = () => {
         onClose={() => {
           setShowDetails(false);
           setSelectedConvention(undefined);
-          setParams({});
+          setValues(conventionFilterFormInitialValues);
         }}
       />
     );
@@ -156,7 +220,12 @@ const OperatorConvention = () => {
 
   return (
     <section className="mt-2 px-8 py-10 bg-white">
-      <ConventionFilter refForm={refForm} getConventions={setParams} />
+      <ConventionFilter
+        values={values}
+        onChange={setValues}
+        hasActiveFitlers={hasActiveFitlers}
+        onReset={() => setValues(conventionFilterFormInitialValues)}
+      />
       {isPending ? (
         <CenteredLoading />
       ) : (
@@ -173,45 +242,47 @@ const OperatorConvention = () => {
             pageArray={pageArray}
             total={conventions?.total}
           />
-          <table
-            {...getTableProps()}
-            style={{ width: "100%" }}
-            className="mt-2 bg-white"
-          >
-            <TableHeader headerGroups={headerGroups} />
-            <tbody {...getTableBodyProps()}>
-              {page.map(row => {
-                prepareRow(row);
-                return (
-                  <Fragment key={row.getRowProps().key}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setShowDetails(true);
-                        setSelectedConvention(row.original);
-                      }}
-                    >
-                      {row.cells.map((cell, i) => (
-                        <td
-                          className={`
+          <div className="overflow-auto">
+            <table
+              {...getTableProps()}
+              style={{ width: "100%" }}
+              className="mt-2 bg-white"
+            >
+              <TableHeader headerGroups={headerGroups} />
+              <tbody {...getTableBodyProps()}>
+                {page.map(row => {
+                  prepareRow(row);
+                  return (
+                    <Fragment key={row.getRowProps().key}>
+                      <tr
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setShowDetails(true);
+                          setSelectedConvention(row.original);
+                        }}
+                      >
+                        {row.cells.map((cell, i) => (
+                          <td
+                            className={`
                           ${i === 0 ? "ps-6" : ""}
                           ${i === headerGroups.length - 1 ? "pe-6" : ""}
                           px-3 py-2 border-bottom text-sm
                           `}
-                          {...cell.getCellProps()}
-                          key={i}
-                        >
-                          {cell.render("Cell")}
-                        </td>
-                      ))}
-                    </tr>
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
+                            {...cell.getCellProps()}
+                            key={i}
+                          >
+                            {cell.render("Cell")}
+                          </td>
+                        ))}
+                      </tr>
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
           {!conventions?.items.length &&
-            (refForm.current?.dirty ? (
+            (hasActiveFitlers ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
                 <Button
@@ -220,8 +291,7 @@ const OperatorConvention = () => {
                   tag="button"
                   className="mt-3"
                   onClick={() => {
-                    refForm.current?.resetForm();
-                    setParams({});
+                    setValues(conventionFilterFormInitialValues);
                   }}
                 >
                   Reimposta Tutto
