@@ -4,7 +4,7 @@ import {
   useExpanded,
   usePagination,
   useSortBy,
-  Column
+  ColumnWithLooseAccessor
 } from "react-table";
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
@@ -15,8 +15,7 @@ import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   AgreementApiGetAgreementsRequest,
-  Agreement,
-  AssignedAgreement,
+  AgreementState,
   GetAgreementsAssigneeEnum,
   GetAgreementsSortColumnEnum
 } from "../../api/generated_backoffice";
@@ -24,11 +23,10 @@ import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { useStableValue } from "../../utils/useStableValue";
+import { FixedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
-
-type BackofficeAgreement = Partial<AssignedAgreement> & Agreement;
 
 export type RequestsFilterFormValues = {
   profileFullName: string | undefined;
@@ -123,27 +121,30 @@ const Requests = () => {
   const data = useMemo(
     () => agreements?.items || [],
     [agreements]
-  ) as Array<BackofficeAgreement>;
+  ) as Array<FixedBackofficeAgreement>;
   const columns = useMemo(
-    (): Array<Column<BackofficeAgreement>> => [
+    (): Array<ColumnWithLooseAccessor<FixedBackofficeAgreement>> => [
       {
         Header: "Operatore",
         accessor: data => data.profile?.fullName
       },
       {
         Header: "Data Richiesta",
-        accessor: "requestDate",
+        accessor: data => data.requestDate,
         Cell: ({ row }) =>
           format(new Date(row.values.requestDate), "dd/MM/yyyy")
       },
       {
         Header: "Stato",
-        accessor: "state",
+        accessor: data => data.state,
         Cell: ({ row }) => RequestStateBadge(row.values.state)
       },
       {
         Header: "Revisore",
-        accessor: data => data.assignee?.fullName
+        accessor: data =>
+          data.state === AgreementState.AssignedAgreement
+            ? data.assignee.fullName
+            : undefined
       },
       {
         Header: () => null,
@@ -163,7 +164,11 @@ const Requests = () => {
   );
 
   const renderRowSubComponent = useCallback(
-    ({ row: { original } }: { row: { original: Agreement } }) => (
+    ({
+      row: { original }
+    }: {
+      row: { original: FixedBackofficeAgreement };
+    }) => (
       <RequestsDetails
         updateList={() => {
           remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({});
@@ -188,7 +193,7 @@ const Requests = () => {
     nextPage,
     previousPage,
     state: { pageIndex, sortBy }
-  } = useTable<BackofficeAgreement>(
+  } = useTable<FixedBackofficeAgreement>(
     {
       columns,
       data,

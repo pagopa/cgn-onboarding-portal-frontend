@@ -1,10 +1,11 @@
 /* eslint-disable functional/immutable-data */
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { FormikHelpers } from "formik";
 import { Severity, useTooltip } from "../../../context/tooltip";
 
 type Props = {
-  setFieldValue: any;
+  setFieldValue: FormikHelpers<{ recaptchaToken: string }>["setFieldValue"];
 };
 
 const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
@@ -18,7 +19,7 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
         throw new Error();
       }
       const response = await recaptchaRef.current.executeAsync();
-      setFieldValue("recaptchaToken", response);
+      void setFieldValue("recaptchaToken", response);
     } catch {
       triggerTooltip({
         severity: Severity.DANGER,

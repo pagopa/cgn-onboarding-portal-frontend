@@ -11,7 +11,7 @@
     "build": "yarn prebuild && tsc -b && vite build",
     "prebuild:generate": "yarn run generate",
     "prebuild:clean": "rm -rf dist",
-    "prebuild:tsc": "tsc -b --noEmit",
+    "prebuild:tsc": "yarn tsc:noEmit",
     "build:prod": "cp .env.prod .env.local && yarn build",
     "build:uat": "cp .env.uat .env.local && yarn build",
     "build:prod-local": "cp .env.prod-local .env.local && yarn build",
@@ -24,7 +24,7 @@
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "prepare": "husky",
     "postinstall": "patch-package",
-    "tsc:noemit": "tsc --noemit",
+    "tsc:noEmit": "tsc -b --noEmit",
     "analyzie-bundle-size": "npx vite-bundle-visualizer -t sunburst"
   },
   "dependencies": {

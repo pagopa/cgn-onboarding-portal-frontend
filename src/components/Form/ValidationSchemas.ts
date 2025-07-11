@@ -1,5 +1,9 @@
 import { z } from "zod/v4";
-import { HelpRequestCategoryEnum, SalesChannelType } from "../../api/generated";
+import {
+  HelpRequestCategoryEnum,
+  ProductCategory,
+  SalesChannelType
+} from "../../api/generated";
 import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 
@@ -269,7 +273,7 @@ export const discountDataValidationSchema = (
         .max(100, DISCOUNT_RANGE)
         .optional(),
       productCategories: z
-        .array(z.any())
+        .array(z.enum(ProductCategory, "Categoria merceologica non valida"))
         .min(1, PRODUCT_CATEGORIES_ONE)
         .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX),
       condition: z.string().optional(),

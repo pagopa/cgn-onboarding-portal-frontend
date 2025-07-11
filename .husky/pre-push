@@ -6,7 +6,7 @@ echo "$unstagedFiles"
 
 # Compile the project
 echo "🔨 compiling..."
-yarn tsc:noemit
+yarn tsc:noEmit
 
 # Check for dead code
 echo "🧟 checking for dead code..."
