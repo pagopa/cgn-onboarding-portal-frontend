@@ -6,18 +6,13 @@ import { remoteData } from "../../../../api/common";
 import { CreateProfile, UpdateProfile } from "../../../../api/generated";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
-import {
-  withNormalizedSpaces,
-  clearIfReferenceIsBlank
-} from "../../../../utils/strings";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 import {
-  defaultSalesChannel,
-  profileDefaultInitialValues,
-  sanitizeProfileFromValues
-} from "../../EditOperatorDataForm/operatorDataUtils";
+  profileFormValuesToRequest,
+  profileToProfileFormValues
+} from "../../operatorDataUtils";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
 import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
 import ProfileDescription from "./ProfileDescription";
@@ -100,57 +95,22 @@ const ProfileData = ({
     }
   );
   const profile = profileQuery.data;
-  const initialValues = useMemo(() => {
-    if (!profile) {
-      return { ...profileDefaultInitialValues };
-    }
-    const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
-    return {
-      ...profile,
-      name: cleanedIfNameIsBlank(profile.name),
-      name_en: cleanedIfNameIsBlank(profile.name_en),
-      name_de: "-",
-      description: withNormalizedSpaces(profile.description),
-      description_en: withNormalizedSpaces(profile.description_en),
-      description_de: "-",
-      salesChannel:
-        profile.salesChannel.channelType === "OfflineChannel" ||
-        profile.salesChannel.channelType === "BothChannels"
-          ? {
-              ...profile.salesChannel,
-              addresses:
-                (profile.salesChannel as any).addresses.length > 0
-                  ? (profile.salesChannel as any).addresses.map(
-                      (address: any) => {
-                        const addressSplit = address.fullAddress
-                          .split(",")
-                          .map((item: string) => item.trim());
-                        return {
-                          street: addressSplit[0],
-                          city: addressSplit[1],
-                          district: addressSplit[2],
-                          zipCode: addressSplit[3],
-                          value: address.fullAddress,
-                          label: address.fullAddress
-                        };
-                      }
-                    )
-                  : [
-                      {
-                        fullAddress: ""
-                      }
-                    ]
-            }
-          : profile.salesChannel,
-      hasDifferentName: !!profile.name
-    };
-  }, [profile]);
+  const initialValues = useMemo(
+    () => profileToProfileFormValues(profile),
+    [profile]
+  );
 
   const entityType = agreement.entityType;
 
   const isPending = isCompleted && profileQuery.isPending;
 
   const authentication = useAuthentication();
+
+  const fullName = authentication.currentMerchant?.organization_name ?? "";
+  const taxCodeOrVat =
+    authentication.currentMerchantFiscalCode ??
+    authentication.currentUserFiscalCode ??
+    "";
 
   if (isPending) {
     return <CenteredLoading />;
@@ -159,46 +119,37 @@ const ProfileData = ({
   return (
     <Formik
       enableReinitialize
-      initialValues={{
-        ...initialValues,
-        salesChannel: {
-          ...defaultSalesChannel,
-          ...initialValues.salesChannel
-        },
-        fullName: authentication.currentMerchant?.organization_name ?? "",
-        taxCodeOrVat:
-          authentication.currentMerchantFiscalCode ??
-          authentication.currentUserFiscalCode ??
-          ""
-      }}
+      initialValues={initialValues}
       validationSchema={zodSchemaToFormikValidationSchema(
         ProfileDataValidationSchema
       )}
       onSubmit={values => {
-        const profileData = sanitizeProfileFromValues(values);
+        const profileData = profileFormValuesToRequest(values);
         if (isCompleted) {
           editProfile(profileData);
         } else {
-          createProfile(profileData);
+          createProfile({ ...profileData, fullName });
         }
       }}
     >
-      {() => (
-        <Form autoComplete="off">
-          <FormContainer className="mb-20">
-            <ProfileInfo entityType={entityType} />
-            <ReferentData />
-            <ProfileImage />
-            <ProfileDescription />
-            <SalesChannels entityType={entityType}>
-              <OperatorDataButtons
-                onBack={handleBack}
-                isEnabled={!!agreement.imageUrl}
-              />
-            </SalesChannels>
-          </FormContainer>
-        </Form>
-      )}
+      <Form autoComplete="off">
+        <FormContainer className="mb-20">
+          <ProfileInfo
+            entityType={entityType}
+            fullName={fullName}
+            taxCodeOrVat={taxCodeOrVat}
+          />
+          <ReferentData />
+          <ProfileImage />
+          <ProfileDescription />
+          <SalesChannels entityType={entityType}>
+            <OperatorDataButtons
+              onBack={handleBack}
+              isEnabled={!!agreement.imageUrl}
+            />
+          </SalesChannels>
+        </FormContainer>
+      </Form>
     </Formik>
   );
 };

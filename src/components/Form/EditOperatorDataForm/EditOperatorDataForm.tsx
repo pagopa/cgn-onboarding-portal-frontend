@@ -6,10 +6,6 @@ import { useHistory } from "react-router-dom";
 import { remoteData } from "../../../api/common";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
-import {
-  clearIfReferenceIsBlank,
-  withNormalizedSpaces
-} from "../../../utils/strings";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
 import ProfileImage from "../CreateProfileForm/ProfileData/ProfileImage";
@@ -21,10 +17,12 @@ import { UpdateProfile } from "../../../api/generated";
 import { useAuthentication } from "../../../authentication/AuthenticationContext";
 import { zodSchemaToFormikValidationSchema } from "../../../utils/zodFormikAdapter";
 import {
-  profileDefaultInitialValues,
-  defaultSalesChannel,
-  sanitizeProfileFromValues
-} from "./operatorDataUtils";
+  profileFormValuesToRequest,
+  profileToProfileFormValues
+} from "../operatorDataUtils";
+
+// WARNING: this file is 90% duplicated with src/components/Form/CreateProfileForm/ProfileData/ProfileData.tsx
+// any changes here should be reflected there as well
 
 export const EditOperatorForm = ({
   variant
@@ -38,55 +36,10 @@ export const EditOperatorForm = ({
     agreementId: agreement.id
   });
   const profile = profileQuery.data;
-  const initialValues = useMemo(() => {
-    if (!profile) {
-      return { ...profileDefaultInitialValues };
-    }
-    const cleanedIfNameIsBlank = clearIfReferenceIsBlank(profile.name);
-    return {
-      ...profile,
-      name: cleanedIfNameIsBlank(profile.name),
-      name_en: cleanedIfNameIsBlank(profile.name_en),
-      name_de: "-",
-      description: withNormalizedSpaces(profile.description),
-      description_en: withNormalizedSpaces(profile.description_en),
-      description_de: "-",
-      salesChannel:
-        profile.salesChannel.channelType === "OfflineChannel" ||
-        profile.salesChannel.channelType === "BothChannels"
-          ? {
-              ...profile.salesChannel,
-              addresses: (profile.salesChannel as any).allNationalAddresses
-                ? [
-                    {
-                      street: "",
-                      city: "",
-                      district: "",
-                      zipCode: "",
-                      value: "",
-                      label: ""
-                    }
-                  ]
-                : (profile.salesChannel as any).addresses.map(
-                    (address: any) => {
-                      const addressSplit = address.fullAddress
-                        .split(",")
-                        .map((item: string) => item.trim());
-                      return {
-                        street: addressSplit[0],
-                        city: addressSplit[1],
-                        district: addressSplit[2],
-                        zipCode: addressSplit[3],
-                        value: address.fullAddress,
-                        label: address.fullAddress
-                      };
-                    }
-                  )
-            }
-          : profile.salesChannel,
-      hasDifferentName: !!profile.name
-    };
-  }, [profile]);
+  const initialValues = useMemo(
+    () => profileToProfileFormValues(profile),
+    [profile]
+  );
 
   const editProfileMutation =
     remoteData.Index.Profile.updateProfile.useMutation({
@@ -94,7 +47,7 @@ export const EditOperatorForm = ({
         history.push(DASHBOARD);
       }
     });
-  const editProfile = async (profile: UpdateProfile) => {
+  const editProfile = (profile: UpdateProfile) => {
     editProfileMutation.mutate({ agreementId: agreement.id, profile });
   };
 
@@ -106,27 +59,22 @@ export const EditOperatorForm = ({
 
   const entityType = agreement.entityType;
 
+  const fullName = authentication.currentMerchant?.organization_name ?? "";
+  const taxCodeOrVat =
+    authentication.currentMerchantFiscalCode ??
+    authentication.currentUserFiscalCode ??
+    "";
+
   return (
     <Formik
       enableReinitialize
-      initialValues={{
-        ...initialValues,
-        salesChannel: {
-          ...defaultSalesChannel,
-          ...initialValues.salesChannel
-        },
-        fullName: authentication.currentMerchant?.organization_name ?? "",
-        taxCodeOrVat:
-          authentication.currentMerchantFiscalCode ??
-          authentication.currentUserFiscalCode ??
-          ""
-      }}
+      initialValues={initialValues}
       validationSchema={zodSchemaToFormikValidationSchema(
         ProfileDataValidationSchema
       )}
       onSubmit={values => {
-        const profileData = sanitizeProfileFromValues(values);
-        void editProfile(profileData);
+        const profileData = profileFormValuesToRequest(values);
+        editProfile(profileData);
       }}
     >
       {() => {
@@ -134,7 +82,11 @@ export const EditOperatorForm = ({
           case "edit-data":
             return (
               <Form autoComplete="off">
-                <ProfileInfo entityType={entityType} />
+                <ProfileInfo
+                  entityType={entityType}
+                  fullName={fullName}
+                  taxCodeOrVat={taxCodeOrVat}
+                />
                 <ReferentData />
                 <ProfileImage />
                 <ProfileDescription />
@@ -149,7 +101,11 @@ export const EditOperatorForm = ({
           case "edit-profile":
             return (
               <Form autoComplete="off">
-                <ProfileInfo entityType={entityType} />
+                <ProfileInfo
+                  entityType={entityType}
+                  fullName={fullName}
+                  taxCodeOrVat={taxCodeOrVat}
+                />
                 <ReferentData>
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
