@@ -1,11 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-  Fragment
-} from "react";
+import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
 import {
   useTable,
   useExpanded,
@@ -16,45 +9,116 @@ import {
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import omit from "lodash/omit";
+import isEqual from "lodash/isEqual";
 import { keepPreviousData } from "@tanstack/react-query";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   AgreementApiGetAgreementsRequest,
   Agreement,
-  AssignedAgreement
+  AssignedAgreement,
+  GetAgreementsAssigneeEnum,
+  GetAgreementsSortColumnEnum
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import { useDebouncedValue } from "../../utils/useDebounce";
+import { useStableValue } from "../../utils/useStableValue";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
 
 type BackofficeAgreement = Partial<AssignedAgreement> & Agreement;
 
+export type RequestsFilterFormValues = {
+  profileFullName: string | undefined;
+  requestDateFrom: Date | undefined;
+  requestDateTo: Date | undefined;
+  states: string | undefined;
+  assignee: GetAgreementsAssigneeEnum | undefined;
+  sortColumn: GetAgreementsSortColumnEnum | undefined;
+  sortDirection: "ASC" | "DESC" | undefined;
+};
+
+const requestFilterFormInitialValues: RequestsFilterFormValues = {
+  profileFullName: "",
+  requestDateFrom: undefined,
+  requestDateTo: undefined,
+  states: undefined,
+  assignee: undefined,
+  sortColumn: undefined,
+  sortDirection: undefined
+};
+
+const getRequetsSortColumn = (id: string) => {
+  switch (id) {
+    case "profile.fullName":
+      return "Operator";
+    case "requestDate":
+      return "RequestDate";
+    case "state":
+      return "State";
+    case "assignee.fullName":
+      return "Assignee";
+  }
+};
+
 const Requests = () => {
   const pageSize = 20;
-  const refForm = useRef<any>(null);
 
-  const [agreementsQueryParams, setAgreementsQueryParams] =
-    useState<AgreementApiGetAgreementsRequest>({});
-  const agreementsQuery =
-    remoteData.Backoffice.Agreement.getAgreements.useQuery(
-      { ...agreementsQueryParams, pageSize },
-      { placeholderData: keepPreviousData, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
-    );
-  const updateAgreementsQueryParams = useCallback(
-    (params: AgreementApiGetAgreementsRequest) => {
-      setAgreementsQueryParams(params);
-      remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({
-        ...params,
-        pageSize
-      });
-    },
-    []
+  const [values, setValues] = useState<RequestsFilterFormValues>(
+    requestFilterFormInitialValues
   );
 
-  const { data: agreements, isPending } = agreementsQuery;
+  const hasActiveFitlers = !isEqual(values, requestFilterFormInitialValues);
+
+  const [pageParam, setPageParam] = useState<number>(0);
+
+  const debouncedProfileFullName = useDebouncedValue({
+    value: values.profileFullName,
+    delay: 500,
+    leading: false,
+    trailing: true,
+    maxWait: 3000
+  });
+
+  const params = useMemo((): AgreementApiGetAgreementsRequest => {
+    const requestAssignedAgreements =
+      values.states?.includes("AssignedAgreement");
+    return {
+      profileFullName: debouncedProfileFullName,
+      requestDateFrom: values.requestDateFrom
+        ? format(values.requestDateFrom, "yyyy-MM-dd")
+        : undefined,
+      requestDateTo: values.requestDateTo
+        ? format(values.requestDateTo, "yyyy-MM-dd")
+        : undefined,
+      assignee: requestAssignedAgreements
+        ? (values.states
+            ?.split("AssignedAgreement")
+            .at(-1) as GetAgreementsAssigneeEnum)
+        : undefined,
+      states: requestAssignedAgreements ? "AssignedAgreement" : values.states,
+      sortColumn: values.sortColumn,
+      sortDirection: values.sortDirection,
+      page: pageParam,
+      pageSize
+    };
+  }, [
+    values.states,
+    values.requestDateFrom,
+    values.requestDateTo,
+    values.sortColumn,
+    values.sortDirection,
+    debouncedProfileFullName,
+    pageParam
+  ]);
+
+  const { data: agreements, isPending } =
+    remoteData.Backoffice.Agreement.getAgreements.useQuery(
+      params,
+      { placeholderData: keepPreviousData, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
+    );
 
   const data = useMemo(
     () => agreements?.items || [],
@@ -101,7 +165,9 @@ const Requests = () => {
   const renderRowSubComponent = useCallback(
     ({ row: { original } }: { row: { original: Agreement } }) => (
       <RequestsDetails
-        updateList={() => refForm.current?.submitForm()}
+        updateList={() => {
+          remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({});
+        }}
         original={original}
       />
     ),
@@ -137,34 +203,31 @@ const Requests = () => {
     usePagination
   );
 
-  const getSortColumn = (id: string) => {
-    switch (id) {
-      case "profile.fullName":
-        return "Operator";
-      case "requestDate":
-        return "RequestDate";
-      case "state":
-        return "State";
-      case "assignee.fullName":
-        return "Assignee";
-    }
-  };
-
   useEffect(() => {
     const sortField = sortBy[0];
     if (sortField) {
-      refForm.current?.setFieldValue("sortColumn", getSortColumn(sortField.id));
-      refForm.current?.setFieldValue(
-        "sortDirection",
-        sortField.desc ? "DESC" : "ASC"
-      );
+      setValues(values => ({
+        ...values,
+        sortColumn: getRequetsSortColumn(sortField.id),
+        sortDirection: sortField.desc ? "DESC" : "ASC"
+      }));
     } else {
-      refForm.current?.setFieldValue("sortColumn", undefined);
-      refForm.current?.setFieldValue("sortDirection", undefined);
+      setValues(values => ({
+        ...values,
+        sortColumn: undefined,
+        sortDirection: undefined
+      }));
     }
-    refForm.current?.setFieldValue("page", pageIndex);
-    refForm.current?.submitForm();
-  }, [pageIndex, sortBy]);
+  }, [sortBy]);
+
+  useEffect(() => {
+    setPageParam(pageIndex);
+  }, [pageIndex]);
+
+  useEffect(() => {
+    gotoPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useStableValue(values)]);
 
   const startRowIndex: number = pageIndex * pageSize + 1;
   // eslint-disable-next-line functional/no-let
@@ -179,8 +242,12 @@ const Requests = () => {
   return (
     <section className="mt-2 px-8 py-10 bg-white">
       <RequestFilter
-        getAgreements={updateAgreementsQueryParams}
-        refForm={refForm}
+        values={values}
+        onChange={setValues}
+        onReset={() => {
+          setValues(requestFilterFormInitialValues);
+        }}
+        hasActiveFitlers={hasActiveFitlers}
       />
       {isPending ? (
         <CenteredLoading />
@@ -198,54 +265,56 @@ const Requests = () => {
             pageArray={pageArray}
             total={agreements?.total}
           />
-          <table
-            {...getTableProps()}
-            style={{ width: "100%" }}
-            className="mt-2 bg-white"
-          >
-            <TableHeader headerGroups={headerGroups} />
-            <tbody {...getTableBodyProps()}>
-              {page.map(row => {
-                prepareRow(row);
-                return (
-                  <Fragment key={row.getRowProps().key}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => row.toggleRowExpanded()}
-                    >
-                      {row.cells.map((cell, i) => (
-                        <td
-                          className={`
+          <div className="overflow-auto">
+            <table
+              {...getTableProps()}
+              style={{ width: "100%" }}
+              className="mt-2 bg-white"
+            >
+              <TableHeader headerGroups={headerGroups} />
+              <tbody {...getTableBodyProps()}>
+                {page.map(row => {
+                  prepareRow(row);
+                  return (
+                    <Fragment key={row.getRowProps().key}>
+                      <tr
+                        className="cursor-pointer"
+                        onClick={() => row.toggleRowExpanded()}
+                      >
+                        {row.cells.map((cell, i) => (
+                          <td
+                            className={`
                           ${i === 0 ? "ps-6" : ""}
                           ${i === headerGroups.length - 1 ? "pe-6" : ""}
                           px-3 py-2 border-bottom text-sm
                           `}
-                          {...cell.getCellProps()}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : {}
-                          }
-                          key={i}
-                        >
-                          {cell.render("Cell")}
-                        </td>
-                      ))}
-                    </tr>
-                    {row.isExpanded ? (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                        <td colSpan={visibleColumns.length}>
-                          {renderRowSubComponent({ row })}
-                        </td>
+                            {...cell.getCellProps()}
+                            style={
+                              cell.column.id === "expander"
+                                ? { width: "calc(32px + 0.75rem * 2)" }
+                                : {}
+                            }
+                            key={i}
+                          >
+                            {cell.render("Cell")}
+                          </td>
+                        ))}
                       </tr>
-                    ) : null}
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
+                      {row.isExpanded ? (
+                        <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                          <td colSpan={visibleColumns.length}>
+                            {renderRowSubComponent({ row })}
+                          </td>
+                        </tr>
+                      ) : null}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
           {!agreements?.items.length &&
-            (refForm.current?.dirty ? (
+            (hasActiveFitlers ? (
               <div className="m-8 d-flex flex-column align-items-center">
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
                 <Button
@@ -254,8 +323,7 @@ const Requests = () => {
                   tag="button"
                   className="mt-3"
                   onClick={() => {
-                    refForm.current?.resetForm();
-                    setAgreementsQueryParams({});
+                    setValues(requestFilterFormInitialValues);
                   }}
                 >
                   Reimposta Tutto
