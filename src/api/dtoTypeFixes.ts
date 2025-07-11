@@ -4,6 +4,11 @@ import {
   OnlineChannel,
   SalesChannelType
 } from "./generated";
+import {
+  AgreementState,
+  AssignedAgreement,
+  PendingAgreement
+} from "./generated_backoffice";
 
 export type FixedSalesChannel =
   | ({ channelType: typeof SalesChannelType.OnlineChannel } & Omit<
@@ -17,4 +22,14 @@ export type FixedSalesChannel =
   | ({ channelType: typeof SalesChannelType.BothChannels } & Omit<
       BothChannels,
       "channelType"
+    >);
+
+export type FixedBackofficeAgreement =
+  | ({ state: typeof AgreementState.AssignedAgreement } & Omit<
+      AssignedAgreement,
+      "state"
+    >)
+  | ({ state: typeof AgreementState.PendingAgreement } & Omit<
+      PendingAgreement,
+      "state"
     >);

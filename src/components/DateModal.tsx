@@ -42,21 +42,26 @@ const DateModal = ({
     return label;
   };
 
-  const DatePickerInput = forwardRef((fieldProps: any, ref: any) => (
-    <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
-      <input
-        {...fieldProps}
-        ref={ref}
-        className="form-control it-date-datepicker"
-        id={fieldProps.name}
-        type="text"
-        placeholder="gg/mm/aaaa"
-      />
-      <label htmlFor={fieldProps.name} className="form-label">
-        {fieldProps.label}
-      </label>
-    </div>
-  ));
+  const DatePickerInput = forwardRef(
+    (
+      fieldProps: { name: string; label: string },
+      ref: React.Ref<HTMLInputElement>
+    ) => (
+      <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
+        <input
+          {...fieldProps}
+          ref={ref}
+          className="form-control it-date-datepicker"
+          id={fieldProps.name}
+          type="text"
+          placeholder="gg/mm/aaaa"
+        />
+        <label htmlFor={fieldProps.name} className="form-label">
+          {fieldProps.label}
+        </label>
+      </div>
+    )
+  );
 
   return (
     <>
@@ -98,7 +103,12 @@ const DateModal = ({
                 selectsStart
                 startDate={dateFrom}
                 endDate={dateTo}
-                customInput={<DatePickerInput label="A partire dal giorno" />}
+                customInput={
+                  <DatePickerInput
+                    name="propDateFrom"
+                    label="A partire dal giorno"
+                  />
+                }
               />
             </div>
             <div className="form-check">
@@ -117,7 +127,9 @@ const DateModal = ({
                 startDate={dateFrom}
                 endDate={dateTo}
                 minDate={dateFrom}
-                customInput={<DatePickerInput label="Fino al giorno" />}
+                customInput={
+                  <DatePickerInput name="propDateTo" label="Fino al giorno" />
+                }
               />
             </div>
           </div>

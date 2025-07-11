@@ -93,9 +93,10 @@ const EditDiscountForm = () => {
           <Form autoComplete="off">
             <FormSection hasIntroduction>
               <DiscountInfo
-                formValues={values}
                 setFieldValue={setFieldValue}
                 profile={profile}
+                index={undefined}
+                formValues={values}
               />
               {discount?.state !== "draft" && (
                 <div className="d-flex mt-10 gap-4 flex-wrap">

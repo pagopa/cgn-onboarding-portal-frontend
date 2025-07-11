@@ -331,26 +331,23 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           agreementId={agreement.id}
           label={"Seleziona un file dal computer"}
           // index={index}
-          // formValues={index !== undefined ? formValues : formValues}
+          // formValues={index === undefined ? formValues : formValues}
           // this is a type fix since typescript flow analyzer needs a branch
-          // eslint-disable-next-line sonarjs/no-all-duplicated-branches
-          {...(index !== undefined
-            ? {
-                index,
-                formValues
-              }
-            : {
-                index,
-                formValues
-              })}
+          {...(index === undefined
+            ? { index: undefined, formValues }
+            : { index, formValues })}
           setFieldValue={setFieldValue}
         />
       )}
       {profile && (
         <EnrollToEyca
           profile={profile}
-          index={index}
-          formValues={formValues}
+          // index={index}
+          // formValues={formValues}
+          // this is a type fix since typescript flow analyzer needs a branch
+          {...(index === undefined
+            ? { index: undefined, formValues }
+            : { index, formValues })}
           setFieldValue={setFieldValue}
         />
       )}

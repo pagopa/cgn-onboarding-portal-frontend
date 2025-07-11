@@ -73,6 +73,7 @@ const CreateDiscountForm = () => {
         <Form autoComplete="off">
           <FormSection hasIntroduction>
             <DiscountInfo
+              index={undefined}
               formValues={values}
               setFieldValue={setFieldValue}
               profile={profile}
