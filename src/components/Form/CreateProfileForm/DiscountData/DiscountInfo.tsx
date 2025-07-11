@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 
-import { Field, FieldProps } from "formik";
+import { Field, FieldProps, FormikHelpers } from "formik";
 import DatePicker from "react-datepicker";
 import { useSelector } from "react-redux";
 import { createElement } from "react";
@@ -11,6 +11,7 @@ import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
 import { Profile } from "../../../../api/generated";
 import { RootState } from "../../../../store/store";
 import { getDiscountTypeChecks } from "../../../../utils/formChecks";
+import { DiscountFormValues } from "../../discountFormUtils";
 import ProductCategories from "./ProductCategories";
 import DiscountConditions from "./DiscountConditions";
 import EnrollToEyca from "./EnrollToEyca";
@@ -20,11 +21,20 @@ import StaticCode from "./StaticCode";
 import DiscountUrl from "./DiscountUrl";
 
 type Props = {
-  formValues: any;
-  setFieldValue: any;
-  index?: number;
   profile: Profile | undefined;
-};
+  setFieldValue: FormikHelpers<
+    DiscountFormValues | { discounts: Array<DiscountFormValues> }
+  >["setFieldValue"];
+} & (
+  | {
+      index: undefined;
+      formValues: DiscountFormValues;
+    }
+  | {
+      index: number;
+      formValues: { discounts: Array<DiscountFormValues> };
+    }
+);
 
 // eslint-disable-next-line complexity
 const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
@@ -157,12 +167,12 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
                   ? formValues.discounts[index].endDate
                   : formValues.endDate;
                 if (endDate && date! > endDate) {
-                  setFieldValue(
+                  void setFieldValue(
                     hasIndex ? `discounts[${index}].endDate` : "endDate",
                     undefined
                   );
                 }
-                setFieldValue(
+                void setFieldValue(
                   hasIndex ? `discounts[${index}].startDate` : "startDate",
                   date
                 );
@@ -200,12 +210,12 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
                   ? formValues.discounts[index].startDate
                   : formValues.startDate;
                 if (startDate && date! < startDate) {
-                  setFieldValue(
+                  void setFieldValue(
                     hasIndex ? `discounts[${index}].startDate` : "startDate",
                     undefined
                   );
                 }
-                setFieldValue(
+                void setFieldValue(
                   hasIndex ? `discounts[${index}].endDate` : "endDate",
                   date
                 );
@@ -264,7 +274,11 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         required
       >
         <ProductCategories
-          selectedCategories={formValues.productCategories}
+          selectedCategories={
+            index !== undefined
+              ? formValues.discounts[index].productCategories
+              : formValues.productCategories
+          }
           index={index}
         />
       </FormField>
@@ -316,8 +330,19 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         <Bucket
           agreementId={agreement.id}
           label={"Seleziona un file dal computer"}
-          index={index}
-          formValues={formValues}
+          // index={index}
+          // formValues={index !== undefined ? formValues : formValues}
+          // this is a type fix since typescript flow analyzer needs a branch
+          // eslint-disable-next-line sonarjs/no-all-duplicated-branches
+          {...(index !== undefined
+            ? {
+                index,
+                formValues
+              }
+            : {
+                index,
+                formValues
+              })}
           setFieldValue={setFieldValue}
         />
       )}

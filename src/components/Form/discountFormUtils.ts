@@ -1,6 +1,11 @@
 import { AxiosError } from "axios";
 import { format } from "date-fns";
-import { ProductCategory, Discount, UpdateDiscount } from "../../api/generated";
+import {
+  ProductCategory,
+  Discount,
+  UpdateDiscount,
+  BucketCodeLoadStatus
+} from "../../api/generated";
 import { TooltipContextProps, Severity } from "../../context/tooltip";
 import {
   clearIfReferenceIsBlank,
@@ -28,6 +33,7 @@ export type DiscountFormValues = {
   discountUrl: string;
   lastBucketCodeLoadFileName: string;
   lastBucketCodeLoadUid: string;
+  lastBucketCodeLoadStatus: BucketCodeLoadStatus | undefined;
   landingPageUrl: string;
   landingPageReferrer: string;
 };
@@ -53,6 +59,7 @@ export const discountEmptyInitialValues: DiscountFormValues = {
   discountUrl: "",
   lastBucketCodeLoadFileName: "",
   lastBucketCodeLoadUid: "",
+  lastBucketCodeLoadStatus: undefined,
   landingPageUrl: "",
   landingPageReferrer: ""
 };
@@ -88,6 +95,7 @@ export function discountToFormValues(
     discountUrl: discount.discountUrl ?? "",
     lastBucketCodeLoadUid: discount.lastBucketCodeLoadUid ?? "",
     lastBucketCodeLoadFileName: discount.lastBucketCodeLoadFileName ?? "",
+    lastBucketCodeLoadStatus: undefined,
     landingPageUrl: discount.landingPageUrl ?? "",
     landingPageReferrer: discount.landingPageReferrer ?? ""
   };

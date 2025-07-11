@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Field } from "formik";
+import { Field, FormikHelpers } from "formik";
 import { Button, FormGroup } from "design-react-kit";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import FormField from "../../FormField";
@@ -11,13 +11,17 @@ import {
   Profile,
   SalesChannelType
 } from "../../../../api/generated";
+import { DiscountFormValues } from "../../discountFormUtils";
 
 type Props = {
   profile: Profile;
-  index?: number;
-  formValues?: any;
-  setFieldValue?: any;
-};
+  setFieldValue: FormikHelpers<
+    DiscountFormValues | { discounts: Array<DiscountFormValues> }
+  >["setFieldValue"];
+} & (
+  | { index: undefined; formValues: DiscountFormValues }
+  | { index: number; formValues: { discounts: Array<DiscountFormValues> } }
+);
 
 type EycaAlertModalProps = {
   isOpen: boolean;
@@ -78,12 +82,12 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
 
   useEffect(() => {
     if (salesChannel.discountCodeType === DiscountCodeType.LandingPage) {
-      setFieldValue(
+      void setFieldValue(
         hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`,
         (eycaLandingPageUrl ?? "").trim() !== ""
       );
     } else {
-      setFieldValue(
+      void setFieldValue(
         hasIndex
           ? `discounts[${index}].eycaLandingPageUrl`
           : `eycaLandingPageUrl`,
@@ -153,7 +157,7 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
               }
               type="checkbox"
               onChange={(event: { target: { checked: boolean } }) => {
-                setFieldValue(
+                void setFieldValue(
                   hasIndex
                     ? `discounts[${index}].visibleOnEyca`
                     : `visibleOnEyca`,
