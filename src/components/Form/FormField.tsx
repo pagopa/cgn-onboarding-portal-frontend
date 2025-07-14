@@ -34,7 +34,11 @@ const FormField = ({
             {title}
             {required && "*"}
           </span>
-          {isVisible && <VisibleIcon />}
+          {isVisible && (
+            <div>
+              <VisibleIcon />
+            </div>
+          )}
         </span>
 
         {description && (

@@ -63,6 +63,7 @@ const FormSection = ({
                 <FormAlertInfoContent />
                 <Icon
                   icon="it-close"
+                  size="xl"
                   className="cursor-pointer"
                   onClick={handleClose}
                 />

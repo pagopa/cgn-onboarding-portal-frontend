@@ -143,7 +143,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         </div>
       </FormField>
       <div className="row">
-        <div className="col-5">
+        <div className="col-6">
           <FormField
             htmlFor="startDate"
             title="Data d'inizio opportunità"
@@ -186,7 +186,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
             </div>
           </FormField>
         </div>
-        <div className="col-5 offset-1">
+        <div className="col-6">
           <FormField
             htmlFor="endDate"
             title="Data di fine opportunità"

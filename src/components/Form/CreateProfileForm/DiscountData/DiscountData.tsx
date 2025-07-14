@@ -60,9 +60,6 @@ const DiscountData = ({
 
   const createDiscountMutation =
     remoteData.Index.Discount.createDiscount.useMutation({
-      onSuccess() {
-        handleNext();
-      },
       onError(error) {
         if (error.status === 409) {
           triggerTooltip({
@@ -80,10 +77,6 @@ const DiscountData = ({
 
   const updateDiscountMutation =
     remoteData.Index.Discount.updateDiscount.useMutation({
-      onSuccess() {
-        onUpdate();
-        handleNext();
-      },
       onError: updateDiscountMutationOnError({ triggerTooltip })
     });
 
@@ -127,22 +120,33 @@ const DiscountData = ({
           checkBucket
         )
       )}
-      onSubmit={values => {
-        values.discounts.forEach(vals => {
-          const discount = discountFormValuesToRequest(vals);
-          if (isCompleted && vals.id) {
-            updateDiscountMutation.mutate({
-              agreementId: agreement.id,
-              discountId: vals.id,
-              discount
-            });
-          } else {
-            createDiscountMutation.mutate({
-              agreementId: vals.id,
-              discount
-            });
+      onSubmit={async values => {
+        // eslint-disable-next-line functional/no-let
+        let triggerOnUpdate = false;
+        try {
+          for (const vals of values.discounts) {
+            const discount = discountFormValuesToRequest(vals);
+            if (isCompleted && vals.id) {
+              await updateDiscountMutation.mutateAsync({
+                agreementId: agreement.id,
+                discountId: vals.id,
+                discount
+              });
+              triggerOnUpdate = true;
+            } else {
+              await createDiscountMutation.mutateAsync({
+                agreementId: agreement.id,
+                discount
+              });
+            }
           }
-        });
+          if (triggerOnUpdate) {
+            onUpdate();
+          }
+          handleNext();
+        } catch {
+          void 0;
+        }
       }}
     >
       {({ values, setFieldValue, isSubmitting }) => (

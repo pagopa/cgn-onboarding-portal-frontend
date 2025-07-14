@@ -273,7 +273,7 @@ export const discountDataValidationSchema = (
     // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
     .check(ctx => {
       // Description/condition required if their translations are present
-      if (ctx.value.description_en && !ctx.value.description) {
+      if (ctx.value.description_en?.trim() && !ctx.value.description?.trim()) {
         // eslint-disable-next-line functional/immutable-data
         ctx.issues.push({
           path: ["description"],
@@ -282,7 +282,7 @@ export const discountDataValidationSchema = (
           message: REQUIRED_FIELD
         });
       }
-      if (ctx.value.description && !ctx.value.description_en) {
+      if (ctx.value.description?.trim() && !ctx.value.description_en?.trim()) {
         // eslint-disable-next-line functional/immutable-data
         ctx.issues.push({
           path: ["description_en"],
@@ -291,7 +291,7 @@ export const discountDataValidationSchema = (
           message: REQUIRED_FIELD
         });
       }
-      if (ctx.value.description && !ctx.value.description_de) {
+      if (ctx.value.description?.trim() && !ctx.value.description_de?.trim()) {
         // eslint-disable-next-line functional/immutable-data
         ctx.issues.push({
           path: ["description_de"],
@@ -300,7 +300,7 @@ export const discountDataValidationSchema = (
           message: REQUIRED_FIELD
         });
       }
-      if (ctx.value.condition_en && !ctx.value.condition) {
+      if (ctx.value.condition_en?.trim() && !ctx.value.condition?.trim()) {
         // eslint-disable-next-line functional/immutable-data
         ctx.issues.push({
           path: ["condition"],
@@ -309,7 +309,7 @@ export const discountDataValidationSchema = (
           message: REQUIRED_FIELD
         });
       }
-      if (ctx.value.condition && !ctx.value.condition_en) {
+      if (ctx.value.condition?.trim() && !ctx.value.condition_en?.trim()) {
         // eslint-disable-next-line functional/immutable-data
         ctx.issues.push({
           path: ["condition_en"],
@@ -318,7 +318,7 @@ export const discountDataValidationSchema = (
           message: REQUIRED_FIELD
         });
       }
-      if (ctx.value.condition && !ctx.value.condition_de) {
+      if (ctx.value.condition?.trim() && !ctx.value.condition_de?.trim()) {
         // eslint-disable-next-line functional/immutable-data
         ctx.issues.push({
           path: ["condition_de"],
@@ -327,7 +327,7 @@ export const discountDataValidationSchema = (
           message: REQUIRED_FIELD
         });
       }
-      if (staticCheck && !ctx.value.staticCode) {
+      if (staticCheck && !ctx.value.staticCode?.trim()) {
         // eslint-disable-next-line functional/immutable-data
         ctx.issues.push({
           path: ["staticCode"],

@@ -118,7 +118,7 @@ export function discountFormValuesToRequest(
     description_de: cleanedIfDescriptionIsBlank(values.description_de),
     startDate: format(values.startDate!, "yyyy-MM-dd"),
     endDate: format(values.endDate!, "yyyy-MM-dd"),
-    discount: Number(values.discount),
+    discount: Number(values.discount) || undefined,
     productCategories: values.productCategories.filter(pc =>
       productCategoriesList.includes(pc)
     ),
@@ -128,6 +128,7 @@ export function discountFormValuesToRequest(
     staticCode: values.staticCode,
     visibleOnEyca: values.visibleOnEyca,
     eycaLandingPageUrl: values.eycaLandingPageUrl,
+    landingPageUrl: values.landingPageUrl,
     landingPageReferrer: values.landingPageReferrer,
     lastBucketCodeLoadUid: values.lastBucketCodeLoadUid,
     lastBucketCodeLoadFileName: values.lastBucketCodeLoadFileName,
