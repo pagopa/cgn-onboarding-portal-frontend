@@ -41,7 +41,7 @@ type ReferentFormValues = {
 type SalesChannelFormValues = {
   channelType: SalesChannelType | undefined;
   websiteUrl: string;
-  discountCodeType: DiscountCodeType | undefined;
+  discountCodeType: DiscountCodeType | "";
   allNationalAddresses: boolean;
   addresses: Array<AddressFormValues>;
 };
@@ -70,7 +70,7 @@ const emptyAddressFormValues: AddressFormValues = {
 const salesChannelInitialFormValues: SalesChannelFormValues = {
   channelType: undefined,
   websiteUrl: "",
-  discountCodeType: undefined,
+  discountCodeType: "",
   allNationalAddresses: false,
   addresses: [emptyAddressFormValues]
 };
@@ -192,7 +192,7 @@ function salesChannelToFormValues(
       return {
         channelType: SalesChannelType.OfflineChannel,
         websiteUrl: salesChannel.websiteUrl ?? "",
-        discountCodeType: undefined,
+        discountCodeType: "",
         allNationalAddresses: salesChannel.allNationalAddresses ?? false,
         addresses: salesChannelToAdressesFormValues(salesChannel)
       };
@@ -201,7 +201,7 @@ function salesChannelToFormValues(
       return {
         channelType: SalesChannelType.BothChannels,
         websiteUrl: salesChannel.websiteUrl,
-        discountCodeType: salesChannel.discountCodeType,
+        discountCodeType: salesChannel.discountCodeType ?? "",
         allNationalAddresses: salesChannel.allNationalAddresses ?? false,
         addresses: salesChannelToAdressesFormValues(salesChannel)
       };
