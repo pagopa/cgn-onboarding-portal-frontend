@@ -125,21 +125,25 @@ const Requests = () => {
   const columns = useMemo(
     (): Array<ColumnWithLooseAccessor<FixedBackofficeAgreement>> => [
       {
+        id: "profile.fullName",
         Header: "Operatore",
         accessor: data => data.profile?.fullName
       },
       {
+        id: "requestDate",
         Header: "Data Richiesta",
         accessor: data => data.requestDate,
         Cell: ({ row }) =>
           format(new Date(row.values.requestDate), "dd/MM/yyyy")
       },
       {
+        id: "state",
         Header: "Stato",
         accessor: data => data.state,
         Cell: ({ row }) => RequestStateBadge(row.values.state)
       },
       {
+        id: "assignee.fullName",
         Header: "Revisore",
         accessor: data =>
           data.state === AgreementState.AssignedAgreement
@@ -147,8 +151,8 @@ const Requests = () => {
             : undefined
       },
       {
-        Header: () => null,
         id: "expander",
+        Header: () => null,
         Cell: ({ row }) => (
           <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
             {row.isExpanded ? (
