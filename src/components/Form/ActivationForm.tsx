@@ -30,7 +30,7 @@ const ActivationForm = (props: Props) => {
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       validationSchema={zodSchemaToFormikValidationSchema(
-        activationValidationSchema
+        () => activationValidationSchema
       )}
     >
       {({ values }) => (

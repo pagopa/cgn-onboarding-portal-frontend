@@ -76,7 +76,7 @@ const EditDiscountForm = () => {
         enableReinitialize
         initialValues={initialValues}
         validationSchema={() =>
-          zodSchemaToFormikValidationSchema(
+          zodSchemaToFormikValidationSchema(() =>
             discountDataValidationSchema(
               checkStaticCode,
               checkLanding,

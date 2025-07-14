@@ -94,7 +94,7 @@ const HelpForm = () => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={zodSchemaToFormikValidationSchema(
+      validationSchema={zodSchemaToFormikValidationSchema(() =>
         token ? loggedHelpValidationSchema : notLoggedHelpValidationSchema
       )}
       onSubmit={values => {

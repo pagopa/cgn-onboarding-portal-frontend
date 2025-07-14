@@ -1,11 +1,13 @@
 import { z } from "zod/v4";
 import {
+  DiscountCodeType,
   HelpRequestCategoryEnum,
   ProductCategory,
   SalesChannelType
 } from "../../api/generated";
 import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
+import { ProfileFormValues } from "./operatorDataUtils";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
 const INCORRECT_CONFIRM_EMAIL_ADDRESS = "I due indirizzi devono combaciare";
@@ -27,6 +29,11 @@ const fiscalCodeRegex =
   /^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/i; // NOSONAR: This is a secure regex to get an italian fiscal code
 
 const undefinedRequired = () => REQUIRED_FIELD;
+
+const requiredIf = <O, I, S extends z.ZodType<O, I>>(
+  schema: S,
+  condition: boolean
+) => (condition ? schema : schema.optional());
 
 const emptyAddress = z.object({
   street: z.literal(""),
@@ -108,12 +115,21 @@ const ReferentValidationSchema = z.object({
     .min(1, REQUIRED_FIELD)
 });
 
-export const ProfileDataValidationSchema = z
-  .object({
+export const ProfileDataValidationSchema = (values: ProfileFormValues) =>
+  z.object({
     hasDifferentName: z.boolean().optional(),
-    name: z.string().trim().optional(),
-    name_en: z.string().trim().optional(),
-    name_de: z.string().trim().optional(),
+    name: requiredIf(
+      z.string({ error: undefinedRequired }).trim(),
+      values.hasDifferentName
+    ),
+    name_en: requiredIf(
+      z.string({ error: undefinedRequired }).trim(),
+      values.hasDifferentName
+    ),
+    name_de: requiredIf(
+      z.string({ error: undefinedRequired }).trim(),
+      values.hasDifferentName
+    ),
     pecAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
     legalOffice: z
       .string({ error: undefinedRequired })
@@ -151,81 +167,25 @@ export const ProfileDataValidationSchema = z
       .trim()
       .min(1, REQUIRED_FIELD),
     salesChannel: z.object({
-      channelType: z.enum(["OnlineChannel", "OfflineChannel", "BothChannels"]),
-      websiteUrl: z.url(INCORRECT_WEBSITE_URL).optional().nullable(),
-      discountCodeType: z.string().optional(),
+      channelType: z.enum(SalesChannelType),
+      websiteUrl: requiredIf(
+        z.url(INCORRECT_WEBSITE_URL),
+        values.salesChannel.channelType === SalesChannelType.OnlineChannel ||
+          values.salesChannel.channelType === SalesChannelType.BothChannels
+      ),
+      discountCodeType: requiredIf(
+        z.enum(DiscountCodeType, REQUIRED_FIELD),
+        values.salesChannel.channelType === SalesChannelType.OnlineChannel ||
+          values.salesChannel.channelType === SalesChannelType.BothChannels
+      ),
       allNationalAddresses: z.boolean(),
-      addresses: z.array(optionalAddress).optional()
+      addresses:
+        (values.salesChannel.channelType === SalesChannelType.OfflineChannel ||
+          values.salesChannel.channelType === SalesChannelType.BothChannels) &&
+        !values.salesChannel.allNationalAddresses
+          ? z.array(requiredAddress).min(1, REQUIRED_FIELD)
+          : z.array(optionalAddress).optional()
     })
-  })
-
-  .check(ctx => {
-    if (ctx.value.hasDifferentName) {
-      if (!ctx.value.name) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          path: ["name"],
-          code: "custom",
-          input: ctx.value.name,
-          message: REQUIRED_FIELD
-        });
-      }
-      if (!ctx.value.name_en) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          path: ["name_en"],
-          code: "custom",
-          input: ctx.value.name_en,
-          message: REQUIRED_FIELD
-        });
-      }
-      if (!ctx.value.name_de) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          path: ["name_de"],
-          code: "custom",
-          input: ctx.value.name_de,
-          message: REQUIRED_FIELD
-        });
-      }
-    }
-    const channelType = ctx.value.salesChannel.channelType;
-    if (channelType === "OnlineChannel" || channelType === "BothChannels") {
-      if (!ctx.value.salesChannel.websiteUrl) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          path: ["salesChannel", "websiteUrl"],
-          code: "custom",
-          input: ctx.value.salesChannel.websiteUrl,
-          message: REQUIRED_FIELD
-        });
-      }
-      if (!ctx.value.salesChannel.discountCodeType) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          path: ["salesChannel", "discountCodeType"],
-          code: "custom",
-          input: ctx.value.salesChannel.discountCodeType,
-          message: REQUIRED_FIELD
-        });
-      }
-    }
-    if (
-      (channelType === SalesChannelType.OfflineChannel ||
-        channelType === SalesChannelType.BothChannels) &&
-      !ctx.value.salesChannel.allNationalAddresses
-    ) {
-      z.array(requiredAddress)
-        .min(1, REQUIRED_FIELD)
-        .safeParse(ctx.value.salesChannel.addresses)
-        .error?.issues.forEach(issue => {
-          // eslint-disable-next-line functional/immutable-data
-          ctx.issues.push({
-            ...issue,
-            path: ["salesChannel", "addresses", ...issue.path]
-          });
-        });
-    }
   });
 
 const checkEycaLandingDifferentFromLandingPageUrl = (

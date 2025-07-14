@@ -120,7 +120,7 @@ const DiscountData = ({
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={zodSchemaToFormikValidationSchema(
+      validationSchema={zodSchemaToFormikValidationSchema(() =>
         discountsListDataValidationSchema(
           checkStaticCode,
           checkLanding,

@@ -14,7 +14,7 @@ type Props = {
 };
 
 const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
-  type Values = z.infer<typeof ProfileDataValidationSchema>;
+  type Values = z.infer<ReturnType<typeof ProfileDataValidationSchema>>;
   const formikContext = useFormikContext<Values>();
   return (
     <FormSection hasIntroduction isVisible={false} title="Dati dell’operatore">

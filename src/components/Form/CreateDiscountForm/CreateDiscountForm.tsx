@@ -56,7 +56,7 @@ const CreateDiscountForm = () => {
     <Formik
       initialValues={discountEmptyInitialValues}
       validationSchema={() =>
-        zodSchemaToFormikValidationSchema(
+        zodSchemaToFormikValidationSchema(() =>
           discountDataValidationSchema(
             checkStaticCode,
             checkLanding,

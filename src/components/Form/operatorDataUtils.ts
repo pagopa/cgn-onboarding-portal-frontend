@@ -12,7 +12,7 @@ import {
 import { FixedSalesChannel } from "../../api/dtoTypeFixes";
 import { EmptyAddresses } from "./ValidationSchemas";
 
-type ProfileFormValues = {
+export type ProfileFormValues = {
   hasDifferentName: boolean;
   name: string;
   name_en: string;
@@ -59,20 +59,20 @@ type AddressFormValues = {
     | undefined;
 };
 
+const emptyAddressFormValues: AddressFormValues = {
+  city: "",
+  district: "",
+  street: "",
+  zipCode: "",
+  coordinates: undefined
+};
+
 const salesChannelInitialFormValues: SalesChannelFormValues = {
   channelType: undefined,
   websiteUrl: "",
   discountCodeType: undefined,
   allNationalAddresses: false,
-  addresses: [
-    {
-      street: "",
-      zipCode: "",
-      city: "",
-      district: "",
-      coordinates: undefined
-    }
-  ]
+  addresses: [emptyAddressFormValues]
 };
 
 const profileInitialFormValues: ProfileFormValues = {
@@ -156,34 +156,26 @@ function salesChannelToAdressesFormValues(
     salesChannel.channelType === SalesChannelType.BothChannels
   ) {
     if (salesChannel.allNationalAddresses) {
-      return [
-        {
-          street: "",
-          city: "",
-          district: "",
-          zipCode: "",
-          coordinates: undefined
-        }
-      ];
+      return [emptyAddressFormValues];
     }
     return salesChannel.addresses.map(address => {
       const addressSplit = address.fullAddress
         .split(",")
         .map((item: string) => item.trim());
       return {
-        street: addressSplit[0],
-        city: addressSplit[1],
-        district: addressSplit[2],
-        zipCode: addressSplit[3],
+        street: addressSplit[0] ?? "",
+        city: addressSplit[1] ?? "",
+        district: addressSplit[2] ?? "",
+        zipCode: addressSplit[3] ?? "",
         coordinates: address.coordinates
       };
     });
   } else {
-    return [];
+    return [emptyAddressFormValues];
   }
 }
 
-function salesChannelFormValues(
+function salesChannelToFormValues(
   salesChannel: FixedSalesChannel
 ): SalesChannelFormValues {
   switch (salesChannel.channelType) {
@@ -193,7 +185,7 @@ function salesChannelFormValues(
         websiteUrl: salesChannel.websiteUrl,
         discountCodeType: salesChannel.discountCodeType,
         allNationalAddresses: false,
-        addresses: []
+        addresses: salesChannelToAdressesFormValues(salesChannel)
       };
     }
     case "OfflineChannel": {
@@ -244,7 +236,7 @@ export function profileToProfileFormValues(
     description: withNormalizedSpaces(profile.description),
     description_en: withNormalizedSpaces(profile.description_en),
     description_de: "-",
-    salesChannel: salesChannelFormValues(
+    salesChannel: salesChannelToFormValues(
       profile.salesChannel as FixedSalesChannel
     ),
     secondaryReferents:
