@@ -120,7 +120,7 @@ const FileRow = ({
 
   return (
     <div className="border-bottom py-8">
-      <div className="d-flex flex-row justify-content-between align-items-center">
+      <div className="d-flex flex-row justify-content-between align-items-center flex-wrap gap-4">
         <div className="d-flex flex-row align-items-center">
           {!uploadedDoc ? (
             <DocumentIcon className="me-4" style={{ flexShrink: 0 }} />
