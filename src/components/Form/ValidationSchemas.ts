@@ -169,7 +169,11 @@ export const ProfileDataValidationSchema = (values: ProfileFormValues) =>
     salesChannel: z.object({
       channelType: z.enum(SalesChannelType),
       websiteUrl: requiredIf(
-        z.url(INCORRECT_WEBSITE_URL),
+        z.url({
+          error: INCORRECT_WEBSITE_URL,
+          protocol: /^https?$/,
+          hostname: z.regexes.domain
+        }),
         values.salesChannel.channelType === SalesChannelType.OnlineChannel ||
           values.salesChannel.channelType === SalesChannelType.BothChannels
       ),
@@ -223,7 +227,13 @@ export const discountDataValidationSchema = (
       description: z.string().max(250).optional(),
       description_en: z.string().max(250).optional(),
       description_de: z.string().max(250).optional(),
-      discountUrl: z.url(INCORRECT_WEBSITE_URL).optional(),
+      discountUrl: z
+        .url({
+          error: INCORRECT_WEBSITE_URL,
+          protocol: /^https?$/,
+          hostname: z.regexes.domain
+        })
+        .optional(),
       startDate: z.date({ error: undefinedRequired }),
       endDate: z.date({ error: undefinedRequired }),
       discount: z.coerce
@@ -240,12 +250,25 @@ export const discountDataValidationSchema = (
       condition_en: z.string().optional(),
       condition_de: z.string().optional(),
       staticCode: z.string().optional(),
-      landingPageUrl: z.url(INCORRECT_WEBSITE_URL).optional(),
+      landingPageUrl: z
+        .url({
+          error: INCORRECT_WEBSITE_URL,
+          protocol: /^https?$/,
+          hostname: z.regexes.domain
+        })
+        .optional(),
       landingPageReferrer: z.string().optional(),
       lastBucketCodeLoadUid: z.string().optional(),
       lastBucketCodeLoadFileName: z.string().optional(),
       visibleOnEyca: z.boolean().optional(),
-      eycaLandingPageUrl: z.url(INCORRECT_WEBSITE_URL).optional().nullable()
+      eycaLandingPageUrl: z
+        .url({
+          error: INCORRECT_WEBSITE_URL,
+          protocol: /^https?$/,
+          hostname: z.regexes.domain
+        })
+        .optional()
+        .nullable()
     })
     // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
     .check(ctx => {
