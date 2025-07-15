@@ -42,7 +42,6 @@ const EditDiscountForm = () => {
 
   const tooltip = useTooltip();
 
-  // Backtrack
   const updateDiscountMutation =
     remoteData.Index.Discount.updateDiscount.useMutation({
       onSuccess() {
