@@ -27,7 +27,7 @@ type Props = {
   >["setFieldValue"];
 } & (
   | {
-      index: undefined;
+      index?: undefined;
       formValues: DiscountFormValues;
     }
   | {
@@ -331,11 +331,9 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           agreementId={agreement.id}
           label={"Seleziona un file dal computer"}
           // index={index}
-          // formValues={index === undefined ? formValues : formValues}
+          // formValues={formValues}
           // this is a type fix since typescript flow analyzer needs a branch
-          {...(index === undefined
-            ? { index: undefined, formValues }
-            : { index, formValues })}
+          {...(index === undefined ? { formValues } : { index, formValues })}
           setFieldValue={setFieldValue}
         />
       )}
@@ -345,9 +343,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           // index={index}
           // formValues={formValues}
           // this is a type fix since typescript flow analyzer needs a branch
-          {...(index === undefined
-            ? { index: undefined, formValues }
-            : { index, formValues })}
+          {...(index === undefined ? { formValues } : { index, formValues })}
           setFieldValue={setFieldValue}
         />
       )}

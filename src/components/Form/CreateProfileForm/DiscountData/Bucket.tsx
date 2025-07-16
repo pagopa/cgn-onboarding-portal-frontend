@@ -22,7 +22,7 @@ type Props = {
 } & (
   | {
       formValues: DiscountFormValues;
-      index: undefined;
+      index?: undefined;
     }
   | {
       formValues: { discounts: Array<DiscountFormValues> };

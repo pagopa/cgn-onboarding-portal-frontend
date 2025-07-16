@@ -94,7 +94,6 @@ const EditDiscountForm = () => {
               <DiscountInfo
                 setFieldValue={setFieldValue}
                 profile={profile}
-                index={undefined}
                 formValues={values}
               />
               {discount?.state !== "draft" && (

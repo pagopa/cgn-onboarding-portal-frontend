@@ -19,7 +19,7 @@ type Props = {
     DiscountFormValues | { discounts: Array<DiscountFormValues> }
   >["setFieldValue"];
 } & (
-  | { index: undefined; formValues: DiscountFormValues }
+  | { index?: undefined; formValues: DiscountFormValues }
   | { index: number; formValues: { discounts: Array<DiscountFormValues> } }
 );
 

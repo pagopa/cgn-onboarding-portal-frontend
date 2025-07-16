@@ -155,7 +155,7 @@ const DiscountData = ({
             name="discounts"
             render={arrayHelpers => (
               <>
-                {values.discounts.map((discount, index: number) => (
+                {values.discounts.map((discount, index) => (
                   <FormContainer
                     key={index}
                     className={index <= 1 ? "mb-20" : ""}
