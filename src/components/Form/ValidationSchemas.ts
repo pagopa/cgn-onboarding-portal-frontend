@@ -415,7 +415,9 @@ export const discountsListDataValidationSchema = (
     )
   });
 
-const helpCategoryEnum = z.enum(HelpRequestCategoryEnum);
+const helpCategoryEnum = z.enum(HelpRequestCategoryEnum, {
+  error: REQUIRED_FIELD
+});
 
 function helpTopicValidation(
   ctx: z.core.ParsePayload<{
