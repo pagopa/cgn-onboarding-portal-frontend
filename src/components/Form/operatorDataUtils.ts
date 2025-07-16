@@ -148,7 +148,7 @@ function salesChannelFormValuesToSalesChannel(
   }
 }
 
-function salesChannelToAdressesFormValues(
+function salesChannelToAddressesFormValues(
   salesChannel: NormalizedSalesChannel
 ): Array<AddressFormValues> {
   if (
@@ -185,7 +185,7 @@ function salesChannelToFormValues(
         websiteUrl: salesChannel.websiteUrl,
         discountCodeType: salesChannel.discountCodeType,
         allNationalAddresses: false,
-        addresses: salesChannelToAdressesFormValues(salesChannel)
+        addresses: salesChannelToAddressesFormValues(salesChannel)
       };
     }
     case "OfflineChannel": {
@@ -194,7 +194,7 @@ function salesChannelToFormValues(
         websiteUrl: salesChannel.websiteUrl ?? "",
         discountCodeType: "",
         allNationalAddresses: salesChannel.allNationalAddresses ?? false,
-        addresses: salesChannelToAdressesFormValues(salesChannel)
+        addresses: salesChannelToAddressesFormValues(salesChannel)
       };
     }
     case "BothChannels": {
@@ -203,7 +203,7 @@ function salesChannelToFormValues(
         websiteUrl: salesChannel.websiteUrl,
         discountCodeType: salesChannel.discountCodeType ?? "",
         allNationalAddresses: salesChannel.allNationalAddresses ?? false,
-        addresses: salesChannelToAdressesFormValues(salesChannel)
+        addresses: salesChannelToAddressesFormValues(salesChannel)
       };
     }
   }
