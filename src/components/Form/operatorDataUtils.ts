@@ -9,7 +9,7 @@ import {
   clearIfReferenceIsBlank,
   withNormalizedSpaces
 } from "../../utils/strings";
-import { FixedSalesChannel } from "../../api/dtoTypeFixes";
+import { NormalizedSalesChannel } from "../../api/dtoTypeFixes";
 import { EmptyAddresses } from "./ValidationSchemas";
 
 export type ProfileFormValues = {
@@ -116,7 +116,7 @@ function salesChannelFormValuesToAddresses(
 
 function salesChannelFormValuesToSalesChannel(
   values: SalesChannelFormValues
-): FixedSalesChannel {
+): NormalizedSalesChannel {
   switch (values.channelType) {
     case "OnlineChannel": {
       return {
@@ -149,7 +149,7 @@ function salesChannelFormValuesToSalesChannel(
 }
 
 function salesChannelToAdressesFormValues(
-  salesChannel: FixedSalesChannel
+  salesChannel: NormalizedSalesChannel
 ): Array<AddressFormValues> {
   if (
     salesChannel.channelType === SalesChannelType.OfflineChannel ||
@@ -176,7 +176,7 @@ function salesChannelToAdressesFormValues(
 }
 
 function salesChannelToFormValues(
-  salesChannel: FixedSalesChannel
+  salesChannel: NormalizedSalesChannel
 ): SalesChannelFormValues {
   switch (salesChannel.channelType) {
     case "OnlineChannel": {
@@ -237,7 +237,7 @@ export function profileToProfileFormValues(
     description_en: withNormalizedSpaces(profile.description_en),
     description_de: "-",
     salesChannel: salesChannelToFormValues(
-      profile.salesChannel as FixedSalesChannel
+      profile.salesChannel as NormalizedSalesChannel
     ),
     secondaryReferents:
       profile.secondaryReferents?.map(referent => ({

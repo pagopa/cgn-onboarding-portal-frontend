@@ -10,7 +10,8 @@ import {
   PendingAgreement
 } from "./generated_backoffice";
 
-export type FixedSalesChannel =
+/** Use this type instead of SalesChannel generated type since the generated type is not fully correct */
+export type NormalizedSalesChannel =
   | ({ channelType: typeof SalesChannelType.OnlineChannel } & Omit<
       OnlineChannel,
       "channelType"
@@ -24,7 +25,8 @@ export type FixedSalesChannel =
       "channelType"
     >);
 
-export type FixedBackofficeAgreement =
+/** Use this type instead of Agreement generated type since the generated type is not fully correct */
+export type NormalizedBackofficeAgreement =
   | ({ state: typeof AgreementState.AssignedAgreement } & Omit<
       AssignedAgreement,
       "state"

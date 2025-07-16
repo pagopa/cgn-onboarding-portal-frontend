@@ -23,7 +23,7 @@ import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { useStableValue } from "../../utils/useStableValue";
-import { FixedBackofficeAgreement } from "../../api/dtoTypeFixes";
+import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
@@ -121,9 +121,9 @@ const Requests = () => {
   const data = useMemo(
     () => agreements?.items || [],
     [agreements]
-  ) as Array<FixedBackofficeAgreement>;
+  ) as Array<NormalizedBackofficeAgreement>;
   const columns = useMemo(
-    (): Array<ColumnWithLooseAccessor<FixedBackofficeAgreement>> => [
+    (): Array<ColumnWithLooseAccessor<NormalizedBackofficeAgreement>> => [
       {
         id: "profile.fullName",
         Header: "Operatore",
@@ -171,7 +171,7 @@ const Requests = () => {
     ({
       row: { original }
     }: {
-      row: { original: FixedBackofficeAgreement };
+      row: { original: NormalizedBackofficeAgreement };
     }) => (
       <RequestsDetails
         updateList={() => {
@@ -197,7 +197,7 @@ const Requests = () => {
     nextPage,
     previousPage,
     state: { pageIndex, sortBy }
-  } = useTable<FixedBackofficeAgreement>(
+  } = useTable<NormalizedBackofficeAgreement>(
     {
       columns,
       data,

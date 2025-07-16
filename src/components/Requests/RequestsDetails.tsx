@@ -6,7 +6,7 @@ import { AgreementState, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
-import { FixedBackofficeAgreement } from "../../api/dtoTypeFixes";
+import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -15,7 +15,7 @@ const RequestsDetails = ({
   original,
   updateList
 }: {
-  original: FixedBackofficeAgreement;
+  original: NormalizedBackofficeAgreement;
   updateList: () => void;
 }) => {
   const [rejectMode, setRejectMode] = useState(false);

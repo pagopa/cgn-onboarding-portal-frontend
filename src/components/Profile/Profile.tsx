@@ -9,7 +9,7 @@ import {
   type Referent
 } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
-import { FixedSalesChannel } from "../../api/dtoTypeFixes";
+import { NormalizedSalesChannel } from "../../api/dtoTypeFixes";
 import ProfileItem from "./ProfileItem";
 import ProfileDocuments from "./ProfileDocuments";
 import ProfileApiToken from "./ProfileApiToken";
@@ -21,7 +21,9 @@ const Profile = () => {
     agreementId: agreement.id
   });
 
-  const salesChannel = profile?.salesChannel as FixedSalesChannel | undefined;
+  const salesChannel = profile?.salesChannel as
+    | NormalizedSalesChannel
+    | undefined;
 
   const hasProfileApiToken =
     agreement.state === "ApprovedAgreement" &&
