@@ -21,9 +21,6 @@ import {
   profileToProfileFormValues
 } from "../operatorDataUtils";
 
-// WARNING: this file is 90% duplicated with src/components/Form/CreateProfileForm/ProfileData/ProfileData.tsx
-// any changes here should be reflected there as well
-
 export const EditOperatorForm = ({
   variant
 }: {

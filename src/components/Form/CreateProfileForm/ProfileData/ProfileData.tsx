@@ -21,9 +21,6 @@ import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
 import SalesChannels from "./SalesChannels";
 
-// WARNING: this file is 90% duplicated with src/components/Form/EditOperatorDataForm/EditOperatorDataForm.tsx
-// any changes here should be reflected there as well
-
 type Props = {
   isCompleted: boolean;
   handleBack: () => void;
