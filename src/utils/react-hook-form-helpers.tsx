@@ -85,7 +85,7 @@ export function useStandardForm<
   props: UseFormProps<TFieldValues, TContext, TTransformedValues> & {
     zodSchemaFactory(
       values: TFieldValues
-    ): z.ZodSchema<TTransformedValues, TFieldValues>;
+    ): z.ZodType<TTransformedValues, TFieldValues>;
   }
 ): UseFormReturn<TFieldValues, TContext, TTransformedValues> & {
   lens: Lens<TFieldValues>;

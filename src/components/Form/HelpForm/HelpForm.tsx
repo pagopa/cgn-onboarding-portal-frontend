@@ -13,22 +13,22 @@ import { remoteData } from "../../../api/common";
 import InputFieldMultiple from "../InputFieldMultiple";
 import { Severity, useTooltip } from "../../../context/tooltip";
 import { useAuthentication } from "../../../authentication/AuthenticationContext";
-import FormButtons from "./HelpFormButtons";
-import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 import {
   Field,
   FormErrorMessage,
   useStandardForm
 } from "../../../utils/react-hook-form-helpers";
+import FormButtons from "./HelpFormButtons";
+import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
 const loggedInitialValues: z.input<typeof loggedHelpValidationSchema> = {
-  category: "" as HelpRequestCategoryEnum,
+  category: "",
   topic: "",
   message: ""
 };
 
 const notLoggedInitialValues: z.input<typeof notLoggedHelpValidationSchema> = {
-  category: "" as HelpRequestCategoryEnum,
+  category: "",
   topic: "",
   message: "",
   referentFirstName: "",
@@ -114,9 +114,6 @@ const HelpForm = () => {
 
   const form = isLogged ? loggedForm : notLoggedForm;
 
-  console.log(form.formState.errors);
-  console.log(form.getValues());
-
   return (
     <form
       autoComplete="off"
@@ -129,7 +126,6 @@ const HelpForm = () => {
               });
             })
           : notLoggedForm.handleSubmit(async values => {
-              console.log(values);
               await createNotLoggedHelpMutation.mutateAsync({
                 helpRequest: values
               });

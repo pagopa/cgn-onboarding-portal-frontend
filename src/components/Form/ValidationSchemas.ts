@@ -415,10 +415,6 @@ export const discountsListDataValidationSchema = (
     )
   });
 
-const helpCategoryEnum = z.enum(HelpRequestCategoryEnum, {
-  error: REQUIRED_FIELD
-});
-
 function helpTopicValidation(
   ctx: z.core.ParsePayload<{
     category: HelpRequestCategoryEnum;
@@ -444,7 +440,11 @@ function helpTopicValidation(
 
 export const loggedHelpValidationSchema = z
   .object({
-    category: helpCategoryEnum,
+    category: z.string().pipe(
+      z.enum(HelpRequestCategoryEnum, {
+        error: REQUIRED_FIELD
+      })
+    ),
     topic: z.string().optional(),
     message: z
       .string({ error: undefinedRequired })
@@ -457,7 +457,11 @@ export const loggedHelpValidationSchema = z
 
 export const notLoggedHelpValidationSchema = z
   .object({
-    category: helpCategoryEnum,
+    category: z.string().pipe(
+      z.enum(HelpRequestCategoryEnum, {
+        error: REQUIRED_FIELD
+      })
+    ),
     topic: z.string().optional(),
     message: z
       .string({ error: undefinedRequired })
