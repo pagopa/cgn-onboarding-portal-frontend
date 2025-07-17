@@ -22,6 +22,7 @@ type Props = {
 } & (
   | {
       formValues: DiscountFormValues;
+      // eslint-disable-next-line sonarjs/no-redundant-optional
       index?: undefined;
     }
   | {

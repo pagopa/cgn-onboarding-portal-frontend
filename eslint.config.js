@@ -133,8 +133,7 @@ export default tseslint.config(
       "sonarjs/no-nested-functions": "off",
       "sonarjs/no-unused-vars": "off",
       "sonarjs/function-return-type": "off",
-      "sonarjs/table-header": "off",
-      "sonarjs/no-redundatn-optional": "error"
+      "sonarjs/table-header": "off"
     }
   }
 );

@@ -27,6 +27,7 @@ type Props = {
   >["setFieldValue"];
 } & (
   | {
+      // eslint-disable-next-line sonarjs/no-redundant-optional
       index?: undefined;
       formValues: DiscountFormValues;
     }
