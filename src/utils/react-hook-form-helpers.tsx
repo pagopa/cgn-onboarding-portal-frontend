@@ -16,6 +16,14 @@ import z from "zod/v4";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lens, useLens } from "@hookform/lenses";
 
+type RemovedProps =
+  | "name"
+  | "value"
+  | "disabled"
+  | "required"
+  | "onChange"
+  | "onBlur";
+
 export function Field<T extends string = string>({
   element,
   formLens,
@@ -23,9 +31,22 @@ export function Field<T extends string = string>({
 }: {
   formLens: Lens<T>;
 } & (
-  | ({ element?: "input" } & InputHTMLAttributes<HTMLInputElement>)
-  | ({ element: "textarea" } & TextareaHTMLAttributes<HTMLTextAreaElement>)
-  | ({ element: "select" } & SelectHTMLAttributes<HTMLSelectElement>)
+  | ({ element?: "input" } & Omit<
+      InputHTMLAttributes<HTMLInputElement>,
+      RemovedProps
+    >)
+  | ({ element?: "input"; type: "radio" } & Omit<
+      InputHTMLAttributes<HTMLInputElement>,
+      Exclude<RemovedProps, "type" | "value">
+    >)
+  | ({ element: "textarea" } & Omit<
+      TextareaHTMLAttributes<HTMLTextAreaElement>,
+      RemovedProps
+    >)
+  | ({ element: "select" } & Omit<
+      SelectHTMLAttributes<HTMLSelectElement>,
+      RemovedProps
+    >)
 )) {
   const { control, name } = formLens.interop();
   return (
@@ -62,14 +83,19 @@ export function useStandardForm<
   TTransformedValues = TFieldValues
 >(
   props: UseFormProps<TFieldValues, TContext, TTransformedValues> & {
-    zodSchema: z.ZodSchema<TTransformedValues, TFieldValues>;
+    zodSchemaFactory(
+      values: TFieldValues
+    ): z.ZodSchema<TTransformedValues, TFieldValues>;
   }
 ): UseFormReturn<TFieldValues, TContext, TTransformedValues> & {
   lens: Lens<TFieldValues>;
 } {
   const form = useForm({
     ...props,
-    resolver: props.resolver ?? zodResolver(props.zodSchema)
+    resolver:
+      props.resolver ??
+      ((values, context, options) =>
+        zodResolver(props.zodSchemaFactory(values))(values, context, options))
   });
   const lens = useLens({
     control: form.control as unknown as Control<TFieldValues>

@@ -104,12 +104,12 @@ const HelpForm = () => {
 
   const loggedForm = useStandardForm({
     defaultValues: loggedInitialValues,
-    zodSchema: loggedHelpValidationSchema
+    zodSchemaFactory: () => loggedHelpValidationSchema
   });
 
   const notLoggedForm = useStandardForm({
     defaultValues: notLoggedInitialValues,
-    zodSchema: notLoggedHelpValidationSchema
+    zodSchemaFactory: () => notLoggedHelpValidationSchema
   });
 
   const form = isLogged ? loggedForm : notLoggedForm;
@@ -322,7 +322,6 @@ const HelpForm = () => {
           <Field
             element="textarea"
             id="message"
-            name="message"
             formLens={
               isLogged
                 ? loggedForm.lens.focus("message")
@@ -357,7 +356,6 @@ const HelpForm = () => {
               >
                 <Field
                   id="referentFirstName"
-                  name="referentFirstName"
                   formLens={notLoggedForm.lens.focus("referentFirstName")}
                   type="text"
                   placeholder="Inserisci il nome"
