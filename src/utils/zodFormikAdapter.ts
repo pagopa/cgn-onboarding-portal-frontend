@@ -7,14 +7,14 @@ z.config({ jitless: true }); // this is needed for CSP errors
 /**
  * @example <Formik validationSchema={zodSchemaToFormikValidationSchema(myZodSchema)}>
  */
-export function zodSchemaToFormikValidationSchema<T>(
-  schema: z.ZodSchema<T>,
+export function zodSchemaToFormikValidationSchema<V, T>(
+  schemaFactory: (values: V) => z.ZodSchema<T>,
   params?: Partial<z.core.ParseContext<z.core.$ZodIssue>>
 ) {
   return {
-    async validate(obj: T) {
+    async validate(obj: V) {
       try {
-        schema.parse(obj, params);
+        schemaFactory(obj).parse(obj, params);
       } catch (error: unknown) {
         const { message, issues } = error as z.ZodError<T>;
         const validationError = new Error(message) as Error & {

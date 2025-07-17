@@ -15,7 +15,7 @@ type Props = {
 };
 
 const SalesChannels = ({ entityType, children }: Props) => {
-  type Values = z.infer<typeof ProfileDataValidationSchema>;
+  type Values = z.infer<ReturnType<typeof ProfileDataValidationSchema>>;
   const formikContext = useFormikContext<Values>();
   const formValues = formikContext.values;
   const hasOnlineOrBothChannels =

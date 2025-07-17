@@ -1,20 +1,10 @@
-import { format } from "date-fns";
 import { Button } from "design-react-kit";
 import { FieldArray, Form, Formik } from "formik";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
-import {
-  CreateDiscount,
-  Discount,
-  ProductCategory
-} from "../../../../api/generated";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
-import {
-  clearIfReferenceIsBlank,
-  withNormalizedSpaces
-} from "../../../../utils/strings";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import { getDiscountTypeChecks } from "../../../../utils/formChecks";
@@ -24,6 +14,8 @@ import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import { remoteData } from "../../../../api/common";
 import {
   discountEmptyInitialValues,
+  discountFormValuesToRequest,
+  discountToFormValues,
   updateDiscountMutationOnError
 } from "../../discountFormUtils";
 import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
@@ -68,9 +60,6 @@ const DiscountData = ({
 
   const createDiscountMutation =
     remoteData.Index.Discount.createDiscount.useMutation({
-      onSuccess() {
-        handleNext();
-      },
       onError(error) {
         if (error.status === 409) {
           triggerTooltip({
@@ -85,32 +74,11 @@ const DiscountData = ({
         }
       }
     });
-  const createDiscount = (agreementId: string, discount: CreateDiscount) =>
-    createDiscountMutation.mutate({ agreementId, discount });
 
   const updateDiscountMutation =
     remoteData.Index.Discount.updateDiscount.useMutation({
-      onSuccess() {
-        onUpdate();
-        handleNext();
-      },
       onError: updateDiscountMutationOnError({ triggerTooltip })
     });
-
-  const updateDiscount = (agreementId: string, discount: Discount) => {
-    const {
-      id,
-      agreementId: agId,
-      state,
-      creationDate,
-      ...updatedDiscount
-    } = discount;
-    updateDiscountMutation.mutate({
-      agreementId,
-      discountId: discount.id,
-      discount: updatedDiscount
-    });
-  };
 
   const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery(
     {
@@ -124,36 +92,7 @@ const DiscountData = ({
   const initialValues = useMemo(() => {
     if (discountsQuery.data) {
       return {
-        discounts: discountsQuery.data.items.map((discount: Discount) => ({
-          ...discount,
-          name: withNormalizedSpaces(discount.name),
-          name_en: withNormalizedSpaces(discount.name_en),
-          name_de: "-",
-          description: clearIfReferenceIsBlank(discount.description)(
-            discount.description
-          ),
-          description_en: clearIfReferenceIsBlank(discount.description)(
-            discount.description_en
-          ),
-          description_de: "-",
-          condition: clearIfReferenceIsBlank(discount.condition)(
-            discount.condition
-          ),
-          condition_en: clearIfReferenceIsBlank(discount.condition)(
-            discount.condition_en
-          ),
-          condition_de: "-",
-          discountUrl: discount.discountUrl ?? undefined,
-          startDate: new Date(discount.startDate),
-          endDate: new Date(discount.endDate),
-          landingPageReferrer: discount.landingPageReferrer ?? undefined,
-          landingPageUrl: discount.landingPageUrl ?? undefined,
-          discount: discount.discount ?? undefined,
-          staticCode: discount.staticCode ?? undefined,
-          lastBucketCodeLoadUid: discount.lastBucketCodeLoadUid ?? undefined,
-          lastBucketCodeLoadFileName:
-            discount.lastBucketCodeLoadFileName ?? undefined
-        }))
+        discounts: discountsQuery.data.items.map(discountToFormValues)
       };
     } else {
       return emptyInitialValues;
@@ -162,10 +101,6 @@ const DiscountData = ({
 
   const deleteDiscountMutation =
     remoteData.Index.Discount.deleteDiscount.useMutation();
-
-  const deleteDiscount = (agreementId: string, discountId: string) => {
-    deleteDiscountMutation.mutate({ agreementId, discountId });
-  };
 
   const isPending =
     profileQuery.isPending || (isCompleted ? discountsQuery.isPending : false);
@@ -178,55 +113,40 @@ const DiscountData = ({
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={zodSchemaToFormikValidationSchema(
+      validationSchema={zodSchemaToFormikValidationSchema(() =>
         discountsListDataValidationSchema(
           checkStaticCode,
           checkLanding,
           checkBucket
         )
       )}
-      onSubmit={values => {
-        const newValues: { discounts: ReadonlyArray<Discount> } = {
-          discounts: values.discounts.map(
-            discount =>
-              ({
-                ...discount,
-                name: withNormalizedSpaces(discount.name),
-                name_en: withNormalizedSpaces(discount.name_en),
-                name_de: "-",
-                description: clearIfReferenceIsBlank(discount.description)(
-                  discount.description
-                ),
-                description_en: clearIfReferenceIsBlank(discount.description)(
-                  discount.description_en
-                ),
-                description_de: clearIfReferenceIsBlank(discount.description)(
-                  discount.description_de
-                ),
-                condition: clearIfReferenceIsBlank(discount.condition)(
-                  discount.condition
-                ),
-                condition_en: clearIfReferenceIsBlank(discount.condition)(
-                  discount.condition_en
-                ),
-                condition_de: clearIfReferenceIsBlank(discount.condition)(
-                  discount.condition_de
-                ),
-                productCategories: discount.productCategories.filter(pc =>
-                  Object.values(ProductCategory).includes(pc)
-                ),
-                startDate: format(new Date(discount.startDate), "yyyy-MM-dd"),
-                endDate: format(new Date(discount.endDate), "yyyy-MM-dd")
-              }) as Discount
-          )
-        };
-        newValues.discounts.forEach((discount: Discount) => {
-          if (isCompleted && discount.id) {
-            updateDiscount(agreement.id, discount);
-          } else {
-            createDiscount(agreement.id, discount);
+      onSubmit={async values => {
+        // eslint-disable-next-line functional/no-let
+        let triggerOnUpdate = false;
+        try {
+          for (const vals of values.discounts) {
+            const discount = discountFormValuesToRequest(vals);
+            if (isCompleted && vals.id) {
+              await updateDiscountMutation.mutateAsync({
+                agreementId: agreement.id,
+                discountId: vals.id,
+                discount
+              });
+              triggerOnUpdate = true;
+            } else {
+              await createDiscountMutation.mutateAsync({
+                agreementId: agreement.id,
+                discount
+              });
+            }
           }
-        });
+          if (triggerOnUpdate) {
+            onUpdate();
+          }
+          handleNext();
+        } catch {
+          void 0;
+        }
       }}
     >
       {({ values, setFieldValue, isSubmitting }) => (
@@ -235,7 +155,7 @@ const DiscountData = ({
             name="discounts"
             render={arrayHelpers => (
               <>
-                {values.discounts.map((discount, index: number) => (
+                {values.discounts.map((discount, index) => (
                   <FormContainer
                     key={index}
                     className={index <= 1 ? "mb-20" : ""}
@@ -246,10 +166,10 @@ const DiscountData = ({
                       handleClose={() => {
                         if (index >= 1) {
                           if (isCompleted) {
-                            deleteDiscount(
-                              agreement.id,
-                              (discount as { id: string }).id
-                            );
+                            deleteDiscountMutation.mutate({
+                              agreementId: agreement.id,
+                              discountId: discount.id
+                            });
                           }
                           arrayHelpers.remove(index);
                         }
@@ -267,23 +187,7 @@ const DiscountData = ({
                           <div
                             className="mt-8 cursor-pointer"
                             onClick={() =>
-                              arrayHelpers.push({
-                                name: "",
-                                name_en: "",
-                                name_de: "-",
-                                description: "",
-                                description_en: "",
-                                description_de: "-",
-                                startDate: "",
-                                endDate: "",
-                                discount: "",
-                                discountUrl: "",
-                                productCategories: [],
-                                condition: "",
-                                condition_en: "",
-                                condition_de: "-",
-                                staticCode: ""
-                              })
+                              arrayHelpers.push(discountEmptyInitialValues)
                             }
                           >
                             <PlusCircleIcon className="me-2" />
