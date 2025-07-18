@@ -15,9 +15,9 @@ import { Severity, useTooltip } from "../../../context/tooltip";
 import { useAuthentication } from "../../../authentication/AuthenticationContext";
 import {
   Field,
-  FormErrorMessage,
-  useStandardForm
+  FormErrorMessage
 } from "../../../utils/react-hook-form-helpers";
+import { useStandardForm } from "../../../utils/useStandardForm";
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
@@ -104,12 +104,12 @@ const HelpForm = () => {
 
   const loggedForm = useStandardForm({
     defaultValues: loggedInitialValues,
-    zodSchemaFactory: () => loggedHelpValidationSchema
+    zodSchema: loggedHelpValidationSchema
   });
 
   const notLoggedForm = useStandardForm({
     defaultValues: notLoggedInitialValues,
-    zodSchemaFactory: () => notLoggedHelpValidationSchema
+    zodSchema: notLoggedHelpValidationSchema
   });
 
   const form = isLogged ? loggedForm : notLoggedForm;

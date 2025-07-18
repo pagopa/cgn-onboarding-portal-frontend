@@ -3,18 +3,8 @@ import {
   SelectHTMLAttributes,
   TextareaHTMLAttributes
 } from "react";
-import {
-  Control,
-  Controller,
-  FieldValues,
-  useController,
-  useForm,
-  UseFormProps,
-  UseFormReturn
-} from "react-hook-form";
-import z from "zod/v4";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Lens, useLens } from "@hookform/lenses";
+import { useController } from "react-hook-form";
+import { Lens } from "@hookform/lenses";
 
 type RemovedProps =
   | "name"
@@ -24,20 +14,23 @@ type RemovedProps =
   | "onChange"
   | "onBlur";
 
-export function Field<T extends string = string>({
-  element,
+export function Field<T>({
   formLens,
   ...props
 }: {
   formLens: Lens<T>;
 } & (
-  | ({ element?: "input" } & Omit<
+  | ({ element?: "input"; type?: "text" | "email" | "tel" } & Omit<
       InputHTMLAttributes<HTMLInputElement>,
-      RemovedProps
+      "type" | RemovedProps
     >)
-  | ({ element?: "input"; type: "radio" } & Omit<
+  | ({ element?: "input"; type: "radio"; value: string } & Omit<
       InputHTMLAttributes<HTMLInputElement>,
-      Exclude<RemovedProps, "type" | "value">
+      "type" | "value" | RemovedProps
+    >)
+  | ({ element?: "input"; type: "checkbox" } & Omit<
+      InputHTMLAttributes<HTMLInputElement>,
+      "type" | "value" | RemovedProps
     >)
   | ({ element: "textarea" } & Omit<
       TextareaHTMLAttributes<HTMLTextAreaElement>,
@@ -48,23 +41,35 @@ export function Field<T extends string = string>({
       RemovedProps
     >)
 )) {
-  const { control, name } = formLens.interop();
-  return (
-    <Controller
-      control={control as any}
-      name={name}
-      render={({ field }) => {
-        switch (element) {
-          case "textarea":
-            return <textarea {...field} {...(props as any)} />;
-          case "select":
-            return <select {...field} {...(props as any)} />;
-          default:
-            return <input {...field} {...(props as any)} />;
-        }
-      }}
-    />
+  const { field } = useController(
+    (formLens as Lens<unknown> as Lens<string>).interop()
   );
+  {
+    switch (props.element) {
+      case "textarea": {
+        const { element, ...attributes } = props;
+        return <textarea {...field} {...attributes} />;
+      }
+      case "select": {
+        const { element, ...attributes } = props;
+        return <select {...field} {...attributes} />;
+      }
+      case undefined:
+      case "input": {
+        const { element, ...attributes } = props;
+        if (props.type === "radio") {
+          return (
+            <input
+              {...field}
+              {...attributes}
+              checked={field.value === props.value}
+            />
+          );
+        }
+        return <input {...field} {...attributes} />;
+      }
+    }
+  }
 }
 
 export function FormErrorMessage<T>({ formLens }: { formLens: Lens<T> }) {
@@ -74,31 +79,4 @@ export function FormErrorMessage<T>({ formLens }: { formLens: Lens<T> }) {
   return controller.fieldState.error ? (
     <span className="text-red">{controller.fieldState.error.message}</span>
   ) : null;
-}
-
-export function useStandardForm<
-  TFieldValues extends FieldValues = FieldValues,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TContext = any,
-  TTransformedValues = TFieldValues
->(
-  props: UseFormProps<TFieldValues, TContext, TTransformedValues> & {
-    zodSchemaFactory(
-      values: TFieldValues
-    ): z.ZodType<TTransformedValues, TFieldValues>;
-  }
-): UseFormReturn<TFieldValues, TContext, TTransformedValues> & {
-  lens: Lens<TFieldValues>;
-} {
-  const form = useForm({
-    ...props,
-    resolver:
-      props.resolver ??
-      ((values, context, options) =>
-        zodResolver(props.zodSchemaFactory(values))(values, context, options))
-  });
-  const lens = useLens({
-    control: form.control as unknown as Control<TFieldValues>
-  });
-  return { ...form, lens };
 }

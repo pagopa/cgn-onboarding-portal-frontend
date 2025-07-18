@@ -7,7 +7,6 @@ import {
 } from "../../api/generated";
 import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
-import { ProfileFormValues } from "./operatorDataUtils";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
 const INCORRECT_CONFIRM_EMAIL_ADDRESS = "I due indirizzi devono combaciare";
@@ -30,23 +29,18 @@ const fiscalCodeRegex =
 
 const undefinedRequired = () => REQUIRED_FIELD;
 
-const requiredIf = <O, I, S extends z.ZodType<O, I>>(
-  schema: S,
-  condition: boolean
-) => (condition ? schema : schema.optional());
-
-const emptyAddress = z.object({
-  street: z.literal(""),
-  zipCode: z.literal(""),
-  city: z.literal(""),
-  district: z.literal(""),
+export const EmptyAddressValidationSchema = z.object({
+  street: z.string().max(0),
+  zipCode: z.string().max(0),
+  city: z.string().max(0),
+  district: z.string().max(0),
   coordinates: z.object({
-    latitude: z.literal(""),
-    longitude: z.literal("")
+    latitude: z.string().max(0),
+    longitude: z.string().max(0)
   })
 });
 
-const optionalAddress = z.object({
+const OptionalAddressValidationSchema = z.object({
   street: z.string().optional(),
   zipCode: z.string().optional(),
   city: z.string().optional(),
@@ -59,7 +53,7 @@ const optionalAddress = z.object({
     .optional()
 });
 
-const requiredAddress = z.object({
+export const AddressValidationSchema = z.object({
   street: z
     .string({ error: undefinedRequired })
     .trim()
@@ -82,16 +76,10 @@ const requiredAddress = z.object({
       latitude: z.string().optional(),
       longitude: z.string().optional()
     })
-    .optional(),
-  label: z.string().optional(),
-  value: z.string().optional()
+    .optional()
 });
 
-export const EmptyAddresses = z.array(emptyAddress);
-
-export type EmptyAddresses = z.infer<typeof EmptyAddresses>;
-
-const ReferentValidationSchema = z.object({
+export const ReferentValidationSchema = z.object({
   firstName: z
     .string({ error: undefinedRequired })
     .trim()
@@ -115,21 +103,86 @@ const ReferentValidationSchema = z.object({
     .min(1, REQUIRED_FIELD)
 });
 
-export const ProfileDataValidationSchema = (values: ProfileFormValues) =>
-  z.object({
+export const SalesChannelValidationSchema = z
+  .object({
+    channelType: z.enum(SalesChannelType),
+    websiteUrl: z
+      .url({
+        error: INCORRECT_WEBSITE_URL,
+        protocol: /^https?$/,
+        hostname: z.regexes.domain
+      })
+      .optional(),
+    discountCodeType: z
+      .enum({ ...DiscountCodeType, "": "" }, REQUIRED_FIELD)
+      .optional(),
+    allNationalAddresses: z.boolean(),
+    addresses: z.array(OptionalAddressValidationSchema).optional()
+  })
+  .check(ctx => {
+    if (
+      ctx.value.channelType === SalesChannelType.OnlineChannel ||
+      ctx.value.channelType === SalesChannelType.BothChannels
+    ) {
+      if (!ctx.value.websiteUrl) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.websiteUrl,
+          path: ["websiteUrl"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+      if (!ctx.value.discountCodeType) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.discountCodeType,
+          path: ["discountCodeType"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+    }
+    if (
+      (ctx.value.channelType === SalesChannelType.OfflineChannel ||
+        ctx.value.channelType === SalesChannelType.BothChannels) &&
+      !ctx.value.allNationalAddresses
+    ) {
+      if (
+        !z.array(AddressValidationSchema).min(1).safeParse(ctx.value.addresses)
+          .success
+      ) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.addresses,
+          path: ["addresses"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+
+      ctx.value.addresses?.forEach((address, index) => {
+        if (Object.values(address).some(Boolean)) {
+          AddressValidationSchema.safeParse(address).error?.issues.forEach(
+            issue => {
+              // eslint-disable-next-line functional/immutable-data
+              ctx.issues.push({
+                ...issue,
+                path: ["addresses", index.toString(), ...issue.path]
+              });
+            }
+          );
+        }
+      });
+    }
+  });
+
+export const ProfileDataValidationSchema = z
+  .object({
     hasDifferentName: z.boolean().optional(),
-    name: requiredIf(
-      z.string({ error: undefinedRequired }).trim(),
-      values.hasDifferentName
-    ),
-    name_en: requiredIf(
-      z.string({ error: undefinedRequired }).trim(),
-      values.hasDifferentName
-    ),
-    name_de: requiredIf(
-      z.string({ error: undefinedRequired }).trim(),
-      values.hasDifferentName
-    ),
+    name: z.string({ error: undefinedRequired }).trim().optional(),
+    name_en: z.string({ error: undefinedRequired }).trim().optional(),
+    name_de: z.string({ error: undefinedRequired }).trim().optional(),
     pecAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
     legalOffice: z
       .string({ error: undefinedRequired })
@@ -166,30 +219,38 @@ export const ProfileDataValidationSchema = (values: ProfileFormValues) =>
       .string({ error: undefinedRequired })
       .trim()
       .min(1, REQUIRED_FIELD),
-    salesChannel: z.object({
-      channelType: z.enum(SalesChannelType),
-      websiteUrl: requiredIf(
-        z.url({
-          error: INCORRECT_WEBSITE_URL,
-          protocol: /^https?$/,
-          hostname: z.regexes.domain
-        }),
-        values.salesChannel.channelType === SalesChannelType.OnlineChannel ||
-          values.salesChannel.channelType === SalesChannelType.BothChannels
-      ),
-      discountCodeType: requiredIf(
-        z.enum(DiscountCodeType, REQUIRED_FIELD),
-        values.salesChannel.channelType === SalesChannelType.OnlineChannel ||
-          values.salesChannel.channelType === SalesChannelType.BothChannels
-      ),
-      allNationalAddresses: z.boolean(),
-      addresses:
-        (values.salesChannel.channelType === SalesChannelType.OfflineChannel ||
-          values.salesChannel.channelType === SalesChannelType.BothChannels) &&
-        !values.salesChannel.allNationalAddresses
-          ? z.array(requiredAddress).min(1, REQUIRED_FIELD)
-          : z.array(optionalAddress).optional()
-    })
+    salesChannel: SalesChannelValidationSchema
+  })
+  .check(ctx => {
+    if (ctx.value.hasDifferentName) {
+      if (!ctx.value.name) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.name,
+          path: ["name"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+      if (!ctx.value.name_en) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.name_en,
+          path: ["name_en"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+      if (!ctx.value.name_de) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.name_de,
+          path: ["name_de"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+    }
   });
 
 const checkEycaLandingDifferentFromLandingPageUrl = (

@@ -1,4 +1,5 @@
 import {
+  Address,
   BothChannels,
   OfflineChannel,
   OnlineChannel,
@@ -10,6 +11,19 @@ import {
   PendingAgreement
 } from "./generated_backoffice";
 
+type NormalizedAddresses<S> = Omit<S, "addresses"> & {
+  addresses: Array<NormalizedAddress>;
+};
+
+type NormalizedAddress = Omit<Address, "coordinates"> & {
+  coordinates?: NormalizedCoordinates;
+};
+
+type NormalizedCoordinates = {
+  longitude: number | null;
+  latitude: number | null;
+};
+
 /** Use this type instead of SalesChannel generated type since the generated type is not fully correct */
 export type NormalizedSalesChannel =
   | ({ channelType: typeof SalesChannelType.OnlineChannel } & Omit<
@@ -17,11 +31,11 @@ export type NormalizedSalesChannel =
       "channelType"
     >)
   | ({ channelType: typeof SalesChannelType.OfflineChannel } & Omit<
-      OfflineChannel,
+      NormalizedAddresses<OfflineChannel>,
       "channelType"
     >)
   | ({ channelType: typeof SalesChannelType.BothChannels } & Omit<
-      BothChannels,
+      NormalizedAddresses<BothChannels>,
       "channelType"
     >);
 

@@ -1,87 +1,86 @@
-import { Field, useFormikContext } from "formik";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { Lens } from "@hookform/lenses";
+import { useController, useWatch } from "react-hook-form";
 import { DiscountCodeType, SalesChannelType } from "../../../../api/generated";
-import CustomErrorMessage from "../../CustomErrorMessage";
 import FormSection from "../../FormSection";
+import { SalesChannelFormValues } from "../../operatorDataUtils";
+import {
+  Field,
+  FormErrorMessage
+} from "../../../../utils/react-hook-form-helpers";
 
-type Values = {
-  salesChannel: {
-    discountCodeType: DiscountCodeType;
-    channelType?: SalesChannelType;
-    addresses?: Array<{
-      street?: string;
-      zipCode?: string;
-      city?: string;
-      district?: string;
-    }>;
-    allNationalAddresses?: boolean;
-  };
-};
+const SalesChannelDiscountCodeType = ({
+  formLens
+}: {
+  formLens: Lens<SalesChannelFormValues>;
+}) => {
+  const allNationalAddresses = useWatch(
+    formLens.focus("allNationalAddresses").interop()
+  );
+  const addresses = useWatch(formLens.focus("addresses").interop());
+  const discountCodeType = useWatch(
+    formLens.focus("discountCodeType").interop()
+  );
+  const salesChannelTypeController = useController(
+    formLens.focus("channelType").interop()
+  );
+  const onChangeSalesChannelType = salesChannelTypeController.field.onChange;
+  const updateSalesChannelType = useCallback(
+    (cahnnelType: SalesChannelType) => {
+      onChangeSalesChannelType({
+        target: { value: cahnnelType }
+      });
+    },
+    [onChangeSalesChannelType]
+  );
 
-const SalesChannelDiscountCodeType = () => {
-  const formikContext = useFormikContext<Values>();
-  const formValues = formikContext.values;
-  const formikContextSetFieldValue = formikContext.setFieldValue;
-  const updateSalesChannelType = (channelType: SalesChannelType) => () => {
-    void formikContext.setFieldValue("salesChannel.channelType", channelType);
-  };
+  const thereAreSomeAddresses =
+    addresses?.some(
+      address =>
+        address.street || address.zipCode || address.city || address.district
+    ) || allNationalAddresses;
+
+  const chosenChannelType = (() => {
+    switch (discountCodeType) {
+      case DiscountCodeType.Api:
+      case DiscountCodeType.Static:
+      case DiscountCodeType.Bucket:
+      case DiscountCodeType.LandingPage:
+        return SalesChannelType.OnlineChannel;
+      default:
+        return SalesChannelType.OfflineChannel;
+    }
+  })();
+
   // here we are using an effect because there is more code that uses channelType attribute on the form for checks
   // logically channelType is a derived value based on discountCodeType, addresses, allNationalAddresses
   // channelType can be factored out from the form values, but i still needs to be sent to the backend at this point
   useEffect(() => {
-    const thereAreSomeAddresses =
-      formValues.salesChannel.addresses?.some(
-        address =>
-          address.street || address.zipCode || address.city || address.district
-      ) || formValues.salesChannel?.allNationalAddresses;
-    const chosenChannelType = (() => {
-      switch (formValues.salesChannel.discountCodeType) {
-        case DiscountCodeType.Api:
-        case DiscountCodeType.Static:
-        case DiscountCodeType.Bucket:
-        case DiscountCodeType.LandingPage:
-          return SalesChannelType.OnlineChannel;
-        default:
-          return SalesChannelType.OfflineChannel;
-      }
-    })();
     if (
       thereAreSomeAddresses &&
       chosenChannelType === SalesChannelType.OfflineChannel
     ) {
-      void formikContextSetFieldValue(
-        "salesChannel.channelType",
-        SalesChannelType.OfflineChannel
-      );
+      updateSalesChannelType(SalesChannelType.OfflineChannel);
     }
     if (
       thereAreSomeAddresses &&
       chosenChannelType === SalesChannelType.OnlineChannel
     ) {
-      void formikContextSetFieldValue(
-        "salesChannel.channelType",
-        SalesChannelType.BothChannels
-      );
+      updateSalesChannelType(SalesChannelType.BothChannels);
     }
     if (
       !thereAreSomeAddresses &&
       chosenChannelType === SalesChannelType.OfflineChannel
     ) {
-      void formikContextSetFieldValue(
-        "salesChannel.channelType",
-        SalesChannelType.OfflineChannel
-      );
+      updateSalesChannelType(SalesChannelType.OfflineChannel);
     }
     if (
       !thereAreSomeAddresses &&
       chosenChannelType === SalesChannelType.OnlineChannel
     ) {
-      void formikContextSetFieldValue(
-        "salesChannel.channelType",
-        SalesChannelType.OnlineChannel
-      );
+      updateSalesChannelType(SalesChannelType.OnlineChannel);
     }
-  }, [formValues, formikContextSetFieldValue]);
+  }, [chosenChannelType, thereAreSomeAddresses, updateSalesChannelType]);
 
   return (
     <FormSection
@@ -108,9 +107,11 @@ const SalesChannelDiscountCodeType = () => {
           <Field
             id="api"
             type="radio"
-            name="salesChannel.discountCodeType"
+            formLens={formLens.focus("discountCodeType")}
             value={DiscountCodeType.Api}
-            onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
+            onClick={() =>
+              updateSalesChannelType(SalesChannelType.OnlineChannel)
+            }
           />
           <label
             className="text-sm fw-normal text-black form-label"
@@ -135,9 +136,11 @@ const SalesChannelDiscountCodeType = () => {
           <Field
             id="staticCode"
             type="radio"
-            name="salesChannel.discountCodeType"
+            formLens={formLens.focus("discountCodeType")}
             value={DiscountCodeType.Static}
-            onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
+            onClick={() =>
+              updateSalesChannelType(SalesChannelType.OnlineChannel)
+            }
           />
           <label
             className="text-sm fw-normal text-black form-label"
@@ -160,9 +163,11 @@ const SalesChannelDiscountCodeType = () => {
           <Field
             id="bucket"
             type="radio"
-            name="salesChannel.discountCodeType"
+            formLens={formLens.focus("discountCodeType")}
             value={DiscountCodeType.Bucket}
-            onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
+            onClick={() =>
+              updateSalesChannelType(SalesChannelType.OnlineChannel)
+            }
           />
           <label
             className="text-sm fw-normal text-black form-label"
@@ -188,9 +193,11 @@ const SalesChannelDiscountCodeType = () => {
           <Field
             id="landingPage"
             type="radio"
-            name="salesChannel.discountCodeType"
+            formLens={formLens.focus("discountCodeType")}
             value={DiscountCodeType.LandingPage}
-            onClick={updateSalesChannelType(SalesChannelType.OnlineChannel)}
+            onClick={() =>
+              updateSalesChannelType(SalesChannelType.OnlineChannel)
+            }
           />
           <label
             className="text-sm fw-normal text-black form-label"
@@ -214,9 +221,11 @@ const SalesChannelDiscountCodeType = () => {
           <Field
             id="physcalPlace"
             type="radio"
-            name="salesChannel.discountCodeType"
+            formLens={formLens.focus("discountCodeType")}
             value=""
-            onClick={updateSalesChannelType(SalesChannelType.OfflineChannel)}
+            onClick={() =>
+              updateSalesChannelType(SalesChannelType.OfflineChannel)
+            }
           />
           <label
             className="text-sm fw-normal text-black form-label"
@@ -235,7 +244,7 @@ const SalesChannelDiscountCodeType = () => {
             </span>
           </label>
         </div>
-        <CustomErrorMessage name={`salesChannel.discountCodeType`} />
+        <FormErrorMessage formLens={formLens.focus("discountCodeType")} />
       </div>
     </FormSection>
   );
