@@ -77,7 +77,7 @@ const DiscountData = ({
 
   const updateDiscountMutation =
     remoteData.Index.Discount.updateDiscount.useMutation({
-      onError: updateDiscountMutationOnError({ triggerTooltip })
+      onError: updateDiscountMutationOnError(triggerTooltip)
     });
 
   const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery(

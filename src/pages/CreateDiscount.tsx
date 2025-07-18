@@ -1,5 +1,5 @@
+import { CreateEditDiscountForm } from "../components/Form/CreateEditDiscountForm";
 import CreateLayout from "../components/Layout/CreateLayout";
-import CreateDiscountForm from "../components/Form/CreateDiscountForm/CreateDiscountForm";
 
 function CreateDiscount() {
   return (
@@ -7,7 +7,7 @@ function CreateDiscount() {
       breadcrumbLabel="Aggiungi opportunità"
       title="Dati opportunità"
     >
-      <CreateDiscountForm />
+      <CreateEditDiscountForm />
     </CreateLayout>
   );
 }

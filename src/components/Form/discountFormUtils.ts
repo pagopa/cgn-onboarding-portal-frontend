@@ -136,9 +136,9 @@ export function discountFormValuesToRequest(
   };
 }
 
-export function updateDiscountMutationOnError({
-  triggerTooltip
-}: TooltipContextProps) {
+export function updateDiscountMutationOnError(
+  triggerTooltip: TooltipContextProps["triggerTooltip"]
+) {
   return (error: AxiosError<unknown, unknown>) => {
     if (error.status === 409) {
       triggerTooltip({

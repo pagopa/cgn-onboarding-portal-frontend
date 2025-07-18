@@ -93,7 +93,7 @@ export const EditOperatorForm = ({
                 >
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
-                    isEnabled={true}
+                    isEnabled={!editProfileMutation.isPending}
                   />
                 </SalesChannels>
               </Fragment>
@@ -110,7 +110,7 @@ export const EditOperatorForm = ({
                 <ReferentData formLens={form.lens}>
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
-                    isEnabled={true}
+                    isEnabled={!editProfileMutation.isPending}
                   />
                 </ReferentData>
               </Fragment>
