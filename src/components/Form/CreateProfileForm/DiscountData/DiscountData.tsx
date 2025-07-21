@@ -3,7 +3,7 @@ import { FieldArray, Form, Formik } from "formik";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
-import { Severity, useTooltip } from "../../../../context/tooltip";
+import { useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
@@ -13,16 +13,13 @@ import FormSection from "../../FormSection";
 import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import { remoteData } from "../../../../api/common";
 import {
+  createDiscountMutationOnError,
   discountEmptyInitialValues,
   discountFormValuesToRequest,
   discountToFormValues,
   updateDiscountMutationOnError
 } from "../../discountFormUtils";
 import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
-
-const emptyInitialValues = {
-  discounts: [discountEmptyInitialValues]
-};
 
 type Props = {
   isCompleted: boolean;
@@ -31,12 +28,6 @@ type Props = {
   onUpdate: () => void;
 };
 
-/**
- * These are the entry points for forms for discounts. This comment is repeated in every file.
- * src/components/Form/CreateProfileForm/DiscountData/DiscountData.tsx Used in onboarding process
- * src/components/Form/CreateDiscountForm/CreateDiscountForm.tsx Used to create new discount once onboarded
- * src/components/Form/EditDiscountForm/EditDiscountForm.tsx  Used to edit new discount once onboarded
- */
 const DiscountData = ({
   handleBack,
   handleNext,
@@ -45,10 +36,6 @@ const DiscountData = ({
 }: Props) => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const { triggerTooltip } = useTooltip();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
@@ -60,19 +47,7 @@ const DiscountData = ({
 
   const createDiscountMutation =
     remoteData.Index.Discount.createDiscount.useMutation({
-      onError(error) {
-        if (error.status === 409) {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Upload codici ancora in corso"
-          });
-        } else {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
-          });
-        }
-      }
+      onError: createDiscountMutationOnError(triggerTooltip)
     });
 
   const updateDiscountMutation =
@@ -80,13 +55,12 @@ const DiscountData = ({
       onError: updateDiscountMutationOnError(triggerTooltip)
     });
 
+  const deleteDiscountMutation =
+    remoteData.Index.Discount.deleteDiscount.useMutation();
+
   const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery(
-    {
-      agreementId: agreement.id
-    },
-    {
-      enabled: isCompleted
-    }
+    { agreementId: agreement.id },
+    { enabled: isCompleted }
   );
 
   const initialValues = useMemo(() => {
@@ -95,12 +69,13 @@ const DiscountData = ({
         discounts: discountsQuery.data.items.map(discountToFormValues)
       };
     } else {
-      return emptyInitialValues;
+      return { discounts: [discountEmptyInitialValues] };
     }
   }, [discountsQuery.data]);
 
-  const deleteDiscountMutation =
-    remoteData.Index.Discount.deleteDiscount.useMutation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const isPending =
     profileQuery.isPending || (isCompleted ? discountsQuery.isPending : false);

@@ -136,6 +136,24 @@ export function discountFormValuesToRequest(
   };
 }
 
+export function createDiscountMutationOnError(
+  triggerTooltip: TooltipContextProps["triggerTooltip"]
+) {
+  return (error: AxiosError<unknown, unknown>) => {
+    if (error.status === 409) {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Upload codici ancora in corso"
+      });
+    } else {
+      triggerTooltip({
+        severity: Severity.DANGER,
+        text: "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
+      });
+    }
+  };
+}
+
 export function updateDiscountMutationOnError(
   triggerTooltip: TooltipContextProps["triggerTooltip"]
 ) {

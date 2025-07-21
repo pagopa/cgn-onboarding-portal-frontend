@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { remoteData } from "../../api/common";
-import { Severity, useTooltip } from "../../context/tooltip";
+import { useTooltip } from "../../context/tooltip";
 import { DASHBOARD } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
@@ -14,6 +14,7 @@ import DiscountInfo from "./CreateProfileForm/DiscountData/DiscountInfo";
 import FormSection from "./FormSection";
 import { discountDataValidationSchema } from "./ValidationSchemas";
 import {
+  createDiscountMutationOnError,
   discountFormValuesToRequest,
   discountToFormValues,
   updateDiscountMutationOnError
@@ -38,12 +39,7 @@ export const CreateEditDiscountForm = () => {
       onSuccess() {
         history.push(DASHBOARD);
       },
-      onError() {
-        triggerTooltip({
-          severity: Severity.DANGER,
-          text: "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
-        });
-      }
+      onError: createDiscountMutationOnError(triggerTooltip)
     });
 
   const updateDiscountMutation =
@@ -55,13 +51,8 @@ export const CreateEditDiscountForm = () => {
     });
 
   const discountQuery = remoteData.Index.Discount.getDiscountById.useQuery(
-    {
-      agreementId: agreement.id,
-      discountId
-    },
-    {
-      enabled: Boolean(discountId)
-    }
+    { agreementId: agreement.id, discountId },
+    { enabled: Boolean(discountId) }
   );
   const discount = discountQuery.data;
   const initialValues = useMemo(
