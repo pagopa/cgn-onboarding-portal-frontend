@@ -83,8 +83,8 @@ const DiscountData = ({
   const initialValues = useMemo(
     () =>
       discountsQuery.data
-        ? discountsQuery.data.items.map(discountToFormValues)
-        : [discountEmptyInitialValues],
+        ? { discounts: discountsQuery.data.items.map(discountToFormValues) }
+        : { discounts: [discountEmptyInitialValues] },
     [discountsQuery.data]
   );
 
@@ -94,12 +94,14 @@ const DiscountData = ({
 
   const form = useStandardForm({
     values: initialValues,
-    zodSchema: z.array(
-      discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
-    )
+    zodSchema: z.object({
+      discounts: z.array(
+        discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
+      )
+    })
   });
 
-  const discountsArray = useFieldArray(form.lens.interop());
+  const discountsArray = useFieldArray(form.lens.focus("discounts").interop());
 
   const isPending =
     !profile ||
@@ -116,7 +118,7 @@ const DiscountData = ({
         // eslint-disable-next-line functional/no-let
         let triggerOnUpdate = false;
         try {
-          for (const vals of values) {
+          for (const vals of values.discounts) {
             const discount = discountFormValuesToRequest(vals);
             if (isCompleted && vals.id) {
               await updateDiscountMutation.mutateAsync({
@@ -141,9 +143,9 @@ const DiscountData = ({
         }
       })}
     >
-      {form.lens.map(
-        discountsArray.fields,
-        (discount, itemLens, index, array) => (
+      {form.lens
+        .focus("discounts")
+        .map(discountsArray.fields, (discount, itemLens, index, array) => (
           <FormContainer key={index} className={index <= 1 ? "mb-20" : ""}>
             <FormSection
               hasIntroduction
@@ -194,7 +196,7 @@ const DiscountData = ({
                       className="px-14"
                       color="primary"
                       tag="button"
-                      aria-disabled={
+                      disabled={
                         form.formState.isSubmitting ||
                         createDiscountMutation.isPending ||
                         updateDiscountMutation.isPending ||
@@ -208,8 +210,7 @@ const DiscountData = ({
               )}
             </FormSection>
           </FormContainer>
-        )
-      )}
+        ))}
     </form>
   );
 };
