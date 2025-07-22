@@ -1,10 +1,10 @@
 import { useHistory, useParams } from "react-router-dom";
-import { Severity, useTooltip } from "../../../context/tooltip";
-import { remoteData } from "../../../api/common";
-import { ADMIN_PANEL_ACCESSI } from "../../../navigation/routes";
-import { OrganizationWithReferents } from "../../../api/generated_backoffice";
-import ActivationForm from "../ActivationForm";
-import CenteredLoading from "../../CenteredLoading/CenteredLoading";
+import { Severity, useTooltip } from "../../context/tooltip";
+import { remoteData } from "../../api/common";
+import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
+import { OrganizationWithReferents } from "../../api/generated_backoffice";
+import CenteredLoading from "../CenteredLoading/CenteredLoading";
+import ActivationForm from "./ActivationForm";
 
 const emptyInitialValues: OrganizationWithReferents = {
   keyOrganizationFiscalCode: "",
@@ -74,7 +74,7 @@ const CreateEditActivationForm = () => {
         }
       }}
       isSubmitting={upsertActivationMutation.isPending}
-      canChangeEntityType={!operatorFiscalCode}
+      canChangeEntityType={true}
     />
   );
 };
