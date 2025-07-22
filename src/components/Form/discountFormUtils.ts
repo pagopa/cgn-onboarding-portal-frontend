@@ -13,7 +13,7 @@ export type DiscountFormInputValues = z.input<
   ReturnType<typeof discountDataValidationSchema>
 >;
 
-export type DiscountFormOutputValues = z.output<
+type DiscountFormOutputValues = z.output<
   ReturnType<typeof discountDataValidationSchema>
 >;
 
