@@ -3,8 +3,13 @@ import { Link } from "react-router-dom";
 import { remoteData } from "../../api/common";
 import { EDIT_PROFILE } from "../../navigation/routes";
 import { RootState } from "../../store/store";
-import type { Profile, Referent } from "../../api/generated";
+import {
+  SalesChannelType,
+  type Profile,
+  type Referent
+} from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
+import { NormalizedSalesChannel } from "../../api/dtoTypeFixes";
 import ProfileItem from "./ProfileItem";
 import ProfileDocuments from "./ProfileDocuments";
 import ProfileApiToken from "./ProfileApiToken";
@@ -16,9 +21,16 @@ const Profile = () => {
     agreementId: agreement.id
   });
 
-  const hasProfileApiToken = () =>
+  const salesChannel = profile?.salesChannel as
+    | NormalizedSalesChannel
+    | undefined;
+
+  const hasProfileApiToken =
     agreement.state === "ApprovedAgreement" &&
-    (profile?.salesChannel as any).discountCodeType === "API";
+    salesChannel &&
+    (salesChannel.channelType === SalesChannelType.OnlineChannel ||
+      salesChannel.channelType === SalesChannelType.BothChannels) &&
+    salesChannel.discountCodeType === "API";
 
   return (
     <>
@@ -99,7 +111,7 @@ const Profile = () => {
           )}
         </section>
       )}
-      {profile && hasProfileApiToken() && <ProfileApiToken />}
+      {profile && hasProfileApiToken && <ProfileApiToken />}
       <ProfileDocuments />
     </>
   );

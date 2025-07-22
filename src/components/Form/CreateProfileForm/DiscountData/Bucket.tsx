@@ -1,6 +1,6 @@
 import { ComponentProps, memo, useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
-import { Field } from "formik";
+import { Field, FormikHelpers } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
@@ -11,14 +11,25 @@ import bucketTemplate from "../../../../templates/test-codes";
 import { BucketCodeLoadStatus } from "../../../../api/generated";
 import { remoteData } from "../../../../api/common";
 import { generateCsvDataUri } from "../../../../utils/generateCsvDataUri";
+import { DiscountFormValues } from "../../discountFormUtils";
 
 type Props = {
   label: string;
-  formValues: any;
-  setFieldValue: any;
   agreementId: string;
-  index?: number;
-};
+  setFieldValue: FormikHelpers<
+    DiscountFormValues | { discounts: Array<DiscountFormValues> }
+  >["setFieldValue"];
+} & (
+  | {
+      formValues: DiscountFormValues;
+      // eslint-disable-next-line sonarjs/no-redundant-optional
+      index?: undefined;
+    }
+  | {
+      formValues: { discounts: Array<DiscountFormValues> };
+      index: number;
+    }
+);
 
 const BucketComponent = ({
   index,
@@ -77,13 +88,13 @@ const BucketComponent = ({
             }
           }
         );
-        setFieldValue(
+        void setFieldValue(
           hasIndex
             ? `discounts[${index}].lastBucketCodeLoadUid`
             : "lastBucketCodeLoadUid",
           data.uid
         );
-        setFieldValue(
+        void setFieldValue(
           hasIndex
             ? `discounts[${index}].lastBucketCodeLoadFileName`
             : "lastBucketCodeLoadFileName",

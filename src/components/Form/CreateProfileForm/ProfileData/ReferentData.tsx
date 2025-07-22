@@ -17,7 +17,7 @@ type ReferentData = {
 };
 
 type Props = {
-  index: number | null;
+  index?: number;
   showAdd: boolean;
   onAdd(): void;
   showRemove: boolean;
@@ -34,14 +34,16 @@ const Referent = ({
   children
 }: Props) => {
   const referentFieldName =
-    index !== null ? `secondaryReferents[${index}]` : "referent";
+    index !== undefined ? `secondaryReferents[${index}]` : "referent";
   const referentFieldId =
-    index !== null ? `secondaryReferents[${index}]` : "referent";
+    index !== undefined ? `secondaryReferents[${index}]` : "referent";
   return (
     <FormSection
-      title={index !== null ? `Referente ${index + 2}` : "Dati del referente"}
+      title={
+        index !== undefined ? `Referente ${index + 2}` : "Dati del referente"
+      }
       description={
-        index === null
+        index === undefined
           ? `Indica il nome della persona che sarà referente primario di Carta Giovani Nazionale per il tuo operatore. Riceverà tutte le comunicazioni che riguardano il programma e la gestione delle opportunità.`
           : `Indica il nome di un’altra persona che sarà referente di Carta Giovani Nazionale per il tuo operatore. Riceverà tutte le comunicazioni che riguardano il programma e la gestione delle opportunità. Puoi indicarne fino a ${MAX_SECONDARY_REFERENTS} aggiuntivi.`
       }
@@ -157,7 +159,6 @@ function ReferentData({ children }: { children?: React.ReactNode }) {
         return (
           <Fragment>
             <Referent
-              index={null}
               showAdd={noSecondaryReferents}
               onAdd={add}
               showRemove={false}

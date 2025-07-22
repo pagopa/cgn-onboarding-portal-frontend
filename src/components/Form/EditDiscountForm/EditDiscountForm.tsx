@@ -4,14 +4,10 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { remoteData } from "../../../api/common";
-import { Discount } from "../../../api/generated";
+import { UpdateDiscount } from "../../../api/generated";
 import { useTooltip } from "../../../context/tooltip";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
-import {
-  withNormalizedSpaces,
-  clearIfReferenceIsBlank
-} from "../../../utils/strings";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../CreateProfileForm/DiscountData/DiscountInfo";
 import { getDiscountTypeChecks } from "../../../utils/formChecks";
@@ -19,8 +15,9 @@ import FormSection from "../FormSection";
 import { discountDataValidationSchema } from "../ValidationSchemas";
 import {
   updateDiscountMutationOnError,
-  discountEmptyInitialValues,
-  sanitizeDiscountFormValues
+  discountFormValuesToRequest,
+  DiscountFormValues,
+  discountToFormValues
 } from "../discountFormUtils";
 import { zodSchemaToFormikValidationSchema } from "../../../utils/zodFormikAdapter";
 
@@ -52,7 +49,7 @@ const EditDiscountForm = () => {
       },
       onError: updateDiscountMutationOnError(tooltip)
     });
-  const updateDiscount = (agreementId: string, discount: Discount) => {
+  const updateDiscount = (agreementId: string, discount: UpdateDiscount) => {
     updateDiscountMutation.mutate({ agreementId, discountId, discount });
   };
 
@@ -61,39 +58,10 @@ const EditDiscountForm = () => {
     discountId
   });
   const discount = discountQuery.data;
-  const initialValues = useMemo(() => {
-    if (!discount) {
-      return { ...discountEmptyInitialValues };
-    }
-    const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
-      discount.description
-    );
-    const cleanedIfConditionIsBlank = clearIfReferenceIsBlank(
-      discount.condition
-    );
-    return {
-      ...discount,
-      name: withNormalizedSpaces(discount.name),
-      name_en: withNormalizedSpaces(discount.name_en),
-      name_de: "-",
-      description: cleanedIfDescriptionIsBlank(discount.description),
-      description_en: cleanedIfDescriptionIsBlank(discount.description_en),
-      description_de: "-",
-      condition: cleanedIfConditionIsBlank(discount.condition),
-      condition_en: cleanedIfConditionIsBlank(discount.condition_en),
-      condition_de: "-",
-      discountUrl: discount.discountUrl ?? undefined,
-      startDate: new Date(discount.startDate),
-      endDate: new Date(discount.endDate),
-      landingPageReferrer: discount.landingPageReferrer ?? undefined,
-      landingPageUrl: discount.landingPageUrl ?? undefined,
-      discount: discount.discount ?? undefined,
-      staticCode: discount.staticCode ?? undefined,
-      lastBucketCodeLoadUid: discount.lastBucketCodeLoadUid ?? undefined,
-      lastBucketCodeLoadFileName:
-        discount.lastBucketCodeLoadFileName ?? undefined
-    };
-  }, [discount]);
+  const initialValues = useMemo(
+    () => discountToFormValues(discount),
+    [discount]
+  );
 
   const isPending = profileQuery.isPending || discountQuery.isPending;
 
@@ -103,11 +71,11 @@ const EditDiscountForm = () => {
 
   return (
     <>
-      <Formik
+      <Formik<DiscountFormValues>
         enableReinitialize
         initialValues={initialValues}
         validationSchema={() =>
-          zodSchemaToFormikValidationSchema(
+          zodSchemaToFormikValidationSchema(() =>
             discountDataValidationSchema(
               checkStaticCode,
               checkLanding,
@@ -116,7 +84,7 @@ const EditDiscountForm = () => {
           )
         }
         onSubmit={values => {
-          const newValues = sanitizeDiscountFormValues(values);
+          const newValues = discountFormValuesToRequest(values);
           updateDiscount(agreement.id, newValues);
         }}
       >
@@ -124,9 +92,9 @@ const EditDiscountForm = () => {
           <Form autoComplete="off">
             <FormSection hasIntroduction>
               <DiscountInfo
-                formValues={values}
                 setFieldValue={setFieldValue}
                 profile={profile}
+                formValues={values}
               />
               {discount?.state !== "draft" && (
                 <div className="d-flex mt-10 gap-4 flex-wrap">

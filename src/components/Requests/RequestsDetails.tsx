@@ -2,10 +2,11 @@ import { Fragment, useState } from "react";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import { useTooltip, Severity } from "../../context/tooltip";
-import { Agreement, EntityType } from "../../api/generated_backoffice";
+import { AgreementState, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
+import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -14,7 +15,7 @@ const RequestsDetails = ({
   original,
   updateList
 }: {
-  original: Agreement;
+  original: NormalizedBackofficeAgreement;
   updateList: () => void;
 }) => {
   const [rejectMode, setRejectMode] = useState(false);
@@ -29,7 +30,9 @@ const RequestsDetails = ({
 
   const assignedToMe =
     `${user?.first_name} ${user?.last_name}` ===
-    (original as any).assignee?.fullName;
+    (original.state === AgreementState.AssignedAgreement
+      ? original.assignee.fullName
+      : undefined);
 
   const approveAgreementMutation =
     remoteData.Backoffice.Agreement.approveAgreement.useMutation({

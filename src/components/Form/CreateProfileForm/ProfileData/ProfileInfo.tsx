@@ -9,10 +9,12 @@ import { ProfileDataValidationSchema } from "../../ValidationSchemas";
 
 type Props = {
   entityType: EntityType | undefined;
+  fullName: string;
+  taxCodeOrVat: string;
 };
 
-const ProfileInfo = ({ entityType }: Props) => {
-  type Values = z.infer<typeof ProfileDataValidationSchema>;
+const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
+  type Values = z.infer<ReturnType<typeof ProfileDataValidationSchema>>;
   const formikContext = useFormikContext<Values>();
   return (
     <FormSection hasIntroduction isVisible={false} title="Dati dell’operatore">
@@ -25,6 +27,7 @@ const ProfileInfo = ({ entityType }: Props) => {
         <Field
           id="fullName"
           name="fullName"
+          value={fullName}
           type="text"
           disabled
           className="form-control"
@@ -94,6 +97,7 @@ const ProfileInfo = ({ entityType }: Props) => {
         <Field
           id="taxCodeOrVat"
           name="taxCodeOrVat"
+          value={taxCodeOrVat}
           type="text"
           disabled
           className="form-control"

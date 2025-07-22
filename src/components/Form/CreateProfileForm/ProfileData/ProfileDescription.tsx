@@ -21,6 +21,7 @@ const ProfileDescription = () => (
           rows="4"
           className="form-control"
         />
+        <CustomErrorMessage name="description" />
       </div>
       <div className="col-6">
         <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
@@ -33,9 +34,9 @@ const ProfileDescription = () => (
           rows="4"
           className="form-control"
         />
+        <CustomErrorMessage name="description_en" />
       </div>
     </div>
-    <CustomErrorMessage name="description" />
   </FormSection>
 );
 
