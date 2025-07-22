@@ -599,15 +599,18 @@ export const activationValidationSchema = z.object({
   pec: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
   referents: z
     .array(
-      z
-        .string({ error: undefinedRequired })
-        .trim()
-        .min(4, "Deve essere al minimo di 4 caratteri")
-        .max(20, "Deve essere al massimo di 20 caratteri")
-        .regex(fiscalCodeRegex, "Il codice fiscale inserito non è corretto")
-        .min(1, REQUIRED_FIELD)
+      z.object({
+        fiscalCode: z
+          .string({ error: undefinedRequired })
+          .trim()
+          .min(4, "Deve essere al minimo di 4 caratteri")
+          .max(20, "Deve essere al massimo di 20 caratteri")
+          .regex(fiscalCodeRegex, "Il codice fiscale inserito non è corretto")
+          .min(1, REQUIRED_FIELD)
+      })
     )
-    .min(1, REQUIRED_FIELD),
+    .min(1, REQUIRED_FIELD)
+    .transform(val => val.map(item => item.fiscalCode)),
   insertedAt: z.string().optional(),
-  entityType: z.enum(EntityType)
+  entityType: z.pipe(z.string().optional(), z.enum(EntityType, REQUIRED_FIELD))
 });
