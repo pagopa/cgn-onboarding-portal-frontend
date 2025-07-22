@@ -1,5 +1,6 @@
 import { z } from "zod/v4";
 import {
+  BucketCodeLoadStatus,
   DiscountCodeType,
   HelpRequestCategoryEnum,
   ProductCategory,
@@ -148,18 +149,16 @@ export const SalesChannelValidationSchema = z
         ctx.value.channelType === SalesChannelType.BothChannels) &&
       !ctx.value.allNationalAddresses
     ) {
-      if (
-        !z.array(AddressValidationSchema).min(1).safeParse(ctx.value.addresses)
-          .success
-      ) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          input: ctx.value.addresses,
-          path: ["addresses"],
-          code: "custom",
-          message: REQUIRED_FIELD
+      z.array(AddressValidationSchema)
+        .min(1)
+        .safeParse(ctx.value.addresses)
+        .error?.issues.forEach(issue => {
+          // eslint-disable-next-line functional/immutable-data
+          ctx.issues.push({
+            ...issue,
+            path: ["addresses", ...issue.path]
+          });
         });
-      }
 
       ctx.value.addresses?.forEach((address, index) => {
         if (Object.values(address).some(Boolean)) {
@@ -270,6 +269,7 @@ export const discountDataValidationSchema = (
 ) =>
   z
     .object({
+      id: z.string().optional(),
       name: z
         .string({ error: undefinedRequired })
         .trim()
@@ -288,48 +288,80 @@ export const discountDataValidationSchema = (
       description: z.string().max(250).optional(),
       description_en: z.string().max(250).optional(),
       description_de: z.string().max(250).optional(),
-      discountUrl: z
-        .url({
+      discountUrl: z.union([
+        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
+        z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
           hostname: z.regexes.domain
         })
-        .optional(),
-      startDate: z.date({ error: undefinedRequired }),
-      endDate: z.date({ error: undefinedRequired }),
-      discount: z.coerce
-        .number(DISCOUNT_RANGE)
-        .int(DISCOUNT_RANGE)
-        .min(1, DISCOUNT_RANGE)
-        .max(100, DISCOUNT_RANGE)
-        .optional(),
-      productCategories: z
-        .array(z.enum(ProductCategory, "Categoria merceologica non valida"))
-        .min(1, PRODUCT_CATEGORIES_ONE)
-        .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX),
+      ]),
+      startDate: z.pipe(
+        z.date().optional(),
+        z.date({ error: undefinedRequired })
+      ),
+      endDate: z.pipe(
+        z.date().optional(),
+        z.date({ error: undefinedRequired })
+      ),
+      discount: z
+        .string()
+        .trim()
+        .transform((val, ctx) => {
+          const num = Number(val);
+          if (val === "") {
+            return undefined;
+          }
+          if (Number.isInteger(num) && num > 1 && num < 100) {
+            return num;
+          } else {
+            // eslint-disable-next-line functional/immutable-data
+            ctx.issues.push({
+              code: "custom",
+              input: val,
+              message: DISCOUNT_RANGE
+            });
+          }
+          return isNaN(num) ? undefined : num;
+        }),
+      productCategories: z.pipe(
+        z
+          .partialRecord(z.enum(ProductCategory), z.boolean())
+          .transform(categories =>
+            (Object.keys(categories) as Array<ProductCategory>).filter(
+              category => categories[category]
+            )
+          ),
+        z
+          .array(z.enum(ProductCategory, "Categoria merceologica non valida"))
+          .min(1, PRODUCT_CATEGORIES_ONE)
+          .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX)
+      ),
       condition: z.string().optional(),
       condition_en: z.string().optional(),
       condition_de: z.string().optional(),
       staticCode: z.string().optional(),
-      landingPageUrl: z
-        .url({
+      landingPageUrl: z.union([
+        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
+        z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
           hostname: z.regexes.domain
         })
-        .optional(),
+      ]),
       landingPageReferrer: z.string().optional(),
       lastBucketCodeLoadUid: z.string().optional(),
       lastBucketCodeLoadFileName: z.string().optional(),
+      lastBucketCodeLoadStatus: z.enum(BucketCodeLoadStatus).optional(),
       visibleOnEyca: z.boolean().optional(),
-      eycaLandingPageUrl: z
-        .url({
+      eycaLandingPageUrl: z.union([
+        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
+        z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
           hostname: z.regexes.domain
         })
-        .optional()
-        .nullable()
+      ])
     })
     // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
     .check(ctx => {
@@ -464,17 +496,6 @@ export const discountDataValidationSchema = (
         }
       }
     });
-
-export const discountsListDataValidationSchema = (
-  staticCheck: boolean,
-  landingCheck: boolean,
-  bucketCheck: boolean
-) =>
-  z.object({
-    discounts: z.array(
-      discountDataValidationSchema(staticCheck, landingCheck, bucketCheck)
-    )
-  });
 
 function helpTopicValidation(
   ctx: z.core.ParsePayload<{

@@ -68,6 +68,7 @@ const topics = () => [
   }
 ];
 
+// eslint-disable-next-line complexity
 const HelpForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const history = useHistory();
@@ -113,6 +114,11 @@ const HelpForm = () => {
   });
 
   const form = isLogged ? loggedForm : notLoggedForm;
+
+  const submitIsEnabled =
+    !form.formState.isSubmitting &&
+    !createLoggedHelpMutation.isPending &&
+    !createNotLoggedHelpMutation.isPending;
 
   return (
     <form
@@ -335,7 +341,7 @@ const HelpForm = () => {
             }
           />
         </InputField>
-        {isLogged && <FormButtons />}
+        {isLogged && <FormButtons isEnabled={submitIsEnabled} />}
       </FormSection>
       {!isLogged && (
         <FormSection
@@ -437,7 +443,7 @@ const HelpForm = () => {
               </InputFieldMultiple>
             </div>
           </div>
-          <FormButtons />
+          <FormButtons isEnabled={submitIsEnabled} />
           <p className="mt-4 text-gray">
             Form protetto tramite reCAPTCHA e Google{" "}
             <a href="https://policies.google.com/privacy">Privacy Policy</a> e{" "}

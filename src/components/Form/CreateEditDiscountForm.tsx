@@ -1,5 +1,4 @@
 import { Button } from "design-react-kit";
-import { Form, Formik } from "formik";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
@@ -9,7 +8,7 @@ import { DASHBOARD } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
-import { zodSchemaToFormikValidationSchema } from "../../utils/zodFormikAdapter";
+import { useStandardForm } from "../../utils/useStandardForm";
 import DiscountInfo from "./CreateProfileForm/DiscountData/DiscountInfo";
 import FormSection from "./FormSection";
 import { discountDataValidationSchema } from "./ValidationSchemas";
@@ -60,7 +59,17 @@ export const CreateEditDiscountForm = () => {
     [discount]
   );
 
-  const isPending = profileQuery.isPending || discountQuery.isPending;
+  const form = useStandardForm({
+    values: initialValues,
+    zodSchema: discountDataValidationSchema(
+      checkStaticCode,
+      checkLanding,
+      checkBucket
+    )
+  });
+
+  const isPending =
+    profileQuery.isPending || (discountId && discountQuery.isPending);
 
   if (isPending) {
     return <CenteredLoading />;
@@ -69,69 +78,52 @@ export const CreateEditDiscountForm = () => {
   const isDraft = discount?.state === "draft";
 
   return (
-    <Formik
-      enableReinitialize
-      initialValues={initialValues}
-      validationSchema={() =>
-        zodSchemaToFormikValidationSchema(() =>
-          discountDataValidationSchema(
-            checkStaticCode,
-            checkLanding,
-            checkBucket
-          )
-        )
-      }
-      onSubmit={values => {
+    <form
+      autoComplete="off"
+      onSubmit={form.handleSubmit(async values => {
         const newValues = discountFormValuesToRequest(values);
         if (discountId) {
-          updateDiscountMutation.mutate({
+          await updateDiscountMutation.mutateAsync({
             agreementId: agreement.id,
             discountId,
             discount: newValues
           });
         } else {
-          createDiscountMutation.mutate({
+          await createDiscountMutation.mutateAsync({
             agreementId: agreement.id,
             discount: newValues
           });
         }
-      }}
+      })}
     >
-      {({ values, setFieldValue }) => (
-        <Form autoComplete="off">
-          <FormSection hasIntroduction>
-            <DiscountInfo
-              profile={profile}
-              formValues={values}
-              setFieldValue={setFieldValue}
-            />
-            <div className="d-flex mt-10 gap-4 flex-wrap">
-              <Button
-                className="px-14"
-                outline={!isDraft}
-                color={isDraft ? "secondary" : "primary"}
-                tag="button"
-                onClick={() => history.push(DASHBOARD)}
-              >
-                {isDraft ? "Annulla" : "Indietro"}
-              </Button>
-              <Button
-                type="submit"
-                className="px-14"
-                color="primary"
-                outline={isDraft}
-                tag="button"
-                disabled={
-                  updateDiscountMutation.isPending ||
-                  createDiscountMutation.isPending
-                }
-              >
-                Salva
-              </Button>
-            </div>
-          </FormSection>
-        </Form>
-      )}
-    </Formik>
+      <FormSection hasIntroduction>
+        {profile && <DiscountInfo profile={profile} formLens={form.lens} />}
+        <div className="d-flex mt-10 gap-4 flex-wrap">
+          <Button
+            className="px-14"
+            outline={!isDraft}
+            color={isDraft ? "secondary" : "primary"}
+            tag="button"
+            onClick={() => history.push(DASHBOARD)}
+          >
+            {isDraft ? "Annulla" : "Indietro"}
+          </Button>
+          <Button
+            type="submit"
+            className="px-14"
+            color="primary"
+            outline={isDraft}
+            tag="button"
+            disabled={
+              form.formState.isSubmitting ||
+              updateDiscountMutation.isPending ||
+              createDiscountMutation.isPending
+            }
+          >
+            Salva
+          </Button>
+        </div>
+      </FormSection>
+    </form>
   );
 };

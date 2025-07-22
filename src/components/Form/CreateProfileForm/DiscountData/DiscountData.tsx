@@ -1,16 +1,16 @@
 import { Button } from "design-react-kit";
-import { FieldArray, Form, Formik } from "formik";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { z } from "zod/v4";
+import { useFieldArray } from "@hookform/lenses/rhf";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
-import { useTooltip } from "../../../../context/tooltip";
+import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import { getDiscountTypeChecks } from "../../../../utils/formChecks";
 import FormContainer from "../../FormContainer";
 import FormSection from "../../FormSection";
-import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import { remoteData } from "../../../../api/common";
 import {
   createDiscountMutationOnError,
@@ -19,7 +19,8 @@ import {
   discountToFormValues,
   updateDiscountMutationOnError
 } from "../../discountFormUtils";
-import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
+import { useStandardForm } from "../../../../utils/useStandardForm";
+import { discountDataValidationSchema } from "../../ValidationSchemas";
 
 type Props = {
   isCompleted: boolean;
@@ -42,64 +43,80 @@ const DiscountData = ({
   });
   const profile = profileQuery.data;
 
-  const { checkStaticCode, checkLanding, checkBucket } =
-    getDiscountTypeChecks(profile);
-
-  const createDiscountMutation =
-    remoteData.Index.Discount.createDiscount.useMutation({
-      onError: createDiscountMutationOnError(triggerTooltip)
-    });
-
-  const updateDiscountMutation =
-    remoteData.Index.Discount.updateDiscount.useMutation({
-      onError: updateDiscountMutationOnError(triggerTooltip)
-    });
-
-  const deleteDiscountMutation =
-    remoteData.Index.Discount.deleteDiscount.useMutation();
-
   const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery(
     { agreementId: agreement.id },
     { enabled: isCompleted }
   );
 
-  const initialValues = useMemo(() => {
-    if (discountsQuery.data) {
-      return {
-        discounts: discountsQuery.data.items.map(discountToFormValues)
-      };
-    } else {
-      return { discounts: [discountEmptyInitialValues] };
-    }
-  }, [discountsQuery.data]);
+  const { checkStaticCode, checkLanding, checkBucket } =
+    getDiscountTypeChecks(profile);
+
+  const createDiscountMutation =
+    remoteData.Index.Discount.createDiscount.useMutation({
+      onSuccess() {
+        remoteData.Index.Discount.getDiscounts.invalidateQueries({});
+      },
+      onError: createDiscountMutationOnError(triggerTooltip)
+    });
+
+  const updateDiscountMutation =
+    remoteData.Index.Discount.updateDiscount.useMutation({
+      onSuccess() {
+        remoteData.Index.Discount.getDiscounts.invalidateQueries({});
+      },
+      onError: updateDiscountMutationOnError(triggerTooltip)
+    });
+
+  const deleteDiscountMutation =
+    remoteData.Index.Discount.deleteDiscount.useMutation({
+      onSuccess() {
+        remoteData.Index.Discount.getDiscounts.invalidateQueries({});
+      },
+      onError() {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "Errore durante l'eliminazione dello sconto"
+        });
+      }
+    });
+
+  const initialValues = useMemo(
+    () =>
+      discountsQuery.data
+        ? discountsQuery.data.items.map(discountToFormValues)
+        : [discountEmptyInitialValues],
+    [discountsQuery.data]
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const form = useStandardForm({
+    values: initialValues,
+    zodSchema: z.array(
+      discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
+    )
+  });
+
+  const discountsArray = useFieldArray(form.lens.interop());
+
   const isPending =
-    profileQuery.isPending || (isCompleted ? discountsQuery.isPending : false);
+    !profile ||
+    profileQuery.isPending ||
+    (isCompleted ? discountsQuery.isPending : false);
 
   if (isPending) {
     return <CenteredLoading />;
   }
 
   return (
-    <Formik
-      enableReinitialize
-      initialValues={initialValues}
-      validationSchema={zodSchemaToFormikValidationSchema(() =>
-        discountsListDataValidationSchema(
-          checkStaticCode,
-          checkLanding,
-          checkBucket
-        )
-      )}
-      onSubmit={async values => {
+    <form
+      onSubmit={form.handleSubmit(async values => {
         // eslint-disable-next-line functional/no-let
         let triggerOnUpdate = false;
         try {
-          for (const vals of values.discounts) {
+          for (const vals of values) {
             const discount = discountFormValuesToRequest(vals);
             if (isCompleted && vals.id) {
               await updateDiscountMutation.mutateAsync({
@@ -122,85 +139,78 @@ const DiscountData = ({
         } catch {
           void 0;
         }
-      }}
+      })}
     >
-      {({ values, setFieldValue, isSubmitting }) => (
-        <Form autoComplete="off">
-          <FieldArray
-            name="discounts"
-            render={arrayHelpers => (
-              <>
-                {values.discounts.map((discount, index) => (
-                  <FormContainer
-                    key={index}
-                    className={index <= 1 ? "mb-20" : ""}
+      {form.lens.map(
+        discountsArray.fields,
+        (discount, itemLens, index, array) => (
+          <FormContainer key={index} className={index <= 1 ? "mb-20" : ""}>
+            <FormSection
+              hasIntroduction
+              hasClose={index >= 1}
+              handleClose={() => {
+                if (index >= 1) {
+                  if (isCompleted) {
+                    deleteDiscountMutation.mutate({
+                      agreementId: agreement.id,
+                      discountId: discount.id
+                    });
+                  }
+                  discountsArray.remove(index);
+                }
+              }}
+              title="Dati dell’opportunità"
+            >
+              <DiscountInfo
+                profile={profile}
+                formLens={itemLens}
+                index={index}
+              />
+              {array.length - 1 === index && (
+                <>
+                  <div
+                    className="mt-8 cursor-pointer"
+                    onClick={() =>
+                      discountsArray.append(discountEmptyInitialValues)
+                    }
                   >
-                    <FormSection
-                      hasIntroduction
-                      hasClose={index >= 1}
-                      handleClose={() => {
-                        if (index >= 1) {
-                          if (isCompleted) {
-                            deleteDiscountMutation.mutate({
-                              agreementId: agreement.id,
-                              discountId: discount.id
-                            });
-                          }
-                          arrayHelpers.remove(index);
-                        }
-                      }}
-                      title="Dati dell’opportunità"
+                    <PlusCircleIcon className="me-2" />
+                    <span className="text-base fw-semibold text-blue">
+                      {"Aggiungi un'altra opportunità"}
+                    </span>
+                  </div>
+                  <div className="d-flex mt-10 gap-4 flex-wrap">
+                    <Button
+                      className="px-14"
+                      outline
+                      color="primary"
+                      tag="button"
+                      onClick={handleBack}
                     >
-                      <DiscountInfo
-                        formValues={values}
-                        setFieldValue={setFieldValue}
-                        index={index}
-                        profile={profile}
-                      />
-                      {values.discounts.length - 1 === index && (
-                        <>
-                          <div
-                            className="mt-8 cursor-pointer"
-                            onClick={() =>
-                              arrayHelpers.push(discountEmptyInitialValues)
-                            }
-                          >
-                            <PlusCircleIcon className="me-2" />
-                            <span className="text-base fw-semibold text-blue">
-                              {"Aggiungi un'altra opportunità"}
-                            </span>
-                          </div>
-                          <div className="d-flex mt-10 gap-4 flex-wrap">
-                            <Button
-                              className="px-14"
-                              outline
-                              color="primary"
-                              tag="button"
-                              onClick={handleBack}
-                            >
-                              Indietro
-                            </Button>
-                            <Button
-                              type="submit"
-                              className="px-14"
-                              color="primary"
-                              tag="button"
-                              aria-disabled={isSubmitting}
-                            >
-                              Continua
-                            </Button>
-                          </div>
-                        </>
-                      )}
-                    </FormSection>
-                  </FormContainer>
-                ))}
-              </>
-            )}
-          />
-        </Form>
+                      Indietro
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="px-14"
+                      color="primary"
+                      tag="button"
+                      aria-disabled={
+                        form.formState.isSubmitting ||
+                        createDiscountMutation.isPending ||
+                        updateDiscountMutation.isPending ||
+                        deleteDiscountMutation.isPending
+                      }
+                    >
+                      Continua
+                    </Button>
+                  </div>
+                </>
+              )}
+            </FormSection>
+          </FormContainer>
+        )
       )}
-    </Formik>
+    </form>
   );
 };
 

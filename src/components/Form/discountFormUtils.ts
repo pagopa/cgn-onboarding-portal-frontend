@@ -1,44 +1,23 @@
 import { AxiosError } from "axios";
+import z from "zod/v4";
 import { format } from "date-fns";
-import {
-  ProductCategory,
-  Discount,
-  UpdateDiscount,
-  BucketCodeLoadStatus
-} from "../../api/generated";
+import { ProductCategory, Discount, UpdateDiscount } from "../../api/generated";
 import { TooltipContextProps, Severity } from "../../context/tooltip";
 import {
   clearIfReferenceIsBlank,
   withNormalizedSpaces
 } from "../../utils/strings";
+import { discountDataValidationSchema } from "./ValidationSchemas";
 
-export type DiscountFormValues = {
-  id: string;
-  name: string;
-  name_en: string;
-  name_de: string;
-  description: string;
-  description_en: string;
-  description_de: string;
-  startDate: Date | undefined;
-  endDate: Date | undefined;
-  discount: string;
-  productCategories: Array<ProductCategory>;
-  condition: string;
-  condition_en: string;
-  condition_de: string;
-  staticCode: string;
-  visibleOnEyca: boolean;
-  eycaLandingPageUrl: string;
-  discountUrl: string;
-  lastBucketCodeLoadFileName: string;
-  lastBucketCodeLoadUid: string;
-  lastBucketCodeLoadStatus: BucketCodeLoadStatus | undefined;
-  landingPageUrl: string;
-  landingPageReferrer: string;
-};
+export type DiscountFormInputValues = z.input<
+  ReturnType<typeof discountDataValidationSchema>
+>;
 
-export const discountEmptyInitialValues: DiscountFormValues = {
+export type DiscountFormOutputValues = z.output<
+  ReturnType<typeof discountDataValidationSchema>
+>;
+
+export const discountEmptyInitialValues: DiscountFormInputValues = {
   id: "",
   name: "",
   name_en: "",
@@ -49,7 +28,7 @@ export const discountEmptyInitialValues: DiscountFormValues = {
   startDate: undefined,
   endDate: undefined,
   discount: "",
-  productCategories: [],
+  productCategories: {} as Record<ProductCategory, boolean>,
   condition: "",
   condition_en: "",
   condition_de: "-",
@@ -66,7 +45,7 @@ export const discountEmptyInitialValues: DiscountFormValues = {
 
 export function discountToFormValues(
   discount: Discount | undefined
-): DiscountFormValues {
+): DiscountFormInputValues {
   if (!discount) {
     return discountEmptyInitialValues;
   }
@@ -85,7 +64,9 @@ export function discountToFormValues(
     startDate: new Date(discount.startDate),
     endDate: new Date(discount.endDate),
     discount: discount.discount ? String(discount.discount) : "",
-    productCategories: discount.productCategories,
+    productCategories: Object.fromEntries(
+      discount.productCategories.map(category => [category, true])
+    ) as Record<ProductCategory, boolean>,
     condition: cleanedIfConditionIsBlank(discount.condition),
     condition_en: cleanedIfConditionIsBlank(discount.condition_en),
     condition_de: "-",
@@ -102,7 +83,7 @@ export function discountToFormValues(
 }
 
 export function discountFormValuesToRequest(
-  values: DiscountFormValues
+  values: DiscountFormOutputValues
 ): UpdateDiscount {
   const cleanedIfDescriptionIsBlank = clearIfReferenceIsBlank(
     values.description

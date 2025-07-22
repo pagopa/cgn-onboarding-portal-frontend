@@ -1,17 +1,15 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
-import { Field, FieldProps, FormikHelpers } from "formik";
-import DatePicker from "react-datepicker";
 import { useSelector } from "react-redux";
-import { createElement } from "react";
-import CustomErrorMessage from "../../CustomErrorMessage";
-import DateInputComponent from "../../DateInputComponent";
+import { Lens } from "@hookform/lenses";
 import FormField from "../../FormField";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
 import { Profile } from "../../../../api/generated";
 import { RootState } from "../../../../store/store";
 import { getDiscountTypeChecks } from "../../../../utils/formChecks";
-import { DiscountFormValues } from "../../discountFormUtils";
+import { DiscountFormInputValues } from "../../discountFormUtils";
+import {
+  Field,
+  FormErrorMessage
+} from "../../../../utils/react-hook-form-helpers";
 import ProductCategories from "./ProductCategories";
 import DiscountConditions from "./DiscountConditions";
 import EnrollToEyca from "./EnrollToEyca";
@@ -19,36 +17,15 @@ import Bucket from "./Bucket";
 import LandingPage from "./LandingPage";
 import StaticCode from "./StaticCode";
 import DiscountUrl from "./DiscountUrl";
+import { DiscountDates } from "./DiscountDates";
 
 type Props = {
-  profile: Profile | undefined;
-  setFieldValue: FormikHelpers<
-    DiscountFormValues | { discounts: Array<DiscountFormValues> }
-  >["setFieldValue"];
-} & (
-  | {
-      // eslint-disable-next-line sonarjs/no-redundant-optional
-      index?: undefined;
-      formValues: DiscountFormValues;
-    }
-  | {
-      index: number;
-      formValues: { discounts: Array<DiscountFormValues> };
-    }
-);
+  profile: Profile;
+  formLens: Lens<DiscountFormInputValues>;
+  index?: number;
+};
 
-// eslint-disable-next-line complexity
-const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
-  const hasIndex = index !== undefined;
-
-  const dateFrom = hasIndex
-    ? formValues.discounts[index].startDate
-    : formValues.startDate;
-
-  const dateTo = hasIndex
-    ? formValues.discounts[index].endDate
-    : formValues.endDate;
-
+const DiscountInfo = ({ profile, formLens, index }: Props) => {
   const { checkBucket, checkLanding, checkStaticCode } =
     getDiscountTypeChecks(profile);
 
@@ -69,26 +46,22 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
             <Field
               maxLength={100}
               id="name"
-              name={hasIndex ? `discounts[${index}].name` : "name"}
+              formLens={formLens.focus("name")}
               type="text"
               className="form-control"
             />
-            <CustomErrorMessage
-              name={hasIndex ? `discounts[${index}].name` : "name"}
-            />
+            <FormErrorMessage formLens={formLens.focus("name")} />
           </div>
           <div className="col-6">
             <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
             <Field
               maxLength={100}
               id="name"
-              name={hasIndex ? `discounts[${index}].name_en` : "name_en"}
+              formLens={formLens.focus("name_en")}
               type="text"
               className="form-control"
             />
-            <CustomErrorMessage
-              name={hasIndex ? `discounts[${index}].name_en` : "name_en"}
-            />
+            <FormErrorMessage formLens={formLens.focus("name_en")} />
           </div>
         </div>
       </FormField>
@@ -102,169 +75,48 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           <div className="col-6">
             <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
             <Field
-              as="textarea"
+              element="textarea"
               id="description"
-              name={
-                hasIndex ? `discounts[${index}].description` : "description"
-              }
+              formLens={formLens.focus("description")}
               placeholder="Es. Sconto valido per l’acquisto di due ingressi per la stagione di prosa 2021/2022 presso il Teatro Comunale"
-              maxLength="250"
-              rows="4"
+              maxLength={250}
+              rows={4}
               className="form-control"
             />
-            <CustomErrorMessage
-              name={
-                hasIndex ? `discounts[${index}].description` : "description"
-              }
-            />
+            <FormErrorMessage formLens={formLens.focus("description")} />
           </div>
           <div className="col-6">
             <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
             <Field
-              as="textarea"
+              element="textarea"
               id="description_en"
-              name={
-                hasIndex
-                  ? `discounts[${index}].description_en`
-                  : "description_en"
-              }
+              formLens={formLens.focus("description_en")}
               placeholder="Ex. Discount valid for the purchase of two tickets for the 2021/2022 prose season at the Municipal Theatre"
-              maxLength="250"
-              rows="4"
+              maxLength={250}
+              rows={4}
               className="form-control"
             />
-            <CustomErrorMessage
-              name={
-                hasIndex
-                  ? `discounts[${index}].description_en`
-                  : "description_en"
-              }
-            />
+            <FormErrorMessage formLens={formLens.focus("description_en")} />
           </div>
         </div>
       </FormField>
-      <div className="row">
-        <div className="col-6">
-          <FormField
-            htmlFor="startDate"
-            title="Data d'inizio opportunità"
-            description="Indica la data e l’ora in cui far iniziare l’opportunità"
-            isVisible
-            required
-          >
-            <DatePicker
-              id="startDate"
-              name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
-              dateFormat="dd/MM/yyyy"
-              showYearDropdown
-              showMonthDropdown
-              minDate={new Date()}
-              selected={dateFrom}
-              selectsStart
-              startDate={dateFrom}
-              endDate={dateTo}
-              onChange={date => {
-                const endDate = hasIndex
-                  ? formValues.discounts[index].endDate
-                  : formValues.endDate;
-                if (endDate && date! > endDate) {
-                  void setFieldValue(
-                    hasIndex ? `discounts[${index}].endDate` : "endDate",
-                    undefined
-                  );
-                }
-                void setFieldValue(
-                  hasIndex ? `discounts[${index}].startDate` : "startDate",
-                  date
-                );
-              }}
-              customInput={createElement(DateInputComponent)}
-            />
-            <div>
-              <CustomErrorMessage
-                name={hasIndex ? `discounts[${index}].startDate` : "startDate"}
-              />
-            </div>
-          </FormField>
-        </div>
-        <div className="col-6">
-          <FormField
-            htmlFor="endDate"
-            title="Data di fine opportunità"
-            description="Indica la data e l’ora in cui far finire l’opportunità"
-            isVisible
-            required
-          >
-            <DatePicker
-              id="endDate"
-              name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
-              dateFormat="dd/MM/yyyy"
-              showYearDropdown
-              showMonthDropdown
-              minDate={new Date()}
-              selected={dateTo}
-              selectsEnd
-              startDate={dateFrom}
-              endDate={dateTo}
-              onChange={date => {
-                const startDate = hasIndex
-                  ? formValues.discounts[index].startDate
-                  : formValues.startDate;
-                if (startDate && date! < startDate) {
-                  void setFieldValue(
-                    hasIndex ? `discounts[${index}].startDate` : "startDate",
-                    undefined
-                  );
-                }
-                void setFieldValue(
-                  hasIndex ? `discounts[${index}].endDate` : "endDate",
-                  date
-                );
-              }}
-              customInput={createElement(DateInputComponent)}
-            />
-            <div>
-              <CustomErrorMessage
-                name={hasIndex ? `discounts[${index}].endDate` : "endDate"}
-              />
-            </div>
-          </FormField>
-        </div>
-      </div>
+      <DiscountDates formLens={formLens} />
       <FormField
         htmlFor="discount"
         title="Entità dello sconto"
         description="Se l’opportunità lo prevede, inserire la percentuale (%) di sconto erogata"
         isVisible
       >
-        <Field
-          id="discount"
-          name={hasIndex ? `discounts[${index}].discount` : "discount"}
-          type="text"
-        >
-          {({ field }: FieldProps) => (
-            <div className="input-group col-4 p-0">
-              <div className="input-group-text">%</div>
-              <input
-                type="text"
-                {...field}
-                value={field.value || ""}
-                className="form-control"
-                id="input-group-2"
-                name="input-group-2"
-                onChange={e =>
-                  setFieldValue(
-                    hasIndex ? `discounts[${index}].discount` : "discount",
-                    e.target.value
-                  )
-                }
-              />
-            </div>
-          )}
-        </Field>
-        <CustomErrorMessage
-          name={hasIndex ? `discounts[${index}].discount` : "discount"}
-        />
+        <div className="input-group col-4 p-0">
+          <div className="input-group-text">%</div>
+          <Field
+            type="text"
+            id="discount"
+            formLens={formLens.focus("discount")}
+            className="form-control"
+          />
+        </div>
+        <FormErrorMessage formLens={formLens.focus("discount")} />
       </FormField>
       <FormField
         htmlFor="productCategories"
@@ -274,14 +126,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         isVisible
         required
       >
-        <ProductCategories
-          selectedCategories={
-            index !== undefined
-              ? formValues.discounts[index].productCategories
-              : formValues.productCategories
-          }
-          index={index}
-        />
+        <ProductCategories formLens={formLens} />
       </FormField>
       <FormField
         htmlFor="discountConditions"
@@ -290,7 +135,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
         description="Descrivi eventuali condizioni d’uso o limitazioni relative all’opportunità - Max 200 caratteri"
         isVisible
       >
-        <DiscountConditions index={index} />
+        <DiscountConditions formLens={formLens} />
       </FormField>
       {!checkLanding && (
         <FormField
@@ -300,7 +145,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           isTitleHeading
           isVisible
         >
-          <DiscountUrl index={index} />
+          <DiscountUrl formLens={formLens} />
         </FormField>
       )}
       {checkStaticCode && (
@@ -312,7 +157,7 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           isVisible
           required
         >
-          <StaticCode index={index} />
+          <StaticCode formLens={formLens} />
         </FormField>
       )}
       {checkLanding && (
@@ -324,29 +169,18 @@ const DiscountInfo = ({ formValues, setFieldValue, index, profile }: Props) => {
           isVisible
           required
         >
-          <LandingPage index={index} />
+          <LandingPage formLens={formLens} />
         </FormField>
       )}
       {checkBucket && (
         <Bucket
           agreementId={agreement.id}
           label={"Seleziona un file dal computer"}
-          // index={index}
-          // formValues={formValues}
-          // this is a type fix since typescript flow analyzer needs a branch
-          {...(index === undefined ? { formValues } : { index, formValues })}
-          setFieldValue={setFieldValue}
+          formLens={formLens}
         />
       )}
       {profile && (
-        <EnrollToEyca
-          profile={profile}
-          // index={index}
-          // formValues={formValues}
-          // this is a type fix since typescript flow analyzer needs a branch
-          {...(index === undefined ? { formValues } : { index, formValues })}
-          setFieldValue={setFieldValue}
-        />
+        <EnrollToEyca profile={profile} formLens={formLens} index={index} />
       )}
     </>
   );

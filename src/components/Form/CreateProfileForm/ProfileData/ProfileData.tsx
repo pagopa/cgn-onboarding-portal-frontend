@@ -150,7 +150,8 @@ const ProfileData = ({
             isEnabled={
               !!agreement.imageUrl &&
               !editProfileMutation.isPending &&
-              !createProfileMutation.isPending
+              !createProfileMutation.isPending &&
+              !form.formState.isSubmitting
             }
           />
         </SalesChannels>

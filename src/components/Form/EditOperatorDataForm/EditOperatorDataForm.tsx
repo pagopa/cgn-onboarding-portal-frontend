@@ -62,6 +62,9 @@ export const EditOperatorForm = ({
     authentication.currentUserFiscalCode ??
     "";
 
+  const isSubmitEnabled =
+    !editProfileMutation.isPending && !form.formState.isSubmitting;
+
   return (
     <form
       autoComplete="off"
@@ -93,7 +96,7 @@ export const EditOperatorForm = ({
                 >
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
-                    isEnabled={!editProfileMutation.isPending}
+                    isEnabled={isSubmitEnabled}
                   />
                 </SalesChannels>
               </Fragment>
@@ -110,7 +113,7 @@ export const EditOperatorForm = ({
                 <ReferentData formLens={form.lens}>
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
-                    isEnabled={!editProfileMutation.isPending}
+                    isEnabled={isSubmitEnabled}
                   />
                 </ReferentData>
               </Fragment>
