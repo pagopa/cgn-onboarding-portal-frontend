@@ -1,44 +1,26 @@
-import { ComponentProps, memo, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Progress } from "design-react-kit";
-import { Field, FormikHelpers } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { Lens } from "@hookform/lenses";
+import { useController, useWatch } from "react-hook-form";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import DocumentSuccess from "../../../../assets/icons/document-success.svg?react";
-import CustomErrorMessage from "../../CustomErrorMessage";
 import FormField from "../../FormField";
 import bucketTemplate from "../../../../templates/test-codes";
 import { BucketCodeLoadStatus } from "../../../../api/generated";
 import { remoteData } from "../../../../api/common";
 import { generateCsvDataUri } from "../../../../utils/generateCsvDataUri";
-import { DiscountFormValues } from "../../discountFormUtils";
+import { DiscountFormInputValues } from "../../discountFormUtils";
+import { FormErrorMessage } from "../../../../utils/react-hook-form-helpers";
 
 type Props = {
   label: string;
   agreementId: string;
-  setFieldValue: FormikHelpers<
-    DiscountFormValues | { discounts: Array<DiscountFormValues> }
-  >["setFieldValue"];
-} & (
-  | {
-      formValues: DiscountFormValues;
-      // eslint-disable-next-line sonarjs/no-redundant-optional
-      index?: undefined;
-    }
-  | {
-      formValues: { discounts: Array<DiscountFormValues> };
-      index: number;
-    }
-);
+  formLens: Lens<DiscountFormInputValues>;
+};
 
-const BucketComponent = ({
-  index,
-  label,
-  agreementId,
-  formValues,
-  setFieldValue
-}: Props) => {
-  const hasIndex = index !== undefined;
+const Bucket = ({ label, agreementId, formLens }: Props) => {
   const refFile = useRef<HTMLInputElement>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [currentDoc, setCurrentDoc] = useState<{ name: string } | undefined>(
@@ -51,15 +33,25 @@ const BucketComponent = ({
     refFile.current?.click();
   };
 
-  const loadStatus =
-    index !== undefined
-      ? formValues.discounts[index].lastBucketCodeLoadStatus
-      : formValues.lastBucketCodeLoadStatus;
+  const loadStatus = useWatch(
+    formLens.focus("lastBucketCodeLoadStatus").interop()
+  );
 
-  const documentName =
-    index !== undefined
-      ? formValues.discounts[index].lastBucketCodeLoadFileName
-      : formValues.lastBucketCodeLoadFileName;
+  const documentName = useWatch(
+    formLens.focus("lastBucketCodeLoadFileName").interop()
+  );
+
+  const lastBucketCodeLoadUidController = useController(
+    formLens.focus("lastBucketCodeLoadUid").interop()
+  );
+  const lastBucketCodeLoadUidOnChange =
+    lastBucketCodeLoadUidController.field.onChange;
+
+  const lastBucketCodeLoadFileNameController = useController(
+    formLens.focus("lastBucketCodeLoadFileName").interop()
+  );
+  const lastBucketCodeLoadFileNameOnChange =
+    lastBucketCodeLoadFileNameController.field.onChange;
 
   useEffect(() => {
     if (typeof documentName === "string" && documentName.length > 0) {
@@ -70,7 +62,7 @@ const BucketComponent = ({
       loadStatus !== BucketCodeLoadStatus.Running &&
         loadStatus !== BucketCodeLoadStatus.Pending
     );
-  }, [documentName, loadStatus, index]);
+  }, [documentName, loadStatus]);
 
   const uploadBucketMutation = useMutation({
     async mutationFn({ file }: { file: File }) {
@@ -88,18 +80,8 @@ const BucketComponent = ({
             }
           }
         );
-        void setFieldValue(
-          hasIndex
-            ? `discounts[${index}].lastBucketCodeLoadUid`
-            : "lastBucketCodeLoadUid",
-          data.uid
-        );
-        void setFieldValue(
-          hasIndex
-            ? `discounts[${index}].lastBucketCodeLoadFileName`
-            : "lastBucketCodeLoadFileName",
-          file.name
-        );
+        lastBucketCodeLoadUidOnChange({ target: { value: data.uid } });
+        lastBucketCodeLoadFileNameOnChange({ target: { value: file.name } });
         setCurrentDoc({ name: file.name });
         setCanUploadFile(false);
       } catch (error) {
@@ -183,22 +165,6 @@ const BucketComponent = ({
               loadStatus === BucketCodeLoadStatus.Finished
                 ? "Carica un nuovo file"
                 : "Carica file"}
-              <Field
-                name={
-                  hasIndex
-                    ? `discounts[${index}].lastBucketCodeLoadUid`
-                    : "lastBucketCodeLoadUid"
-                }
-                hidden
-              />
-              <Field
-                name={
-                  hasIndex
-                    ? `discounts[${index}].lastBucketCodeLoadFileName`
-                    : "lastBucketCodeLoadFileName"
-                }
-                hidden
-              />
               <input
                 type="file"
                 accept="text/csv"
@@ -224,37 +190,11 @@ const BucketComponent = ({
             />
           </div>
         )}
-        <CustomErrorMessage
-          name={
-            hasIndex
-              ? `discounts[${index}].lastBucketCodeLoadUid`
-              : "lastBucketCodeLoadUid"
-          }
-        />
+        <FormErrorMessage formLens={formLens.focus("lastBucketCodeLoadUid")} />
       </div>
     </FormField>
   );
 };
-
-const checkMemoization = (
-  prev: ComponentProps<typeof BucketComponent>,
-  next: ComponentProps<typeof BucketComponent>
-): boolean => {
-  if (prev.index === next.index) {
-    const previousValue =
-      prev.index !== undefined
-        ? prev.formValues.discounts[prev.index].lastBucketCodeLoadUid
-        : prev.formValues.lastBucketCodeLoadUid;
-    const nextValue =
-      next.index !== undefined
-        ? next.formValues.discounts[next.index].lastBucketCodeLoadUid
-        : next.formValues.lastBucketCodeLoadUid;
-    return previousValue === nextValue;
-  }
-  return false;
-};
-
-const Bucket = memo(BucketComponent, checkMemoization);
 
 export default Bucket;
 

@@ -1,5 +1,4 @@
-import { Form, Formik } from "formik";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
@@ -13,13 +12,12 @@ import ProfileInfo from "../CreateProfileForm/ProfileData/ProfileInfo";
 import ReferentData from "../CreateProfileForm/ProfileData/ReferentData";
 import SalesChannels from "../CreateProfileForm/ProfileData/SalesChannels";
 import { ProfileDataValidationSchema } from "../ValidationSchemas";
-import { UpdateProfile } from "../../../api/generated";
 import { useAuthentication } from "../../../authentication/AuthenticationContext";
-import { zodSchemaToFormikValidationSchema } from "../../../utils/zodFormikAdapter";
 import {
   profileFormValuesToRequest,
   profileToProfileFormValues
 } from "../operatorDataUtils";
+import { useStandardForm } from "../../../utils/useStandardForm";
 
 export const EditOperatorForm = ({
   variant
@@ -44,11 +42,13 @@ export const EditOperatorForm = ({
         history.push(DASHBOARD);
       }
     });
-  const editProfile = (profile: UpdateProfile) => {
-    editProfileMutation.mutate({ agreementId: agreement.id, profile });
-  };
 
   const authentication = useAuthentication();
+
+  const form = useStandardForm({
+    values: initialValues,
+    zodSchema: ProfileDataValidationSchema
+  });
 
   if (profileQuery.isPending) {
     return <CenteredLoading />;
@@ -62,58 +62,65 @@ export const EditOperatorForm = ({
     authentication.currentUserFiscalCode ??
     "";
 
+  const isSubmitEnabled =
+    !editProfileMutation.isPending && !form.formState.isSubmitting;
+
   return (
-    <Formik
-      enableReinitialize
-      initialValues={initialValues}
-      validationSchema={zodSchemaToFormikValidationSchema(
-        ProfileDataValidationSchema
-      )}
-      onSubmit={values => {
+    <form
+      autoComplete="off"
+      onSubmit={form.handleSubmit(async values => {
         const profileData = profileFormValuesToRequest(values);
-        editProfile(profileData);
-      }}
+        await editProfileMutation.mutateAsync({
+          agreementId: agreement.id,
+          profile: profileData
+        });
+      })}
     >
-      {() => {
+      {(() => {
         switch (variant) {
           case "edit-data":
             return (
-              <Form autoComplete="off">
+              <Fragment>
                 <ProfileInfo
+                  formLens={form.lens}
                   entityType={entityType}
                   fullName={fullName}
                   taxCodeOrVat={taxCodeOrVat}
                 />
-                <ReferentData />
+                <ReferentData formLens={form.lens} />
                 <ProfileImage />
-                <ProfileDescription />
-                <SalesChannels entityType={entityType}>
+                <ProfileDescription formLens={form.lens} />
+                <SalesChannels
+                  formLens={form.lens.focus("salesChannel")}
+                  entityType={entityType}
+                >
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
-                    isEnabled={true}
+                    isEnabled={isSubmitEnabled}
                   />
                 </SalesChannels>
-              </Form>
+              </Fragment>
             );
           case "edit-profile":
             return (
-              <Form autoComplete="off">
+              <Fragment>
                 <ProfileInfo
+                  formLens={form.lens}
                   entityType={entityType}
                   fullName={fullName}
                   taxCodeOrVat={taxCodeOrVat}
                 />
-                <ReferentData>
+                <ReferentData formLens={form.lens}>
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
-                    isEnabled={true}
+                    isEnabled={isSubmitEnabled}
                   />
                 </ReferentData>
-              </Form>
+              </Fragment>
             );
         }
-      }}
-    </Formik>
+      })()}
+    </form>
   );
 };
 
