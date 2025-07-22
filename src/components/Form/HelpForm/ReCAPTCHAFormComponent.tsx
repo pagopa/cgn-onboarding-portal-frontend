@@ -1,9 +1,9 @@
 /* eslint-disable functional/immutable-data */
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import { Severity, useTooltip } from "../../../context/tooltip";
 import { Lens } from "@hookform/lenses";
 import { useController } from "react-hook-form";
+import { Severity, useTooltip } from "../../../context/tooltip";
 
 type Props = {
   formLens: Lens<string | null>;
@@ -11,6 +11,7 @@ type Props = {
 
 const ReCAPTCHAFormComponent = ({ formLens }: Props) => {
   const controller = useController(formLens.interop());
+  const onChange = controller.field.onChange;
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [canRenderRecaptcha, setCanRenderRecaptcha] = useState(false);
   const { triggerTooltip } = useTooltip();
@@ -21,14 +22,14 @@ const ReCAPTCHAFormComponent = ({ formLens }: Props) => {
         throw new Error();
       }
       const response = await recaptchaRef.current.executeAsync();
-      void controller.field.onChange(response);
+      onChange({ target: { value: response } });
     } catch {
       triggerTooltip({
         severity: Severity.DANGER,
         text: "C'è stato un errore durante la verifica del recaptcha"
       });
     }
-  }, [triggerTooltip]);
+  }, [onChange, triggerTooltip]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
