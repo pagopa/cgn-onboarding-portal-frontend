@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { Button, Icon } from "design-react-kit";
 import { Fragment, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { href, useNavigate } from "react-router";
 import { Row } from "react-table";
 import {
   Agreement,
@@ -19,7 +19,6 @@ import {
 import Callout from "../Callout/Callout";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
-import { getEditDiscountRoute } from "../../navigation/utils";
 import ImportationStatus from "./ImportationStatus";
 import { DiscountComponent } from "./getDiscountComponent";
 
@@ -44,7 +43,7 @@ const DiscountDetailRow = ({
   onTest,
   maxPublishedDiscountsReached
 }: Props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [canBePublished, setCanBePublished] = useState(
     row.original.lastBucketCodeLoadStatus
       ? row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
@@ -77,7 +76,13 @@ const DiscountDetailRow = ({
         color={"primary"}
         outline
         tag="button"
-        onClick={() => history.push(getEditDiscountRoute(row.original.id))}
+        onClick={() => {
+          navigate(
+            href("/operator/discount/edit/:discountId", {
+              discountId: row.original.id
+            })
+          );
+        }}
       >
         {row.original.state !== "expired" ? (
           <EditIcon fill={"#0273E6"} />
@@ -155,7 +160,11 @@ const DiscountDetailRow = ({
                 <button
                   className="btn btn-link fw-bold p-0 my-2"
                   onClick={() => {
-                    history.push(getEditDiscountRoute(row.original.id));
+                    navigate(
+                      href("/operator/discount/edit/:discountId", {
+                        discountId: row.original.id
+                      })
+                    );
                   }}
                 >
                   Modifica opportunità
