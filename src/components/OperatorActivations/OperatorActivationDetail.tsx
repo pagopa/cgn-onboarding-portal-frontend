@@ -1,14 +1,13 @@
 import { format } from "date-fns";
 import { useState } from "react";
 import { Button } from "design-react-kit";
-import { useHistory } from "react-router-dom";
+import { href, useNavigate } from "react-router";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getEntityTypeLabel } from "../../utils/strings";
-import { getEditOperatorRoute } from "../../navigation/utils";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
@@ -17,7 +16,7 @@ type Props = {
 };
 
 const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { triggerTooltip } = useTooltip();
 
@@ -98,11 +97,13 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           color="primary"
           outline
           tag="button"
-          onClick={() =>
-            history.push(
-              getEditOperatorRoute(operator.keyOrganizationFiscalCode)
-            )
-          }
+          onClick={() => {
+            navigate(
+              href("/admin/access/edit/:fiscalCode", {
+                fiscalCode: operator.keyOrganizationFiscalCode
+              })
+            );
+          }}
         >
           <span>Modifica</span>
         </Button>

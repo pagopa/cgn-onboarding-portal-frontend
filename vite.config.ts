@@ -1,7 +1,8 @@
 import path from "path";
 import * as child from "child_process";
 import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
+import { reactRouter } from "@react-router/dev/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 import svgr from "vite-plugin-svgr";
 import { imagetools } from "vite-imagetools";
 import packageJSON from "./package.json";
@@ -16,7 +17,8 @@ const env = loadEnv("all", process.cwd(), [envPrefix]);
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
+    reactRouter(),
+    tsconfigPaths(),
     svgr({
       svgrOptions: {
         ref: true,
@@ -56,8 +58,9 @@ export default defineConfig({
       }
     }
   },
-  build: {
-    sourcemap: true
+  build: {},
+  ssr: {
+    noExternal: ["@reduxjs/toolkit"]
   },
   server: {
     port: 3000,
