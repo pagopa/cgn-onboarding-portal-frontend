@@ -1,7 +1,6 @@
 import { Button } from "design-react-kit";
-import { Link } from "react-router-dom";
+import { href, Link } from "react-router";
 import Hourglass from "../../../../assets/icons/hourglass.svg?react";
-import { DASHBOARD } from "../../../../navigation/routes";
 
 const RequestApproval = () => (
   <section className="fixed-top vw-100 vh-100">
@@ -13,7 +12,7 @@ const RequestApproval = () => (
         <br />
         Il referente riceverà una e-mail appena sarà approvata.
       </div>
-      <Link to={DASHBOARD}>
+      <Link to={href("/")}>
         <Button className="px-14 me-4" color="primary" outline tag="button">
           Esci
         </Button>

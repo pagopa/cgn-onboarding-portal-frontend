@@ -1,7 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useHistory } from "react-router-dom";
-import { DASHBOARD, ADMIN_PANEL_RICHIESTE, LOGIN } from "../navigation/routes";
+import { href, useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { createAgreement } from "../store/agreement/agreementSlice";
 import { useLoginRedirect, adminLogoutRedirect } from "./authentication";
 import {
   AuthenticationContextType,
@@ -16,8 +17,7 @@ export function AuthenticationProvider({
   children: React.ReactNode;
 }) {
   useLoginRedirect();
-  const history = useHistory();
-  const historyPush = history.push;
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [persistedState, setPersistedState] = useState(authenticationStore.get);
   useEffect(
@@ -37,26 +37,26 @@ export function AuthenticationProvider({
     (session: CurrentSession) => {
       authenticationStore.setCurrentSession(session);
       if (session?.type === "user") {
-        historyPush(DASHBOARD);
+        navigate(href("/"));
       }
       if (session?.type === "admin") {
-        historyPush(ADMIN_PANEL_RICHIESTE);
+        navigate(href("/"));
       }
       resetQueries();
     },
-    [historyPush, resetQueries]
+    [navigate, resetQueries]
   );
   const logout = useCallback(
     (session: CurrentSession) => {
       authenticationStore.deleteSession(session);
       authenticationStore.setCurrentSession({ type: "none" });
-      historyPush(LOGIN);
+      navigate(href("/login"));
       resetQueries();
       if (session?.type === "admin") {
         adminLogoutRedirect();
       }
     },
-    [historyPush, resetQueries]
+    [navigate, resetQueries]
   );
   const value = useMemo<AuthenticationContextType>(
     () => ({
@@ -100,6 +100,13 @@ export function AuthenticationProvider({
       userSessionByFiscalCode
     ]
   );
+  const dispatch = useDispatch();
+  // refactor this in the future to speed up the initial load
+  useEffect(() => {
+    if (value.currentMerchantFiscalCode) {
+      dispatch(createAgreement());
+    }
+  }, [dispatch, value.currentMerchantFiscalCode]);
   return (
     <AuthenticationContext.Provider value={value}>
       {children}

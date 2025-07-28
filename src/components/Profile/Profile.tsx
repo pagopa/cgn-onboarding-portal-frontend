@@ -1,13 +1,8 @@
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { href, Link } from "react-router";
 import { remoteData } from "../../api/common";
-import { EDIT_PROFILE } from "../../navigation/routes";
 import { RootState } from "../../store/store";
-import {
-  SalesChannelType,
-  type Profile,
-  type Referent
-} from "../../api/generated";
+import { SalesChannelType, type Profile, Referent } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { NormalizedSalesChannel } from "../../api/dtoTypeFixes";
 import ProfileItem from "./ProfileItem";
@@ -100,7 +95,7 @@ const Profile = () => {
                     agreement.state === "ApprovedAgreement" && (
                       <Link
                         className="mt-4 btn btn-outline-primary"
-                        to={EDIT_PROFILE}
+                        to={href("/operator/edit-data")}
                       >
                         Modifica dati
                       </Link>

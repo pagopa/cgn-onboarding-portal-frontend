@@ -12,8 +12,8 @@ export interface TooltipProviderState {
 
 export enum Severity {
   DANGER = "danger",
-  WARNING = "warning",
-  INFO = "info",
+  // WARNING = "warning",
+  // INFO = "info",
   SUCCESS = "success"
 }
 

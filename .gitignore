@@ -8,8 +8,6 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
-dist-ssr
 .env.local
 
 # Editor directories and files
@@ -30,3 +28,6 @@ dist-ssr
 src/api/generated
 src/api/generated_backoffice
 src/api/generated_public
+
+.react-router/
+build

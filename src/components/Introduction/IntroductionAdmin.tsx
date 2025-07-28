@@ -1,19 +1,13 @@
 import { Nav } from "design-react-kit";
+import { href } from "react-router";
 import NavItem from "../NavItem";
-import {
-  ADMIN_PANEL_ACCESSI,
-  ADMIN_PANEL_CONVENZIONATI,
-  ADMIN_PANEL_RICHIESTE
-} from "../../navigation/routes";
 import CgnLogo from "../Logo/CgnLogo";
 
 type Props = {
   name: string;
-  activeTab: string;
-  handleClick(path: string): void;
 };
 
-const IntroductionAdmin = ({ name, activeTab, handleClick }: Props) => (
+const IntroductionAdmin = ({ name }: Props) => (
   <section className="bg-white text-start">
     <div className="px-8 pt-10">
       <div className="row">
@@ -28,24 +22,9 @@ const IntroductionAdmin = ({ name, activeTab, handleClick }: Props) => (
       </div>
     </div>
     <Nav className="auto mt-11" tabs tag="ul" vertical={false}>
-      <NavItem
-        active={activeTab === ADMIN_PANEL_RICHIESTE}
-        onClick={() => handleClick(ADMIN_PANEL_RICHIESTE)}
-      >
-        Richieste
-      </NavItem>
-      <NavItem
-        active={activeTab === ADMIN_PANEL_CONVENZIONATI}
-        onClick={() => handleClick(ADMIN_PANEL_CONVENZIONATI)}
-      >
-        Operatori Convenzionati
-      </NavItem>
-      <NavItem
-        active={activeTab === ADMIN_PANEL_ACCESSI}
-        onClick={() => handleClick(ADMIN_PANEL_ACCESSI)}
-      >
-        Impostazioni di accesso
-      </NavItem>
+      <NavItem to={href("/admin/requests")}>Richieste</NavItem>
+      <NavItem to={href("/admin/conventions")}>Operatori Convenzionati</NavItem>
+      <NavItem to={href("/admin/accesses")}>Impostazioni di accesso</NavItem>
     </Nav>
   </section>
 );

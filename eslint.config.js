@@ -18,7 +18,8 @@ export default tseslint.config(
       "src/vite-env.d.ts",
       "src/api/generated",
       "src/api/generated_backoffice",
-      "src/api/generated_public"
+      "src/api/generated_public",
+      ".react-router"
     ]
   },
   {

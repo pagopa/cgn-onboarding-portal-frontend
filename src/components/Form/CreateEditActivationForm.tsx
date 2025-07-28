@@ -1,11 +1,10 @@
-import { useHistory, useParams } from "react-router-dom";
+import { href, useNavigate } from "react-router";
 import z from "zod/v4";
 import { useMemo } from "react";
 import { Button, Icon } from "design-react-kit";
 import { useFieldArray } from "@hookform/lenses/rhf";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
-import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { Field, FormErrorMessage } from "../../utils/react-hook-form-helpers";
 import { useStandardForm } from "../../utils/useStandardForm";
@@ -43,15 +42,18 @@ function dataToFormValues(
   };
 }
 
-const CreateEditActivationForm = () => {
-  const { operatorFiscalCode } = useParams<{ operatorFiscalCode: string }>();
-  const history = useHistory();
+const CreateEditActivationForm = ({
+  operatorFiscalCode
+}: {
+  operatorFiscalCode?: string;
+}) => {
+  const navigate = useNavigate();
   const { triggerTooltip } = useTooltip();
 
   const upsertActivationMutation =
     remoteData.Backoffice.AttributeAuthority.upsertOrganization.useMutation({
       onSuccess() {
-        history.push(ADMIN_PANEL_ACCESSI);
+        navigate(href("/admin/accesses"));
       },
       async onError(error) {
         if (
@@ -75,7 +77,7 @@ const CreateEditActivationForm = () => {
   const organizationQuery =
     remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery(
       {
-        keyOrganizationFiscalCode: operatorFiscalCode
+        keyOrganizationFiscalCode: operatorFiscalCode!
       },
       {
         enabled: Boolean(operatorFiscalCode)
@@ -256,7 +258,9 @@ const CreateEditActivationForm = () => {
             outline
             color="primary"
             tag="button"
-            onClick={() => history.push(ADMIN_PANEL_ACCESSI)}
+            onClick={() => {
+              navigate(href("/admin/accesses"));
+            }}
           >
             Indietro
           </Button>

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { href, Link, Register, useMatch } from "react-router";
 import { Button } from "design-react-kit";
-import { CREATE_PROFILE, HELP } from "../../navigation/routes";
 import Logo from "../Logo/Logo";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
 import { SessionSwitch } from "../../authentication/SessionSwitch";
@@ -14,7 +13,9 @@ type Props = {
 const Header = ({ hasBorder = false }: Props) => {
   const authentication = useAuthentication();
   const isLogged = authentication.currentSession.type !== "none";
-  const location = useLocation();
+  const isCreateProfile = useMatch(
+    "/operator/create-profile" satisfies keyof Register["pages"]
+  );
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
 
@@ -34,7 +35,7 @@ const Header = ({ hasBorder = false }: Props) => {
         <div className="d-flex align-items-center">
           {authentication.currentSession?.type !== "admin" && (
             <Link
-              to={HELP}
+              to={href("/help")}
               className="me-11 text-base text-blue fw-semibold text-decoration-none"
             >
               Serve aiuto?
@@ -43,7 +44,7 @@ const Header = ({ hasBorder = false }: Props) => {
           <SessionSwitch />
           {isLogged && (
             <>
-              {location.pathname === CREATE_PROFILE && (
+              {isCreateProfile ? (
                 <Button
                   className="px-8"
                   color="primary"
@@ -54,8 +55,7 @@ const Header = ({ hasBorder = false }: Props) => {
                 >
                   Esci
                 </Button>
-              )}
-              {location.pathname !== CREATE_PROFILE && (
+              ) : (
                 <Button
                   className="px-8"
                   color="primary"

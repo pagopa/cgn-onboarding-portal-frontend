@@ -1,14 +1,13 @@
 import { Nav } from "design-react-kit";
+import { href } from "react-router";
 import NavItem from "../NavItem";
 import CgnLogo from "../Logo/CgnLogo";
 
 type Props = {
   name: string;
-  activeTab: number;
-  handleClick(activeTab: number): void;
 };
 
-const Introduction = ({ name, activeTab, handleClick }: Props) => (
+const Introduction = ({ name }: Props) => (
   <section className="bg-white text-start">
     <div className="px-8 pt-10">
       <div className="row">
@@ -23,13 +22,9 @@ const Introduction = ({ name, activeTab, handleClick }: Props) => (
       </div>
     </div>
     <Nav className="auto mt-11" tabs tag="ul" vertical={false}>
-      <NavItem active={activeTab === 0} onClick={() => handleClick(0)}>
-        Profilo
-      </NavItem>
-      <NavItem active={activeTab === 1} onClick={() => handleClick(1)}>
-        Opportunità
-      </NavItem>
-      <NavItem active={activeTab === 2} onClick={() => handleClick(2)}>
+      <NavItem to={href("/operator/dashboard/profile")}>Profilo</NavItem>
+      <NavItem to={href("/operator/dashboard/discounts")}>Opportunità</NavItem>
+      <NavItem to={href("/operator/dashboard/data")}>
         Dati dell&apos;ente
       </NavItem>
     </Nav>

@@ -1,9 +1,8 @@
 import { Fragment, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
-import { useHistory } from "react-router-dom";
+import { href, useNavigate } from "react-router";
 import { remoteData } from "../../../api/common";
-import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
@@ -24,7 +23,7 @@ export const EditOperatorForm = ({
 }: {
   variant: "edit-data" | "edit-profile";
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
@@ -39,7 +38,7 @@ export const EditOperatorForm = ({
   const editProfileMutation =
     remoteData.Index.Profile.updateProfile.useMutation({
       onSuccess() {
-        history.push(DASHBOARD);
+        navigate(href("/operator/dashboard/profile"));
       }
     });
 
@@ -95,7 +94,9 @@ export const EditOperatorForm = ({
                   entityType={entityType}
                 >
                   <OperatorDataButtons
-                    onBack={() => history.push(DASHBOARD)}
+                    onBack={() => {
+                      navigate(href("/operator/dashboard/profile"));
+                    }}
                     isEnabled={isSubmitEnabled}
                   />
                 </SalesChannels>
@@ -112,7 +113,9 @@ export const EditOperatorForm = ({
                 />
                 <ReferentData formLens={form.lens}>
                   <OperatorDataButtons
-                    onBack={() => history.push(DASHBOARD)}
+                    onBack={() => {
+                      navigate(href("/operator/dashboard/profile"));
+                    }}
                     isEnabled={isSubmitEnabled}
                   />
                 </ReferentData>

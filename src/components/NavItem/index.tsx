@@ -1,22 +1,21 @@
 import { ReactNode } from "react";
+import { NavLink, SafePathname } from "react-router";
 
 const NavItem = ({
-  children,
-  active,
-  onClick
+  to,
+  children
 }: {
   children: ReactNode | string;
-  active: boolean;
-  onClick: () => void;
+  to: SafePathname;
 }) => (
   <li className="nav-item">
-    <a
-      className={`nav-link ${active ? "active" : ""}`}
+    <NavLink
+      to={to}
+      className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
       style={{ cursor: "pointer" }}
-      onClick={onClick}
     >
       {children}
-    </a>
+    </NavLink>
   </li>
 );
 export default NavItem;

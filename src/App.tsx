@@ -1,42 +1,39 @@
 import "./utils/zod-csp-fix";
+import { Outlet } from "react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 import { it } from "date-fns/locale/it";
-import RouterConfig from "./navigation/RouterConfig";
 import "./styles/bootstrap-italia-fonts.scss";
 import "./styles/bootstrap-italia-custom.scss";
 import "./styles/react-datepicker-custom.scss";
 import "./styles/utils.scss";
+import { useMemo } from "react";
 import { queryClient } from "./api/common";
 import { AuthenticationProvider } from "./authentication/AuthenticationProvider";
 import { TooltipProvider } from "./context/TooltipProvider";
-import { renderCSP } from "./utils/meta";
-import { store } from "./store/store";
+import { makeStore } from "./store/store";
 
-renderCSP();
+import { envVariablesSchema } from "./utils/env-variables.ts";
+envVariablesSchema.parse(import.meta.env);
 
 registerLocale("it", it);
 setDefaultLocale("it");
 
-function App() {
+export function App() {
+  const store = useMemo(() => makeStore(), []);
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <TooltipProvider>
-          <QueryClientProvider client={queryClient}>
-            <AuthenticationProvider>
-              <RouterConfig />
-            </AuthenticationProvider>
-          </QueryClientProvider>
-        </TooltipProvider>
-      </BrowserRouter>
+      <TooltipProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthenticationProvider>
+            <Outlet />
+          </AuthenticationProvider>
+        </QueryClientProvider>
+      </TooltipProvider>
     </Provider>
   );
 }
-
-export default App;
 
 // eslint-disable-next-line no-console
 console.info(

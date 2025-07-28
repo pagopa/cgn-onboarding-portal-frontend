@@ -1,10 +1,10 @@
 import { CreateEditDiscountForm } from "../components/Form/CreateEditDiscountForm";
 import CreateLayout from "../components/Layout/CreateLayout";
 
-function EditDiscount() {
+function EditDiscount({ discountId }: { discountId?: string }) {
   return (
     <CreateLayout breadcrumbLabel="Modifica dati" title="Dati opportunità">
-      <CreateEditDiscountForm />
+      <CreateEditDiscountForm discountId={discountId} />
     </CreateLayout>
   );
 }
