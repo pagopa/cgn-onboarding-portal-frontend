@@ -7,6 +7,9 @@ export function load<T>({
   validate(value: unknown): T;
   empty: T;
 }): T {
+  if (typeof localStorage === "undefined") {
+    return empty;
+  }
   const value = localStorage.getItem(key);
   if (!value) {
     return empty;
@@ -20,6 +23,9 @@ export function load<T>({
 }
 
 export function save<T>({ key, value }: { key: string; value: T }) {
+  if (typeof localStorage === "undefined") {
+    return;
+  }
   try {
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
@@ -37,6 +43,9 @@ export function watch<T>({
   validate(value: unknown): T;
   listener(value: T): void;
 }) {
+  if (typeof localStorage === "undefined") {
+    return;
+  }
   window.addEventListener("storage", event => {
     if (event.key === key) {
       const newValue = event.newValue;
