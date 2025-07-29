@@ -9,12 +9,14 @@ import { Lens } from "@hookform/lenses";
 
 type RemovedProps = "name" | "value" | "required" | "onChange" | "onBlur";
 
+type OnChangeOverride<T> = (
+  event: Parameters<ChangeEventHandler<T>>[0],
+  onChange: ChangeEventHandler<T>
+) => void;
+
 type InputProps = {
   element?: "input";
-  onChangeOverride?(
-    event: Parameters<ChangeEventHandler<HTMLInputElement>>[0],
-    onChange: ChangeEventHandler<HTMLInputElement>
-  ): void;
+  onChangeOverride?: OnChangeOverride<HTMLInputElement>;
 };
 
 type InputTextProps = InputProps &
@@ -39,18 +41,12 @@ type InputCheckboxProps = InputProps &
 
 type TextareaProps = {
   element: "textarea";
-  onChangeOverride?(
-    event: Parameters<ChangeEventHandler<HTMLTextAreaElement>>[0],
-    onChange: ChangeEventHandler<HTMLTextAreaElement>
-  ): void;
+  onChangeOverride?: OnChangeOverride<HTMLTextAreaElement>;
 } & Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, RemovedProps>;
 
 type SelectProps = {
   element: "select";
-  onChangeOverride?(
-    event: Parameters<ChangeEventHandler<HTMLSelectElement>>[0],
-    onChange: ChangeEventHandler<HTMLSelectElement>
-  ): void;
+  onChangeOverride?: OnChangeOverride<HTMLSelectElement>;
 } & Omit<SelectHTMLAttributes<HTMLSelectElement>, RemovedProps>;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
