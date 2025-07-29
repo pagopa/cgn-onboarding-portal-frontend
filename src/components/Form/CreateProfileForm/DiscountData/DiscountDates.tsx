@@ -44,7 +44,7 @@ export function DiscountDates({
             startDate={startDate}
             endDate={endDate}
             onChange={date => {
-              if (endDate && date! > endDate) {
+              if (endDate && date && date > endDate) {
                 setEndDate(undefined);
               }
               setStartDate(date ?? undefined);
@@ -76,7 +76,7 @@ export function DiscountDates({
             startDate={startDate}
             endDate={endDate}
             onChange={date => {
-              if (startDate && date! < startDate) {
+              if (startDate && date && date < startDate) {
                 setStartDate(undefined);
               }
               setEndDate(date ?? undefined);
