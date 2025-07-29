@@ -1,6 +1,7 @@
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import z from "zod/v4";
+import { ObjectLens } from "@hookform/lenses";
 import FormSection from "../FormSection";
 import InputField from "../FormField";
 import {
@@ -21,13 +22,17 @@ import { useStandardForm } from "../../../utils/useStandardForm";
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
-const loggedInitialValues: z.input<typeof loggedHelpValidationSchema> = {
+type LoggedHelpFormValues = z.input<typeof loggedHelpValidationSchema>;
+
+const loggedInitialValues: LoggedHelpFormValues = {
   category: "",
   topic: "",
   message: ""
 };
 
-const notLoggedInitialValues: z.input<typeof notLoggedHelpValidationSchema> = {
+type NotLoggedHelpFormValues = z.input<typeof notLoggedHelpValidationSchema>;
+
+const notLoggedInitialValues: NotLoggedHelpFormValues = {
   category: "",
   topic: "",
   message: "",
@@ -68,7 +73,6 @@ const topics = () => [
   }
 ];
 
-// eslint-disable-next-line complexity
 const HelpForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const history = useHistory();
@@ -115,6 +119,12 @@ const HelpForm = () => {
 
   const form = isLogged ? loggedForm : notLoggedForm;
 
+  // this is a shortcut to avoid the ternary isLogged ? loggedForm.lens.focus : notLoggedForm.lens.focus
+  // added extra type check that will ensure that the form lens focus is compatible with both LoggedHelpFormValues and NotLoggedHelpFormValues
+  const formLensFocus: NotLoggedHelpFormValues extends LoggedHelpFormValues
+    ? ObjectLens<LoggedHelpFormValues>["focus"]
+    : never = form.lens.focus;
+
   const submitIsEnabled =
     !form.formState.isSubmitting &&
     !createLoggedHelpMutation.isPending &&
@@ -158,11 +168,7 @@ const HelpForm = () => {
               <Field
                 id="DataFilling"
                 type="radio"
-                formLens={
-                  isLogged
-                    ? loggedForm.lens.focus("category")
-                    : notLoggedForm.lens.focus("category")
-                }
+                formLens={formLensFocus("category")}
                 value={HelpRequestCategoryEnum.DataFilling}
               />
               <label
@@ -176,11 +182,7 @@ const HelpForm = () => {
               <Field
                 id="Discounts"
                 type="radio"
-                formLens={
-                  isLogged
-                    ? loggedForm.lens.focus("category")
-                    : notLoggedForm.lens.focus("category")
-                }
+                formLens={formLensFocus("category")}
                 value={HelpRequestCategoryEnum.Discounts}
               />
               <label
@@ -194,11 +196,7 @@ const HelpForm = () => {
               <Field
                 id="Documents"
                 type="radio"
-                formLens={
-                  isLogged
-                    ? loggedForm.lens.focus("category")
-                    : notLoggedForm.lens.focus("category")
-                }
+                formLens={formLensFocus("category")}
                 value={HelpRequestCategoryEnum.Documents}
               />
               <label
@@ -212,11 +210,7 @@ const HelpForm = () => {
               <Field
                 id="TechnicalProblem"
                 type="radio"
-                formLens={
-                  isLogged
-                    ? loggedForm.lens.focus("category")
-                    : notLoggedForm.lens.focus("category")
-                }
+                formLens={formLensFocus("category")}
                 value={HelpRequestCategoryEnum.TechnicalProblem}
               />
               <label
@@ -230,11 +224,7 @@ const HelpForm = () => {
               <Field
                 id="CgnOwnerReporting"
                 type="radio"
-                formLens={
-                  isLogged
-                    ? loggedForm.lens.focus("category")
-                    : notLoggedForm.lens.focus("category")
-                }
+                formLens={formLensFocus("category")}
                 value={HelpRequestCategoryEnum.CgnOwnerReporting}
               />
               <label
@@ -248,11 +238,7 @@ const HelpForm = () => {
               <Field
                 id="Suggestions"
                 type="radio"
-                formLens={
-                  isLogged
-                    ? loggedForm.lens.focus("category")
-                    : notLoggedForm.lens.focus("category")
-                }
+                formLens={formLensFocus("category")}
                 value={HelpRequestCategoryEnum.Suggestions}
               />
               <label
@@ -266,11 +252,7 @@ const HelpForm = () => {
               <Field
                 id="Other"
                 type="radio"
-                formLens={
-                  isLogged
-                    ? loggedForm.lens.focus("category")
-                    : notLoggedForm.lens.focus("category")
-                }
+                formLens={formLensFocus("category")}
                 value={HelpRequestCategoryEnum.Other}
               />
               <label
@@ -280,13 +262,7 @@ const HelpForm = () => {
                 Altro
               </label>
             </div>
-            <FormErrorMessage
-              formLens={
-                isLogged
-                  ? loggedForm.lens.focus("category")
-                  : notLoggedForm.lens.focus("category")
-              }
-            />
+            <FormErrorMessage formLens={formLensFocus("category")} />
           </div>
         </InputField>
         {hasTopicDropdown(form.getValues().category) && (
@@ -296,14 +272,7 @@ const HelpForm = () => {
             description="Seleziona l’argomento per cui hai bisogno di aiuto"
           >
             <div className="select-wrapper">
-              <Field
-                element="select"
-                formLens={
-                  isLogged
-                    ? loggedForm.lens.focus("topic")
-                    : notLoggedForm.lens.focus("topic")
-                }
-              >
+              <Field element="select" formLens={formLensFocus("topic")}>
                 {topics()
                   .find(topic => topic.key === form.getValues().category)
                   ?.items.map(item => (
@@ -324,22 +293,12 @@ const HelpForm = () => {
           <Field
             element="textarea"
             id="message"
-            formLens={
-              isLogged
-                ? loggedForm.lens.focus("message")
-                : notLoggedForm.lens.focus("message")
-            }
+            formLens={formLensFocus("message")}
             maxLength={200}
             rows={4}
             className="form-control"
           />
-          <FormErrorMessage
-            formLens={
-              isLogged
-                ? loggedForm.lens.focus("message")
-                : notLoggedForm.lens.focus("message")
-            }
-          />
+          <FormErrorMessage formLens={formLensFocus("message")} />
         </InputField>
         {isLogged && <FormButtons isEnabled={submitIsEnabled} />}
       </FormSection>
