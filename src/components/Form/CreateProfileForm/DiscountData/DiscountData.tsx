@@ -112,6 +112,12 @@ const DiscountData = ({
     return <CenteredLoading />;
   }
 
+  const isMutating =
+    form.formState.isSubmitting ||
+    createDiscountMutation.isPending ||
+    updateDiscountMutation.isPending ||
+    deleteDiscountMutation.isPending;
+
   return (
     <form
       onSubmit={form.handleSubmit(async values => {
@@ -196,12 +202,7 @@ const DiscountData = ({
                       className="px-14"
                       color="primary"
                       tag="button"
-                      disabled={
-                        form.formState.isSubmitting ||
-                        createDiscountMutation.isPending ||
-                        updateDiscountMutation.isPending ||
-                        deleteDiscountMutation.isPending
-                      }
+                      disabled={isMutating}
                     >
                       Continua
                     </Button>
