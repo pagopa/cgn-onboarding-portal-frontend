@@ -106,7 +106,10 @@ export const ReferentValidationSchema = z.object({
 
 export const SalesChannelValidationSchema = z
   .object({
-    channelType: z.enum(SalesChannelType),
+    channelType: z.pipe(
+      z.enum({ ...SalesChannelType, "": "" }),
+      z.enum(SalesChannelType)
+    ),
     websiteUrl: z
       .url({
         error: INCORRECT_WEBSITE_URL,

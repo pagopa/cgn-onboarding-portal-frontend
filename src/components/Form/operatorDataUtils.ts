@@ -19,9 +19,9 @@ import {
   SalesChannelValidationSchema
 } from "./ValidationSchemas";
 
-export type ProfileFormValues = z.infer<typeof ProfileDataValidationSchema>;
+export type ProfileFormValues = z.input<typeof ProfileDataValidationSchema>;
 
-export type SalesChannelFormValues = z.infer<
+export type SalesChannelFormValues = z.input<
   typeof SalesChannelValidationSchema
 >;
 
@@ -38,9 +38,9 @@ const emptyAddressFormValues: AddressFormValues = {
 };
 
 const salesChannelInitialFormValues: SalesChannelFormValues = {
-  channelType: "" as SalesChannelType,
+  channelType: "",
   websiteUrl: "",
-  discountCodeType: "" as DiscountCodeType,
+  discountCodeType: "",
   allNationalAddresses: false,
   addresses: [emptyAddressFormValues]
 };
@@ -103,7 +103,7 @@ function salesChannelFormValuesToSalesChannel(
     case "OnlineChannel": {
       return {
         channelType: SalesChannelType.OnlineChannel,
-        websiteUrl: values.websiteUrl!,
+        websiteUrl: values.websiteUrl ?? "",
         discountCodeType: values.discountCodeType as DiscountCodeType
       };
     }
@@ -118,7 +118,7 @@ function salesChannelFormValuesToSalesChannel(
     case "BothChannels": {
       return {
         channelType: SalesChannelType.BothChannels,
-        websiteUrl: values.websiteUrl!,
+        websiteUrl: values.websiteUrl ?? "",
         addresses: salesChannelFormValuesToAddresses(values),
         allNationalAddresses: values.allNationalAddresses,
         discountCodeType: values.discountCodeType as DiscountCodeType
@@ -179,7 +179,7 @@ function salesChannelToFormValues(
       return {
         channelType: SalesChannelType.OfflineChannel,
         websiteUrl: salesChannel.websiteUrl ?? "",
-        discountCodeType: "" as DiscountCodeType,
+        discountCodeType: "",
         allNationalAddresses: salesChannel.allNationalAddresses ?? false,
         addresses: salesChannelToAddressesFormValues(salesChannel)
       };
@@ -188,8 +188,7 @@ function salesChannelToFormValues(
       return {
         channelType: SalesChannelType.BothChannels,
         websiteUrl: salesChannel.websiteUrl,
-        discountCodeType:
-          salesChannel.discountCodeType ?? ("" as DiscountCodeType),
+        discountCodeType: salesChannel.discountCodeType ?? "",
         allNationalAddresses: salesChannel.allNationalAddresses ?? false,
         addresses: salesChannelToAddressesFormValues(salesChannel)
       };
