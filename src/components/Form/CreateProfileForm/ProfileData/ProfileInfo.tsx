@@ -1,21 +1,31 @@
-import { Field, useFormikContext } from "formik";
-import { z } from "zod/v4";
+import { Lens } from "@hookform/lenses";
+import { useWatch } from "react-hook-form";
 import { EntityType } from "../../../../api/generated";
-import CustomErrorMessage from "../../CustomErrorMessage";
 import InputField from "../../FormField";
 import FormSection from "../../FormSection";
 import ToggleField from "../../ToggleField";
-import { ProfileDataValidationSchema } from "../../ValidationSchemas";
+import { ProfileFormValues } from "../../operatorDataUtils";
+import {
+  Field,
+  FormErrorMessage
+} from "../../../../utils/react-hook-form-helpers";
 
 type Props = {
   entityType: EntityType | undefined;
   fullName: string;
   taxCodeOrVat: string;
+  formLens: Lens<ProfileFormValues>;
 };
 
-const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
-  type Values = z.infer<ReturnType<typeof ProfileDataValidationSchema>>;
-  const formikContext = useFormikContext<Values>();
+const ProfileInfo = ({
+  formLens,
+  entityType,
+  fullName,
+  taxCodeOrVat
+}: Props) => {
+  const hasDifferentName = useWatch(
+    formLens.focus("hasDifferentName").interop()
+  );
   return (
     <FormSection hasIntroduction isVisible={false} title="Dati dell’operatore">
       <InputField
@@ -24,7 +34,7 @@ const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
         description="Inserisci il nome completo dell'Operatore. Sarà visibile in app e nella lista dei partner."
         required
       >
-        <Field
+        <input
           id="fullName"
           name="fullName"
           value={fullName}
@@ -32,7 +42,6 @@ const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
           disabled
           className="form-control"
         />
-        <CustomErrorMessage name="fullName" />
       </InputField>
       {entityType === EntityType.Private && (
         <div className="mt-6">
@@ -42,14 +51,14 @@ const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
           >
             <Field
               id="hasDifferentName"
-              name="hasDifferentName"
+              formLens={formLens.focus("hasDifferentName")}
               type="checkbox"
               className="mb-0"
             />
           </ToggleField>
         </div>
       )}
-      {formikContext.values.hasDifferentName && (
+      {hasDifferentName && (
         <InputField
           htmlFor="profileName"
           title="Nome operatore visualizzato"
@@ -69,32 +78,27 @@ const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
               <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
               <Field
                 id="name"
-                name="name"
+                formLens={formLens.focus("name")}
                 type="text"
                 className="form-control"
               />
-              <CustomErrorMessage name="name" />
+              <FormErrorMessage formLens={formLens.focus("name")} />
             </div>
             <div className="col-6">
               <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
               <Field
                 id="name_en"
-                name="name_en"
+                formLens={formLens.focus("name_en")}
                 type="text"
                 className="form-control"
               />
-              <CustomErrorMessage name="name_en" />
+              <FormErrorMessage formLens={formLens.focus("name_en")} />
             </div>
           </div>
         </InputField>
       )}
-      <InputField
-        htmlFor="taxCodeOrVat"
-        title="Partita IVA"
-        required
-        // NICE_TO_HAVE: aggiungere validazione della partita iva (può essere nazionale o estera, non può essere codice fiscale)
-      >
-        <Field
+      <InputField htmlFor="taxCodeOrVat" title="Partita IVA" required>
+        <input
           id="taxCodeOrVat"
           name="taxCodeOrVat"
           value={taxCodeOrVat}
@@ -102,27 +106,26 @@ const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
           disabled
           className="form-control"
         />
-        <CustomErrorMessage name="taxCodeOrVat" />
       </InputField>
       <InputField htmlFor="pecAddress" title="Indirizzo PEC" required>
         <Field
           id="pecAddress"
-          name="pecAddress"
+          formLens={formLens.focus("pecAddress")}
           type="email"
           placeholder="Inserisci l'indirizzo PEC dell'ente"
           className="form-control"
         />
-        <CustomErrorMessage name="pecAddress" />
+        <FormErrorMessage formLens={formLens.focus("pecAddress")} />
       </InputField>
       <InputField htmlFor="legalOffice" title="Sede legale" required>
         <Field
           id="legalOffice"
-          name="legalOffice"
+          formLens={formLens.focus("legalOffice")}
           type="text"
           placeholder="Inserisci la sede legale dell'ente"
           className="form-control"
         />
-        <CustomErrorMessage name="legalOffice" />
+        <FormErrorMessage formLens={formLens.focus("legalOffice")} />
       </InputField>
       <InputField
         htmlFor="telephoneNumber"
@@ -132,12 +135,12 @@ const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
         <Field
           maxLength={15}
           id="telephoneNumber"
-          name="telephoneNumber"
+          formLens={formLens.focus("telephoneNumber")}
           type="text"
           placeholder="Inserisci il numero di telefono dell'ente"
           className="form-control"
         />
-        <CustomErrorMessage name="telephoneNumber" />
+        <FormErrorMessage formLens={formLens.focus("telephoneNumber")} />
       </InputField>
       <InputField
         htmlFor="legalRepresentativeFullName"
@@ -146,12 +149,14 @@ const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
       >
         <Field
           id="legalRepresentativeFullName"
-          name="legalRepresentativeFullName"
+          formLens={formLens.focus("legalRepresentativeFullName")}
           type="text"
           placeholder="Inserisci il nome e cognome del Legale rappresentante dell'ente"
           className="form-control"
         />
-        <CustomErrorMessage name="legalRepresentativeFullName" />
+        <FormErrorMessage
+          formLens={formLens.focus("legalRepresentativeFullName")}
+        />
       </InputField>
       <InputField
         htmlFor="legalRepresentativeTaxCode"
@@ -162,12 +167,14 @@ const ProfileInfo = ({ entityType, fullName, taxCodeOrVat }: Props) => {
           minLength={4}
           maxLength={20}
           id="legalRepresentativeTaxCode"
-          name="legalRepresentativeTaxCode"
+          formLens={formLens.focus("legalRepresentativeTaxCode")}
           type="text"
           placeholder="Inserisci il Codice fiscale del Legale rappresentante dell'ente"
           className="form-control"
         />
-        <CustomErrorMessage name="legalRepresentativeTaxCode" />
+        <FormErrorMessage
+          formLens={formLens.focus("legalRepresentativeTaxCode")}
+        />
       </InputField>
     </FormSection>
   );

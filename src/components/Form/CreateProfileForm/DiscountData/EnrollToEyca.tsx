@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Field, FormikHelpers } from "formik";
 import { Button, FormGroup } from "design-react-kit";
 import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { Lens } from "@hookform/lenses";
+import { useController, useWatch } from "react-hook-form";
 import FormField from "../../FormField";
-import CustomErrorMessage from "../../CustomErrorMessage";
 import {
   BothChannels,
   OnlineChannel,
@@ -11,21 +11,17 @@ import {
   Profile,
   SalesChannelType
 } from "../../../../api/generated";
-import { DiscountFormValues } from "../../discountFormUtils";
+import { DiscountFormInputValues } from "../../discountFormUtils";
+import {
+  Field,
+  FormErrorMessage
+} from "../../../../utils/react-hook-form-helpers";
 
 type Props = {
   profile: Profile;
-  setFieldValue: FormikHelpers<
-    DiscountFormValues | { discounts: Array<DiscountFormValues> }
-  >["setFieldValue"];
-} & (
-  | {
-      // eslint-disable-next-line sonarjs/no-redundant-optional
-      index?: undefined;
-      formValues: DiscountFormValues;
-    }
-  | { index: number; formValues: { discounts: Array<DiscountFormValues> } }
-);
+  formLens: Lens<DiscountFormInputValues>;
+  index?: number;
+};
 
 type EycaAlertModalProps = {
   isOpen: boolean;
@@ -47,8 +43,7 @@ const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
   </Modal>
 );
 
-/* eslint-disable sonarjs/cognitive-complexity */
-const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
+const EnrollToEyca = ({ profile, index, formLens }: Props) => {
   const hasIndex = index !== undefined;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const salesChannel = profile.salesChannel as OnlineChannel | BothChannels;
@@ -68,13 +63,20 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
     }
   };
 
-  const visibleOnEyca: boolean | undefined = hasIndex
-    ? formValues.discounts[index].visibleOnEyca
-    : formValues.visibleOnEyca;
+  const visibleOnEyca = useWatch(formLens.focus("visibleOnEyca").interop());
+  const visibleOnEycaController = useController(
+    formLens.focus("visibleOnEyca").interop()
+  );
+  const visibleOnEycaOnChange = visibleOnEycaController.field.onChange;
 
-  const eycaLandingPageUrl: string | undefined = hasIndex
-    ? formValues.discounts[index].eycaLandingPageUrl
-    : formValues.eycaLandingPageUrl;
+  const eycaLandingPageUrl = useWatch(
+    formLens.focus("eycaLandingPageUrl").interop()
+  );
+  const eycaLandingPageUrlController = useController(
+    formLens.focus("eycaLandingPageUrl").interop()
+  );
+  const eycaLandingPageUrlOnChange =
+    eycaLandingPageUrlController.field.onChange;
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -86,25 +88,20 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
 
   useEffect(() => {
     if (salesChannel.discountCodeType === DiscountCodeType.LandingPage) {
-      void setFieldValue(
-        hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`,
-        (eycaLandingPageUrl ?? "").trim() !== ""
-      );
+      visibleOnEycaOnChange({
+        target: { value: (eycaLandingPageUrl ?? "").trim() !== "" }
+      });
     } else {
-      void setFieldValue(
-        hasIndex
-          ? `discounts[${index}].eycaLandingPageUrl`
-          : `eycaLandingPageUrl`,
-        ""
-      );
+      eycaLandingPageUrlOnChange({
+        target: { value: "" }
+      });
     }
   }, [
     visibleOnEyca,
     eycaLandingPageUrl,
     salesChannel.discountCodeType,
-    setFieldValue,
-    hasIndex,
-    index
+    visibleOnEycaOnChange,
+    eycaLandingPageUrlOnChange
   ]);
 
   if (profile.salesChannel.channelType === SalesChannelType.OfflineChannel) {
@@ -156,17 +153,10 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
           <FormGroup check tag="div" className="mt-4">
             <Field
               id={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
-              name={
-                hasIndex ? `discounts[${index}].visibleOnEyca` : `visibleOnEyca`
-              }
+              formLens={formLens.focus("visibleOnEyca")}
               type="checkbox"
-              onChange={(event: { target: { checked: boolean } }) => {
-                void setFieldValue(
-                  hasIndex
-                    ? `discounts[${index}].visibleOnEyca`
-                    : `visibleOnEyca`,
-                  event.target.checked
-                );
+              onChangeOverride={(event, onChange) => {
+                onChange(event);
                 if (isEycaSupported) {
                   if (event.target.checked) {
                     openModal();
@@ -216,22 +206,12 @@ const EnrollToEyca = ({ profile, index, formValues, setFieldValue }: Props) => {
       <FormGroup check tag="div" className="mt-4">
         <Field
           id="eycaLandingPageUrl"
-          name={
-            hasIndex
-              ? `discounts[${index}].eycaLandingPageUrl`
-              : "eycaLandingPageUrl"
-          }
+          formLens={formLens.focus("eycaLandingPageUrl")}
           placeholder="Inserisci indirizzo (completo di protocollo http o https)"
           className="form-control"
           type="text"
         />
-        <CustomErrorMessage
-          name={
-            hasIndex
-              ? `discounts[${index}].eycaLandingPageUrl`
-              : "eycaLandingPageUrl"
-          }
-        />
+        <FormErrorMessage formLens={formLens.focus("eycaLandingPageUrl")} />
       </FormGroup>
     </FormField>
   );

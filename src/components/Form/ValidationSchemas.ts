@@ -1,5 +1,6 @@
 import { z } from "zod/v4";
 import {
+  BucketCodeLoadStatus,
   DiscountCodeType,
   HelpRequestCategoryEnum,
   ProductCategory,
@@ -7,7 +8,6 @@ import {
 } from "../../api/generated";
 import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
-import { ProfileFormValues } from "./operatorDataUtils";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
 const INCORRECT_CONFIRM_EMAIL_ADDRESS = "I due indirizzi devono combaciare";
@@ -30,23 +30,18 @@ const fiscalCodeRegex =
 
 const undefinedRequired = () => REQUIRED_FIELD;
 
-const requiredIf = <O, I, S extends z.ZodType<O, I>>(
-  schema: S,
-  condition: boolean
-) => (condition ? schema : schema.optional());
-
-const emptyAddress = z.object({
-  street: z.literal(""),
-  zipCode: z.literal(""),
-  city: z.literal(""),
-  district: z.literal(""),
+export const EmptyAddressValidationSchema = z.object({
+  street: z.string().max(0),
+  zipCode: z.string().max(0),
+  city: z.string().max(0),
+  district: z.string().max(0),
   coordinates: z.object({
-    latitude: z.literal(""),
-    longitude: z.literal("")
+    latitude: z.string().max(0),
+    longitude: z.string().max(0)
   })
 });
 
-const optionalAddress = z.object({
+const OptionalAddressValidationSchema = z.object({
   street: z.string().optional(),
   zipCode: z.string().optional(),
   city: z.string().optional(),
@@ -59,7 +54,7 @@ const optionalAddress = z.object({
     .optional()
 });
 
-const requiredAddress = z.object({
+export const AddressValidationSchema = z.object({
   street: z
     .string({ error: undefinedRequired })
     .trim()
@@ -82,16 +77,10 @@ const requiredAddress = z.object({
       latitude: z.string().optional(),
       longitude: z.string().optional()
     })
-    .optional(),
-  label: z.string().optional(),
-  value: z.string().optional()
+    .optional()
 });
 
-export const EmptyAddresses = z.array(emptyAddress);
-
-export type EmptyAddresses = z.infer<typeof EmptyAddresses>;
-
-const ReferentValidationSchema = z.object({
+export const ReferentValidationSchema = z.object({
   firstName: z
     .string({ error: undefinedRequired })
     .trim()
@@ -115,21 +104,87 @@ const ReferentValidationSchema = z.object({
     .min(1, REQUIRED_FIELD)
 });
 
-export const ProfileDataValidationSchema = (values: ProfileFormValues) =>
-  z.object({
+export const SalesChannelValidationSchema = z
+  .object({
+    channelType: z.pipe(
+      z.enum({ ...SalesChannelType, "": "" }),
+      z.enum(SalesChannelType)
+    ),
+    websiteUrl: z
+      .url({
+        error: INCORRECT_WEBSITE_URL,
+        protocol: /^https?$/,
+        hostname: z.regexes.domain
+      })
+      .optional(),
+    discountCodeType: z
+      .enum({ ...DiscountCodeType, "": "" }, REQUIRED_FIELD)
+      .optional(),
+    allNationalAddresses: z.boolean(),
+    addresses: z.array(OptionalAddressValidationSchema).optional()
+  })
+  .check(ctx => {
+    if (
+      ctx.value.channelType === SalesChannelType.OnlineChannel ||
+      ctx.value.channelType === SalesChannelType.BothChannels
+    ) {
+      if (!ctx.value.websiteUrl) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.websiteUrl,
+          path: ["websiteUrl"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+      if (!ctx.value.discountCodeType) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.discountCodeType,
+          path: ["discountCodeType"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+    }
+    if (
+      (ctx.value.channelType === SalesChannelType.OfflineChannel ||
+        ctx.value.channelType === SalesChannelType.BothChannels) &&
+      !ctx.value.allNationalAddresses
+    ) {
+      z.array(AddressValidationSchema)
+        .min(1)
+        .safeParse(ctx.value.addresses)
+        .error?.issues.forEach(issue => {
+          // eslint-disable-next-line functional/immutable-data
+          ctx.issues.push({
+            ...issue,
+            path: ["addresses", ...issue.path]
+          });
+        });
+
+      ctx.value.addresses?.forEach((address, index) => {
+        if (Object.values(address).some(Boolean)) {
+          AddressValidationSchema.safeParse(address).error?.issues.forEach(
+            issue => {
+              // eslint-disable-next-line functional/immutable-data
+              ctx.issues.push({
+                ...issue,
+                path: ["addresses", index.toString(), ...issue.path]
+              });
+            }
+          );
+        }
+      });
+    }
+  });
+
+export const ProfileDataValidationSchema = z
+  .object({
     hasDifferentName: z.boolean().optional(),
-    name: requiredIf(
-      z.string({ error: undefinedRequired }).trim(),
-      values.hasDifferentName
-    ),
-    name_en: requiredIf(
-      z.string({ error: undefinedRequired }).trim(),
-      values.hasDifferentName
-    ),
-    name_de: requiredIf(
-      z.string({ error: undefinedRequired }).trim(),
-      values.hasDifferentName
-    ),
+    name: z.string({ error: undefinedRequired }).trim().optional(),
+    name_en: z.string({ error: undefinedRequired }).trim().optional(),
+    name_de: z.string({ error: undefinedRequired }).trim().optional(),
     pecAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
     legalOffice: z
       .string({ error: undefinedRequired })
@@ -166,30 +221,38 @@ export const ProfileDataValidationSchema = (values: ProfileFormValues) =>
       .string({ error: undefinedRequired })
       .trim()
       .min(1, REQUIRED_FIELD),
-    salesChannel: z.object({
-      channelType: z.enum(SalesChannelType),
-      websiteUrl: requiredIf(
-        z.url({
-          error: INCORRECT_WEBSITE_URL,
-          protocol: /^https?$/,
-          hostname: z.regexes.domain
-        }),
-        values.salesChannel.channelType === SalesChannelType.OnlineChannel ||
-          values.salesChannel.channelType === SalesChannelType.BothChannels
-      ),
-      discountCodeType: requiredIf(
-        z.enum(DiscountCodeType, REQUIRED_FIELD),
-        values.salesChannel.channelType === SalesChannelType.OnlineChannel ||
-          values.salesChannel.channelType === SalesChannelType.BothChannels
-      ),
-      allNationalAddresses: z.boolean(),
-      addresses:
-        (values.salesChannel.channelType === SalesChannelType.OfflineChannel ||
-          values.salesChannel.channelType === SalesChannelType.BothChannels) &&
-        !values.salesChannel.allNationalAddresses
-          ? z.array(requiredAddress).min(1, REQUIRED_FIELD)
-          : z.array(optionalAddress).optional()
-    })
+    salesChannel: SalesChannelValidationSchema
+  })
+  .check(ctx => {
+    if (ctx.value.hasDifferentName) {
+      if (!ctx.value.name) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.name,
+          path: ["name"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+      if (!ctx.value.name_en) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.name_en,
+          path: ["name_en"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+      if (!ctx.value.name_de) {
+        // eslint-disable-next-line functional/immutable-data
+        ctx.issues.push({
+          input: ctx.value.name_de,
+          path: ["name_de"],
+          code: "custom",
+          message: REQUIRED_FIELD
+        });
+      }
+    }
   });
 
 const checkEycaLandingDifferentFromLandingPageUrl = (
@@ -209,6 +272,7 @@ export const discountDataValidationSchema = (
 ) =>
   z
     .object({
+      id: z.string().optional(),
       name: z
         .string({ error: undefinedRequired })
         .trim()
@@ -227,48 +291,80 @@ export const discountDataValidationSchema = (
       description: z.string().max(250).optional(),
       description_en: z.string().max(250).optional(),
       description_de: z.string().max(250).optional(),
-      discountUrl: z
-        .url({
+      discountUrl: z.union([
+        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
+        z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
           hostname: z.regexes.domain
         })
-        .optional(),
-      startDate: z.date({ error: undefinedRequired }),
-      endDate: z.date({ error: undefinedRequired }),
-      discount: z.coerce
-        .number(DISCOUNT_RANGE)
-        .int(DISCOUNT_RANGE)
-        .min(1, DISCOUNT_RANGE)
-        .max(100, DISCOUNT_RANGE)
-        .optional(),
-      productCategories: z
-        .array(z.enum(ProductCategory, "Categoria merceologica non valida"))
-        .min(1, PRODUCT_CATEGORIES_ONE)
-        .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX),
+      ]),
+      startDate: z.pipe(
+        z.date().optional(),
+        z.date({ error: undefinedRequired })
+      ),
+      endDate: z.pipe(
+        z.date().optional(),
+        z.date({ error: undefinedRequired })
+      ),
+      discount: z
+        .string()
+        .trim()
+        .transform((val, ctx) => {
+          const num = Number(val);
+          if (val === "") {
+            return undefined;
+          }
+          if (Number.isInteger(num) && num > 1 && num < 100) {
+            return num;
+          } else {
+            // eslint-disable-next-line functional/immutable-data
+            ctx.issues.push({
+              code: "custom",
+              input: val,
+              message: DISCOUNT_RANGE
+            });
+          }
+          return isNaN(num) ? undefined : num;
+        }),
+      productCategories: z.pipe(
+        z
+          .partialRecord(z.enum(ProductCategory), z.boolean())
+          .transform(categories =>
+            (Object.keys(categories) as Array<ProductCategory>).filter(
+              category => categories[category]
+            )
+          ),
+        z
+          .array(z.enum(ProductCategory, "Categoria merceologica non valida"))
+          .min(1, PRODUCT_CATEGORIES_ONE)
+          .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX)
+      ),
       condition: z.string().optional(),
       condition_en: z.string().optional(),
       condition_de: z.string().optional(),
       staticCode: z.string().optional(),
-      landingPageUrl: z
-        .url({
+      landingPageUrl: z.union([
+        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
+        z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
           hostname: z.regexes.domain
         })
-        .optional(),
+      ]),
       landingPageReferrer: z.string().optional(),
       lastBucketCodeLoadUid: z.string().optional(),
       lastBucketCodeLoadFileName: z.string().optional(),
+      lastBucketCodeLoadStatus: z.enum(BucketCodeLoadStatus).optional(),
       visibleOnEyca: z.boolean().optional(),
-      eycaLandingPageUrl: z
-        .url({
+      eycaLandingPageUrl: z.union([
+        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
+        z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
           hostname: z.regexes.domain
         })
-        .optional()
-        .nullable()
+      ])
     })
     // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
     .check(ctx => {
@@ -404,19 +500,6 @@ export const discountDataValidationSchema = (
       }
     });
 
-export const discountsListDataValidationSchema = (
-  staticCheck: boolean,
-  landingCheck: boolean,
-  bucketCheck: boolean
-) =>
-  z.object({
-    discounts: z.array(
-      discountDataValidationSchema(staticCheck, landingCheck, bucketCheck)
-    )
-  });
-
-const helpCategoryEnum = z.enum(HelpRequestCategoryEnum);
-
 function helpTopicValidation(
   ctx: z.core.ParsePayload<{
     category: HelpRequestCategoryEnum;
@@ -442,7 +525,11 @@ function helpTopicValidation(
 
 export const loggedHelpValidationSchema = z
   .object({
-    category: helpCategoryEnum,
+    category: z.string().pipe(
+      z.enum(HelpRequestCategoryEnum, {
+        error: REQUIRED_FIELD
+      })
+    ),
     topic: z.string().optional(),
     message: z
       .string({ error: undefinedRequired })
@@ -455,7 +542,11 @@ export const loggedHelpValidationSchema = z
 
 export const notLoggedHelpValidationSchema = z
   .object({
-    category: helpCategoryEnum,
+    category: z.string().pipe(
+      z.enum(HelpRequestCategoryEnum, {
+        error: REQUIRED_FIELD
+      })
+    ),
     topic: z.string().optional(),
     message: z
       .string({ error: undefinedRequired })
@@ -511,15 +602,18 @@ export const activationValidationSchema = z.object({
   pec: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
   referents: z
     .array(
-      z
-        .string({ error: undefinedRequired })
-        .trim()
-        .min(4, "Deve essere al minimo di 4 caratteri")
-        .max(20, "Deve essere al massimo di 20 caratteri")
-        .regex(fiscalCodeRegex, "Il codice fiscale inserito non è corretto")
-        .min(1, REQUIRED_FIELD)
+      z.object({
+        fiscalCode: z
+          .string({ error: undefinedRequired })
+          .trim()
+          .min(4, "Deve essere al minimo di 4 caratteri")
+          .max(20, "Deve essere al massimo di 20 caratteri")
+          .regex(fiscalCodeRegex, "Il codice fiscale inserito non è corretto")
+          .min(1, REQUIRED_FIELD)
+      })
     )
-    .min(1, REQUIRED_FIELD),
+    .min(1, REQUIRED_FIELD)
+    .transform(val => val.map(item => item.fiscalCode)),
   insertedAt: z.string().optional(),
-  entityType: z.enum(EntityType)
+  entityType: z.pipe(z.string().optional(), z.enum(EntityType, REQUIRED_FIELD))
 });
