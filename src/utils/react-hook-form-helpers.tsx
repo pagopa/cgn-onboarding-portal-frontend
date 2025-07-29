@@ -59,18 +59,17 @@ function decorateOnChange<E>(
     : field.onChange;
 }
 
-export function Field<T>({
-  formLens,
-  ...props
-}: {
-  formLens: Lens<T>;
-} & (
+type NativeInputProps =
   | InputTextProps
   | InputRadioProps
   | InputCheckboxProps
   | TextareaProps
-  | SelectProps
-)) {
+  | SelectProps;
+
+export function Field<T>({
+  formLens,
+  ...props
+}: { formLens: Lens<T> } & NativeInputProps) {
   const { field } = useController({
     ...(formLens as Lens<unknown> as Lens<string>).interop(),
     disabled: props.disabled
