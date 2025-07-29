@@ -26,9 +26,9 @@ const SalesChannelDiscountCodeType = ({
   );
   const onChangeSalesChannelType = salesChannelTypeController.field.onChange;
   const updateSalesChannelType = useCallback(
-    (cahnnelType: SalesChannelType) => {
+    (channelType: SalesChannelType) => {
       onChangeSalesChannelType({
-        target: { value: cahnnelType }
+        target: { value: channelType }
       });
     },
     [onChangeSalesChannelType]
