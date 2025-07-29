@@ -4,8 +4,8 @@ import {
   SelectHTMLAttributes,
   TextareaHTMLAttributes
 } from "react";
-import { useController } from "react-hook-form";
-import { Lens } from "@hookform/lenses";
+import { ControllerRenderProps, useController } from "react-hook-form";
+import { HookFormControlShim, Lens } from "@hookform/lenses";
 
 type RemovedProps = "name" | "value" | "required" | "onChange" | "onBlur";
 
@@ -49,7 +49,16 @@ type SelectProps = {
   onChangeOverride?: OnChangeOverride<HTMLSelectElement>;
 } & Omit<SelectHTMLAttributes<HTMLSelectElement>, RemovedProps>;
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
+function decorateOnChange<E>(
+  onChangeOverride: OnChangeOverride<E> | undefined,
+  field: ControllerRenderProps<HookFormControlShim<string>>
+): ChangeEventHandler<E> {
+  return onChangeOverride
+    ? (event: Parameters<ChangeEventHandler<E>>[0]) =>
+        onChangeOverride(event, field.onChange)
+    : field.onChange;
+}
+
 export function Field<T>({
   formLens,
   ...props
@@ -73,11 +82,7 @@ export function Field<T>({
         <textarea
           {...field}
           {...attributes}
-          onChange={
-            onChangeOverride
-              ? event => onChangeOverride(event, field.onChange)
-              : (field.onChange ?? field.onChange)
-          }
+          onChange={decorateOnChange(onChangeOverride, field)}
         />
       );
     }
@@ -87,11 +92,7 @@ export function Field<T>({
         <select
           {...field}
           {...attributes}
-          onChange={
-            onChangeOverride
-              ? event => onChangeOverride(event, field.onChange)
-              : (field.onChange ?? field.onChange)
-          }
+          onChange={decorateOnChange(onChangeOverride, field)}
         />
       );
     }
@@ -104,11 +105,7 @@ export function Field<T>({
             {...field}
             {...attributes}
             checked={field.value === props.value}
-            onChange={
-              onChangeOverride
-                ? event => onChangeOverride(event, field.onChange)
-                : field.onChange
-            }
+            onChange={decorateOnChange(onChangeOverride, field)}
           />
         );
       }
@@ -118,11 +115,7 @@ export function Field<T>({
             {...field}
             {...attributes}
             checked={Boolean(field.value)}
-            onChange={
-              onChangeOverride
-                ? event => onChangeOverride(event, field.onChange)
-                : field.onChange
-            }
+            onChange={decorateOnChange(onChangeOverride, field)}
           />
         );
       }
@@ -130,11 +123,7 @@ export function Field<T>({
         <input
           {...field}
           {...attributes}
-          onChange={
-            onChangeOverride
-              ? event => onChangeOverride(event, field.onChange)
-              : field.onChange
-          }
+          onChange={decorateOnChange(onChangeOverride, field)}
         />
       );
     }
