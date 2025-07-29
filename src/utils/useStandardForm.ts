@@ -11,8 +11,7 @@ import { z } from "zod/v4";
 
 export function useStandardForm<
   TFieldValues extends FieldValues = FieldValues,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TContext = any,
+  TContext = unknown,
   TTransformedValues = TFieldValues
 >(
   props: UseFormProps<TFieldValues, TContext, TTransformedValues> & {
