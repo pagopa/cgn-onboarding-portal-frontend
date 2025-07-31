@@ -2,5 +2,7 @@ set -e
 
 yarn prebuild
 
+yarn tsc:noEmit
+
 yarn lint-staged
 
