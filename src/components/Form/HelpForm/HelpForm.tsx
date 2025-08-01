@@ -123,7 +123,7 @@ const HelpForm = () => {
   // added extra type check that will ensure that the form lens focus is compatible with both LoggedHelpFormValues and NotLoggedHelpFormValues
   const formLensFocus: NotLoggedHelpFormValues extends LoggedHelpFormValues
     ? ObjectLens<LoggedHelpFormValues>["focus"]
-    : never = form.lens.focus;
+    : never = form.lens.focus.bind(form.lens);
 
   const submitIsEnabled =
     !form.formState.isSubmitting &&
