@@ -181,6 +181,7 @@ const CreateEditActivationForm = () => {
           title="Partita IVA"
           required
           // NICE_TO_HAVE: aggiungere validazione della partita iva (può essere nazionale o estera, non può essere codice fiscale)
+          // tracked in https://pagopa.atlassian.net/browse/IOBP-1917
         >
           <Field
             id="organizationFiscalCode"
