@@ -1,17 +1,16 @@
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { href, useNavigate } from "react-router";
 import { Button } from "design-react-kit";
 import { RootState } from "../store/store";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
 import DocumentFail from "../assets/icons/document_fail.svg?react";
-import { CREATE_PROFILE } from "../navigation/routes";
 import CgnLogo from "../components/Logo/CgnLogo";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 
 const RejectedProfile = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const history = useHistory();
+  const navigate = useNavigate();
   const authentication = useAuthentication();
   return (
     <Layout>
@@ -55,7 +54,9 @@ const RejectedProfile = () => {
               <Button
                 color="primary"
                 className="ms-4"
-                onClick={() => history.push(CREATE_PROFILE)}
+                onClick={() => {
+                  navigate(href("/operator/create-profile"));
+                }}
                 style={{ width: "175px" }}
               >
                 Modifica dati

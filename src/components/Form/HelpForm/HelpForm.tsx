@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import z from "zod/v4";
 import { ObjectLens } from "@hookform/lenses";
@@ -75,7 +75,7 @@ const topics = () => [
 
 const HelpForm = () => {
   const agreement = useSelector((state: RootState) => state.agreement.value);
-  const history = useHistory();
+  const navigate = useNavigate();
   const authentication = useAuthentication();
   const isLogged = authentication.currentSession.type !== "none";
   const { triggerTooltip } = useTooltip();
@@ -89,7 +89,7 @@ const HelpForm = () => {
   const createLoggedHelpMutation =
     remoteData.Index.Help.sendHelpRequest.useMutation({
       onSuccess() {
-        history.goBack();
+        navigate(-1);
       },
       onError: onErrorTooltip
     });
@@ -97,7 +97,7 @@ const HelpForm = () => {
   const createNotLoggedHelpMutation =
     remoteData.Public.Help.sendHelpRequest.useMutation({
       onSuccess() {
-        history.goBack();
+        navigate(-1);
       },
       onError: onErrorTooltip
     });
@@ -123,7 +123,7 @@ const HelpForm = () => {
   // added extra type check that will ensure that the form lens focus is compatible with both LoggedHelpFormValues and NotLoggedHelpFormValues
   const formLensFocus: NotLoggedHelpFormValues extends LoggedHelpFormValues
     ? ObjectLens<LoggedHelpFormValues>["focus"]
-    : never = form.lens.focus;
+    : never = form.lens.focus.bind(form.lens);
 
   const submitIsEnabled =
     !form.formState.isSubmitting &&

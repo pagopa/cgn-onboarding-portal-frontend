@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { SafePathname } from "react-router";
 import Container from "../Container/Container";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import CgnLogo from "../Logo/CgnLogo";
@@ -8,7 +9,7 @@ type Props = {
   breadcrumbLabel: string;
   title: string;
   children: ReactNode;
-  breadcrumbLink?: string;
+  breadcrumbLink?: SafePathname;
 };
 
 const CreateLayout = ({

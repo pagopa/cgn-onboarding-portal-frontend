@@ -2,12 +2,11 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { href, useNavigate } from "react-router";
 import { z } from "zod/v4";
 import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
 import { OrganizationsDataApi } from "../api/generated";
 import { SessionApi } from "../api/generated_public";
-import { ADMIN_PANEL_RICHIESTE, DASHBOARD, LOGIN } from "../navigation/routes";
 import { authenticationStore } from "./authenticationStore";
 
 export function goToUserLoginPage() {
@@ -57,7 +56,7 @@ const AdminAccess = new PublicClientApplication({
       "cgnonboardingportal.b2clogin.com"
     ],
     redirectUri: import.meta.env.CGN_MSAL_REDIRECT_URI,
-    postLogoutRedirectUri: LOGIN
+    postLogoutRedirectUri: "/login"
   },
   cache: {
     cacheLocation: "sessionStorage",
@@ -90,6 +89,9 @@ const organizationsDataApi = new OrganizationsDataApi(
 );
 
 async function onUserLoginRedirect() {
+  if (typeof window === "undefined") {
+    return { type: "not-executed" } as const;
+  }
   if (window.location.pathname !== "/session") {
     return { type: "not-executed" } as const;
   }
@@ -174,8 +176,7 @@ const userLoginRedirectPromise = onUserLoginRedirect();
 const adminLoginRedirectPromise = onAdminLoginRedirect();
 
 export function useLoginRedirect() {
-  const history = useHistory();
-  const historyPush = history.push;
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -192,9 +193,9 @@ export function useLoginRedirect() {
           merchantFiscalCode: undefined
         });
         resetQueries();
-        historyPush(DASHBOARD);
+        navigate(href("/"));
       } else if (state.type === "error") {
-        historyPush(LOGIN);
+        navigate(href("/login"));
       }
     });
 
@@ -205,8 +206,8 @@ export function useLoginRedirect() {
           name: state.name
         });
         resetQueries();
-        historyPush(ADMIN_PANEL_RICHIESTE);
+        navigate(href("/"));
       }
     });
-  }, [historyPush, queryClient]);
+  }, [navigate, queryClient]);
 }
