@@ -1,29 +1,30 @@
-import { Field } from "formik";
 import { ReactNode } from "react";
-import CustomErrorMessage from "../../CustomErrorMessage";
+import { Lens } from "@hookform/lenses";
+import { DiscountFormInputValues } from "../../discountFormUtils";
+import {
+  Field,
+  FormErrorMessage
+} from "../../../../utils/react-hook-form-helpers";
 
 type Props = {
   children?: ReactNode;
-  index?: number;
+  formLens: Lens<DiscountFormInputValues>;
 };
 
-const StaticCode = ({ children, index }: Props) => {
-  const hasIndex = index !== undefined;
+function StaticCode({ formLens, children }: Props) {
   return (
     <div>
       <Field
         placeholder="Inserisci codice statico"
         id="staticCode"
-        name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
+        formLens={formLens.focus("staticCode")}
         type="text"
         className="form-control"
       />
-      <CustomErrorMessage
-        name={hasIndex ? `discounts[${index}].staticCode` : "staticCode"}
-      />
+      <FormErrorMessage formLens={formLens.focus("staticCode")} />
       {children}
     </div>
   );
-};
+}
 
 export default StaticCode;

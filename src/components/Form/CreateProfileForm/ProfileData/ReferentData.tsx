@@ -1,10 +1,20 @@
-import { Field, FieldArray, useFormikContext } from "formik";
 import { Fragment } from "react";
+import { Lens } from "@hookform/lenses";
+import { useFieldArray } from "@hookform/lenses/rhf";
+import { useWatch } from "react-hook-form";
 import FormSection from "../../FormSection";
 import InputField from "../../FormField";
-import CustomErrorMessage from "../../CustomErrorMessage";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import type { Referent } from "../../../../api/generated";
+import {
+  emptyReferentFormValues,
+  ProfileFormValues,
+  ReferentFormValues
+} from "../../operatorDataUtils";
+import {
+  Field,
+  FormErrorMessage
+} from "../../../../utils/react-hook-form-helpers";
 
 const MAX_SECONDARY_REFERENTS = 4;
 
@@ -17,6 +27,7 @@ type ReferentData = {
 };
 
 type Props = {
+  formLens: Lens<ReferentFormValues>;
   index?: number;
   showAdd: boolean;
   onAdd(): void;
@@ -26,6 +37,7 @@ type Props = {
 };
 
 const Referent = ({
+  formLens,
   index,
   showAdd,
   onAdd,
@@ -33,8 +45,6 @@ const Referent = ({
   onRemove,
   children
 }: Props) => {
-  const referentFieldName =
-    index !== undefined ? `secondaryReferents[${index}]` : "referent";
   const referentFieldId =
     index !== undefined ? `secondaryReferents[${index}]` : "referent";
   return (
@@ -58,12 +68,12 @@ const Referent = ({
       >
         <Field
           id={`${referentFieldId}.firstName`}
-          name={`${referentFieldName}.firstName`}
+          formLens={formLens.focus("firstName")}
           placeholder="Inserisci il nome del referente"
           type="text"
           className="form-control"
         />
-        <CustomErrorMessage name={`${referentFieldName}.firstName`} />
+        <FormErrorMessage formLens={formLens.focus("firstName")} />
       </InputField>
       <InputField
         htmlFor={`${referentFieldId}.lastName`}
@@ -72,12 +82,12 @@ const Referent = ({
       >
         <Field
           id={`${referentFieldId}.lastName`}
-          name={`${referentFieldName}.lastName`}
+          formLens={formLens.focus("lastName")}
           placeholder="Inserisci il cognome del referente"
           type="text"
           className="form-control"
         />
-        <CustomErrorMessage name={`${referentFieldName}.lastName`} />
+        <FormErrorMessage formLens={formLens.focus("lastName")} />
       </InputField>
       <InputField
         htmlFor={`${referentFieldId}.role`}
@@ -86,12 +96,12 @@ const Referent = ({
       >
         <Field
           id={`${referentFieldId}.role`}
-          name={`${referentFieldName}.role`}
+          formLens={formLens.focus("role")}
           type="text"
           className="form-control"
           placeholder="Inserisci il ruolo del referente"
         />
-        <CustomErrorMessage name={`${referentFieldName}.role`} />
+        <FormErrorMessage formLens={formLens.focus("role")} />
       </InputField>
       <InputField
         htmlFor={`${referentFieldId}.emailAddress`}
@@ -100,12 +110,12 @@ const Referent = ({
       >
         <Field
           id={`${referentFieldId}.emailAddress`}
-          name={`${referentFieldName}.emailAddress`}
+          formLens={formLens.focus("emailAddress")}
           type="email"
           className="form-control"
           placeholder="Inserisci la e-mail del referente"
         />
-        <CustomErrorMessage name={`${referentFieldName}.emailAddress`} />
+        <FormErrorMessage formLens={formLens.focus("emailAddress")} />
       </InputField>
       <InputField
         htmlFor={`${referentFieldId}.telephoneNumber`}
@@ -115,12 +125,12 @@ const Referent = ({
         <Field
           maxLength={15}
           id={`${referentFieldId}.telephoneNumber`}
-          name={`${referentFieldName}.telephoneNumber`}
+          formLens={formLens.focus("telephoneNumber")}
           type="tel"
           placeholder="Inserisci il numero di telefono del referente"
           className="form-control"
         />
-        <CustomErrorMessage name={`${referentFieldName}.telephoneNumber`} />
+        <FormErrorMessage formLens={formLens.focus("telephoneNumber")} />
       </InputField>
       {showAdd && (
         <div className="mt-8 cursor-pointer" onClick={onAdd}>
@@ -135,56 +145,51 @@ const Referent = ({
   );
 };
 
-function ReferentData({ children }: { children?: React.ReactNode }) {
-  const formikContext = useFormikContext<{
-    referent: Referent;
-    secondaryReferents: Array<Referent>;
-  }>();
+function ReferentData({
+  formLens,
+  children
+}: {
+  formLens: Lens<ProfileFormValues>;
+  children?: React.ReactNode;
+}) {
+  const secondaryReferentsArray = useFieldArray(
+    formLens.focus("secondaryReferents").interop()
+  );
+  const secondaryReferents = useWatch(
+    formLens.focus("secondaryReferents").interop()
+  );
+  const add = () => secondaryReferentsArray.append(emptyReferentFormValues);
+  const noSecondaryReferents = secondaryReferents.length === 0;
   return (
-    <FieldArray
-      name="secondaryReferents"
-      render={arrayHelpers => {
-        const add = () => {
-          const newReferent: Referent = {
-            firstName: "",
-            lastName: "",
-            role: "",
-            emailAddress: "",
-            telephoneNumber: ""
-          };
-          arrayHelpers.push(newReferent);
-        };
-        const noSecondaryReferents =
-          formikContext.values.secondaryReferents.length === 0;
-        return (
-          <Fragment>
+    <Fragment>
+      <Referent
+        formLens={formLens.focus("referent")}
+        showAdd={noSecondaryReferents}
+        onAdd={add}
+        showRemove={false}
+        onRemove={() => undefined}
+      >
+        {noSecondaryReferents ? children : undefined}
+      </Referent>
+      {formLens
+        .focus("secondaryReferents")
+        .map(secondaryReferentsArray.fields, (_, itemLens, index, array) => {
+          const isLast = index === array.length - 1;
+          return (
             <Referent
-              showAdd={noSecondaryReferents}
+              key={index}
+              index={index}
+              formLens={itemLens}
+              showAdd={isLast && array.length < MAX_SECONDARY_REFERENTS}
               onAdd={add}
-              showRemove={false}
-              onRemove={() => undefined}
+              showRemove={true}
+              onRemove={() => secondaryReferentsArray.remove(index)}
             >
-              {noSecondaryReferents ? children : undefined}
+              {isLast ? children : undefined}
             </Referent>
-            {formikContext.values.secondaryReferents.map((_, index, array) => {
-              const isLast = index === array.length - 1;
-              return (
-                <Referent
-                  key={index}
-                  index={index}
-                  showAdd={isLast && array.length < MAX_SECONDARY_REFERENTS}
-                  onAdd={add}
-                  showRemove={true}
-                  onRemove={() => arrayHelpers.remove(index)}
-                >
-                  {isLast ? children : undefined}
-                </Referent>
-              );
-            })}
-          </Fragment>
-        );
-      }}
-    />
+          );
+        })}
+    </Fragment>
   );
 }
 

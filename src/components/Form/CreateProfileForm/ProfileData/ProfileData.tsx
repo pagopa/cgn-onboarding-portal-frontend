@@ -1,9 +1,7 @@
-import { Form, Formik } from "formik";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../../../api/common";
-import { CreateProfile, UpdateProfile } from "../../../../api/generated";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
@@ -14,7 +12,7 @@ import {
   profileToProfileFormValues
 } from "../../operatorDataUtils";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
-import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
+import { useStandardForm } from "../../../../utils/useStandardForm";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -56,7 +54,10 @@ const ProfileData = ({
           error.response?.data ===
             "PROFILE_ALREADY_EXISTS_FOR_AGREEMENT_PROVIDED"
         ) {
-          editProfile(variables.profile);
+          await editProfileMutation.mutateAsync({
+            agreementId: agreement.id,
+            profile: variables.profile
+          });
         } else {
           throwErrorTooltip();
         }
@@ -65,9 +66,6 @@ const ProfileData = ({
         handleNext();
       }
     });
-  const createProfile = (profile: CreateProfile) => {
-    createProfileMutation.mutate({ agreementId: agreement.id, profile });
-  };
 
   const editProfileMutation =
     remoteData.Index.Profile.updateProfile.useMutation({
@@ -79,9 +77,6 @@ const ProfileData = ({
         handleNext();
       }
     });
-  const editProfile = (profile: UpdateProfile) => {
-    editProfileMutation.mutate({ agreementId: agreement.id, profile });
-  };
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery(
     {
@@ -109,45 +104,59 @@ const ProfileData = ({
     authentication.currentUserFiscalCode ??
     "";
 
+  const form = useStandardForm({
+    values: initialValues,
+    zodSchema: ProfileDataValidationSchema
+  });
+
   if (isPending) {
     return <CenteredLoading />;
   }
 
   return (
-    <Formik
-      enableReinitialize
-      initialValues={initialValues}
-      validationSchema={zodSchemaToFormikValidationSchema(
-        ProfileDataValidationSchema
-      )}
-      onSubmit={values => {
+    <form
+      autoComplete="off"
+      onSubmit={form.handleSubmit(async values => {
         const profileData = profileFormValuesToRequest(values);
         if (isCompleted) {
-          editProfile(profileData);
+          await editProfileMutation.mutateAsync({
+            agreementId: agreement.id,
+            profile: profileData
+          });
         } else {
-          createProfile({ ...profileData, fullName });
+          await createProfileMutation.mutateAsync({
+            agreementId: agreement.id,
+            profile: { ...profileData, fullName }
+          });
         }
-      }}
+      })}
     >
-      <Form autoComplete="off">
-        <FormContainer className="mb-20">
-          <ProfileInfo
-            entityType={entityType}
-            fullName={fullName}
-            taxCodeOrVat={taxCodeOrVat}
+      <FormContainer className="mb-20">
+        <ProfileInfo
+          formLens={form.lens}
+          entityType={entityType}
+          fullName={fullName}
+          taxCodeOrVat={taxCodeOrVat}
+        />
+        <ReferentData formLens={form.lens} />
+        <ProfileImage />
+        <ProfileDescription formLens={form.lens} />
+        <SalesChannels
+          formLens={form.lens.focus("salesChannel")}
+          entityType={entityType}
+        >
+          <OperatorDataButtons
+            onBack={handleBack}
+            isEnabled={
+              !!agreement.imageUrl &&
+              !editProfileMutation.isPending &&
+              !createProfileMutation.isPending &&
+              !form.formState.isSubmitting
+            }
           />
-          <ReferentData />
-          <ProfileImage />
-          <ProfileDescription />
-          <SalesChannels entityType={entityType}>
-            <OperatorDataButtons
-              onBack={handleBack}
-              isEnabled={!!agreement.imageUrl}
-            />
-          </SalesChannels>
-        </FormContainer>
-      </Form>
-    </Formik>
+        </SalesChannels>
+      </FormContainer>
+    </form>
   );
 };
 

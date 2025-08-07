@@ -1,3 +1,4 @@
+import z from "zod/v4";
 import {
   Address,
   DiscountCodeType,
@@ -10,54 +11,23 @@ import {
   withNormalizedSpaces
 } from "../../utils/strings";
 import { NormalizedSalesChannel } from "../../api/dtoTypeFixes";
-import { EmptyAddresses } from "./ValidationSchemas";
+import {
+  AddressValidationSchema,
+  EmptyAddressValidationSchema,
+  ProfileDataValidationSchema,
+  ReferentValidationSchema,
+  SalesChannelValidationSchema
+} from "./ValidationSchemas";
 
-export type ProfileFormValues = {
-  hasDifferentName: boolean;
-  name: string;
-  name_en: string;
-  name_de: string;
-  pecAddress: string;
-  legalOffice: string;
-  telephoneNumber: string;
-  legalRepresentativeFullName: string;
-  legalRepresentativeTaxCode: string;
-  referent: ReferentFormValues;
-  description: string;
-  description_en: string;
-  description_de: string;
-  salesChannel: SalesChannelFormValues;
-  secondaryReferents: Array<ReferentFormValues>;
-};
+export type ProfileFormValues = z.input<typeof ProfileDataValidationSchema>;
 
-type ReferentFormValues = {
-  firstName: string;
-  lastName: string;
-  role: string;
-  emailAddress: string;
-  telephoneNumber: string;
-};
+export type SalesChannelFormValues = z.input<
+  typeof SalesChannelValidationSchema
+>;
 
-type SalesChannelFormValues = {
-  channelType: SalesChannelType | undefined;
-  websiteUrl: string;
-  discountCodeType: DiscountCodeType | "";
-  allNationalAddresses: boolean;
-  addresses: Array<AddressFormValues>;
-};
+type AddressFormValues = z.infer<typeof AddressValidationSchema>;
 
-type AddressFormValues = {
-  street: string;
-  zipCode: string;
-  city: string;
-  district: string;
-  coordinates:
-    | {
-        latitude: number;
-        longitude: number;
-      }
-    | undefined;
-};
+export type ReferentFormValues = z.infer<typeof ReferentValidationSchema>;
 
 const emptyAddressFormValues: AddressFormValues = {
   city: "",
@@ -68,11 +38,19 @@ const emptyAddressFormValues: AddressFormValues = {
 };
 
 const salesChannelInitialFormValues: SalesChannelFormValues = {
-  channelType: undefined,
+  channelType: "",
   websiteUrl: "",
   discountCodeType: "",
   allNationalAddresses: false,
   addresses: [emptyAddressFormValues]
+};
+
+export const emptyReferentFormValues: ReferentFormValues = {
+  firstName: "",
+  lastName: "",
+  role: "",
+  emailAddress: "",
+  telephoneNumber: ""
 };
 
 const profileInitialFormValues: ProfileFormValues = {
@@ -85,13 +63,7 @@ const profileInitialFormValues: ProfileFormValues = {
   telephoneNumber: "",
   legalRepresentativeFullName: "",
   legalRepresentativeTaxCode: "",
-  referent: {
-    firstName: "",
-    lastName: "",
-    role: "",
-    emailAddress: "",
-    telephoneNumber: ""
-  },
+  referent: emptyReferentFormValues,
   secondaryReferents: [],
   description: "",
   description_en: "",
@@ -103,15 +75,25 @@ function salesChannelFormValuesToAddresses(
   values: SalesChannelFormValues
 ): Array<Address> {
   if (
-    EmptyAddresses.safeParse(values.addresses).success ||
+    z.array(EmptyAddressValidationSchema).safeParse(values.addresses).success ||
     values.allNationalAddresses
   ) {
     return [];
   }
-  return values.addresses.map(value => ({
-    fullAddress: `${value.street}, ${value.city}, ${value.district}, ${value.zipCode}`,
-    coordinates: value.coordinates
-  }));
+  return (
+    values.addresses?.map(value => ({
+      fullAddress: `${value.street}, ${value.city}, ${value.district}, ${value.zipCode}`,
+      coordinates:
+        value.coordinates &&
+        value.coordinates.latitude &&
+        value.coordinates.longitude
+          ? {
+              latitude: Number(value.coordinates.latitude),
+              longitude: Number(value.coordinates.longitude)
+            }
+          : undefined
+    })) ?? []
+  );
 }
 
 function salesChannelFormValuesToSalesChannel(
@@ -121,7 +103,7 @@ function salesChannelFormValuesToSalesChannel(
     case "OnlineChannel": {
       return {
         channelType: SalesChannelType.OnlineChannel,
-        websiteUrl: values.websiteUrl,
+        websiteUrl: values.websiteUrl ?? "",
         discountCodeType: values.discountCodeType as DiscountCodeType
       };
     }
@@ -136,7 +118,7 @@ function salesChannelFormValuesToSalesChannel(
     case "BothChannels": {
       return {
         channelType: SalesChannelType.BothChannels,
-        websiteUrl: values.websiteUrl,
+        websiteUrl: values.websiteUrl ?? "",
         addresses: salesChannelFormValuesToAddresses(values),
         allNationalAddresses: values.allNationalAddresses,
         discountCodeType: values.discountCodeType as DiscountCodeType
@@ -168,6 +150,11 @@ function salesChannelToAddressesFormValues(
         district: addressSplit[2] ?? "",
         zipCode: addressSplit[3] ?? "",
         coordinates: address.coordinates
+          ? {
+              latitude: address.coordinates.latitude?.toString(),
+              longitude: address.coordinates.longitude?.toString()
+            }
+          : undefined
       };
     });
   } else {

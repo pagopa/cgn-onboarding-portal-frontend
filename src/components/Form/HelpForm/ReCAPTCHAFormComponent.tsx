@@ -1,14 +1,17 @@
 /* eslint-disable functional/immutable-data */
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import { FormikHelpers } from "formik";
+import { Lens } from "@hookform/lenses";
+import { useController } from "react-hook-form";
 import { Severity, useTooltip } from "../../../context/tooltip";
 
 type Props = {
-  setFieldValue: FormikHelpers<{ recaptchaToken: string }>["setFieldValue"];
+  formLens: Lens<string | null>;
 };
 
-const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
+const ReCAPTCHAFormComponent = ({ formLens }: Props) => {
+  const controller = useController(formLens.interop());
+  const onChange = controller.field.onChange;
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [canRenderRecaptcha, setCanRenderRecaptcha] = useState(false);
   const { triggerTooltip } = useTooltip();
@@ -19,14 +22,14 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
         throw new Error();
       }
       const response = await recaptchaRef.current.executeAsync();
-      void setFieldValue("recaptchaToken", response);
+      onChange({ target: { value: response } });
     } catch {
       triggerTooltip({
         severity: Severity.DANGER,
         text: "C'è stato un errore durante la verifica del recaptcha"
       });
     }
-  }, [setFieldValue, triggerTooltip]);
+  }, [onChange, triggerTooltip]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -36,7 +39,7 @@ const ReCAPTCHAFormComponent = ({ setFieldValue }: Props) => {
     };
     setCanRenderRecaptcha(true);
     void executeRecaptcha();
-  }, [executeRecaptcha, setFieldValue]);
+  }, [executeRecaptcha]);
 
   return (
     <div className="mt-10">

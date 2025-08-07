@@ -1,7 +1,8 @@
 import { Button } from "design-react-kit";
-import { FieldArray, Form, Formik } from "formik";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { z } from "zod/v4";
+import { useFieldArray } from "@hookform/lenses/rhf";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
@@ -10,19 +11,16 @@ import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import { getDiscountTypeChecks } from "../../../../utils/formChecks";
 import FormContainer from "../../FormContainer";
 import FormSection from "../../FormSection";
-import { discountsListDataValidationSchema } from "../../ValidationSchemas";
 import { remoteData } from "../../../../api/common";
 import {
+  createDiscountMutationOnError,
   discountEmptyInitialValues,
   discountFormValuesToRequest,
   discountToFormValues,
   updateDiscountMutationOnError
 } from "../../discountFormUtils";
-import { zodSchemaToFormikValidationSchema } from "../../../../utils/zodFormikAdapter";
-
-const emptyInitialValues = {
-  discounts: [discountEmptyInitialValues]
-};
+import { useStandardForm } from "../../../../utils/useStandardForm";
+import { discountDataValidationSchema } from "../../ValidationSchemas";
 
 type Props = {
   isCompleted: boolean;
@@ -31,12 +29,6 @@ type Props = {
   onUpdate: () => void;
 };
 
-/**
- * These are the entry points for forms for discounts. This comment is repeated in every file.
- * src/components/Form/CreateProfileForm/DiscountData/DiscountData.tsx Used in onboarding process
- * src/components/Form/CreateDiscountForm/CreateDiscountForm.tsx Used to create new discount once onboarded
- * src/components/Form/EditDiscountForm/EditDiscountForm.tsx  Used to edit new discount once onboarded
- */
 const DiscountData = ({
   handleBack,
   handleNext,
@@ -46,81 +38,89 @@ const DiscountData = ({
   const agreement = useSelector((state: RootState) => state.agreement.value);
   const { triggerTooltip } = useTooltip();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
   });
   const profile = profileQuery.data;
+
+  const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery(
+    { agreementId: agreement.id },
+    { enabled: isCompleted }
+  );
 
   const { checkStaticCode, checkLanding, checkBucket } =
     getDiscountTypeChecks(profile);
 
   const createDiscountMutation =
     remoteData.Index.Discount.createDiscount.useMutation({
-      onError(error) {
-        if (error.status === 409) {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Upload codici ancora in corso"
-          });
-        } else {
-          triggerTooltip({
-            severity: Severity.DANGER,
-            text: "Errore durante la creazione dell'opportunità, controllare i dati e riprovare"
-          });
-        }
-      }
+      onSuccess() {
+        remoteData.Index.Discount.getDiscounts.invalidateQueries({});
+      },
+      onError: createDiscountMutationOnError(triggerTooltip)
     });
 
   const updateDiscountMutation =
     remoteData.Index.Discount.updateDiscount.useMutation({
-      onError: updateDiscountMutationOnError({ triggerTooltip })
+      onSuccess() {
+        remoteData.Index.Discount.getDiscounts.invalidateQueries({});
+      },
+      onError: updateDiscountMutationOnError(triggerTooltip)
     });
 
-  const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery(
-    {
-      agreementId: agreement.id
-    },
-    {
-      enabled: isCompleted
-    }
+  const deleteDiscountMutation =
+    remoteData.Index.Discount.deleteDiscount.useMutation({
+      onSuccess() {
+        remoteData.Index.Discount.getDiscounts.invalidateQueries({});
+      },
+      onError() {
+        triggerTooltip({
+          severity: Severity.DANGER,
+          text: "Errore durante l'eliminazione dello sconto"
+        });
+      }
+    });
+
+  const initialValues = useMemo(
+    () =>
+      discountsQuery.data
+        ? { discounts: discountsQuery.data.items.map(discountToFormValues) }
+        : { discounts: [discountEmptyInitialValues] },
+    [discountsQuery.data]
   );
 
-  const initialValues = useMemo(() => {
-    if (discountsQuery.data) {
-      return {
-        discounts: discountsQuery.data.items.map(discountToFormValues)
-      };
-    } else {
-      return emptyInitialValues;
-    }
-  }, [discountsQuery.data]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-  const deleteDiscountMutation =
-    remoteData.Index.Discount.deleteDiscount.useMutation();
+  const form = useStandardForm({
+    values: initialValues,
+    zodSchema: z.object({
+      discounts: z.array(
+        discountDataValidationSchema(checkStaticCode, checkLanding, checkBucket)
+      )
+    })
+  });
+
+  const discountsArray = useFieldArray(form.lens.focus("discounts").interop());
 
   const isPending =
-    profileQuery.isPending || (isCompleted ? discountsQuery.isPending : false);
+    !profile ||
+    profileQuery.isPending ||
+    (isCompleted ? discountsQuery.isPending : false);
 
   if (isPending) {
     return <CenteredLoading />;
   }
 
+  const isMutating =
+    form.formState.isSubmitting ||
+    createDiscountMutation.isPending ||
+    updateDiscountMutation.isPending ||
+    deleteDiscountMutation.isPending;
+
   return (
-    <Formik
-      enableReinitialize
-      initialValues={initialValues}
-      validationSchema={zodSchemaToFormikValidationSchema(() =>
-        discountsListDataValidationSchema(
-          checkStaticCode,
-          checkLanding,
-          checkBucket
-        )
-      )}
-      onSubmit={async values => {
+    <form
+      onSubmit={form.handleSubmit(async values => {
         // eslint-disable-next-line functional/no-let
         let triggerOnUpdate = false;
         try {
@@ -147,85 +147,72 @@ const DiscountData = ({
         } catch {
           void 0;
         }
-      }}
+      })}
     >
-      {({ values, setFieldValue, isSubmitting }) => (
-        <Form autoComplete="off">
-          <FieldArray
-            name="discounts"
-            render={arrayHelpers => (
-              <>
-                {values.discounts.map((discount, index) => (
-                  <FormContainer
-                    key={index}
-                    className={index <= 1 ? "mb-20" : ""}
+      {form.lens
+        .focus("discounts")
+        .map(discountsArray.fields, (discount, itemLens, index, array) => (
+          <FormContainer key={index} className={index <= 1 ? "mb-20" : ""}>
+            <FormSection
+              hasIntroduction
+              hasClose={index >= 1}
+              handleClose={() => {
+                if (index >= 1) {
+                  if (isCompleted) {
+                    deleteDiscountMutation.mutate({
+                      agreementId: agreement.id,
+                      discountId: discount.id
+                    });
+                  }
+                  discountsArray.remove(index);
+                }
+              }}
+              title="Dati dell’opportunità"
+            >
+              <DiscountInfo
+                profile={profile}
+                formLens={itemLens}
+                index={index}
+              />
+              {array.length - 1 === index && (
+                <>
+                  <div
+                    className="mt-8 cursor-pointer"
+                    onClick={() =>
+                      discountsArray.append(discountEmptyInitialValues)
+                    }
                   >
-                    <FormSection
-                      hasIntroduction
-                      hasClose={index >= 1}
-                      handleClose={() => {
-                        if (index >= 1) {
-                          if (isCompleted) {
-                            deleteDiscountMutation.mutate({
-                              agreementId: agreement.id,
-                              discountId: discount.id
-                            });
-                          }
-                          arrayHelpers.remove(index);
-                        }
-                      }}
-                      title="Dati dell’opportunità"
+                    <PlusCircleIcon className="me-2" />
+                    <span className="text-base fw-semibold text-blue">
+                      {"Aggiungi un'altra opportunità"}
+                    </span>
+                  </div>
+                  <div className="d-flex mt-10 gap-4 flex-wrap">
+                    <Button
+                      className="px-14"
+                      outline
+                      color="primary"
+                      tag="button"
+                      onClick={handleBack}
                     >
-                      <DiscountInfo
-                        formValues={values}
-                        setFieldValue={setFieldValue}
-                        index={index}
-                        profile={profile}
-                      />
-                      {values.discounts.length - 1 === index && (
-                        <>
-                          <div
-                            className="mt-8 cursor-pointer"
-                            onClick={() =>
-                              arrayHelpers.push(discountEmptyInitialValues)
-                            }
-                          >
-                            <PlusCircleIcon className="me-2" />
-                            <span className="text-base fw-semibold text-blue">
-                              {"Aggiungi un'altra opportunità"}
-                            </span>
-                          </div>
-                          <div className="d-flex mt-10 gap-4 flex-wrap">
-                            <Button
-                              className="px-14"
-                              outline
-                              color="primary"
-                              tag="button"
-                              onClick={handleBack}
-                            >
-                              Indietro
-                            </Button>
-                            <Button
-                              type="submit"
-                              className="px-14"
-                              color="primary"
-                              tag="button"
-                              aria-disabled={isSubmitting}
-                            >
-                              Continua
-                            </Button>
-                          </div>
-                        </>
-                      )}
-                    </FormSection>
-                  </FormContainer>
-                ))}
-              </>
-            )}
-          />
-        </Form>
-      )}
-    </Formik>
+                      Indietro
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="px-14"
+                      color="primary"
+                      tag="button"
+                      disabled={isMutating}
+                    >
+                      Continua
+                    </Button>
+                  </div>
+                </>
+              )}
+            </FormSection>
+          </FormContainer>
+        ))}
+    </form>
   );
 };
 

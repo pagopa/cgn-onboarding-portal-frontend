@@ -1,26 +1,27 @@
-import { Field } from "formik";
-import CustomErrorMessage from "../../CustomErrorMessage";
+import { Lens } from "@hookform/lenses";
+import { DiscountFormInputValues } from "../../discountFormUtils";
+import {
+  Field,
+  FormErrorMessage
+} from "../../../../utils/react-hook-form-helpers";
 
 type Props = {
-  index?: number;
+  formLens: Lens<DiscountFormInputValues>;
 };
 
-const DiscountUrl = ({ index }: Props) => {
-  const hasIndex = index !== undefined;
+function DiscountUrl({ formLens }: Props) {
   return (
     <>
       <Field
         id="discountUrl"
-        name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}
+        formLens={formLens.focus("discountUrl")}
         type="text"
         placeholder="Inserisci link (completo di protocollo http o https)"
         className="form-control"
       />
-      <CustomErrorMessage
-        name={hasIndex ? `discounts[${index}].discountUrl` : "discountUrl"}
-      />
+      <FormErrorMessage formLens={formLens.focus("discountUrl")} />
     </>
   );
-};
+}
 
 export default DiscountUrl;

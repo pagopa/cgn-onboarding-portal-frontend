@@ -1,46 +1,45 @@
-import { Field } from "formik";
-import CustomErrorMessage from "../../CustomErrorMessage";
+import { Lens } from "@hookform/lenses";
+import { DiscountFormInputValues } from "../../discountFormUtils";
+import {
+  Field,
+  FormErrorMessage
+} from "../../../../utils/react-hook-form-helpers";
 
 type Props = {
-  index?: number;
+  formLens: Lens<DiscountFormInputValues>;
 };
 
-const DiscountConditions = ({ index }: Props) => {
-  const hasIndex = index !== undefined;
+function DiscountConditions({ formLens }: Props) {
   return (
     <div className="row">
       <div className="col-6">
         <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
         <Field
-          as="textarea"
+          element="textarea"
           id="condition"
-          name={hasIndex ? `discounts[${index}].condition` : `condition`}
+          formLens={formLens.focus("condition")}
           placeholder="Es. Sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro."
-          maxLength="200"
-          rows="4"
+          maxLength={200}
+          rows={4}
           className="form-control"
         />
-        <CustomErrorMessage
-          name={hasIndex ? `discounts[${index}].condition` : `condition`}
-        />
+        <FormErrorMessage formLens={formLens.focus("condition")} />
       </div>
       <div className="col-6">
         <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
         <Field
-          as="textarea"
+          element="textarea"
           id="condition_en"
-          name={hasIndex ? `discounts[${index}].condition_en` : `condition_en`}
+          formLens={formLens.focus("condition_en")}
           placeholder="Ex. Discount valid for the purchase of only one prose season ticket at the theatre’s counters "
-          maxLength="200"
-          rows="4"
+          maxLength={200}
+          rows={4}
           className="form-control"
         />
-        <CustomErrorMessage
-          name={hasIndex ? `discounts[${index}].condition_en` : `condition_en`}
-        />
+        <FormErrorMessage formLens={formLens.focus("condition_en")} />
       </div>
     </div>
   );
-};
+}
 
 export default DiscountConditions;

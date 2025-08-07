@@ -1,5 +1,5 @@
+import CreateEditActivationForm from "../components/Form/CreateEditActivationForm";
 import CreateLayout from "../components/Layout/CreateLayout";
-import CreateActivationForm from "../components/Form/CreateActivationForm/CreateActivationForm";
 import { ADMIN_PANEL_ACCESSI } from "../navigation/routes";
 
 const CreateActivation = () => (
@@ -8,7 +8,7 @@ const CreateActivation = () => (
     breadcrumbLabel="Aggiungi operatore"
     title="Inserisci i dati"
   >
-    <CreateActivationForm />
+    <CreateEditActivationForm />
   </CreateLayout>
 );
 

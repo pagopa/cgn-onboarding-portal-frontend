@@ -1,55 +1,41 @@
-import { Field } from "formik";
-import CustomErrorMessage from "../../CustomErrorMessage";
+import { Lens } from "@hookform/lenses";
+import { DiscountFormInputValues } from "../../discountFormUtils";
+import {
+  Field,
+  FormErrorMessage
+} from "../../../../utils/react-hook-form-helpers";
 
 type Props = {
   children?: React.ReactNode;
-  index?: number;
+  formLens: Lens<DiscountFormInputValues>;
 };
 
-const LandingPage = ({ children, index }: Props) => {
-  const hasIndex = index !== undefined;
+function LandingPage({ formLens, children }: Props) {
   return (
     <>
       <Field
         id="landing"
-        name={
-          hasIndex ? `discounts[${index}].landingPageUrl` : "landingPageUrl"
-        }
+        formLens={formLens.focus("landingPageUrl")}
         placeholder="Inserisci indirizzo (completo di protocollo http o https)"
         type="text"
         className="form-control"
       />
-      <CustomErrorMessage
-        name={
-          hasIndex ? `discounts[${index}].landingPageUrl` : "landingPageUrl"
-        }
-      />
+      <FormErrorMessage formLens={formLens.focus("landingPageUrl")} />
       <p className="mt-4 text-sm fw-normal text-black">
-        {
-          "Inserisci il valore del parametro referrer da trasmettere alla pagina web"
-        }
+        Inserisci il valore del parametro referrer da trasmettere alla pagina
+        web
       </p>
       <Field
-        id="landing"
-        name={
-          hasIndex
-            ? `discounts[${index}].landingPageReferrer`
-            : "landingPageReferrer"
-        }
+        id="referrer"
+        formLens={formLens.focus("landingPageReferrer")}
         placeholder="Inserisci valore referrer"
         type="text"
         className="form-control"
       />
-      <CustomErrorMessage
-        name={
-          hasIndex
-            ? `discounts[${index}].landingPageReferrer`
-            : "landingPageReferrer"
-        }
-      />
+      <FormErrorMessage formLens={formLens.focus("landingPageReferrer")} />
       {children}
     </>
   );
-};
+}
 
 export default LandingPage;
