@@ -101,7 +101,6 @@ export function AuthenticationProvider({
     ]
   );
   const dispatch = useDispatch();
-  // refactor this in the future to speed up the initial load
   useEffect(() => {
     if (value.currentMerchantFiscalCode) {
       dispatch(createAgreement());
