@@ -1,3 +1,4 @@
+import "./utils/zod-csp-fix";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
