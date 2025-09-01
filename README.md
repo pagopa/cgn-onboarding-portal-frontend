@@ -15,6 +15,7 @@
   - [Run the dashboard](#run-the-dashboard)
   - [Login in localhost](#login-in-localhost)
     - [Option 1: Using the Browser Console](#option-1-using-the-browser-console)
+      - [Troubleshooting](#troubleshooting)
     - [Option 2: Using the Browser Extension](#option-2-using-the-browser-extension)
       - [Steps to Use the Extension](#steps-to-use-the-extension)
  
@@ -91,6 +92,12 @@ window.document.body.appendChild(dialog);
 dialog.showModal();
 ```
 - Paste the snippet that was automatically placed in the clipboard in the browser console and press enter.
+
+#### Troubleshooting
+
+At the moment the login flow must be started from UAT or PROD (might be fixed in future).
+
+Once you get redirected to localhost, but it looks like you are not logged in, it might be needed to click `one identity` button in the top right corner and select the session.
 
 ### Option 2: Using the Browser Extension
 
