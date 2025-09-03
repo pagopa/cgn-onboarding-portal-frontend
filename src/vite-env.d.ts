@@ -23,3 +23,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+declare var __APP_VERSION__: string;
+declare var __COMMIT_HASH__: string;
