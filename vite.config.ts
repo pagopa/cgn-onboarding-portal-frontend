@@ -1,8 +1,13 @@
 import path from "path";
+import * as child from "child_process";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 import { imagetools } from "vite-imagetools";
+import packageJSON from "./package.json";
+
+// eslint-disable-next-line sonarjs/no-os-command-from-path
+const commitHash = child.execSync("git rev-parse HEAD").toString();
 
 const envPrefix = "CGN_";
 
@@ -75,5 +80,9 @@ export default defineConfig({
   preview: {
     port: 3000
   },
-  envPrefix
+  envPrefix,
+  define: {
+    __APP_VERSION__: JSON.stringify(packageJSON.version),
+    __COMMIT_HASH__: JSON.stringify(commitHash)
+  }
 });

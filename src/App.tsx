@@ -37,3 +37,17 @@ function App() {
 }
 
 export default App;
+
+// eslint-disable-next-line no-console
+console.info(
+  `%cVERSION %c${__APP_VERSION__}`,
+  "font-weight: bold; color: lightblue;",
+  "font-weight: normal;"
+);
+
+// eslint-disable-next-line no-console
+console.info(
+  `%cCOMMIT %c${__COMMIT_HASH__}`,
+  "font-weight: bold; color: lightblue;",
+  "font-weight: normal;"
+);

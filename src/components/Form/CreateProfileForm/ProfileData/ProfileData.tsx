@@ -126,7 +126,7 @@ const ProfileData = ({
         } else {
           await createProfileMutation.mutateAsync({
             agreementId: agreement.id,
-            profile: { ...profileData, fullName }
+            profile: { ...profileData, fullName, taxCodeOrVat }
           });
         }
       })}
