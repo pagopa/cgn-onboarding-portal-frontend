@@ -7,9 +7,5 @@
   "ignore": [
     "src/types/**",
     "extensions/**"
-  ],
-  "ignoreDependencies": [
-    "@react-router/node",
-    "isbot"
   ]
 }
