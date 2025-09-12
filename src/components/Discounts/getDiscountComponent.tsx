@@ -37,7 +37,7 @@ export const DiscountComponent = ({
           color="#EA7614"
           style={{
             border: "1px solid #EA7614",
-            color: "white"
+            color: "#EA7614"
           }}
         >
           Sospesa
