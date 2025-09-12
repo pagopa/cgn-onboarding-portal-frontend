@@ -6,7 +6,6 @@ import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
-import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { getEditOperatorRoute } from "../../navigation/utils";
 import DeleteModal from "./DeleteModal";
@@ -86,12 +85,9 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           outline
           tag="button"
           onClick={toggleModal}
+          disabled={deleteActivationMutation.isPending}
         >
-          {deleteActivationMutation.isPending ? (
-            <CenteredLoading />
-          ) : (
-            <span> Rimuovi </span>
-          )}
+          Rimuovi
         </Button>
         <Button
           className="me-4 btn-sm"
