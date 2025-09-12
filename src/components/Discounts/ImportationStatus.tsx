@@ -1,11 +1,10 @@
 import { CSSProperties, useCallback, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { href, Link } from "react-router";
 import { Icon, Progress } from "design-react-kit";
 import { BucketCodeLoadStatus } from "../../api/generated";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
-import { getEditDiscountRoute } from "../../navigation/utils";
 
 type Props = {
   discountId: string;
@@ -32,7 +31,7 @@ const styles: Record<string, CSSProperties> = {
 const getRenderAttributesByState = (
   status: ImportationStatusType,
   discountId: string
-): { title: string; body: React.ReactElement } => {
+): { title: string; body: React.ReactNode } => {
   switch (status) {
     case "EXHAUSTED":
       return {
@@ -41,7 +40,10 @@ const getRenderAttributesByState = (
           <>
             Abbiamo riscontrato un problema nell’importazione dei codici sui
             nostri sistemi.{" "}
-            <Link to={getEditDiscountRoute(discountId)} className="fw-semibold">
+            <Link
+              to={href("/operator/discount/edit/:discountId", { discountId })}
+              className="fw-semibold"
+            >
               Aggiungi codici
             </Link>
           </>
@@ -66,7 +68,10 @@ const getRenderAttributesByState = (
             E’ stata raggiunta la soglia minima di codici sconti per questa
             opportunità. Ad esaurimento dei codici sconto l’opportunità non sarà
             più visibile in app.{" "}
-            <Link to={getEditDiscountRoute(discountId)} className="fw-semibold">
+            <Link
+              to={href("/operator/discount/edit/:discountId", { discountId })}
+              className="fw-semibold"
+            >
               Riprova
             </Link>
           </>
