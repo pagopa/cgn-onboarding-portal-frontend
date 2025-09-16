@@ -6,11 +6,7 @@ import { useAuthentication } from "../../authentication/AuthenticationContext";
 import { SessionSwitch } from "../../authentication/SessionSwitch";
 import LogoutModal from "./LogoutModal";
 
-type Props = {
-  hasBorder?: boolean;
-};
-
-const Header = ({ hasBorder = false }: Props) => {
+const Header = () => {
   const authentication = useAuthentication();
   const isLogged = authentication.currentSession.type !== "none";
   const isCreateProfile = useMatch(
@@ -20,14 +16,7 @@ const Header = ({ hasBorder = false }: Props) => {
   const toggle = () => setModal(!modal);
 
   return (
-    <header
-      className={
-        hasBorder
-          ? "position-relative p-2 bg-white"
-          : "position-relative p-2 bg-white shadow"
-      }
-      style={hasBorder ? { borderBottom: "1px solid #E6E9F2" } : {}}
-    >
+    <header className="position-relative p-2 bg-white shadow">
       <div className="container d-flex justify-content-between align-items-center">
         <div>
           <Logo />

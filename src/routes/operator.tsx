@@ -4,6 +4,7 @@ import { Fragment } from "react/jsx-runtime";
 import { RootState } from "../store/store";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import { AgreementState } from "../api/generated";
+import Layout from "../components/Layout/Layout";
 
 export default function Component() {
   const authentication = useAuthentication();
@@ -25,7 +26,7 @@ export default function Component() {
   }
 
   return (
-    <Fragment>
+    <Layout>
       <Outlet />
       {(() => {
         switch (agreement.state) {
@@ -54,6 +55,6 @@ export default function Component() {
           }
         }
       })()}
-    </Fragment>
+    </Layout>
   );
 }
