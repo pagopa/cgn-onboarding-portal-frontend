@@ -1,11 +1,15 @@
-import { href, Navigate } from "react-router";
+import { href, Navigate, Outlet } from "react-router";
 import { useAuthentication } from "../authentication/AuthenticationContext";
-import AdminPanel from "../pages/AdminPanel";
+import Layout from "../components/Layout/Layout";
 
 export default function Component() {
   const authentication = useAuthentication();
   if (authentication.currentSession.type !== "admin") {
     return <Navigate to={href("/login")} />;
   }
-  return <AdminPanel />;
+  return (
+    <Layout>
+      <Outlet />
+    </Layout>
+  );
 }
