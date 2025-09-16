@@ -1,6 +1,11 @@
 import { Links, Meta, Scripts, ScrollRestoration } from "react-router";
 import { App } from "./App.tsx";
 
+import "./styles/bootstrap-italia-fonts.scss";
+import "./styles/bootstrap-italia-custom.scss";
+import "./styles/react-datepicker-custom.scss";
+import "./styles/utils.scss";
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="it">
@@ -38,7 +43,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export function HydrateFallback() {
-  return <p>Caricamento</p>;
+  return (
+    <div className="vw-100 vh-100 d-flex justify-content-center align-items-center">
+      <div>
+        <span className="progress-spinner progress-spinner-active">
+          <span className="visually-hidden">Caricamento</span>
+        </span>
+      </div>
+    </div>
+  );
 }
 
 export default App;
