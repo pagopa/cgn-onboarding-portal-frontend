@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { href, Navigate, Outlet, Route, Routes } from "react-router";
 import { Fragment } from "react/jsx-runtime";
+import { isEqual } from "lodash";
 import { RootState } from "../store/store";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import { AgreementState } from "../api/generated";
@@ -25,6 +26,10 @@ export default function Component() {
         <Navigate to={href("/operator/select-company")} />
       </Fragment>
     );
+  }
+
+  if (isEqual(agreement, {})) {
+    return null;
   }
 
   return (
