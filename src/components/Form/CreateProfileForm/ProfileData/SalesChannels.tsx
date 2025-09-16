@@ -35,6 +35,7 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
       <SalesChannelDiscountCodeType formLens={formLens} />
       {formLens
         .focus("addresses")
+        .defined()
         .map(addressesArray.fields, (_, itemLens, index, array) => (
           <FormSection
             key={index}
@@ -152,7 +153,7 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
                   </div>
                 </>
               )}
-              {addresses.length === index + 1 && (
+              {addresses?.length === index + 1 && (
                 <>
                   {allNationalAddresses === false && (
                     <div

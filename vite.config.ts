@@ -78,7 +78,11 @@ export default defineConfig({
           secure: false
         }
       ])
-    )
+    ),
+    warmup: {
+      // https://github.com/remix-run/react-router/issues/12786#issuecomment-2634033513
+      clientFiles: ["./src/**/*.tsx?"]
+    }
   },
   preview: {
     port: 3000

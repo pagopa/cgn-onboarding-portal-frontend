@@ -123,7 +123,7 @@ export const SalesChannelValidationSchema = z
     allNationalAddresses: z.boolean(),
     addresses: z.array(OptionalAddressValidationSchema).optional()
   })
-  .check(ctx => {
+  .superRefine((_value, ctx) => {
     if (
       ctx.value.channelType === SalesChannelType.OnlineChannel ||
       ctx.value.channelType === SalesChannelType.BothChannels
@@ -134,7 +134,7 @@ export const SalesChannelValidationSchema = z
           input: ctx.value.websiteUrl,
           path: ["websiteUrl"],
           code: "custom",
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (!ctx.value.discountCodeType) {
@@ -143,7 +143,7 @@ export const SalesChannelValidationSchema = z
           input: ctx.value.discountCodeType,
           path: ["discountCodeType"],
           code: "custom",
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
     }
@@ -158,7 +158,7 @@ export const SalesChannelValidationSchema = z
         .error?.issues.forEach(issue => {
           // eslint-disable-next-line functional/immutable-data
           ctx.issues.push({
-            ...issue,
+            ...(issue as any),
             path: ["addresses", ...issue.path]
           });
         });
@@ -169,7 +169,8 @@ export const SalesChannelValidationSchema = z
             issue => {
               // eslint-disable-next-line functional/immutable-data
               ctx.issues.push({
-                ...issue,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ...(issue as any),
                 path: ["addresses", index.toString(), ...issue.path]
               });
             }
@@ -223,7 +224,7 @@ export const ProfileDataValidationSchema = z
       .min(1, REQUIRED_FIELD),
     salesChannel: SalesChannelValidationSchema
   })
-  .check(ctx => {
+  .superRefine((_value, ctx) => {
     if (ctx.value.hasDifferentName) {
       if (!ctx.value.name) {
         // eslint-disable-next-line functional/immutable-data
@@ -231,7 +232,7 @@ export const ProfileDataValidationSchema = z
           input: ctx.value.name,
           path: ["name"],
           code: "custom",
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (!ctx.value.name_en) {
@@ -240,7 +241,7 @@ export const ProfileDataValidationSchema = z
           input: ctx.value.name_en,
           path: ["name_en"],
           code: "custom",
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (!ctx.value.name_de) {
@@ -249,7 +250,7 @@ export const ProfileDataValidationSchema = z
           input: ctx.value.name_de,
           path: ["name_de"],
           code: "custom",
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
     }
@@ -322,7 +323,7 @@ export const discountDataValidationSchema = (
             ctx.issues.push({
               code: "custom",
               input: val,
-              message: DISCOUNT_RANGE
+              error: DISCOUNT_RANGE
             });
           }
           return isNaN(num) ? undefined : num;
@@ -367,7 +368,7 @@ export const discountDataValidationSchema = (
       ])
     })
     // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
-    .check(ctx => {
+    .superRefine((_value, ctx) => {
       // Description/condition required if their translations are present
       if (ctx.value.description_en?.trim() && !ctx.value.description?.trim()) {
         // eslint-disable-next-line functional/immutable-data
@@ -375,7 +376,7 @@ export const discountDataValidationSchema = (
           path: ["description"],
           code: "custom",
           input: ctx.value.description,
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (ctx.value.description?.trim() && !ctx.value.description_en?.trim()) {
@@ -384,7 +385,7 @@ export const discountDataValidationSchema = (
           path: ["description_en"],
           code: "custom",
           input: ctx.value.description_en,
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (ctx.value.description?.trim() && !ctx.value.description_de?.trim()) {
@@ -393,7 +394,7 @@ export const discountDataValidationSchema = (
           path: ["description_de"],
           code: "custom",
           input: ctx.value.description_de,
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (ctx.value.condition_en?.trim() && !ctx.value.condition?.trim()) {
@@ -402,7 +403,7 @@ export const discountDataValidationSchema = (
           path: ["condition"],
           code: "custom",
           input: ctx.value.condition,
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (ctx.value.condition?.trim() && !ctx.value.condition_en?.trim()) {
@@ -411,7 +412,7 @@ export const discountDataValidationSchema = (
           path: ["condition_en"],
           code: "custom",
           input: ctx.value.condition_en,
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (ctx.value.condition?.trim() && !ctx.value.condition_de?.trim()) {
@@ -420,7 +421,7 @@ export const discountDataValidationSchema = (
           path: ["condition_de"],
           code: "custom",
           input: ctx.value.condition_de,
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (staticCheck && !ctx.value.staticCode?.trim()) {
@@ -429,7 +430,7 @@ export const discountDataValidationSchema = (
           path: ["staticCode"],
           code: "custom",
           input: ctx.value.staticCode,
-          message: REQUIRED_FIELD
+          error: REQUIRED_FIELD
         });
       }
       if (landingCheck) {
@@ -439,7 +440,7 @@ export const discountDataValidationSchema = (
             path: ["landingPageUrl"],
             code: "custom",
             input: ctx.value.landingPageUrl,
-            message: REQUIRED_FIELD
+            error: REQUIRED_FIELD
           });
         }
         if (!ctx.value.landingPageReferrer) {
@@ -448,7 +449,7 @@ export const discountDataValidationSchema = (
             path: ["landingPageReferrer"],
             code: "custom",
             input: ctx.value.landingPageReferrer,
-            message: REQUIRED_FIELD
+            error: REQUIRED_FIELD
           });
         }
       }
@@ -459,7 +460,7 @@ export const discountDataValidationSchema = (
             path: ["lastBucketCodeLoadUid"],
             code: "custom",
             input: ctx.value.lastBucketCodeLoadUid,
-            message: REQUIRED_FIELD
+            error: REQUIRED_FIELD
           });
         }
         if (!ctx.value.lastBucketCodeLoadFileName) {
@@ -468,7 +469,7 @@ export const discountDataValidationSchema = (
             path: ["lastBucketCodeLoadFileName"],
             code: "custom",
             input: ctx.value.lastBucketCodeLoadFileName,
-            message: REQUIRED_FIELD
+            error: REQUIRED_FIELD
           });
         }
       }
@@ -479,7 +480,7 @@ export const discountDataValidationSchema = (
             path: ["eycaLandingPageUrl"],
             code: "custom",
             input: ctx.value.eycaLandingPageUrl,
-            message: REQUIRED_FIELD
+            error: REQUIRED_FIELD
           });
         }
         if (
@@ -517,7 +518,7 @@ function helpTopicValidation(
         path: ["topic"],
         code: "custom",
         input: ctx.value.topic,
-        message: REQUIRED_FIELD
+        error: REQUIRED_FIELD
       });
     }
   }
@@ -536,7 +537,7 @@ export const loggedHelpValidationSchema = z
       .trim()
       .min(1, REQUIRED_FIELD)
   })
-  .check(ctx => {
+  .superRefine((_value, ctx) => {
     helpTopicValidation(ctx);
   });
 
@@ -574,7 +575,7 @@ export const notLoggedHelpValidationSchema = z
       .trim()
       .min(1, REQUIRED_FIELD)
   })
-  .check(ctx => {
+  .superRefine((_value, ctx) => {
     helpTopicValidation(ctx);
     if (ctx.value.emailAddress && ctx.value.confirmEmailAddress) {
       if (ctx.value.emailAddress !== ctx.value.confirmEmailAddress) {
@@ -583,7 +584,7 @@ export const notLoggedHelpValidationSchema = z
           path: ["confirmEmailAddress"],
           code: "custom",
           input: ctx.value.confirmEmailAddress,
-          message: INCORRECT_CONFIRM_EMAIL_ADDRESS
+          error: INCORRECT_CONFIRM_EMAIL_ADDRESS
         });
       }
     }
