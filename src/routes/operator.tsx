@@ -19,7 +19,9 @@ export default function Component() {
   if (!authentication.currentMerchantFiscalCode) {
     return (
       <Fragment>
-        <Outlet />
+        <Layout>
+          <Outlet />
+        </Layout>
         <Navigate to={href("/operator/select-company")} />
       </Fragment>
     );
