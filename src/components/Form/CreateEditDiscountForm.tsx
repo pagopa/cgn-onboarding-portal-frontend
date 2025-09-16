@@ -104,7 +104,7 @@ export const CreateEditDiscountForm = ({
           <Button
             className="px-14"
             outline={!isDraft}
-            color={isDraft ? "secondary" : "primary"}
+            color="secondary"
             tag="button"
             onClick={() => {
               navigate(href("/operator/dashboard/profile"));
