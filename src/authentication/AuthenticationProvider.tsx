@@ -36,13 +36,10 @@ export function AuthenticationProvider({
   const setCurrentSession = useCallback(
     (session: CurrentSession) => {
       authenticationStore.setCurrentSession(session);
-      if (session?.type === "user") {
-        navigate(href("/"));
-      }
-      if (session?.type === "admin") {
-        navigate(href("/"));
-      }
       resetQueries();
+      setTimeout(() => {
+        navigate(href("/"));
+      });
     },
     [navigate, resetQueries]
   );
