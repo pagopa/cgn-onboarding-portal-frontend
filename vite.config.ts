@@ -50,7 +50,6 @@ export default defineConfig({
           "slash-div",
           "global-builtin",
           "abs-percent",
-          "mixed-decls",
           "color-functions",
           "function-units",
           "import"
@@ -81,7 +80,7 @@ export default defineConfig({
     ),
     warmup: {
       // https://github.com/remix-run/react-router/issues/12786#issuecomment-2634033513
-      clientFiles: ["./src/**/*.tsx?"]
+      clientFiles: ["./src/**/*.tsx"]
     }
   },
   preview: {

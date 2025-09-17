@@ -30,4 +30,5 @@ src/api/generated_backoffice
 src/api/generated_public
 
 .react-router/
+build
 dist
