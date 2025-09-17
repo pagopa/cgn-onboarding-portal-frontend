@@ -1,4 +1,5 @@
 import { ReactElement, useState, useRef, useCallback, useMemo } from "react";
+import { Alert } from "design-react-kit";
 import {
   ProviderProps,
   TooltipProviderState,
@@ -39,21 +40,14 @@ export function TooltipProvider({ children }: ProviderProps): ReactElement {
       {children}
       {open && (
         <div className="fixed-bottom me-6" style={{ left: "auto" }}>
-          <div
-            className={`alert bg-white alert-dismissible alert-${severity} fade show`}
-            role="alert"
-          >
-            {title && <h4 className="alert-heading">{title}</h4>}
-            <p>{text}</p>
-            <button
-              type="button"
-              className="close"
-              data-bs-dismiss="alert"
-              onClick={closeTooltip}
-            >
-              <span>&times;</span>
-            </button>
-          </div>
+          <Alert color={severity} fade isOpen={open} toggle={closeTooltip}>
+            {title && (
+              <h4 className="alert-heading" style={{ marginTop: "-4px" }}>
+                {title}
+              </h4>
+            )}
+            <span className="pe-4">{text}</span>
+          </Alert>
         </div>
       )}
     </TooltipContext.Provider>
