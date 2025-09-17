@@ -134,7 +134,7 @@ export const SalesChannelValidationSchema = z
           input: ctx.value.websiteUrl,
           path: ["websiteUrl"],
           code: "custom",
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (!ctx.value.discountCodeType) {
@@ -143,7 +143,7 @@ export const SalesChannelValidationSchema = z
           input: ctx.value.discountCodeType,
           path: ["discountCodeType"],
           code: "custom",
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
     }
@@ -232,7 +232,7 @@ export const ProfileDataValidationSchema = z
           input: ctx.value.name,
           path: ["name"],
           code: "custom",
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (!ctx.value.name_en) {
@@ -241,7 +241,7 @@ export const ProfileDataValidationSchema = z
           input: ctx.value.name_en,
           path: ["name_en"],
           code: "custom",
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (!ctx.value.name_de) {
@@ -250,7 +250,7 @@ export const ProfileDataValidationSchema = z
           input: ctx.value.name_de,
           path: ["name_de"],
           code: "custom",
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
     }
@@ -323,7 +323,7 @@ export const discountDataValidationSchema = (
             ctx.issues.push({
               code: "custom",
               input: val,
-              error: DISCOUNT_RANGE
+              message: DISCOUNT_RANGE
             });
           }
           return isNaN(num) ? undefined : num;
@@ -376,7 +376,7 @@ export const discountDataValidationSchema = (
           path: ["description"],
           code: "custom",
           input: ctx.value.description,
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (ctx.value.description?.trim() && !ctx.value.description_en?.trim()) {
@@ -385,7 +385,7 @@ export const discountDataValidationSchema = (
           path: ["description_en"],
           code: "custom",
           input: ctx.value.description_en,
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (ctx.value.description?.trim() && !ctx.value.description_de?.trim()) {
@@ -394,7 +394,7 @@ export const discountDataValidationSchema = (
           path: ["description_de"],
           code: "custom",
           input: ctx.value.description_de,
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (ctx.value.condition_en?.trim() && !ctx.value.condition?.trim()) {
@@ -403,7 +403,7 @@ export const discountDataValidationSchema = (
           path: ["condition"],
           code: "custom",
           input: ctx.value.condition,
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (ctx.value.condition?.trim() && !ctx.value.condition_en?.trim()) {
@@ -412,7 +412,7 @@ export const discountDataValidationSchema = (
           path: ["condition_en"],
           code: "custom",
           input: ctx.value.condition_en,
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (ctx.value.condition?.trim() && !ctx.value.condition_de?.trim()) {
@@ -421,7 +421,7 @@ export const discountDataValidationSchema = (
           path: ["condition_de"],
           code: "custom",
           input: ctx.value.condition_de,
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (staticCheck && !ctx.value.staticCode?.trim()) {
@@ -430,7 +430,7 @@ export const discountDataValidationSchema = (
           path: ["staticCode"],
           code: "custom",
           input: ctx.value.staticCode,
-          error: REQUIRED_FIELD
+          message: REQUIRED_FIELD
         });
       }
       if (landingCheck) {
@@ -440,7 +440,7 @@ export const discountDataValidationSchema = (
             path: ["landingPageUrl"],
             code: "custom",
             input: ctx.value.landingPageUrl,
-            error: REQUIRED_FIELD
+            message: REQUIRED_FIELD
           });
         }
         if (!ctx.value.landingPageReferrer) {
@@ -449,7 +449,7 @@ export const discountDataValidationSchema = (
             path: ["landingPageReferrer"],
             code: "custom",
             input: ctx.value.landingPageReferrer,
-            error: REQUIRED_FIELD
+            message: REQUIRED_FIELD
           });
         }
       }
@@ -460,7 +460,7 @@ export const discountDataValidationSchema = (
             path: ["lastBucketCodeLoadUid"],
             code: "custom",
             input: ctx.value.lastBucketCodeLoadUid,
-            error: REQUIRED_FIELD
+            message: REQUIRED_FIELD
           });
         }
         if (!ctx.value.lastBucketCodeLoadFileName) {
@@ -469,7 +469,7 @@ export const discountDataValidationSchema = (
             path: ["lastBucketCodeLoadFileName"],
             code: "custom",
             input: ctx.value.lastBucketCodeLoadFileName,
-            error: REQUIRED_FIELD
+            message: REQUIRED_FIELD
           });
         }
       }
@@ -480,7 +480,7 @@ export const discountDataValidationSchema = (
             path: ["eycaLandingPageUrl"],
             code: "custom",
             input: ctx.value.eycaLandingPageUrl,
-            error: REQUIRED_FIELD
+            message: REQUIRED_FIELD
           });
         }
         if (
@@ -518,7 +518,7 @@ function helpTopicValidation(
         path: ["topic"],
         code: "custom",
         input: ctx.value.topic,
-        error: REQUIRED_FIELD
+        message: REQUIRED_FIELD
       });
     }
   }
@@ -584,7 +584,7 @@ export const notLoggedHelpValidationSchema = z
           path: ["confirmEmailAddress"],
           code: "custom",
           input: ctx.value.confirmEmailAddress,
-          error: INCORRECT_CONFIRM_EMAIL_ADDRESS
+          message: INCORRECT_CONFIRM_EMAIL_ADDRESS
         });
       }
     }
