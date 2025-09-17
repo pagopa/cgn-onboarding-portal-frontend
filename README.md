@@ -97,7 +97,7 @@ dialog.showModal();
 
 At the moment the login flow must be started from UAT or PROD (might be fixed in future).
 
-Once you get redirected to localhost, but it looks like you are not logged in, it might be needed to click `one identity` button in the top right corner and select the session.
+Once you get redirected to localhost, but it looks like you are not logged in, it might be needed to click `one identity` button in the top right corner and select the session, eventually reloading the page manually.
 
 ### Option 2: Using the Browser Extension
 
