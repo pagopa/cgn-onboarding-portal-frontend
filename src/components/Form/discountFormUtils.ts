@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import z from "zod/v4";
+import * as z from "zod/mini";
 import { format } from "date-fns";
 import { ProductCategory, Discount, UpdateDiscount } from "../../api/generated";
 import { TooltipContextProps, Severity } from "../../context/tooltip";

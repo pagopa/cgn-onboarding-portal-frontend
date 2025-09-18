@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import { href, useNavigate } from "react-router";
-import { z } from "zod/v4";
+import * as z from "zod/mini";
 import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
 import { OrganizationsDataApi } from "../api/generated";
 import { SessionApi } from "../api/generated_public";

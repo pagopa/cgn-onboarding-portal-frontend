@@ -1,7 +1,7 @@
 import { Button } from "design-react-kit";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { z } from "zod/v4";
+import * as z from "zod/mini";
 import { useFieldArray } from "@hookform/lenses/rhf";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import { Severity, useTooltip } from "../../../../context/tooltip";

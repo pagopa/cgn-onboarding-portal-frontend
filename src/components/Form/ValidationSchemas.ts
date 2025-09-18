@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import * as z from "zod/mini";
 import {
   BucketCodeLoadStatus,
   DiscountCodeType,
@@ -31,77 +31,92 @@ const fiscalCodeRegex =
 const undefinedRequired = () => REQUIRED_FIELD;
 
 export const EmptyAddressValidationSchema = z.object({
-  street: z.string().max(0),
-  zipCode: z.string().max(0),
-  city: z.string().max(0),
-  district: z.string().max(0),
+  street: z.string().check(z.maxLength(0)),
+  zipCode: z.string().check(z.maxLength(0)),
+  city: z.string().check(z.maxLength(0)),
+  district: z.string().check(z.maxLength(0)),
   coordinates: z.object({
-    latitude: z.string().max(0),
-    longitude: z.string().max(0)
+    latitude: z.string().check(z.maxLength(0)),
+    longitude: z.string().check(z.maxLength(0))
   })
 });
 
 const OptionalAddressValidationSchema = z.object({
-  street: z.string().optional(),
-  zipCode: z.string().optional(),
-  city: z.string().optional(),
-  district: z.string().optional(),
-  coordinates: z
-    .object({
-      latitude: z.string().optional(),
-      longitude: z.string().optional()
+  street: z.optional(z.string()),
+  zipCode: z.optional(z.string()),
+  city: z.optional(z.string()),
+  district: z.optional(z.string()),
+  coordinates: z.optional(
+    z.object({
+      latitude: z.optional(z.string()),
+      longitude: z.optional(z.string())
     })
-    .optional()
+  )
 });
 
 export const AddressValidationSchema = z.object({
   street: z
     .string({ error: undefinedRequired })
-    .trim()
-    .regex(streetRegex, "Solo lettere o numeri")
-    .min(1, REQUIRED_FIELD),
+    .check(
+      z.trim(),
+      z.regex(streetRegex, "Solo lettere o numeri"),
+      z.minLength(1, REQUIRED_FIELD)
+    ),
   zipCode: z
     .string({ error: undefinedRequired })
-    .trim()
-    .regex(zipCodeRegex, ONLY_NUMBER)
-    .min(5, "Deve essere di 5 caratteri")
-    .max(5, "Deve essere di 5 caratteri")
-    .min(1, REQUIRED_FIELD),
-  city: z.string({ error: undefinedRequired }).trim().min(1, REQUIRED_FIELD),
+    .check(
+      z.trim(),
+      z.regex(zipCodeRegex, ONLY_NUMBER),
+      z.minLength(5, "Deve essere di 5 caratteri"),
+      z.maxLength(5, "Deve essere di 5 caratteri"),
+      z.minLength(1, REQUIRED_FIELD)
+    ),
+  city: z
+    .string({ error: undefinedRequired })
+    .check(z.trim(), z.minLength(1, REQUIRED_FIELD)),
   district: z
     .string({ error: undefinedRequired })
-    .trim()
-    .min(1, REQUIRED_FIELD),
-  coordinates: z
-    .object({
-      latitude: z.string().optional(),
-      longitude: z.string().optional()
+    .check(z.trim(), z.minLength(1, REQUIRED_FIELD)),
+  coordinates: z.optional(
+    z.object({
+      latitude: z.optional(z.string()),
+      longitude: z.optional(z.string())
     })
-    .optional()
+  )
 });
 
 export const ReferentValidationSchema = z.object({
   firstName: z
     .string({ error: undefinedRequired })
-    .trim()
-    .regex(onlyAlphaRegex, ONLY_STRING)
-    .min(1, REQUIRED_FIELD),
+    .check(
+      z.trim(),
+      z.regex(onlyAlphaRegex, ONLY_STRING),
+      z.minLength(1, REQUIRED_FIELD)
+    ),
   lastName: z
     .string({ error: undefinedRequired })
-    .trim()
-    .regex(onlyAlphaRegex, ONLY_STRING)
-    .min(1, REQUIRED_FIELD),
+    .check(
+      z.trim(),
+      z.regex(onlyAlphaRegex, ONLY_STRING),
+      z.minLength(1, REQUIRED_FIELD)
+    ),
   role: z
     .string({ error: undefinedRequired })
-    .regex(onlyAlphaRegex, ONLY_STRING)
-    .min(1, REQUIRED_FIELD),
-  emailAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
+    .check(
+      z.regex(onlyAlphaRegex, ONLY_STRING),
+      z.minLength(1, REQUIRED_FIELD)
+    ),
+  emailAddress: z
+    .string()
+    .check(z.email(INCORRECT_EMAIL_ADDRESS), z.minLength(1, REQUIRED_FIELD)),
   telephoneNumber: z
     .string({ error: undefinedRequired })
-    .trim()
-    .regex(onlyNumberRegex, ONLY_NUMBER)
-    .min(4, "Inserisci un numero di telefono valido")
-    .min(1, REQUIRED_FIELD)
+    .check(
+      z.trim(),
+      z.regex(onlyNumberRegex, ONLY_NUMBER),
+      z.minLength(4, "Inserisci un numero di telefono valido"),
+      z.minLength(1, REQUIRED_FIELD)
+    )
 });
 
 export const SalesChannelValidationSchema = z
@@ -110,20 +125,22 @@ export const SalesChannelValidationSchema = z
       z.enum({ ...SalesChannelType, "": "" }),
       z.enum(SalesChannelType)
     ),
-    websiteUrl: z
-      .url({
-        error: INCORRECT_WEBSITE_URL,
-        protocol: /^https?$/,
-        hostname: z.regexes.domain
-      })
-      .optional(),
-    discountCodeType: z
-      .enum({ ...DiscountCodeType, "": "" }, REQUIRED_FIELD)
-      .optional(),
+    websiteUrl: z.optional(
+      z.string().check(
+        z.url({
+          error: INCORRECT_WEBSITE_URL,
+          protocol: /^https?$/,
+          hostname: z.regexes.domain
+        })
+      )
+    ),
+    discountCodeType: z.optional(
+      z.enum({ ...DiscountCodeType, "": "" }, REQUIRED_FIELD)
+    ),
     allNationalAddresses: z.boolean(),
-    addresses: z.array(OptionalAddressValidationSchema).optional()
+    addresses: z.optional(z.array(OptionalAddressValidationSchema))
   })
-  .superRefine((_value, ctx) => {
+  .check(ctx => {
     if (
       ctx.value.channelType === SalesChannelType.OnlineChannel ||
       ctx.value.channelType === SalesChannelType.BothChannels
@@ -153,11 +170,12 @@ export const SalesChannelValidationSchema = z
       !ctx.value.allNationalAddresses
     ) {
       z.array(AddressValidationSchema)
-        .min(1)
+        .check(z.minLength(1))
         .safeParse(ctx.value.addresses)
         .error?.issues.forEach(issue => {
           // eslint-disable-next-line functional/immutable-data
           ctx.issues.push({
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ...(issue as any),
             path: ["addresses", ...issue.path]
           });
@@ -182,49 +200,53 @@ export const SalesChannelValidationSchema = z
 
 export const ProfileDataValidationSchema = z
   .object({
-    hasDifferentName: z.boolean().optional(),
-    name: z.string({ error: undefinedRequired }).trim().optional(),
-    name_en: z.string({ error: undefinedRequired }).trim().optional(),
-    name_de: z.string({ error: undefinedRequired }).trim().optional(),
-    pecAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
+    hasDifferentName: z.optional(z.boolean()),
+    name: z.optional(z.string({ error: undefinedRequired }).check(z.trim())),
+    name_en: z.optional(z.string({ error: undefinedRequired }).check(z.trim())),
+    name_de: z.optional(z.string({ error: undefinedRequired }).check(z.trim())),
+    pecAddress: z
+      .string()
+      .check(z.email(INCORRECT_EMAIL_ADDRESS), z.minLength(1, REQUIRED_FIELD)),
     legalOffice: z
       .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD),
+      .check(z.trim(), z.minLength(1, REQUIRED_FIELD)),
     telephoneNumber: z
       .string({ error: undefinedRequired })
-      .trim()
-      .regex(onlyNumberRegex, ONLY_NUMBER)
-      .min(4, "Inserisci un numero di telefono valido")
-      .min(1, REQUIRED_FIELD),
+      .check(
+        z.trim(),
+        z.regex(onlyNumberRegex, ONLY_NUMBER),
+        z.minLength(4, "Inserisci un numero di telefono valido"),
+        z.minLength(1, REQUIRED_FIELD)
+      ),
     legalRepresentativeFullName: z
       .string({ error: undefinedRequired })
-      .trim()
-      .regex(onlyAlphaRegex, ONLY_STRING)
-      .min(1, REQUIRED_FIELD),
+      .check(
+        z.trim(),
+        z.regex(onlyAlphaRegex, ONLY_STRING),
+        z.minLength(1, REQUIRED_FIELD)
+      ),
     legalRepresentativeTaxCode: z
       .string({ error: undefinedRequired })
-      .trim()
-      .min(4, "Inserisci un codice fiscale valido")
-      .max(20, "Deve essere al massimo di 20 caratteri")
-      .min(1, REQUIRED_FIELD),
+      .check(
+        z.trim(),
+        z.minLength(4, "Inserisci un codice fiscale valido"),
+        z.maxLength(20, "Deve essere al massimo di 20 caratteri"),
+        z.minLength(1, REQUIRED_FIELD)
+      ),
     referent: ReferentValidationSchema,
     secondaryReferents: z.array(ReferentValidationSchema),
     description: z
       .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD),
+      .check(z.trim(), z.minLength(1, REQUIRED_FIELD)),
     description_en: z
       .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD),
+      .check(z.trim(), z.minLength(1, REQUIRED_FIELD)),
     description_de: z
       .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD),
+      .check(z.trim(), z.minLength(1, REQUIRED_FIELD)),
     salesChannel: SalesChannelValidationSchema
   })
-  .superRefine((_value, ctx) => {
+  .check(ctx => {
     if (ctx.value.hasDifferentName) {
       if (!ctx.value.name) {
         // eslint-disable-next-line functional/immutable-data
@@ -273,27 +295,21 @@ export const discountDataValidationSchema = (
 ) =>
   z
     .object({
-      id: z.string().optional(),
+      id: z.optional(z.string()),
       name: z
         .string({ error: undefinedRequired })
-        .trim()
-        .max(100)
-        .min(1, REQUIRED_FIELD),
+        .check(z.trim(), z.maxLength(100), z.minLength(1, REQUIRED_FIELD)),
       name_en: z
         .string({ error: undefinedRequired })
-        .trim()
-        .max(100)
-        .min(1, REQUIRED_FIELD),
+        .check(z.trim(), z.maxLength(100), z.minLength(1, REQUIRED_FIELD)),
       name_de: z
         .string({ error: undefinedRequired })
-        .trim()
-        .max(100)
-        .min(1, REQUIRED_FIELD),
-      description: z.string().max(250).optional(),
-      description_en: z.string().max(250).optional(),
-      description_de: z.string().max(250).optional(),
+        .check(z.trim(), z.maxLength(100), z.minLength(1, REQUIRED_FIELD)),
+      description: z.optional(z.string().check(z.maxLength(250))),
+      description_en: z.optional(z.string().check(z.maxLength(250))),
+      description_de: z.optional(z.string().check(z.maxLength(250))),
       discountUrl: z.union([
-        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
+        z.string().check(z.trim(), z.maxLength(0, INCORRECT_WEBSITE_URL)),
         z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
@@ -301,17 +317,16 @@ export const discountDataValidationSchema = (
         })
       ]),
       startDate: z.pipe(
-        z.date().optional(),
+        z.optional(z.date()),
         z.date({ error: undefinedRequired })
       ),
       endDate: z.pipe(
-        z.date().optional(),
+        z.optional(z.date()),
         z.date({ error: undefinedRequired })
       ),
-      discount: z
-        .string()
-        .trim()
-        .transform((val, ctx) => {
+      discount: z.pipe(
+        z.string().check(z.trim()),
+        z.transform((val, ctx) => {
           const num = Number(val);
           if (val === "") {
             return undefined;
@@ -327,39 +342,43 @@ export const discountDataValidationSchema = (
             });
           }
           return isNaN(num) ? undefined : num;
-        }),
+        })
+      ),
       productCategories: z.pipe(
-        z
-          .partialRecord(z.enum(ProductCategory), z.boolean())
-          .transform(categories =>
+        z.pipe(
+          z.partialRecord(z.enum(ProductCategory), z.boolean()),
+          z.transform(categories =>
             (Object.keys(categories) as Array<ProductCategory>).filter(
               category => categories[category]
             )
-          ),
+          )
+        ),
         z
           .array(z.enum(ProductCategory, "Categoria merceologica non valida"))
-          .min(1, PRODUCT_CATEGORIES_ONE)
-          .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX)
+          .check(
+            z.minLength(1, PRODUCT_CATEGORIES_ONE),
+            z.maxLength(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX)
+          )
       ),
-      condition: z.string().optional(),
-      condition_en: z.string().optional(),
-      condition_de: z.string().optional(),
-      staticCode: z.string().optional(),
+      condition: z.optional(z.string()),
+      condition_en: z.optional(z.string()),
+      condition_de: z.optional(z.string()),
+      staticCode: z.optional(z.string()),
       landingPageUrl: z.union([
-        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
+        z.string().check(z.trim(), z.maxLength(0, INCORRECT_WEBSITE_URL)),
         z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
           hostname: z.regexes.domain
         })
       ]),
-      landingPageReferrer: z.string().optional(),
-      lastBucketCodeLoadUid: z.string().optional(),
-      lastBucketCodeLoadFileName: z.string().optional(),
-      lastBucketCodeLoadStatus: z.enum(BucketCodeLoadStatus).optional(),
-      visibleOnEyca: z.boolean().optional(),
+      landingPageReferrer: z.optional(z.string()),
+      lastBucketCodeLoadUid: z.optional(z.string()),
+      lastBucketCodeLoadFileName: z.optional(z.string()),
+      lastBucketCodeLoadStatus: z.optional(z.enum(BucketCodeLoadStatus)),
+      visibleOnEyca: z.optional(z.boolean()),
       eycaLandingPageUrl: z.union([
-        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
+        z.string().check(z.trim(), z.maxLength(0, INCORRECT_WEBSITE_URL)),
         z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
@@ -368,7 +387,7 @@ export const discountDataValidationSchema = (
       ])
     })
     // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
-    .superRefine((_value, ctx) => {
+    .check(ctx => {
       // Description/condition required if their translations are present
       if (ctx.value.description_en?.trim() && !ctx.value.description?.trim()) {
         // eslint-disable-next-line functional/immutable-data
@@ -526,56 +545,65 @@ function helpTopicValidation(
 
 export const loggedHelpValidationSchema = z
   .object({
-    category: z.string().pipe(
+    category: z.pipe(
+      z.string(),
       z.enum(HelpRequestCategoryEnum, {
         error: REQUIRED_FIELD
       })
     ),
-    topic: z.string().optional(),
+    topic: z.optional(z.string()),
     message: z
       .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD)
+      .check(z.trim(), z.minLength(1, REQUIRED_FIELD))
   })
-  .superRefine((_value, ctx) => {
+  .check(ctx => {
     helpTopicValidation(ctx);
   });
 
 export const notLoggedHelpValidationSchema = z
   .object({
-    category: z.string().pipe(
+    category: z.pipe(
+      z.string(),
       z.enum(HelpRequestCategoryEnum, {
         error: REQUIRED_FIELD
       })
     ),
-    topic: z.string().optional(),
+    topic: z.optional(z.string()),
     message: z
       .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD),
+      .check(z.trim(), z.minLength(1, REQUIRED_FIELD)),
     referentFirstName: z
       .string({ error: undefinedRequired })
-      .trim()
-      .regex(onlyAlphaRegex, ONLY_STRING)
-      .min(1, REQUIRED_FIELD),
+      .check(
+        z.trim(),
+        z.regex(onlyAlphaRegex, ONLY_STRING),
+        z.minLength(1, REQUIRED_FIELD)
+      ),
     referentLastName: z
       .string({ error: undefinedRequired })
-      .trim()
-      .regex(onlyAlphaRegex, ONLY_STRING)
-      .min(1, REQUIRED_FIELD),
+      .check(
+        z.trim(),
+        z.regex(onlyAlphaRegex, ONLY_STRING),
+        z.minLength(1, REQUIRED_FIELD)
+      ),
     legalName: z
       .string({ error: undefinedRequired })
-      .trim()
-      .regex(onlyAlphaRegex, ONLY_STRING)
-      .min(1, REQUIRED_FIELD),
-    emailAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
-    confirmEmailAddress: z.email(INCORRECT_EMAIL_ADDRESS).optional(),
+      .check(
+        z.trim(),
+        z.regex(onlyAlphaRegex, ONLY_STRING),
+        z.minLength(1, REQUIRED_FIELD)
+      ),
+    emailAddress: z
+      .string()
+      .check(z.email(INCORRECT_EMAIL_ADDRESS), z.minLength(1, REQUIRED_FIELD)),
+    confirmEmailAddress: z.optional(
+      z.string().check(z.email(INCORRECT_EMAIL_ADDRESS))
+    ),
     recaptchaToken: z
       .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD)
+      .check(z.trim(), z.minLength(1, REQUIRED_FIELD))
   })
-  .superRefine((_value, ctx) => {
+  .check(ctx => {
     helpTopicValidation(ctx);
     if (ctx.value.emailAddress && ctx.value.confirmEmailAddress) {
       if (ctx.value.emailAddress !== ctx.value.confirmEmailAddress) {
@@ -591,30 +619,37 @@ export const notLoggedHelpValidationSchema = z
   });
 
 export const activationValidationSchema = z.object({
-  keyOrganizationFiscalCode: z.string().optional(),
+  keyOrganizationFiscalCode: z.optional(z.string()),
   organizationFiscalCode: z
     .string({ error: undefinedRequired })
-    .trim()
-    .min(1, REQUIRED_FIELD),
+    .check(z.trim(), z.minLength(1, REQUIRED_FIELD)),
   organizationName: z
     .string({ error: undefinedRequired })
-    .trim()
-    .min(1, REQUIRED_FIELD),
-  pec: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
-  referents: z
-    .array(
-      z.object({
-        fiscalCode: z
-          .string({ error: undefinedRequired })
-          .trim()
-          .min(4, "Deve essere al minimo di 4 caratteri")
-          .max(20, "Deve essere al massimo di 20 caratteri")
-          .regex(fiscalCodeRegex, "Il codice fiscale inserito non è corretto")
-          .min(1, REQUIRED_FIELD)
-      })
-    )
-    .min(1, REQUIRED_FIELD)
-    .transform(val => val.map(item => item.fiscalCode)),
-  insertedAt: z.string().optional(),
-  entityType: z.pipe(z.string().optional(), z.enum(EntityType, REQUIRED_FIELD))
+    .check(z.trim(), z.minLength(1, REQUIRED_FIELD)),
+  pec: z
+    .string()
+    .check(z.email(INCORRECT_EMAIL_ADDRESS), z.minLength(1, REQUIRED_FIELD)),
+  referents: z.pipe(
+    z
+      .array(
+        z.object({
+          fiscalCode: z
+            .string({ error: undefinedRequired })
+            .check(
+              z.trim(),
+              z.minLength(4, "Deve essere al minimo di 4 caratteri"),
+              z.maxLength(20, "Deve essere al massimo di 20 caratteri"),
+              z.regex(
+                fiscalCodeRegex,
+                "Il codice fiscale inserito non è corretto"
+              ),
+              z.minLength(1, REQUIRED_FIELD)
+            )
+        })
+      )
+      .check(z.minLength(1, REQUIRED_FIELD)),
+    z.transform(val => val.map(item => item.fiscalCode))
+  ),
+  insertedAt: z.optional(z.string()),
+  entityType: z.pipe(z.optional(z.string()), z.enum(EntityType, REQUIRED_FIELD))
 });

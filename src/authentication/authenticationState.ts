@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import * as z from "zod/mini";
 
 // Merchant Info Schema
 const merchantInfoSchema = z.object({
@@ -19,7 +19,7 @@ const currentSessionSchema = z.union([
   z.object({
     type: z.literal("user"),
     userFiscalCode: z.string(),
-    merchantFiscalCode: z.string().optional()
+    merchantFiscalCode: z.optional(z.string())
   }),
   z.object({
     type: z.literal("none")

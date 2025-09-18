@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
-import z from "zod/v4";
+import * as z from "zod/mini";
 import { ObjectLens } from "@hookform/lenses";
 import FormSection from "../FormSection";
 import InputField from "../FormField";

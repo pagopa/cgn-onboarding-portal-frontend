@@ -1,5 +1,5 @@
 import { href, useNavigate } from "react-router";
-import z from "zod/v4";
+import * as z from "zod/mini";
 import { useMemo } from "react";
 import { Button, Icon } from "design-react-kit";
 import { useFieldArray } from "@hookform/lenses/rhf";
