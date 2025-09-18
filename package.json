@@ -25,7 +25,7 @@
     "prepare": "husky",
     "postinstall": "patch-package",
     "tsc:noEmit": "tsc -b --noEmit",
-    "analyzie-bundle-size": "npx vite-bundle-visualizer -t sunburst"
+    "analyze-bundle-size": "npx vite-bundle-visualizer -t sunburst"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.39.0",

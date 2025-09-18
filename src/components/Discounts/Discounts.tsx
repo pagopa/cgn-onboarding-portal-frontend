@@ -4,7 +4,6 @@ import { Column, useExpanded, useSortBy, useTable } from "react-table";
 import { Icon } from "design-react-kit";
 import { href, Link } from "react-router";
 import { compareAsc, format } from "date-fns";
-import omit from "lodash/omit";
 import { remoteData } from "../../api/common";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
@@ -215,8 +214,10 @@ const Discounts = () => {
         Header: () => null,
         id: "expander",
         Cell({ row }) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { onClick, ...props } = row.getToggleRowExpandedProps() as any;
           return (
-            <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
+            <span {...props}>
               {row.isExpanded ? (
                 <Icon icon="it-expand" color="primary" />
               ) : (
