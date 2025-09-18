@@ -1,5 +1,5 @@
 import { ReactElement, useState, useRef, useCallback, useMemo } from "react";
-import { Alert } from "design-react-kit";
+import { Alert } from "reactstrap";
 import {
   ProviderProps,
   TooltipProviderState,
