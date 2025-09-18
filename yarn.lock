@@ -1401,7 +1401,7 @@
   dependencies:
     minimatch "^9.0.0"
 
-"@react-router/node@7.9.1":
+"@react-router/node@7.9.1", "@react-router/node@^7.9.1":
   version "7.9.1"
   resolved "https://registry.yarnpkg.com/@react-router/node/-/node-7.9.1.tgz#5220380cb08f120807ef5d1ace8c1f9800c3fae6"
   integrity sha512-XfyVLM+sDUDB1frGNr7iqaKNglrPwBiUp8+sFdL4///bngy49pUb2RuEtn2J2Cy5yjL+IlKbjJFrsmfimLBmeg==
