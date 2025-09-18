@@ -1,4 +1,4 @@
-import DatePicker from "react-datepicker";
+import { DatePicker } from "react-datepicker";
 import { createElement, forwardRef } from "react";
 import { Lens } from "@hookform/lenses";
 import { useController, useWatch } from "react-hook-form";

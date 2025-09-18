@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { href, Navigate, Outlet, Route, Routes } from "react-router";
 import { Fragment } from "react/jsx-runtime";
-import { isEqual } from "lodash";
+import isEqual from "lodash/isEqual";
 import { RootState } from "../store/store";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import { AgreementState } from "../api/generated";
