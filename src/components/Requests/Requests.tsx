@@ -153,6 +153,7 @@ const Requests = () => {
         id: "expander",
         Header: () => null,
         Cell: ({ row }) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { onClick, ...props } = row.getToggleRowExpandedProps() as any;
           return (
             <span {...props}>
