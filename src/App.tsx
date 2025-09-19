@@ -9,9 +9,11 @@ import { queryClient } from "./api/common";
 import { AuthenticationProvider } from "./authentication/AuthenticationProvider";
 import { TooltipProvider } from "./context/TooltipProvider";
 import { makeStore } from "./store/store";
-
 import { envVariablesSchema } from "./utils/env-variables.ts";
-envVariablesSchema.parse(import.meta.env);
+
+if (!import.meta.env.SSR) {
+  envVariablesSchema.parse(import.meta.env);
+}
 
 registerLocale("it", it);
 setDefaultLocale("it");
