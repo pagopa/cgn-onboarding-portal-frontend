@@ -8,7 +8,6 @@ import {
 } from "react-table";
 import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
-import omit from "lodash/omit";
 import isEqual from "lodash/isEqual";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
@@ -155,15 +154,19 @@ const OperatorActivations = () => {
       {
         Header: () => null,
         id: "expander",
-        Cell: ({ row }) => (
-          <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
-            {row.isExpanded ? (
-              <Icon icon="it-expand" color="primary" />
-            ) : (
-              <Icon icon="it-collapse" color="primary" />
-            )}
-          </span>
-        )
+        Cell: ({ row }) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { onClick, ...props } = row.getToggleRowExpandedProps() as any;
+          return (
+            <span {...props}>
+              {row.isExpanded ? (
+                <Icon icon="it-expand" color="primary" />
+              ) : (
+                <Icon icon="it-collapse" color="primary" />
+              )}
+            </span>
+          );
+        }
       }
     ],
     []

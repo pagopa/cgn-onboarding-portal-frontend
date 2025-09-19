@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Layout from "../components/Layout/Layout";
 import Stepper from "../components/Stepper/Stepper";
 import Documentation from "../components/Form/CreateProfileForm/Documentation/Documentation";
 import ProfileData from "../components/Form/CreateProfileForm/ProfileData/ProfileData";
@@ -107,7 +106,7 @@ const CreateProfile = () => {
   }
 
   return (
-    <Layout hasHeaderBorder>
+    <Fragment>
       <div className="bg-white">
         <div className="container p-10">
           <div className="row">
@@ -128,7 +127,7 @@ const CreateProfile = () => {
         />
       </div>
       {selectedTab()}
-    </Layout>
+    </Fragment>
   );
 };
 

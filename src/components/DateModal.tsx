@@ -2,7 +2,7 @@ import { useState, forwardRef } from "react";
 import { Button, Icon } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { format } from "date-fns";
-import DatePicker from "react-datepicker";
+import { DatePicker } from "react-datepicker";
 
 const DateModal = ({
   from: propDateFrom,

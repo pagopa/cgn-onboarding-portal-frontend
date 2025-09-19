@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { href, Link } from "react-router";
 import { remoteData } from "../../api/common";
-import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileDataItem from "./ProfileDataItem";
@@ -72,7 +71,7 @@ const ProfileData = () => {
             {agreement.state === "ApprovedAgreement" && (
               <Link
                 className="mt-8 btn btn-outline-primary"
-                to={EDIT_OPERATOR_DATA}
+                to={href("/operator/edit-profile")}
               >
                 Modifica dati
               </Link>
