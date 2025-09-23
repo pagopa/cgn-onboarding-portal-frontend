@@ -112,12 +112,16 @@ export const SalesChannelValidationSchema = z
     ),
     websiteUrl: z
       .union([
-        z.string().trim().max(0),
         z.url({
           error: INCORRECT_WEBSITE_URL,
           protocol: /^https?$/,
           hostname: z.regexes.domain
-        })
+        }),
+        z
+          .string()
+          .trim()
+          .max(0)
+          .transform(() => undefined)
       ])
       .optional(),
     discountCodeType: z
