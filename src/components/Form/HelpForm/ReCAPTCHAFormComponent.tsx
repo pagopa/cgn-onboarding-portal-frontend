@@ -6,7 +6,7 @@ import { useController } from "react-hook-form";
 import { Severity, useTooltip } from "../../../context/tooltip";
 
 type Props = {
-  formLens: Lens<string | null>;
+  formLens: Lens<string>;
 };
 
 const ReCAPTCHAFormComponent = ({ formLens }: Props) => {
@@ -22,7 +22,7 @@ const ReCAPTCHAFormComponent = ({ formLens }: Props) => {
         throw new Error();
       }
       const response = await recaptchaRef.current.executeAsync();
-      onChange({ target: { value: response } });
+      onChange({ target: { value: response ?? "" } });
     } catch {
       triggerTooltip({
         severity: Severity.DANGER,
