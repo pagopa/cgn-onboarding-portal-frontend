@@ -91,6 +91,7 @@ export function SessionSwitch() {
                         type: "admin",
                         name
                       });
+                      window.location.reload();
                     }}
                   >
                     <Input
@@ -120,6 +121,7 @@ export function SessionSwitch() {
                         userFiscalCode: fiscal_code,
                         merchantFiscalCode: undefined
                       });
+                      window.location.reload();
                     }}
                   >
                     <Input
