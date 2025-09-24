@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
 import { href, Navigate, Outlet, Route, Routes } from "react-router";
-import { Fragment } from "react/jsx-runtime";
 import isEqual from "lodash/isEqual";
 import { RootState } from "../store/store";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import { AgreementState } from "../api/generated";
 import Layout from "../components/Layout/Layout";
+import SelectCompany from "../pages/SelectCompany";
 
 export default function Component() {
   const authentication = useAuthentication();
@@ -19,12 +19,9 @@ export default function Component() {
 
   if (!authentication.currentMerchantFiscalCode) {
     return (
-      <Fragment>
-        <Layout>
-          <Outlet />
-        </Layout>
-        <Navigate to={href("/operator/select-company")} />
-      </Fragment>
+      <Layout>
+        <SelectCompany />
+      </Layout>
     );
   }
 

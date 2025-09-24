@@ -37,9 +37,7 @@ export function AuthenticationProvider({
     (session: CurrentSession) => {
       authenticationStore.setCurrentSession(session);
       resetQueries();
-      setTimeout(() => {
-        navigate(href("/"));
-      });
+      navigate(href("/"));
     },
     [navigate, resetQueries]
   );
