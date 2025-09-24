@@ -29,7 +29,7 @@ type ToArgs<Params extends Record<string, string | undefined>> =
 
 declare module "react-router" {
   /** This is a special type to ensure type safety */
-  type SafePathname = {
+  type SafePathname = string & {
     _: `Use href() from "react-router" to create a valid object of this kind`;
   };
 
@@ -55,15 +55,15 @@ declare module "react-router" {
     } & React.RefAttributes<HTMLAnchorElement>
   >;
 
-  function Navigate(
+  const Navigate: (
     props: Omit<NavigateProps, "to"> & {
       to: SafePathname;
     }
-  ): null;
+  ) => null;
 
-  function Route(
+  const Route: (
     _props: Omit<RouteProps, "path"> & { path: SafePathname }
-  ): React.ReactElement | null;
+  ) => React.ReactElement | null;
 
   const redirect: (url: SafePathname, init?: number | ResponseInit) => Response;
 }
