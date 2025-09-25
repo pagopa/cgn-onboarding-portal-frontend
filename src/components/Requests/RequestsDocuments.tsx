@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Button, Icon } from "design-react-kit";
 import DocumentIcon from "../../assets/icons/document.svg?react";
 import DocumentSuccess from "../../assets/icons/document-success.svg?react";
@@ -132,11 +132,15 @@ const RequestDocuments = ({
     agreementId: original.id
   });
   const documents = documentsQuery.data;
+  const isSignedDocumentUploaded =
+    documents?.some(d => d.documentType === "Agreement") ?? false;
+  useEffect(() => {
+    setCheckAllDocs(isSignedDocumentUploaded);
+  }, [isSignedDocumentUploaded, setCheckAllDocs]);
 
   const uploadDocumentMutation =
     remoteData.Backoffice.Document.uploadDocument.useMutation({
       onSuccess() {
-        setCheckAllDocs(true);
         void documentsQuery.refetch();
       }
     });
