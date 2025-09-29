@@ -111,11 +111,18 @@ export const SalesChannelValidationSchema = z
       z.enum(SalesChannelType)
     ),
     websiteUrl: z
-      .url({
-        error: INCORRECT_WEBSITE_URL,
-        protocol: /^https?$/,
-        hostname: z.regexes.domain
-      })
+      .union([
+        z.url({
+          error: INCORRECT_WEBSITE_URL,
+          protocol: /^https?$/,
+          hostname: z.regexes.domain
+        }),
+        z
+          .string()
+          .trim()
+          .max(0)
+          .transform(() => undefined)
+      ])
       .optional(),
     discountCodeType: z
       .enum({ ...DiscountCodeType, "": "" }, REQUIRED_FIELD)
