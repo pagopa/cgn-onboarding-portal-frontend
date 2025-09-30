@@ -126,12 +126,19 @@ export const SalesChannelValidationSchema = z
       z.enum(SalesChannelType)
     ),
     websiteUrl: z.optional(
-      z.string().check(
-        z.url({
-          error: INCORRECT_WEBSITE_URL,
-          protocol: /^https?$/,
-          hostname: z.regexes.domain
-        })
+      z.pipe(
+        z.union([
+          z.string().check(
+            z.url({
+              error: INCORRECT_WEBSITE_URL,
+              protocol: /^https?$/,
+              hostname: z.regexes.domain
+            })
+          ),
+
+          z.string().check(z.trim(), z.maxLength(0, INCORRECT_WEBSITE_URL))
+        ]),
+        z.transform(val => (val === "" ? undefined : val))
       )
     ),
     discountCodeType: z.optional(
