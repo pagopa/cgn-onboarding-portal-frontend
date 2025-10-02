@@ -71,8 +71,7 @@ export function Field<T>({
   ...props
 }: { formLens: Lens<T> } & NativeInputProps) {
   const { field } = useController({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...(formLens as any as Lens<string>).interop(),
+    ...(formLens as unknown as Lens<string>).interop(),
     disabled: props.disabled
   });
   switch (props.element) {
