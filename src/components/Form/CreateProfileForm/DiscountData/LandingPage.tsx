@@ -16,7 +16,7 @@ function LandingPage({ formLens, children }: Props) {
       <Field
         id="landing"
         formLens={formLens.focus("landingPageUrl")}
-        placeholder="Inserisci indirizzo (completo di protocollo http o https)"
+        placeholder="Inserisci indirizzo (completo di protocollo https)"
         type="text"
         className="form-control"
       />
