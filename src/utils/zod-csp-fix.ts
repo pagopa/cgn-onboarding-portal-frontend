@@ -1,4 +1,4 @@
-import { config } from "zod/v4";
+import { config } from "zod/mini";
 
 config({
   jitless: true

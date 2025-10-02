@@ -12,7 +12,7 @@ CI=true yarn test || { echo "❌ tests failed"; exit 1; }
 
 # Check for dead code
 echo "🧟 checking for dead code..."
-npx ts-prune --ignore src/api/generated --error && npx knip --exclude devDependencies,binaries,enumMembers && npx ts-unused-exports tsconfig.json || { echo "❌ dead code detected"; exit 1; }
+npx knip --exclude devDependencies || { echo "❌ dead code detected"; exit 1; }
 
 
 # Run lintier
