@@ -114,7 +114,7 @@ export const SalesChannelValidationSchema = z
       .union([
         z.url({
           error: INCORRECT_WEBSITE_URL,
-          protocol: /^https?$/,
+          protocol: /^https$/,
           hostname: z.regexes.domain
         }),
         z
@@ -302,7 +302,7 @@ export const discountDataValidationSchema = (
         z.string().trim().max(0, INCORRECT_WEBSITE_URL),
         z.url({
           error: INCORRECT_WEBSITE_URL,
-          protocol: /^https?$/,
+          protocol: /^https$/,
           hostname: z.regexes.domain
         })
       ]),
@@ -355,7 +355,7 @@ export const discountDataValidationSchema = (
         z.string().trim().max(0, INCORRECT_WEBSITE_URL),
         z.url({
           error: INCORRECT_WEBSITE_URL,
-          protocol: /^https?$/,
+          protocol: /^https$/,
           hostname: z.regexes.domain
         })
       ]),
@@ -368,7 +368,7 @@ export const discountDataValidationSchema = (
         z.string().trim().max(0, INCORRECT_WEBSITE_URL),
         z.url({
           error: INCORRECT_WEBSITE_URL,
-          protocol: /^https?$/,
+          protocol: /^https$/,
           hostname: z.regexes.domain
         })
       ])
