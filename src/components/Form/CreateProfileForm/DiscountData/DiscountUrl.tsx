@@ -16,7 +16,7 @@ function DiscountUrl({ formLens }: Props) {
         id="discountUrl"
         formLens={formLens.focus("discountUrl")}
         type="text"
-        placeholder="Inserisci link (completo di protocollo http o https)"
+        placeholder="Inserisci link (completo di protocollo https)"
         className="form-control"
       />
       <FormErrorMessage formLens={formLens.focus("discountUrl")} />
