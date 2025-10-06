@@ -81,23 +81,24 @@ export function SessionSwitch() {
                   first_name ===
                     authentication.currentAdminSession?.first_name &&
                   last_name === authentication.currentAdminSession?.last_name;
+                const onSelect = () => {
+                  authentication.setCurrentSession({
+                    type: "admin",
+                    name
+                  });
+                  window.location.reload();
+                };
                 return (
                   <FormGroup
                     key={name}
                     check
                     className="form-check-group"
-                    onClick={() => {
-                      authentication.setCurrentSession({
-                        type: "admin",
-                        name
-                      });
-                      window.location.reload();
-                    }}
+                    onClick={onSelect}
                   >
                     <Input
                       type="radio"
                       checked={isActive}
-                      onChange={() => {}}
+                      onChange={onSelect}
                     />
                     <Label check>
                       {first_name} {last_name}
@@ -110,24 +111,25 @@ export function SessionSwitch() {
               ([fiscal_code, { first_name, last_name }]) => {
                 const isActive =
                   fiscal_code === authentication.currentUserFiscalCode;
+                const onSelect = () => {
+                  authentication.setCurrentSession({
+                    type: "user",
+                    userFiscalCode: fiscal_code,
+                    merchantFiscalCode: undefined
+                  });
+                  window.location.reload();
+                };
                 return (
                   <FormGroup
                     key={fiscal_code}
                     check
                     className="form-check-group"
-                    onClick={() => {
-                      authentication.setCurrentSession({
-                        type: "user",
-                        userFiscalCode: fiscal_code,
-                        merchantFiscalCode: undefined
-                      });
-                      window.location.reload();
-                    }}
+                    onClick={onSelect}
                   >
                     <Input
                       type="radio"
                       checked={isActive}
-                      onChange={() => {}}
+                      onChange={onSelect}
                     />
                     <Label check>
                       {first_name} {last_name}
