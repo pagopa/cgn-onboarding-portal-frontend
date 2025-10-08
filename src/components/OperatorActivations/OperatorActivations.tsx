@@ -155,6 +155,9 @@ const OperatorActivations = () => {
         Header: () => null,
         id: "expander",
         Cell: ({ row }) => {
+          // WARNING: this is a fix
+          // contrary to what typings suggest, row.getToggleRowExpandedProps() does have the onClick property at runtime
+          // we are removing it beacuse we want to trigger expand/collapse on a different interaction
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { onClick, ...props } = row.getToggleRowExpandedProps() as any;
           return (
