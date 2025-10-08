@@ -7,8 +7,10 @@ import {
   Label,
   UncontrolledTooltip
 } from "design-react-kit";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuthentication } from "./AuthenticationContext";
 import { adminLogoutPopup } from "./authentication";
+import { authenticationStore } from "./authenticationStore";
 
 // this serves only for testing purposes until multiple logins are not approved
 
@@ -17,13 +19,16 @@ let authenticationResynced = false;
 
 export function SessionSwitch() {
   const authentication = useAuthentication();
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const localAuthRef = useRef<any>(null);
   useEffect(() => {
     // this is needed to reflect changes made outside react
     if (!authenticationResynced) {
-      authentication.setCurrentSession(authentication.currentSession);
+      authenticationStore.setCurrentSession(authentication.currentSession);
+      queryClient.clear();
+      void queryClient.invalidateQueries();
       authenticationResynced = true;
     }
   });
