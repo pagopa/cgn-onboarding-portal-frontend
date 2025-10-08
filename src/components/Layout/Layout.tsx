@@ -3,13 +3,12 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 
 type Props = {
-  hasHeaderBorder?: boolean;
   children: ReactNode;
 };
 
-const Layout = ({ hasHeaderBorder = false, children }: Props) => (
+const Layout = ({ children }: Props) => (
   <>
-    <Header hasBorder={hasHeaderBorder} />
+    <Header />
     {children}
     <Footer />
   </>

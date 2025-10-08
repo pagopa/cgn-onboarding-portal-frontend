@@ -8,7 +8,6 @@ import {
 } from "react-table";
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
-import omit from "lodash/omit";
 import isEqual from "lodash/isEqual";
 import { keepPreviousData } from "@tanstack/react-query";
 import { remoteData } from "../../api/common";
@@ -153,15 +152,22 @@ const Requests = () => {
       {
         id: "expander",
         Header: () => null,
-        Cell: ({ row }) => (
-          <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
-            {row.isExpanded ? (
-              <Icon icon="it-expand" color="primary" />
-            ) : (
-              <Icon icon="it-collapse" color="primary" />
-            )}
-          </span>
-        )
+        Cell: ({ row }) => {
+          // WARNING: this is a fix
+          // contrary to what typings suggest, row.getToggleRowExpandedProps() does have the onClick property at runtime
+          // we are removing it beacuse we want to trigger expand/collapse on a different interaction
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { onClick, ...props } = row.getToggleRowExpandedProps() as any;
+          return (
+            <span {...props}>
+              {row.isExpanded ? (
+                <Icon icon="it-expand" color="primary" />
+              ) : (
+                <Icon icon="it-collapse" color="primary" />
+              )}
+            </span>
+          );
+        }
       }
     ],
     []

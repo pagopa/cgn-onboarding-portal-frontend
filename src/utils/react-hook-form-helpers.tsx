@@ -71,7 +71,7 @@ export function Field<T>({
   ...props
 }: { formLens: Lens<T> } & NativeInputProps) {
   const { field } = useController({
-    ...(formLens as Lens<unknown> as Lens<string>).interop(),
+    ...(formLens as unknown as Lens<string>).interop(),
     disabled: props.disabled
   });
   switch (props.element) {

@@ -7,7 +7,7 @@ import {
   UseFormProps,
   UseFormReturn
 } from "react-hook-form";
-import { z } from "zod/v4";
+import { ZodMiniType } from "zod/mini";
 
 export function useStandardForm<
   TFieldValues extends FieldValues = FieldValues,
@@ -15,7 +15,7 @@ export function useStandardForm<
   TTransformedValues = TFieldValues
 >(
   props: UseFormProps<TFieldValues, TContext, TTransformedValues> & {
-    zodSchema: z.ZodType<TTransformedValues, TFieldValues>;
+    zodSchema: ZodMiniType<TTransformedValues, TFieldValues>;
   }
 ): UseFormReturn<TFieldValues, TContext, TTransformedValues> & {
   lens: Lens<TFieldValues>;
