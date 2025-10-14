@@ -8,6 +8,7 @@ import {
   UncontrolledTooltip
 } from "design-react-kit";
 import { useQueryClient } from "@tanstack/react-query";
+import { href, useNavigate } from "react-router";
 import { useAuthentication } from "./AuthenticationContext";
 import { adminLogoutPopup } from "./authentication";
 import { authenticationStore } from "./authenticationStore";
@@ -19,6 +20,7 @@ let authenticationResynced = false;
 
 export function SessionSwitch() {
   const authentication = useAuthentication();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,7 +93,7 @@ export function SessionSwitch() {
                     type: "admin",
                     name
                   });
-                  window.location.reload();
+                  navigate(href("/admin"));
                 };
                 return (
                   <FormGroup
@@ -122,7 +124,7 @@ export function SessionSwitch() {
                     userFiscalCode: fiscal_code,
                     merchantFiscalCode: undefined
                   });
-                  window.location.reload();
+                  navigate(href("/operator"));
                 };
                 return (
                   <FormGroup
