@@ -30,8 +30,9 @@ export const CreateEditDiscountForm = () => {
   });
   const profile = profileQuery.data;
 
-  const { checkStaticCode, checkLanding, checkBucket } =
-    getDiscountTypeChecks(profile);
+  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
+    profile?.salesChannel
+  );
 
   const createDiscountMutation =
     remoteData.Index.Discount.createDiscount.useMutation({
