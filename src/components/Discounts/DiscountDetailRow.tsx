@@ -136,7 +136,7 @@ const DiscountDetailRow = ({
     </div>
   );
 
-  const { checkLanding } = getDiscountTypeChecks(profile?.salesChannel);
+  const { checkLanding } = getDiscountTypeChecks(profile);
 
   return (
     <section className="px-6 py-4 bg-white">

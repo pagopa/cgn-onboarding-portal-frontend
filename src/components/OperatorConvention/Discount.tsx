@@ -16,7 +16,6 @@ import BucketCodeModal from "./BucketCodeModal";
 import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
 
-// eslint-disable-next-line complexity
 const Discount = ({
   discount,
   agreementId,
@@ -107,7 +106,7 @@ const Discount = ({
     // @ts-ignore
     profile.salesChannel?.discountCodeType === "Bucket";
 
-  const { checkLanding } = getDiscountTypeChecks(profile?.salesChannel);
+  const { checkLanding } = getDiscountTypeChecks(profile);
 
   return (
     <div>

@@ -48,9 +48,8 @@ const DiscountData = ({
     { enabled: isCompleted }
   );
 
-  const { checkStaticCode, checkLanding, checkBucket } = getDiscountTypeChecks(
-    profile?.salesChannel
-  );
+  const { checkStaticCode, checkLanding, checkBucket } =
+    getDiscountTypeChecks(profile);
 
   const createDiscountMutation =
     remoteData.Index.Discount.createDiscount.useMutation({

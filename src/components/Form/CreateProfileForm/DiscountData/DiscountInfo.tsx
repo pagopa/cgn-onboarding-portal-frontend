@@ -26,9 +26,8 @@ type Props = {
 };
 
 const DiscountInfo = ({ profile, formLens, index }: Props) => {
-  const { checkBucket, checkLanding, checkStaticCode } = getDiscountTypeChecks(
-    profile?.salesChannel
-  );
+  const { checkBucket, checkLanding, checkStaticCode } =
+    getDiscountTypeChecks(profile);
 
   const agreement = useSelector((state: RootState) => state.agreement.value);
 

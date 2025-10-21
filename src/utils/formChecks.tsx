@@ -1,27 +1,22 @@
-import { SalesChannel } from "../api/generated";
+import { BothChannels, SalesChannel } from "../api/generated";
 
-export function getDiscountTypeChecks(salesChannel: SalesChannel | undefined) {
+export function getDiscountTypeChecks(
+  profile: { salesChannel: SalesChannel } | undefined
+) {
+  const salesChannel = profile?.salesChannel as BothChannels | undefined;
+
   const onlineOrBoth =
     salesChannel?.channelType === "OnlineChannel" ||
     salesChannel?.channelType === "BothChannels";
 
   const checkStaticCode =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    salesChannel?.discountCodeType === "Static";
+    onlineOrBoth && salesChannel?.discountCodeType === "Static";
 
   const checkLanding =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    salesChannel?.discountCodeType === "LandingPage";
+    onlineOrBoth && salesChannel?.discountCodeType === "LandingPage";
 
   const checkBucket =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    salesChannel?.discountCodeType === "Bucket";
+    onlineOrBoth && salesChannel?.discountCodeType === "Bucket";
 
   return { checkStaticCode, checkLanding, checkBucket };
 }
