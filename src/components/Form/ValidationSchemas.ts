@@ -601,7 +601,8 @@ export const activationValidationSchema = z.object({
   organizationFiscalCode: z
     .string({ error: undefinedRequired })
     .trim()
-    .min(1, REQUIRED_FIELD),
+    .min(1, REQUIRED_FIELD)
+    .regex(new RegExp("^\\d{7}0-9{3}\\d1$"), "Formato errato"),
   organizationName: z
     .string({ error: undefinedRequired })
     .trim()
