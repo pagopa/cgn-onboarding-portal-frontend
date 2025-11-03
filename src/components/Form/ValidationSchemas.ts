@@ -25,6 +25,7 @@ const onlyAlphaRegex = /^[a-zA-Z\s]*$/;
 const onlyNumberRegex = /^\d*$/;
 const streetRegex = /^[A-Za-z0-9\s]*$/;
 const zipCodeRegex = /^\d*$/;
+const organizationFiscalCodeRegex = /^\d{7}\d{3}\d$/;
 const fiscalCodeRegex =
   /^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/i; // NOSONAR: This is a secure regex to get an italian fiscal code
 
@@ -602,7 +603,8 @@ export const activationValidationSchema = z.object({
     .string({ error: undefinedRequired })
     .trim()
     .min(1, REQUIRED_FIELD)
-    .regex(new RegExp("^\\d{7}0-9{3}\\d1$"), "Formato errato"),
+    // [IOBP-1917] check how this field must be validated - Regular expression and error message here are placeholders
+    .regex(organizationFiscalCodeRegex, "Formato errato"),
   organizationName: z
     .string({ error: undefinedRequired })
     .trim()
