@@ -1,13 +1,15 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import SmallSpinner from "../SmallSpinner/SmallSpinner";
 
 type Props = {
   isOpen: boolean;
   toggle(): void;
   unpublish(): void;
+  isLoading: boolean;
 };
 
-function UnpublishModal({ isOpen, toggle, unpublish }: Props) {
+function UnpublishModal({ isOpen, toggle, unpublish, isLoading }: Props) {
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Sospendi opportunità</ModalHeader>
@@ -25,7 +27,10 @@ function UnpublishModal({ isOpen, toggle, unpublish }: Props) {
           }}
           style={{ width: "100%" }}
         >
-          Torna in bozza
+          <div className="d-flex align-items-center">
+            {isLoading && <SmallSpinner />}
+            Torna in bozza
+          </div>
         </Button>{" "}
         <Button
           color="primary"

@@ -9,6 +9,7 @@ import { RootState } from "../../store/store";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
 import { useStandardForm } from "../../utils/useStandardForm";
+import SmallSpinner from "../SmallSpinner/SmallSpinner";
 import DiscountInfo from "./CreateProfileForm/DiscountData/DiscountInfo";
 import FormSection from "./FormSection";
 import { discountDataValidationSchema } from "./ValidationSchemas";
@@ -77,6 +78,11 @@ export const CreateEditDiscountForm = () => {
 
   const isDraft = discount?.state === "draft";
 
+  const isMutating =
+    form.formState.isSubmitting ||
+    updateDiscountMutation.isPending ||
+    createDiscountMutation.isPending;
+
   return (
     <form
       autoComplete="off"
@@ -114,13 +120,12 @@ export const CreateEditDiscountForm = () => {
             color="primary"
             outline={isDraft}
             tag="button"
-            disabled={
-              form.formState.isSubmitting ||
-              updateDiscountMutation.isPending ||
-              createDiscountMutation.isPending
-            }
+            disabled={isMutating}
           >
-            Salva
+            <div className="d-flex align-items-center">
+              {isMutating && <SmallSpinner />}
+              Salva
+            </div>
           </Button>
         </div>
       </FormSection>

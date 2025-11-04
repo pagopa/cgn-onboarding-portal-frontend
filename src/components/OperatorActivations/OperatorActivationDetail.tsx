@@ -8,6 +8,7 @@ import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { getEditOperatorRoute } from "../../navigation/utils";
+import SmallSpinner from "../SmallSpinner/SmallSpinner";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
@@ -87,7 +88,10 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           onClick={toggleModal}
           disabled={deleteActivationMutation.isPending}
         >
-          Rimuovi
+          <div className="d-flex align-items-center">
+            {deleteActivationMutation.isPending && <SmallSpinner />}
+            Rimuovi
+          </div>
         </Button>
         <Button
           className="me-4 btn-sm"

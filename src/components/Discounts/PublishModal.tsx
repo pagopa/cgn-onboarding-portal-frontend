@@ -1,15 +1,17 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Profile } from "../../api/generated";
+import SmallSpinner from "../SmallSpinner/SmallSpinner";
 
 type Props = {
   isOpen: boolean;
   toggle(): void;
   publish(): void;
   profile?: Profile;
+  isLoading: boolean;
 };
 
-function PublishModal({ isOpen, toggle, publish, profile }: Props) {
+function PublishModal({ isOpen, toggle, publish, profile, isLoading }: Props) {
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Pubblica opportunità</ModalHeader>
@@ -27,7 +29,10 @@ function PublishModal({ isOpen, toggle, publish, profile }: Props) {
           }}
           style={{ width: "100%" }}
         >
-          Sì, pubblica
+          <div className="d-flex align-items-center">
+            {isLoading && <SmallSpinner />}
+            Sì, pubblica
+          </div>
         </Button>{" "}
         <Button
           color="primary"

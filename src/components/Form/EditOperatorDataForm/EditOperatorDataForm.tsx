@@ -18,6 +18,7 @@ import {
   profileToProfileFormValues
 } from "../operatorDataUtils";
 import { useStandardForm } from "../../../utils/useStandardForm";
+import SmallSpinner from "../../SmallSpinner/SmallSpinner";
 
 export const EditOperatorForm = ({
   variant
@@ -149,7 +150,10 @@ function OperatorDataButtons({
         tag="button"
         disabled={!isEnabled}
       >
-        Salva
+        <div className="d-flex align-items-center">
+          {!isEnabled && <SmallSpinner />}
+          Salva
+        </div>
       </Button>
     </div>
   );

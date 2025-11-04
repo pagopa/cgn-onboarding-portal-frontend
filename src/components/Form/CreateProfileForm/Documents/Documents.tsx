@@ -9,6 +9,7 @@ import type { Documents } from "../../../../api/generated";
 import { EntityType } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
 import { createAgreement } from "../../../../store/agreement/agreementSlice";
+import SmallSpinner from "../../../SmallSpinner/SmallSpinner";
 import FileRow from "./FileRow";
 
 type Props = {
@@ -69,6 +70,8 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
     return <CenteredLoading />;
   }
 
+  const isMutating = requireApprovalMutation.isPending;
+
   return (
     <FormContainer className="mb-20">
       <div className="bg-white px-28 py-16">
@@ -128,8 +131,12 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
               color="primary"
               tag="button"
               onClick={requireApproval}
+              disabled={isMutating}
             >
-              Richiedi approvazione
+              <div className="d-flex align-items-center">
+                {isMutating && <SmallSpinner />}
+                Richiedi approvazione
+              </div>
             </Button>
           )}
         </div>

@@ -1,13 +1,15 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import SmallSpinner from "../SmallSpinner/SmallSpinner";
 
 type Props = {
   isOpen: boolean;
   toggle(): void;
   testRequest(): void;
+  isLoading: boolean;
 };
 
-const TestModal = ({ isOpen, toggle, testRequest }: Props) => (
+const TestModal = ({ isOpen, toggle, testRequest, isLoading }: Props) => (
   <Modal isOpen={isOpen} toggle={toggle} size="md">
     <ModalHeader toggle={toggle}>Richiedi test</ModalHeader>
     <ModalBody>
@@ -24,7 +26,10 @@ const TestModal = ({ isOpen, toggle, testRequest }: Props) => (
         }}
         style={{ width: "100%" }}
       >
-        Conferma richiesta
+        <div className="d-flex align-items-center">
+          {isLoading && <SmallSpinner />}
+          Conferma richiesta
+        </div>
       </Button>{" "}
       <Button
         color="primary"

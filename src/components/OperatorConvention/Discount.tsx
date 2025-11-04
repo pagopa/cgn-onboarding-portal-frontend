@@ -11,6 +11,7 @@ import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
+import SmallSpinner from "../SmallSpinner/SmallSpinner";
 import BucketCodeModal from "./BucketCodeModal";
 import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
@@ -57,7 +58,6 @@ const Discount = ({
       }
     });
   };
-
   const rejectDiscountMutation =
     remoteData.Backoffice.Discount.setDiscountTestFailed.useMutation({
       onSuccess() {
@@ -255,7 +255,10 @@ const Discount = ({
             onClick={suspendDiscount}
             disabled={!suspendMessage.length}
           >
-            Invia sospensione
+            <div className="d-flex align-items-center">
+              {suspendDiscountMutation.isPending && <SmallSpinner />}
+              Invia sospensione
+            </div>
           </Button>
         </div>
       ) : (
@@ -284,48 +287,75 @@ const Discount = ({
         </div>
       )}
       {rejectMode && (
-        <div className="mt-10">
-          <h6 className="text-gray">Aggiungi commento</h6>
-          <p>
-            Inserisci il motivo per cui il test è da considerarsi fallito. Il
-            commento sarà inviato all’operatore insieme all’esito.
-          </p>
-          <div className="mb-12">
-            <textarea
-              id="rejectMessage"
-              value={rejectMessage}
-              onChange={e => setRejectMessage(e.target.value)}
-              rows={5}
-              maxLength={250}
-              placeholder="Inserisci commento"
-              className="form-control"
-            />
-          </div>
-          <Button
-            color="primary"
-            outline
-            tag="button"
-            className="ms-4"
-            onClick={() => {
-              setRejectMode(false);
-              setRejectMessage("");
-            }}
-          >
-            Annulla
-          </Button>
-          <Button
-            color="primary"
-            tag="button"
-            className="ms-4"
-            onClick={rejectTest}
-            disabled={!rejectMessage.length}
-          >
-            Invia esito
-          </Button>
-        </div>
+        <Reject
+          rejectMessage={rejectMessage}
+          setRejectMessage={setRejectMessage}
+          setRejectMode={setRejectMode}
+          rejectTest={rejectTest}
+          isLoading={rejectDiscountMutation.isPending}
+        />
       )}
     </div>
   );
 };
+
+function Reject({
+  rejectMessage,
+  setRejectMessage,
+  setRejectMode,
+  rejectTest,
+  isLoading
+}: {
+  rejectMessage: string;
+  setRejectMessage: (value: string) => void;
+  setRejectMode: (value: boolean) => void;
+  rejectTest: () => void;
+  isLoading: boolean;
+}) {
+  return (
+    <div className="mt-10">
+      <h6 className="text-gray">Aggiungi commento</h6>
+      <p>
+        Inserisci il motivo per cui il test è da considerarsi fallito. Il
+        commento sarà inviato all’operatore insieme all’esito.
+      </p>
+      <div className="mb-12">
+        <textarea
+          id="rejectMessage"
+          value={rejectMessage}
+          onChange={e => setRejectMessage(e.target.value)}
+          rows={5}
+          maxLength={250}
+          placeholder="Inserisci commento"
+          className="form-control"
+        />
+      </div>
+      <Button
+        color="primary"
+        outline
+        tag="button"
+        className="ms-4"
+        onClick={() => {
+          setRejectMode(false);
+          setRejectMessage("");
+        }}
+      >
+        Annulla
+      </Button>
+      <Button
+        color="primary"
+        tag="button"
+        className="ms-4"
+        onClick={rejectTest}
+        disabled={!rejectMessage.length}
+      >
+        <div className="d-flex align-items-center">
+          {isLoading && <SmallSpinner />}
+          Invia esito
+        </div>
+      </Button>
+    </div>
+  );
+}
 
 export default Discount;

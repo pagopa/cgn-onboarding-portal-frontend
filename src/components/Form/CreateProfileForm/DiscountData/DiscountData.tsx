@@ -21,6 +21,7 @@ import {
 } from "../../discountFormUtils";
 import { useStandardForm } from "../../../../utils/useStandardForm";
 import { discountDataValidationSchema } from "../../ValidationSchemas";
+import SmallSpinner from "../../../SmallSpinner/SmallSpinner";
 
 type Props = {
   isCompleted: boolean;
@@ -204,7 +205,10 @@ const DiscountData = ({
                       tag="button"
                       disabled={isMutating}
                     >
-                      Continua
+                      <div className="d-flex align-items-center">
+                        {isMutating && <SmallSpinner />}
+                        Continua
+                      </div>
                     </Button>
                   </div>
                 </>

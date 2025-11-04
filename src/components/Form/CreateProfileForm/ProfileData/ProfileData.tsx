@@ -13,6 +13,7 @@ import {
 } from "../../operatorDataUtils";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
 import { useStandardForm } from "../../../../utils/useStandardForm";
+import SmallSpinner from "../../../SmallSpinner/SmallSpinner";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -153,6 +154,11 @@ const ProfileData = ({
               !createProfileMutation.isPending &&
               !form.formState.isSubmitting
             }
+            isLoading={
+              editProfileMutation.isPending ||
+              createProfileMutation.isPending ||
+              form.formState.isSubmitting
+            }
           />
         </SalesChannels>
       </FormContainer>
@@ -164,9 +170,11 @@ export default ProfileData;
 
 function OperatorDataButtons({
   isEnabled,
+  isLoading,
   onBack
 }: {
   onBack(): void;
+  isLoading: boolean;
   isEnabled: boolean;
 }) {
   return (
@@ -187,7 +195,10 @@ function OperatorDataButtons({
         tag="button"
         disabled={!isEnabled}
       >
-        Continua
+        <div className="d-flex align-items-center">
+          {isLoading && <SmallSpinner />}
+          Continua
+        </div>
       </Button>
     </div>
   );

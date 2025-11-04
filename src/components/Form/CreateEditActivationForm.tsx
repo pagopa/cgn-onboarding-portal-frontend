@@ -14,6 +14,7 @@ import {
   OrganizationWithReferents
 } from "../../api/generated_backoffice";
 import PlusCircleIcon from "../../assets/icons/plus-circle.svg?react";
+import SmallSpinner from "../SmallSpinner/SmallSpinner";
 import { activationValidationSchema } from "./ValidationSchemas";
 import FormSection from "./FormSection";
 import FormField from "./FormField";
@@ -101,6 +102,9 @@ const CreateEditActivationForm = () => {
   }
 
   const canChangeEntityType = !operatorFiscalCode;
+
+  const isMutating =
+    form.formState.isSubmitting || upsertActivationMutation.isPending;
 
   return (
     <form
@@ -264,12 +268,13 @@ const CreateEditActivationForm = () => {
             type="submit"
             className="px-14"
             color="primary"
-            disabled={
-              form.formState.isSubmitting || upsertActivationMutation.isPending
-            }
+            disabled={isMutating}
             tag="button"
           >
-            Salva
+            <div className="d-flex align-items-center">
+              {isMutating && <SmallSpinner />}
+              Salva
+            </div>
           </Button>
         </div>
       </FormSection>

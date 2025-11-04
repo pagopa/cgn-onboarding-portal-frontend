@@ -1,14 +1,17 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import SmallSpinner from "../SmallSpinner/SmallSpinner";
 
 export function DeleteModal({
   isOpen,
   onToggle,
-  onDelete
+  onDelete,
+  isLoading
 }: {
   isOpen: boolean;
   onToggle(): void;
   onDelete(): void;
+  isLoading: boolean;
 }) {
   return (
     <Modal isOpen={isOpen} toggle={onToggle}>
@@ -21,9 +24,13 @@ export function DeleteModal({
             onDelete();
             onToggle();
           }}
+          disabled={isLoading}
           style={{ width: "100%" }}
         >
-          Elimina
+          <div className="d-flex align-items-center">
+            {isLoading && <SmallSpinner />}
+            Elimina
+          </div>
         </Button>{" "}
         <Button
           color="primary"
