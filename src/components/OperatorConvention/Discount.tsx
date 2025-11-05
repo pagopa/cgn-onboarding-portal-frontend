@@ -281,7 +281,12 @@ const Discount = ({
           >
             Test fallito
           </Button>
-          <Button color="primary" outline onClick={approveTest}>
+          <Button
+            color="primary"
+            outline
+            onClick={approveTest}
+            disabled={rejectMode}
+          >
             Test riuscito
           </Button>
         </div>
