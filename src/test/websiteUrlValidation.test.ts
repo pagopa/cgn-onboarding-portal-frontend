@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import z from "zod/v4";
+import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SalesChannelValidationSchema } from "../components/Form/ValidationSchemas";
 

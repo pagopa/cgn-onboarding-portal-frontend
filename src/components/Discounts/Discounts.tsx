@@ -2,11 +2,9 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Column, useExpanded, useSortBy, useTable } from "react-table";
 import { Icon } from "design-react-kit";
-import { Link } from "react-router-dom";
+import { href, Link } from "react-router";
 import { compareAsc, format } from "date-fns";
-import omit from "lodash/omit";
 import { remoteData } from "../../api/common";
-import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { AgreementState, Discount, EntityType } from "../../api/generated";
@@ -216,8 +214,13 @@ const Discounts = () => {
         Header: () => null,
         id: "expander",
         Cell({ row }) {
+          // WARNING: this is a fix
+          // contrary to what typings suggest, row.getToggleRowExpandedProps() does have the onClick property at runtime
+          // we are removing it beacuse we want to trigger expand/collapse on a different interaction
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { onClick, ...props } = row.getToggleRowExpandedProps() as any;
           return (
-            <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
+            <span {...props}>
               {row.isExpanded ? (
                 <Icon icon="it-expand" color="primary" />
               ) : (
@@ -412,7 +415,10 @@ const Discounts = () => {
             </div>
           )}
           <div className="text-center">
-            <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
+            <Link
+              to={href("/operator/discount/create")}
+              className="btn btn-outline-primary"
+            >
               Nuova opportunità
             </Link>
           </div>

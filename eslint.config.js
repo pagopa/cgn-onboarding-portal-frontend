@@ -1,4 +1,5 @@
 import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
@@ -10,15 +11,17 @@ import importPlugin from "eslint-plugin-import";
 import functional from "eslint-plugin-functional";
 import stylistic from "@stylistic/eslint-plugin";
 
-export default tseslint.config(
+export default defineConfig(
   {
     ignores: [
+      "build",
       "dist",
       ".yarn",
       "src/vite-env.d.ts",
       "src/api/generated",
       "src/api/generated_backoffice",
-      "src/api/generated_public"
+      "src/api/generated_public",
+      ".react-router"
     ]
   },
   {
