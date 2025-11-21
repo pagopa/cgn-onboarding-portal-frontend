@@ -126,7 +126,7 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
         isVisible
         required
       >
-        <ProductCategories formLens={formLens} />
+        <ProductCategories index={index} formLens={formLens} />
       </FormField>
       <FormField
         htmlFor="discountConditions"
