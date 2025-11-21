@@ -1,7 +1,8 @@
-import { BothChannels, SalesChannel } from "../api/generated";
+import { BothChannels } from "../api/generated";
+import { ApprovedAgreementProfile } from "../api/generated_backoffice";
 
 export function getDiscountTypeChecks(
-  profile: { salesChannel: SalesChannel } | undefined
+  profile: Pick<ApprovedAgreementProfile, "salesChannel"> | undefined
 ) {
   const salesChannel = profile?.salesChannel as BothChannels | undefined;
 
