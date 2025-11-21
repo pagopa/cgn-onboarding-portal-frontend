@@ -2,15 +2,18 @@ import { useState } from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Agreement } from "../../api/generated_backoffice";
+import SmallSpinner from "../SmallSpinner/SmallSpinner";
 
 const AssignRequest = ({
   assignedToMe,
   original,
-  assignAgreements
+  assignAgreements,
+  isPending
 }: {
   assignedToMe: boolean;
   original: Agreement;
   assignAgreements(): void;
+  isPending: boolean;
 }) => {
   const [isOpen, toggleAssign] = useState(false);
 
@@ -28,7 +31,10 @@ const AssignRequest = ({
           className="ms-4"
           onClick={checkAssign()}
         >
-          Prendi in carico
+          <div className="d-flex align-items-center">
+            {isPending && <SmallSpinner />}
+            Prendi in carico
+          </div>
         </Button>
       )}
       <Modal isOpen={isOpen} toggle={() => toggleAssign(false)} size="md">

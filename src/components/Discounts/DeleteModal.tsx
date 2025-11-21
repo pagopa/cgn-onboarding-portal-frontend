@@ -6,12 +6,12 @@ export function DeleteModal({
   isOpen,
   onToggle,
   onDelete,
-  isLoading
+  isPending
 }: {
   isOpen: boolean;
   onToggle(): void;
   onDelete(): void;
-  isLoading: boolean;
+  isPending: boolean;
 }) {
   return (
     <Modal isOpen={isOpen} toggle={onToggle}>
@@ -24,11 +24,11 @@ export function DeleteModal({
             onDelete();
             onToggle();
           }}
-          disabled={isLoading}
+          disabled={isPending}
           style={{ width: "100%" }}
         >
           <div className="d-flex align-items-center justify-content-center">
-            {isLoading && <SmallSpinner />}
+            {isPending && <SmallSpinner />}
             Elimina
           </div>
         </Button>{" "}

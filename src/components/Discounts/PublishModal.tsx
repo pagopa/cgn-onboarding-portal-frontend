@@ -8,10 +8,10 @@ type Props = {
   toggle(): void;
   publish(): void;
   profile?: Profile;
-  isLoading: boolean;
+  isPending: boolean;
 };
 
-function PublishModal({ isOpen, toggle, publish, profile, isLoading }: Props) {
+function PublishModal({ isOpen, toggle, publish, profile, isPending }: Props) {
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Pubblica opportunità</ModalHeader>
@@ -30,7 +30,7 @@ function PublishModal({ isOpen, toggle, publish, profile, isLoading }: Props) {
           style={{ width: "100%" }}
         >
           <div className="d-flex align-items-center justify-content-center">
-            {isLoading && <SmallSpinner />}
+            {isPending && <SmallSpinner />}
             Sì, pubblica
           </div>
         </Button>{" "}

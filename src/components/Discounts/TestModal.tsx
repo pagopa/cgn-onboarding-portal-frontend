@@ -6,10 +6,10 @@ type Props = {
   isOpen: boolean;
   toggle(): void;
   testRequest(): void;
-  isLoading: boolean;
+  isPending: boolean;
 };
 
-const TestModal = ({ isOpen, toggle, testRequest, isLoading }: Props) => (
+const TestModal = ({ isOpen, toggle, testRequest, isPending }: Props) => (
   <Modal isOpen={isOpen} toggle={toggle} size="md">
     <ModalHeader toggle={toggle}>Richiedi test</ModalHeader>
     <ModalBody>
@@ -27,7 +27,7 @@ const TestModal = ({ isOpen, toggle, testRequest, isLoading }: Props) => (
         style={{ width: "100%" }}
       >
         <div className="d-flex align-items-center justify-content-center">
-          {isLoading && <SmallSpinner />}
+          {isPending && <SmallSpinner />}
           Conferma richiesta
         </div>
       </Button>{" "}

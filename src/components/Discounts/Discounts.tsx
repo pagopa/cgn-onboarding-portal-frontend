@@ -251,7 +251,7 @@ const Discounts = () => {
         <PublishModal
           isOpen={publishModal}
           toggle={closeActionModal}
-          isLoading={publishDiscountMutation.isPending}
+          isPending={publishDiscountMutation.isPending}
           publish={() => {
             if (selectedDiscountAction) {
               publishDiscount(selectedDiscountAction.discountId);
@@ -262,7 +262,7 @@ const Discounts = () => {
         <UnpublishModal
           isOpen={unpublishModal}
           toggle={closeActionModal}
-          isLoading={unpublishDiscountMutation.isPending}
+          isPending={unpublishDiscountMutation.isPending}
           unpublish={() => {
             if (selectedDiscountAction) {
               unpublishDiscount(selectedDiscountAction.discountId);
@@ -272,7 +272,7 @@ const Discounts = () => {
         <TestModal
           isOpen={testModal}
           toggle={closeActionModal}
-          isLoading={testDiscountMutation.isPending}
+          isPending={testDiscountMutation.isPending}
           testRequest={() => {
             if (selectedDiscountAction) {
               testDiscount(selectedDiscountAction.discountId);
@@ -282,7 +282,7 @@ const Discounts = () => {
         <DeleteModal
           isOpen={deleteModal}
           onToggle={closeActionModal}
-          isLoading={deleteDiscountMutation.isPending}
+          isPending={deleteDiscountMutation.isPending}
           onDelete={() => {
             if (selectedDiscountAction) {
               deleteDiscount(selectedDiscountAction.discountId);

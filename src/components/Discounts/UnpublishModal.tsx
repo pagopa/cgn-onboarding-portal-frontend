@@ -6,10 +6,10 @@ type Props = {
   isOpen: boolean;
   toggle(): void;
   unpublish(): void;
-  isLoading: boolean;
+  isPending: boolean;
 };
 
-function UnpublishModal({ isOpen, toggle, unpublish, isLoading }: Props) {
+function UnpublishModal({ isOpen, toggle, unpublish, isPending }: Props) {
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="md">
       <ModalHeader toggle={toggle}>Sospendi opportunità</ModalHeader>
@@ -28,7 +28,7 @@ function UnpublishModal({ isOpen, toggle, unpublish, isLoading }: Props) {
           style={{ width: "100%" }}
         >
           <div className="d-flex align-items-center justify-content-center">
-            {isLoading && <SmallSpinner />}
+            {isPending && <SmallSpinner />}
             Torna in bozza
           </div>
         </Button>{" "}
