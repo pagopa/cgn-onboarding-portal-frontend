@@ -29,7 +29,7 @@ function PublishModal({ isOpen, toggle, publish, profile, isLoading }: Props) {
           }}
           style={{ width: "100%" }}
         >
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center justify-content-center">
             {isLoading && <SmallSpinner />}
             Sì, pubblica
           </div>

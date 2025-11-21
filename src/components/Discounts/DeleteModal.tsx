@@ -27,7 +27,7 @@ export function DeleteModal({
           disabled={isLoading}
           style={{ width: "100%" }}
         >
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center justify-content-center">
             {isLoading && <SmallSpinner />}
             Elimina
           </div>

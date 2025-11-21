@@ -27,7 +27,7 @@ function UnpublishModal({ isOpen, toggle, unpublish, isLoading }: Props) {
           }}
           style={{ width: "100%" }}
         >
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center justify-content-center">
             {isLoading && <SmallSpinner />}
             Torna in bozza
           </div>

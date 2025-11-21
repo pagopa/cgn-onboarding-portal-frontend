@@ -26,7 +26,7 @@ const TestModal = ({ isOpen, toggle, testRequest, isLoading }: Props) => (
         }}
         style={{ width: "100%" }}
       >
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center justify-content-center">
           {isLoading && <SmallSpinner />}
           Conferma richiesta
         </div>
