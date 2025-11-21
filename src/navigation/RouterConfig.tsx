@@ -144,7 +144,6 @@ const RouterConfig = () => {
           <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
           <Route exact path={HELP} component={Help} />
           <Route exact path={DASHBOARD} component={Dashboard} />
-          <Route exact path={CREATE_PROFILE} component={CreateProfile} />
           <Route exact path={EDIT_PROFILE} component={EditProfile} />
           <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
           <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />

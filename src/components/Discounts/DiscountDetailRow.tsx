@@ -20,6 +20,7 @@ import Callout from "../Callout/Callout";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
 import { getEditDiscountRoute } from "../../navigation/utils";
+import { getDiscountTypeChecks } from "../../utils/formChecks";
 import ImportationStatus from "./ImportationStatus";
 import { DiscountComponent } from "./getDiscountComponent";
 
@@ -135,6 +136,8 @@ const DiscountDetailRow = ({
     </div>
   );
 
+  const { checkLanding } = getDiscountTypeChecks(profile);
+
   return (
     <section className="px-6 py-4 bg-white">
       {row.original.state === "test_failed" && (
@@ -228,7 +231,7 @@ const DiscountDetailRow = ({
               value_en={row.original.condition_en}
             />
           )}
-          {row.original.discountUrl && (
+          {row.original.discountUrl && !checkLanding && (
             <ProfileItem
               label="Link all'opportunità"
               value={

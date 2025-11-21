@@ -12,9 +12,104 @@ import {
   makeProductCategoriesString
 } from "../../utils/strings";
 import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import { getDiscountTypeChecks } from "../../utils/formChecks";
 import BucketCodeModal from "./BucketCodeModal";
 import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
+
+function Reject({
+  rejectMessage,
+  setRejectMessage,
+  setRejectMode,
+  rejectTest,
+  isLoading
+}: {
+  rejectMessage: string;
+  setRejectMessage: (value: string) => void;
+  setRejectMode: (value: boolean) => void;
+  rejectTest: () => void;
+  isLoading: boolean;
+}) {
+  return (
+    <div className="mt-10">
+      <h6 className="text-gray">Aggiungi commento</h6>
+      <p>
+        Inserisci il motivo per cui il test è da considerarsi fallito. Il
+        commento sarà inviato all’operatore insieme all’esito.
+      </p>
+      <div className="mb-12">
+        <textarea
+          id="rejectMessage"
+          value={rejectMessage}
+          onChange={e => setRejectMessage(e.target.value)}
+          rows={5}
+          maxLength={250}
+          placeholder="Inserisci commento"
+          className="form-control"
+        />
+      </div>
+      <Button
+        color="primary"
+        outline
+        tag="button"
+        className="ms-4"
+        onClick={() => {
+          setRejectMode(false);
+          setRejectMessage("");
+        }}
+      >
+        Annulla
+      </Button>
+      <Button
+        color="primary"
+        tag="button"
+        className="ms-4"
+        onClick={rejectTest}
+        disabled={!rejectMessage.length}
+      >
+        <div className="d-flex align-items-center">
+          {isLoading && <SmallSpinner />}
+          Invia esito
+        </div>
+      </Button>
+    </div>
+  );
+}
+
+function TestResultButtons({
+  discount,
+  setRejectMode,
+  approveTest,
+  rejectMode
+}: {
+  discount: ApprovedAgreementDiscount;
+  setRejectMode: (value: boolean) => void;
+  approveTest: () => void;
+  rejectMode: boolean;
+}) {
+  return (
+    discount.state === "test_pending" && (
+      <div className="mt-5 d-flex">
+        <Button
+          color="danger"
+          className="me-2"
+          outline
+          onClick={() => setRejectMode(true)}
+        >
+          Test fallito
+        </Button>
+        <Button
+          color="primary"
+          outline
+          onClick={approveTest}
+          disabled={rejectMode}
+        >
+          Test riuscito
+        </Button>
+      </div>
+    )
+  );
+}
 
 const Discount = ({
   discount,
@@ -105,6 +200,8 @@ const Discount = ({
     // @ts-ignore
     profile.salesChannel?.discountCodeType === "Bucket";
 
+  const { checkLanding } = getDiscountTypeChecks(profile);
+
   return (
     <div>
       <h5 className="mb-7 d-flex align-items-center fw-bold">Opportunità</h5>
@@ -136,7 +233,7 @@ const Discount = ({
         </div>
       </div>
       <Item label="Condizioni dell'opportunità" value={discount.condition} />
-      {discount.discountUrl && (
+      {discount.discountUrl && !checkLanding && (
         <Item
           label="Link all'opportunità"
           value={
@@ -271,26 +368,12 @@ const Discount = ({
           </div>
         )
       )}
-      {discount.state === "test_pending" && (
-        <div className="mt-5 d-flex">
-          <Button
-            color="danger"
-            className="me-2"
-            outline
-            onClick={() => setRejectMode(true)}
-          >
-            Test fallito
-          </Button>
-          <Button
-            color="primary"
-            outline
-            onClick={approveTest}
-            disabled={rejectMode}
-          >
-            Test riuscito
-          </Button>
-        </div>
-      )}
+      <TestResultButtons
+        discount={discount}
+        setRejectMode={setRejectMode}
+        approveTest={approveTest}
+        rejectMode={rejectMode}
+      />
       {rejectMode && (
         <Reject
           rejectMessage={rejectMessage}
@@ -303,64 +386,5 @@ const Discount = ({
     </div>
   );
 };
-
-function Reject({
-  rejectMessage,
-  setRejectMessage,
-  setRejectMode,
-  rejectTest,
-  isLoading
-}: {
-  rejectMessage: string;
-  setRejectMessage: (value: string) => void;
-  setRejectMode: (value: boolean) => void;
-  rejectTest: () => void;
-  isLoading: boolean;
-}) {
-  return (
-    <div className="mt-10">
-      <h6 className="text-gray">Aggiungi commento</h6>
-      <p>
-        Inserisci il motivo per cui il test è da considerarsi fallito. Il
-        commento sarà inviato all’operatore insieme all’esito.
-      </p>
-      <div className="mb-12">
-        <textarea
-          id="rejectMessage"
-          value={rejectMessage}
-          onChange={e => setRejectMessage(e.target.value)}
-          rows={5}
-          maxLength={250}
-          placeholder="Inserisci commento"
-          className="form-control"
-        />
-      </div>
-      <Button
-        color="primary"
-        outline
-        tag="button"
-        className="ms-4"
-        onClick={() => {
-          setRejectMode(false);
-          setRejectMessage("");
-        }}
-      >
-        Annulla
-      </Button>
-      <Button
-        color="primary"
-        tag="button"
-        className="ms-4"
-        onClick={rejectTest}
-        disabled={!rejectMessage.length}
-      >
-        <div className="d-flex align-items-center">
-          {isLoading && <SmallSpinner />}
-          Invia esito
-        </div>
-      </Button>
-    </div>
-  );
-}
 
 export default Discount;
