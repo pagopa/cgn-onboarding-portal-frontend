@@ -11,6 +11,7 @@ import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
+import { getDiscountTypeChecks } from "../../utils/formChecks";
 import BucketCodeModal from "./BucketCodeModal";
 import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
@@ -105,6 +106,8 @@ const Discount = ({
     // @ts-ignore
     profile.salesChannel?.discountCodeType === "Bucket";
 
+  const { checkLanding } = getDiscountTypeChecks(profile);
+
   return (
     <div>
       <h5 className="mb-7 d-flex align-items-center fw-bold">Opportunità</h5>
@@ -136,7 +139,7 @@ const Discount = ({
         </div>
       </div>
       <Item label="Condizioni dell'opportunità" value={discount.condition} />
-      {discount.discountUrl && (
+      {discount.discountUrl && !checkLanding && (
         <Item
           label="Link all'opportunità"
           value={

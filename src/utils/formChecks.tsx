@@ -1,27 +1,23 @@
-import { Profile } from "../api/generated";
+import { BothChannels } from "../api/generated";
+import { ApprovedAgreementProfile } from "../api/generated_backoffice";
 
-export function getDiscountTypeChecks(profile: Profile | undefined) {
+export function getDiscountTypeChecks(
+  profile: Pick<ApprovedAgreementProfile, "salesChannel"> | undefined
+) {
+  const salesChannel = profile?.salesChannel as BothChannels | undefined;
+
   const onlineOrBoth =
-    profile?.salesChannel?.channelType === "OnlineChannel" ||
-    profile?.salesChannel?.channelType === "BothChannels";
+    salesChannel?.channelType === "OnlineChannel" ||
+    salesChannel?.channelType === "BothChannels";
 
   const checkStaticCode =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Static";
+    onlineOrBoth && salesChannel?.discountCodeType === "Static";
 
   const checkLanding =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "LandingPage";
+    onlineOrBoth && salesChannel?.discountCodeType === "LandingPage";
 
   const checkBucket =
-    onlineOrBoth &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    profile?.salesChannel?.discountCodeType === "Bucket";
+    onlineOrBoth && salesChannel?.discountCodeType === "Bucket";
 
   return { checkStaticCode, checkLanding, checkBucket };
 }
