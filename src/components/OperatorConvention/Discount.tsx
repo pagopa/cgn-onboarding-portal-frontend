@@ -17,19 +17,35 @@ import BucketCodeModal from "./BucketCodeModal";
 import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
 
+type DiscountResultButtonsProps = {
+  discount: ApprovedAgreementDiscount;
+  setRejectMode: (value: boolean) => void;
+  approveTest: () => void;
+  rejectMode: boolean;
+};
+
+type RejectProps = {
+  rejectMessage: string;
+  setRejectMessage: (value: string) => void;
+  setRejectMode: (value: boolean) => void;
+  rejectTest: () => void;
+  isLoading: boolean;
+};
+
+type Props = {
+  discount: ApprovedAgreementDiscount;
+  agreementId: string;
+  profile: ApprovedAgreementProfile;
+  reloadDetails: () => void;
+};
+
 function Reject({
   rejectMessage,
   setRejectMessage,
   setRejectMode,
   rejectTest,
   isLoading
-}: {
-  rejectMessage: string;
-  setRejectMessage: (value: string) => void;
-  setRejectMode: (value: boolean) => void;
-  rejectTest: () => void;
-  isLoading: boolean;
-}) {
+}: RejectProps) {
   return (
     <div className="mt-10">
       <h6 className="text-gray">Aggiungi commento</h6>
@@ -76,17 +92,12 @@ function Reject({
   );
 }
 
-function TestResultButtons({
+function DiscountResultButtons({
   discount,
   setRejectMode,
   approveTest,
   rejectMode
-}: {
-  discount: ApprovedAgreementDiscount;
-  setRejectMode: (value: boolean) => void;
-  approveTest: () => void;
-  rejectMode: boolean;
-}) {
+}: DiscountResultButtonsProps) {
   return (
     discount.state === "test_pending" && (
       <div className="mt-5 d-flex">
@@ -111,17 +122,7 @@ function TestResultButtons({
   );
 }
 
-const Discount = ({
-  discount,
-  agreementId,
-  profile,
-  reloadDetails
-}: {
-  discount: ApprovedAgreementDiscount;
-  agreementId: string;
-  profile: ApprovedAgreementProfile;
-  reloadDetails: () => void;
-}) => {
+const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
   const [suspendMode, setSuspendMode] = useState(false);
   const [suspendMessage, setSuspendMessage] = useState("");
   const [rejectMode, setRejectMode] = useState(false);
@@ -368,7 +369,7 @@ const Discount = ({
           </div>
         )
       )}
-      <TestResultButtons
+      <DiscountResultButtons
         discount={discount}
         setRejectMode={setRejectMode}
         approveTest={approveTest}

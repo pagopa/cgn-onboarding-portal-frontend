@@ -4,17 +4,19 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Agreement } from "../../api/generated_backoffice";
 import SmallSpinner from "../SmallSpinner/SmallSpinner";
 
+type Props = {
+  assignedToMe: boolean;
+  original: Agreement;
+  assignAgreements(): void;
+  isPending: boolean;
+};
+
 const AssignRequest = ({
   assignedToMe,
   original,
   assignAgreements,
   isPending
-}: {
-  assignedToMe: boolean;
-  original: Agreement;
-  assignAgreements(): void;
-  isPending: boolean;
-}) => {
+}: Props) => {
   const [isOpen, toggleAssign] = useState(false);
 
   const checkAssign = () =>

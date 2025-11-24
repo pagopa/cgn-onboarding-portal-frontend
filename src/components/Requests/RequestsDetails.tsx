@@ -12,19 +12,37 @@ import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
 
+type RejectButtonsProps = {
+  rejectMessage: string;
+  setRejectMessage: (value: string) => void;
+  setRejectMode: (value: boolean) => void;
+  rejectAgreement: () => void;
+  isPending: boolean;
+};
+
+type ActionButtonsProps = {
+  assignedToMe: boolean;
+  original: NormalizedBackofficeAgreement;
+  checkAllDocs: boolean;
+  approveIsPending: boolean;
+  assignIsPending: boolean;
+  assignAgreements: () => void;
+  approveAgreement: () => void;
+  setRejectMode: (value: boolean) => void;
+};
+
+type Props = {
+  original: NormalizedBackofficeAgreement;
+  updateList: () => void;
+};
+
 function RejectButtons({
   rejectMessage,
   setRejectMessage,
   setRejectMode,
   rejectAgreement,
   isPending
-}: {
-  rejectMessage: string;
-  setRejectMessage: (value: string) => void;
-  setRejectMode: (value: boolean) => void;
-  rejectAgreement: () => void;
-  isPending: boolean;
-}) {
+}: RejectButtonsProps) {
   return (
     <div className="mt-10">
       <h6 className="text-gray">Aggiungi una nota</h6>
@@ -81,16 +99,7 @@ function ActionButtons({
   approveAgreement,
   assignAgreements,
   setRejectMode
-}: {
-  assignedToMe: boolean;
-  original: NormalizedBackofficeAgreement;
-  checkAllDocs: boolean;
-  approveIsPending: boolean;
-  assignIsPending: boolean;
-  assignAgreements: () => void;
-  approveAgreement: () => void;
-  setRejectMode: (value: boolean) => void;
-}) {
+}: ActionButtonsProps) {
   return (
     <div className="mt-10">
       <Button
@@ -129,13 +138,7 @@ function ActionButtons({
   );
 }
 
-const RequestsDetails = ({
-  original,
-  updateList
-}: {
-  original: NormalizedBackofficeAgreement;
-  updateList: () => void;
-}) => {
+const RequestsDetails = ({ original, updateList }: Props) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [checkAllDocs, setCheckAllDocs] = useState(false);

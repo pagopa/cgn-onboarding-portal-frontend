@@ -1,31 +1,27 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Profile } from "../../api/generated";
 import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import { DiscountModalProps } from "../../types/discounts";
 
-type Props = {
-  isOpen: boolean;
-  toggle(): void;
-  publish(): void;
-  profile?: Profile;
-  isPending: boolean;
-};
-
-function PublishModal({ isOpen, toggle, publish, profile, isPending }: Props) {
+function PublishModal({
+  isOpen,
+  onToggle,
+  actionRequest,
+  isPending
+}: DiscountModalProps) {
   return (
-    <Modal isOpen={isOpen} toggle={toggle} size="md">
-      <ModalHeader toggle={toggle}>Pubblica opportunità</ModalHeader>
+    <Modal isOpen={isOpen} toggle={onToggle} size="md">
+      <ModalHeader toggle={onToggle}>Pubblica opportunità</ModalHeader>
       <ModalBody>
-        {profile && profile.salesChannel.channelType !== "OfflineChannel"
-          ? "Se pubblichi, l’opportunità diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."
-          : "Hai informato il personale addetto alle casse o alla relazione col pubblico? Se pubblichi, l’opportunità diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."}
+        Se pubblichi, l’opportunità diventerà visibile su App IO dai beneficiari
+        di Carta Giovani Nazionale.
       </ModalBody>
       <ModalFooter className="d-flex flex-column">
         <Button
           color="primary"
           onClick={() => {
-            toggle();
-            publish();
+            onToggle();
+            actionRequest();
           }}
           style={{ width: "100%" }}
         >
@@ -37,7 +33,7 @@ function PublishModal({ isOpen, toggle, publish, profile, isPending }: Props) {
         <Button
           color="primary"
           outline
-          onClick={toggle}
+          onClick={onToggle}
           style={{ width: "100%" }}
         >
           No, torna indietro

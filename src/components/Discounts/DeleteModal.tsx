@@ -1,18 +1,14 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import { DiscountModalProps } from "../../types/discounts";
 
 export function DeleteModal({
   isOpen,
   onToggle,
-  onDelete,
+  actionRequest,
   isPending
-}: {
-  isOpen: boolean;
-  onToggle(): void;
-  onDelete(): void;
-  isPending: boolean;
-}) {
+}: DiscountModalProps) {
   return (
     <Modal isOpen={isOpen} toggle={onToggle}>
       <ModalHeader toggle={onToggle}>Elimina opportunità</ModalHeader>
@@ -21,7 +17,7 @@ export function DeleteModal({
         <Button
           color="primary"
           onClick={() => {
-            onDelete();
+            actionRequest();
             onToggle();
           }}
           disabled={isPending}

@@ -1,17 +1,16 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import { DiscountModalProps } from "../../types/discounts";
 
-type Props = {
-  isOpen: boolean;
-  toggle(): void;
-  testRequest(): void;
-  isPending: boolean;
-};
-
-const TestModal = ({ isOpen, toggle, testRequest, isPending }: Props) => (
-  <Modal isOpen={isOpen} toggle={toggle} size="md">
-    <ModalHeader toggle={toggle}>Richiedi test</ModalHeader>
+const TestModal = ({
+  isOpen,
+  onToggle,
+  actionRequest,
+  isPending
+}: DiscountModalProps) => (
+  <Modal isOpen={isOpen} toggle={onToggle} size="md">
+    <ModalHeader toggle={onToggle}>Richiedi test</ModalHeader>
     <ModalBody>
       Se confermi, dichiari di avere concluso le implementazioni tecniche
       necessarie e il team di CGN procederà con un test funzionale secondo la
@@ -21,8 +20,8 @@ const TestModal = ({ isOpen, toggle, testRequest, isPending }: Props) => (
       <Button
         color="primary"
         onClick={() => {
-          toggle();
-          testRequest();
+          onToggle();
+          actionRequest();
         }}
         style={{ width: "100%" }}
       >
@@ -34,7 +33,7 @@ const TestModal = ({ isOpen, toggle, testRequest, isPending }: Props) => (
       <Button
         color="primary"
         outline
-        onClick={toggle}
+        onClick={onToggle}
         style={{ width: "100%" }}
       >
         Annulla

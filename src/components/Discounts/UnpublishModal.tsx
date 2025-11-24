@@ -1,18 +1,17 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import { DiscountModalProps } from "../../types/discounts";
 
-type Props = {
-  isOpen: boolean;
-  toggle(): void;
-  unpublish(): void;
-  isPending: boolean;
-};
-
-function UnpublishModal({ isOpen, toggle, unpublish, isPending }: Props) {
+function UnpublishModal({
+  isOpen,
+  onToggle,
+  actionRequest,
+  isPending
+}: DiscountModalProps) {
   return (
-    <Modal isOpen={isOpen} toggle={toggle} size="md">
-      <ModalHeader toggle={toggle}>Sospendi opportunità</ModalHeader>
+    <Modal isOpen={isOpen} toggle={onToggle} size="md">
+      <ModalHeader toggle={onToggle}>Sospendi opportunità</ModalHeader>
       <ModalBody>
         Sei sicuro di voler riportare in bozza questa opportunità? Se non hai
         altre opportunità pubblicate in questo momento, non sarai più visibile
@@ -22,8 +21,8 @@ function UnpublishModal({ isOpen, toggle, unpublish, isPending }: Props) {
         <Button
           color="danger"
           onClick={() => {
-            toggle();
-            unpublish();
+            onToggle();
+            actionRequest();
           }}
           style={{ width: "100%" }}
         >
@@ -35,7 +34,7 @@ function UnpublishModal({ isOpen, toggle, unpublish, isPending }: Props) {
         <Button
           color="primary"
           outline
-          onClick={toggle}
+          onClick={onToggle}
           style={{ width: "100%" }}
         >
           Annulla
