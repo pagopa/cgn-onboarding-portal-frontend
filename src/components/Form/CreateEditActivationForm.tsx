@@ -3,6 +3,7 @@ import z from "zod/v4";
 import { useMemo } from "react";
 import { Icon } from "design-react-kit";
 import { useFieldArray } from "@hookform/lenses/rhf";
+import { Button } from "design-react-kit";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
 import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
@@ -14,7 +15,7 @@ import {
   OrganizationWithReferents
 } from "../../api/generated_backoffice";
 import PlusCircleIcon from "../../assets/icons/plus-circle.svg?react";
-import Button from "../Button/Button";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import { activationValidationSchema } from "./ValidationSchemas";
 import FormSection from "./FormSection";
 import FormField from "./FormField";
@@ -236,6 +237,7 @@ const CreateEditActivationForm = () => {
                     <Button
                       className="me-4"
                       color="link"
+                      tag="button"
                       onClick={() => referentsArray.remove(i)}
                     >
                       <Icon icon="it-delete" size="sm" color="danger" />
@@ -258,18 +260,19 @@ const CreateEditActivationForm = () => {
             className="px-14"
             outline
             color="primary"
+            tag="button"
             onClick={() => history.push(ADMIN_PANEL_ACCESSI)}
           >
             Indietro
           </Button>
-          <Button
+          <AsyncButton
             type="submit"
             className="px-14"
             color="primary"
             isPending={isMutating}
           >
             Salva
-          </Button>
+          </AsyncButton>
         </div>
       </FormSection>
     </form>

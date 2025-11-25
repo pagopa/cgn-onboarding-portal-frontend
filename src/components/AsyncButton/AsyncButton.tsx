@@ -7,7 +7,7 @@ type Props = PropsWithChildren & {
   fullwidth?: boolean;
 } & ButtonProps;
 
-const Button = ({
+const AsyncButton = ({
   children,
   isPending,
   fullwidth,
@@ -32,4 +32,4 @@ const Button = ({
   );
 };
 
-export default Button;
+export default AsyncButton;

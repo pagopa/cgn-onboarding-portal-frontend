@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { useState } from "react";
+import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import {
   ApprovedAgreementDiscount,
@@ -11,7 +12,7 @@ import {
   makeProductCategoriesString
 } from "../../utils/strings";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
-import Button from "../Button/Button";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import BucketCodeModal from "./BucketCodeModal";
 import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
@@ -68,6 +69,7 @@ function Reject({
         color="primary"
         outline
         className="ms-4"
+        tag="button"
         onClick={() => {
           setRejectMode(false);
           setRejectMessage("");
@@ -75,7 +77,7 @@ function Reject({
       >
         Annulla
       </Button>
-      <Button
+      <AsyncButton
         color="primary"
         className="ms-4"
         onClick={rejectTest}
@@ -83,7 +85,7 @@ function Reject({
         isPending={isPending}
       >
         Invia esito
-      </Button>
+      </AsyncButton>
     </div>
   );
 }
@@ -102,11 +104,12 @@ function DiscountResultButtons({
           color="danger"
           className="me-2"
           outline
+          tag="button"
           onClick={() => setRejectMode(true)}
         >
           Test fallito
         </Button>
-        <Button
+        <AsyncButton
           color="primary"
           outline
           onClick={approveTest}
@@ -114,7 +117,7 @@ function DiscountResultButtons({
           isPending={approveDiscountIsPending}
         >
           Test riuscito
-        </Button>
+        </AsyncButton>
       </div>
     )
   );
@@ -282,7 +285,12 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
           <Item
             label="Lista di codici statici"
             value={
-              <Button color="primary" size="xs" onClick={toggleBucketModal}>
+              <Button
+                tag="button"
+                color="primary"
+                size="xs"
+                onClick={toggleBucketModal}
+              >
                 Mostra Codice
               </Button>
             }
@@ -336,6 +344,7 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
             color="primary"
             outline
             className="ms-4"
+            tag="button"
             onClick={() => {
               setSuspendMode(false);
               setSuspendMessage("");
@@ -343,7 +352,7 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
           >
             Annulla
           </Button>
-          <Button
+          <AsyncButton
             color="primary"
             className="ms-4"
             onClick={suspendDiscount}
@@ -351,13 +360,17 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
             disabled={!suspendMessage.length}
           >
             Invia sospensione
-          </Button>
+          </AsyncButton>
         </div>
       ) : (
         !isSuspended &&
         discount.state === "published" && (
           <div className="mt-5">
-            <Button color="primary" onClick={() => setSuspendMode(true)}>
+            <Button
+              tag="button"
+              color="primary"
+              onClick={() => setSuspendMode(true)}
+            >
               Sospendi opportunità
             </Button>
           </div>

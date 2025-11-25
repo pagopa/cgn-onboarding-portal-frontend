@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { Button } from "design-react-kit";
 import { remoteData } from "../../../../api/common";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
@@ -12,7 +13,7 @@ import {
 } from "../../operatorDataUtils";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
 import { useStandardForm } from "../../../../utils/useStandardForm";
-import Button from "../../../Button/Button";
+import AsyncButton from "../../../AsyncButton/AsyncButton";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -39,10 +40,16 @@ function OperatorDataButtons({
 }: OperatorDataButtonsProps) {
   return (
     <div className="d-flex mt-10 gap-4 flex-wrap">
-      <Button className="px-14" outline color="primary" onClick={onBack}>
+      <Button
+        tag="button"
+        className="px-14"
+        outline
+        color="primary"
+        onClick={onBack}
+      >
         Indietro
       </Button>
-      <Button
+      <AsyncButton
         type="submit"
         className="px-14"
         color="primary"
@@ -50,7 +57,7 @@ function OperatorDataButtons({
         isPending={isPending}
       >
         Continua
-      </Button>
+      </AsyncButton>
     </div>
   );
 }

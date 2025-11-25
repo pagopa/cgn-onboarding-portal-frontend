@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import { useTooltip } from "../../context/tooltip";
 import { DASHBOARD } from "../../navigation/routes";
@@ -8,7 +9,7 @@ import { RootState } from "../../store/store";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
 import { useStandardForm } from "../../utils/useStandardForm";
-import Button from "../Button/Button";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import DiscountInfo from "./CreateProfileForm/DiscountData/DiscountInfo";
 import FormSection from "./FormSection";
 import { discountDataValidationSchema } from "./ValidationSchemas";
@@ -107,12 +108,13 @@ export const CreateEditDiscountForm = () => {
           <Button
             className="px-14"
             outline={!isDraft}
+            tag="button"
             color={isDraft ? "secondary" : "primary"}
             onClick={() => history.push(DASHBOARD)}
           >
             {isDraft ? "Annulla" : "Indietro"}
           </Button>
-          <Button
+          <AsyncButton
             type="submit"
             className="px-14"
             color="primary"
@@ -120,7 +122,7 @@ export const CreateEditDiscountForm = () => {
             isPending={isMutating}
           >
             Salva
-          </Button>
+          </AsyncButton>
         </div>
       </FormSection>
     </form>

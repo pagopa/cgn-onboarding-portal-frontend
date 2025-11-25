@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import { useTooltip, Severity } from "../../context/tooltip";
 import { AgreementState, EntityType } from "../../api/generated_backoffice";
@@ -6,7 +7,7 @@ import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
-import Button from "../Button/Button";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -64,6 +65,7 @@ function RejectButtons({
       <Button
         color="primary"
         outline
+        tag="button"
         className="ms-4"
         onClick={() => {
           setRejectMode(false);
@@ -72,7 +74,7 @@ function RejectButtons({
       >
         Annulla
       </Button>
-      <Button
+      <AsyncButton
         color="primary"
         className="ms-4"
         onClick={rejectAgreement}
@@ -80,7 +82,7 @@ function RejectButtons({
         isPending={isPending}
       >
         Invia rifiuto
-      </Button>
+      </AsyncButton>
     </div>
   );
 }
@@ -100,13 +102,14 @@ function ActionButtons({
       <Button
         color="primary"
         outline
+        tag="button"
         className="ms-4"
         onClick={() => setRejectMode(true)}
         disabled={!assignedToMe}
       >
         <div className="d-flex align-items-center">Rifiuta</div>
       </Button>
-      <Button
+      <AsyncButton
         color="primary"
         className="ms-4"
         onClick={approveAgreement}
@@ -118,7 +121,7 @@ function ActionButtons({
         isPending={approveIsPending}
       >
         Approva
-      </Button>
+      </AsyncButton>
       <AssignRequest
         isPending={assignIsPending}
         original={original}

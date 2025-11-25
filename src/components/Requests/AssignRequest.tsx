@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button } from "design-react-kit";
 import { Agreement } from "../../api/generated_backoffice";
-import Button from "../Button/Button";
+import AsyncButton from "../AsyncButton/AsyncButton";
 
 type Props = {
   assignedToMe: boolean;
@@ -26,14 +27,14 @@ const AssignRequest = ({
   return (
     <>
       {!assignedToMe && (
-        <Button
+        <AsyncButton
           color="primary"
           className="ms-4"
           onClick={checkAssign()}
           isPending={isPending}
         >
           Prendi in carico
-        </Button>
+        </AsyncButton>
       )}
       <Modal isOpen={isOpen} toggle={() => toggleAssign(false)} size="md">
         <ModalHeader toggle={() => toggleAssign(false)}>
@@ -44,21 +45,23 @@ const AssignRequest = ({
           continuare?
         </ModalBody>
         <ModalFooter className="d-flex flex-column">
-          <Button
+          <AsyncButton
             color="primary"
             onClick={() => {
               assignAgreements();
               toggleAssign(false);
             }}
+            isPending={isPending}
             fullwidth
           >
             Conferma
-          </Button>
+          </AsyncButton>
           <Button
             color="primary"
             outline
+            tag="button"
             onClick={() => toggleAssign(false)}
-            fullwidth
+            className="w-100"
           >
             Annulla
           </Button>

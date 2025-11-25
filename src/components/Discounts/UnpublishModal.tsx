@@ -1,6 +1,7 @@
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button } from "design-react-kit";
 import { ModalProps } from "../../types";
-import Button from "../Button/Button";
+import AsyncButton from "../AsyncButton/AsyncButton";
 
 function UnpublishModal({
   isOpen,
@@ -17,7 +18,7 @@ function UnpublishModal({
         nella lista degli operatori aderenti all&lsquo;iniziativa.
       </ModalBody>
       <ModalFooter className="d-flex flex-column">
-        <Button
+        <AsyncButton
           color="danger"
           onClick={() => {
             onToggle();
@@ -27,8 +28,14 @@ function UnpublishModal({
           isPending={isPending}
         >
           Torna in bozza
-        </Button>
-        <Button color="primary" outline onClick={onToggle} fullwidth>
+        </AsyncButton>
+        <Button
+          color="primary"
+          tag="button"
+          outline
+          onClick={onToggle}
+          className="w-100"
+        >
           Annulla
         </Button>
       </ModalFooter>

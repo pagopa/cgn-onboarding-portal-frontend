@@ -1,6 +1,7 @@
 import { Fragment, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { Button } from "design-react-kit";
 import { remoteData } from "../../../api/common";
 import { DASHBOARD } from "../../../navigation/routes";
 import { RootState } from "../../../store/store";
@@ -17,7 +18,7 @@ import {
   profileToProfileFormValues
 } from "../operatorDataUtils";
 import { useStandardForm } from "../../../utils/useStandardForm";
-import Button from "../../Button/Button";
+import AsyncButton from "../../AsyncButton/AsyncButton";
 
 type OperatorDataButtonsProps = {
   onBack(): void;
@@ -31,17 +32,23 @@ type Props = {
 function OperatorDataButtons({ isPending, onBack }: OperatorDataButtonsProps) {
   return (
     <div className="d-flex mt-10 gap-4 flex-wrap">
-      <Button className="px-14" outline color="primary" onClick={onBack}>
+      <Button
+        tag="button"
+        className="px-14"
+        outline
+        color="primary"
+        onClick={onBack}
+      >
         Indietro
       </Button>
-      <Button
+      <AsyncButton
         type="submit"
         className="px-14"
         color="primary"
         isPending={isPending}
       >
         Salva
-      </Button>
+      </AsyncButton>
     </div>
   );
 }

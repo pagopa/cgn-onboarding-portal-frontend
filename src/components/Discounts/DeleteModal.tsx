@@ -1,6 +1,6 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import AsyncButton from "../Button/Button";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import { ModalProps } from "../../types";
 
 export function DeleteModal({
@@ -28,8 +28,9 @@ export function DeleteModal({
         <Button
           color="primary"
           outline
+          tag="button"
           onClick={onToggle}
-          style={{ width: "100%" }}
+          className="w-100"
         >
           Annulla
         </Button>

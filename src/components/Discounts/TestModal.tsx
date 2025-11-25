@@ -1,6 +1,7 @@
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button } from "design-react-kit";
 import { ModalProps } from "../../types";
-import Button from "../Button/Button";
+import AsyncButton from "../AsyncButton/AsyncButton";
 
 const TestModal = ({
   isOpen,
@@ -16,7 +17,7 @@ const TestModal = ({
       modalità di riconoscimento che avete scelto.
     </ModalBody>
     <ModalFooter className="d-flex flex-column">
-      <Button
+      <AsyncButton
         color="primary"
         onClick={() => {
           onToggle();
@@ -26,8 +27,14 @@ const TestModal = ({
         isPending={isPending}
       >
         Conferma richiesta
-      </Button>
-      <Button color="primary" outline onClick={onToggle} fullwidth>
+      </AsyncButton>
+      <Button
+        color="primary"
+        tag="button"
+        outline
+        onClick={onToggle}
+        className="w-100"
+      >
         Annulla
       </Button>
     </ModalFooter>

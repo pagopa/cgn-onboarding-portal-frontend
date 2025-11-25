@@ -1,6 +1,7 @@
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button } from "design-react-kit";
 import { ModalProps } from "../../types";
-import Button from "../Button/Button";
+import AsyncButton from "../AsyncButton/AsyncButton";
 
 function PublishModal({
   isOpen,
@@ -16,7 +17,7 @@ function PublishModal({
         di Carta Giovani Nazionale.
       </ModalBody>
       <ModalFooter className="d-flex flex-column">
-        <Button
+        <AsyncButton
           color="primary"
           onClick={() => {
             onToggle();
@@ -26,8 +27,14 @@ function PublishModal({
           fullwidth
         >
           Sì, pubblica
-        </Button>
-        <Button color="primary" outline onClick={onToggle} fullwidth>
+        </AsyncButton>
+        <Button
+          color="primary"
+          tag="button"
+          outline
+          onClick={onToggle}
+          className="w-100"
+        >
           No, torna indietro
         </Button>
       </ModalFooter>

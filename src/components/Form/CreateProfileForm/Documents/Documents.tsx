@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Button } from "design-react-kit";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { remoteData } from "../../../../api/common";
@@ -8,7 +9,7 @@ import type { Documents } from "../../../../api/generated";
 import { EntityType } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
 import { createAgreement } from "../../../../store/agreement/agreementSlice";
-import Button from "../../../Button/Button";
+import AsyncButton from "../../../AsyncButton/AsyncButton";
 import FileRow from "./FileRow";
 
 type Props = {
@@ -119,19 +120,20 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
             className="px-14"
             color="primary"
             outline
+            tag="button"
             onClick={handleBack}
           >
             Indietro
           </Button>
           {(isCompleted || allUploaded) && (
-            <Button
+            <AsyncButton
               className="px-14"
               color="primary"
               onClick={requireApproval}
               isPending={isMutating}
             >
               Richiedi approvazione
-            </Button>
+            </AsyncButton>
           )}
         </div>
       </div>
