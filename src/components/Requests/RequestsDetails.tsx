@@ -1,5 +1,4 @@
 import { Fragment, useState } from "react";
-import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import { useTooltip, Severity } from "../../context/tooltip";
 import { AgreementState, EntityType } from "../../api/generated_backoffice";
@@ -7,7 +6,7 @@ import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import Button from "../Button/Button";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
@@ -65,7 +64,6 @@ function RejectButtons({
       <Button
         color="primary"
         outline
-        tag="button"
         className="ms-4"
         onClick={() => {
           setRejectMode(false);
@@ -76,15 +74,12 @@ function RejectButtons({
       </Button>
       <Button
         color="primary"
-        tag="button"
         className="ms-4"
         onClick={rejectAgreement}
         disabled={!rejectMessage.length}
+        isPending={isPending}
       >
-        <div className="d-flex align-items-center">
-          {isPending && <SmallSpinner />}
-          Invia rifiuto
-        </div>
+        Invia rifiuto
       </Button>
     </div>
   );
@@ -105,7 +100,6 @@ function ActionButtons({
       <Button
         color="primary"
         outline
-        tag="button"
         className="ms-4"
         onClick={() => setRejectMode(true)}
         disabled={!assignedToMe}
@@ -114,7 +108,6 @@ function ActionButtons({
       </Button>
       <Button
         color="primary"
-        tag="button"
         className="ms-4"
         onClick={approveAgreement}
         disabled={
@@ -122,11 +115,9 @@ function ActionButtons({
           original.state === "PendingAgreement" ||
           !checkAllDocs
         }
+        isPending={approveIsPending}
       >
-        <div className="d-flex align-items-center">
-          {approveIsPending && <SmallSpinner />}
-          Approva
-        </div>
+        Approva
       </Button>
       <AssignRequest
         isPending={assignIsPending}

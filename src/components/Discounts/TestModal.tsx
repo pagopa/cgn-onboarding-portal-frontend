@@ -1,14 +1,13 @@
-import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
-import { DiscountModalProps } from "../../types/discounts";
+import { ModalProps } from "../../types";
+import Button from "../Button/Button";
 
 const TestModal = ({
   isOpen,
   onToggle,
   actionRequest,
   isPending
-}: DiscountModalProps) => (
+}: ModalProps) => (
   <Modal isOpen={isOpen} toggle={onToggle} size="md">
     <ModalHeader toggle={onToggle}>Richiedi test</ModalHeader>
     <ModalBody>
@@ -23,19 +22,12 @@ const TestModal = ({
           onToggle();
           actionRequest();
         }}
-        style={{ width: "100%" }}
+        fullwidth
+        isPending={isPending}
       >
-        <div className="d-flex align-items-center justify-content-center">
-          {isPending && <SmallSpinner />}
-          Conferma richiesta
-        </div>
-      </Button>{" "}
-      <Button
-        color="primary"
-        outline
-        onClick={onToggle}
-        style={{ width: "100%" }}
-      >
+        Conferma richiesta
+      </Button>
+      <Button color="primary" outline onClick={onToggle} fullwidth>
         Annulla
       </Button>
     </ModalFooter>

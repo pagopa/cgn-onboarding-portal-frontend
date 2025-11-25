@@ -1,4 +1,3 @@
-import { Button } from "design-react-kit";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
@@ -9,7 +8,7 @@ import { RootState } from "../../store/store";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
 import { useStandardForm } from "../../utils/useStandardForm";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import Button from "../Button/Button";
 import DiscountInfo from "./CreateProfileForm/DiscountData/DiscountInfo";
 import FormSection from "./FormSection";
 import { discountDataValidationSchema } from "./ValidationSchemas";
@@ -109,7 +108,6 @@ export const CreateEditDiscountForm = () => {
             className="px-14"
             outline={!isDraft}
             color={isDraft ? "secondary" : "primary"}
-            tag="button"
             onClick={() => history.push(DASHBOARD)}
           >
             {isDraft ? "Annulla" : "Indietro"}
@@ -119,13 +117,9 @@ export const CreateEditDiscountForm = () => {
             className="px-14"
             color="primary"
             outline={isDraft}
-            tag="button"
-            disabled={isMutating}
+            isPending={isMutating}
           >
-            <div className="d-flex align-items-center">
-              {isMutating && <SmallSpinner />}
-              Salva
-            </div>
+            Salva
           </Button>
         </div>
       </FormSection>

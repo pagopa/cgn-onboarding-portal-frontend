@@ -1,4 +1,4 @@
-export interface DiscountModalProps {
+export interface ModalProps {
   isOpen: boolean;
   onToggle(): void;
   actionRequest(): void;

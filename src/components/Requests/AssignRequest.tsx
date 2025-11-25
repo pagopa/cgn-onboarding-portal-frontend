@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Agreement } from "../../api/generated_backoffice";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import Button from "../Button/Button";
 
 type Props = {
   assignedToMe: boolean;
@@ -29,14 +28,11 @@ const AssignRequest = ({
       {!assignedToMe && (
         <Button
           color="primary"
-          tag="button"
           className="ms-4"
           onClick={checkAssign()}
+          isPending={isPending}
         >
-          <div className="d-flex align-items-center">
-            {isPending && <SmallSpinner />}
-            Prendi in carico
-          </div>
+          Prendi in carico
         </Button>
       )}
       <Modal isOpen={isOpen} toggle={() => toggleAssign(false)} size="md">
@@ -54,7 +50,7 @@ const AssignRequest = ({
               assignAgreements();
               toggleAssign(false);
             }}
-            style={{ width: "100%" }}
+            fullwidth
           >
             Conferma
           </Button>
@@ -62,7 +58,7 @@ const AssignRequest = ({
             color="primary"
             outline
             onClick={() => toggleAssign(false)}
-            style={{ width: "100%" }}
+            fullwidth
           >
             Annulla
           </Button>

@@ -1,7 +1,7 @@
 import { useHistory, useParams } from "react-router-dom";
 import z from "zod/v4";
 import { useMemo } from "react";
-import { Button, Icon } from "design-react-kit";
+import { Icon } from "design-react-kit";
 import { useFieldArray } from "@hookform/lenses/rhf";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
@@ -14,7 +14,7 @@ import {
   OrganizationWithReferents
 } from "../../api/generated_backoffice";
 import PlusCircleIcon from "../../assets/icons/plus-circle.svg?react";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import Button from "../Button/Button";
 import { activationValidationSchema } from "./ValidationSchemas";
 import FormSection from "./FormSection";
 import FormField from "./FormField";
@@ -236,7 +236,6 @@ const CreateEditActivationForm = () => {
                     <Button
                       className="me-4"
                       color="link"
-                      tag="button"
                       onClick={() => referentsArray.remove(i)}
                     >
                       <Icon icon="it-delete" size="sm" color="danger" />
@@ -259,7 +258,6 @@ const CreateEditActivationForm = () => {
             className="px-14"
             outline
             color="primary"
-            tag="button"
             onClick={() => history.push(ADMIN_PANEL_ACCESSI)}
           >
             Indietro
@@ -268,13 +266,9 @@ const CreateEditActivationForm = () => {
             type="submit"
             className="px-14"
             color="primary"
-            disabled={isMutating}
-            tag="button"
+            isPending={isMutating}
           >
-            <div className="d-flex align-items-center">
-              {isMutating && <SmallSpinner />}
-              Salva
-            </div>
+            Salva
           </Button>
         </div>
       </FormSection>

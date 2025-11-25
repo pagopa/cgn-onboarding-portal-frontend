@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import { Button } from "design-react-kit";
 import { useState } from "react";
 import { remoteData } from "../../api/common";
 import {
@@ -11,8 +10,8 @@ import {
   formatPercentage,
   makeProductCategoriesString
 } from "../../utils/strings";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
+import Button from "../Button/Button";
 import BucketCodeModal from "./BucketCodeModal";
 import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
@@ -22,6 +21,7 @@ type DiscountResultButtonsProps = {
   setRejectMode: (value: boolean) => void;
   approveTest: () => void;
   rejectMode: boolean;
+  approveDiscountIsPending: boolean;
 };
 
 type RejectProps = {
@@ -29,7 +29,7 @@ type RejectProps = {
   setRejectMessage: (value: string) => void;
   setRejectMode: (value: boolean) => void;
   rejectTest: () => void;
-  isLoading: boolean;
+  isPending: boolean;
 };
 
 type Props = {
@@ -44,7 +44,7 @@ function Reject({
   setRejectMessage,
   setRejectMode,
   rejectTest,
-  isLoading
+  isPending
 }: RejectProps) {
   return (
     <div className="mt-10">
@@ -67,7 +67,6 @@ function Reject({
       <Button
         color="primary"
         outline
-        tag="button"
         className="ms-4"
         onClick={() => {
           setRejectMode(false);
@@ -78,15 +77,12 @@ function Reject({
       </Button>
       <Button
         color="primary"
-        tag="button"
         className="ms-4"
         onClick={rejectTest}
         disabled={!rejectMessage.length}
+        isPending={isPending}
       >
-        <div className="d-flex align-items-center">
-          {isLoading && <SmallSpinner />}
-          Invia esito
-        </div>
+        Invia esito
       </Button>
     </div>
   );
@@ -96,7 +92,8 @@ function DiscountResultButtons({
   discount,
   setRejectMode,
   approveTest,
-  rejectMode
+  rejectMode,
+  approveDiscountIsPending
 }: DiscountResultButtonsProps) {
   return (
     discount.state === "test_pending" && (
@@ -114,6 +111,7 @@ function DiscountResultButtons({
           outline
           onClick={approveTest}
           disabled={rejectMode}
+          isPending={approveDiscountIsPending}
         >
           Test riuscito
         </Button>
@@ -337,7 +335,6 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
           <Button
             color="primary"
             outline
-            tag="button"
             className="ms-4"
             onClick={() => {
               setSuspendMode(false);
@@ -348,15 +345,12 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
           </Button>
           <Button
             color="primary"
-            tag="button"
             className="ms-4"
             onClick={suspendDiscount}
+            isPending={suspendDiscountMutation.isPending}
             disabled={!suspendMessage.length}
           >
-            <div className="d-flex align-items-center">
-              {suspendDiscountMutation.isPending && <SmallSpinner />}
-              Invia sospensione
-            </div>
+            Invia sospensione
           </Button>
         </div>
       ) : (
@@ -374,6 +368,7 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
         setRejectMode={setRejectMode}
         approveTest={approveTest}
         rejectMode={rejectMode}
+        approveDiscountIsPending={approveDiscountMutation.isPending}
       />
       {rejectMode && (
         <Reject
@@ -381,7 +376,7 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
           setRejectMessage={setRejectMessage}
           setRejectMode={setRejectMode}
           rejectTest={rejectTest}
-          isLoading={rejectDiscountMutation.isPending}
+          isPending={rejectDiscountMutation.isPending}
         />
       )}
     </div>

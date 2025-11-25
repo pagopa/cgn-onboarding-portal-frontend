@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from "react";
-import { Button } from "design-react-kit";
 import { useDispatch, useSelector } from "react-redux";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
@@ -9,7 +8,7 @@ import type { Documents } from "../../../../api/generated";
 import { EntityType } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
 import { createAgreement } from "../../../../store/agreement/agreementSlice";
-import SmallSpinner from "../../../SmallSpinner/SmallSpinner";
+import Button from "../../../Button/Button";
 import FileRow from "./FileRow";
 
 type Props = {
@@ -120,7 +119,6 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
             className="px-14"
             color="primary"
             outline
-            tag="button"
             onClick={handleBack}
           >
             Indietro
@@ -129,14 +127,10 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
             <Button
               className="px-14"
               color="primary"
-              tag="button"
               onClick={requireApproval}
-              disabled={isMutating}
+              isPending={isMutating}
             >
-              <div className="d-flex align-items-center">
-                {isMutating && <SmallSpinner />}
-                Richiedi approvazione
-              </div>
+              Richiedi approvazione
             </Button>
           )}
         </div>

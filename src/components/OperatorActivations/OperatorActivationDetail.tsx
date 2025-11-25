@@ -1,6 +1,5 @@
 import { format } from "date-fns";
 import { useState } from "react";
-import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
@@ -8,7 +7,7 @@ import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { getEditOperatorRoute } from "../../navigation/utils";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
+import Button from "../Button/Button";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
@@ -84,20 +83,15 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           className="me-4 btn-sm"
           color="danger"
           outline
-          tag="button"
           onClick={toggleModal}
-          disabled={deleteActivationMutation.isPending}
+          isPending={deleteActivationMutation.isPending}
         >
-          <div className="d-flex align-items-center">
-            {deleteActivationMutation.isPending && <SmallSpinner />}
-            Rimuovi
-          </div>
+          Rimuovi
         </Button>
         <Button
           className="me-4 btn-sm"
           color="primary"
           outline
-          tag="button"
           onClick={() =>
             history.push(
               getEditOperatorRoute(operator.keyOrganizationFiscalCode)
@@ -109,8 +103,9 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
       </div>
       <DeleteModal
         isOpen={isModalOpen}
-        toggle={toggleModal}
-        onDelete={askDeleteOrganization}
+        isPending={deleteActivationMutation.isPending}
+        onToggle={toggleModal}
+        actionRequest={askDeleteOrganization}
       />
     </section>
   );

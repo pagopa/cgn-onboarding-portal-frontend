@@ -1,14 +1,13 @@
-import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
-import { DiscountModalProps } from "../../types/discounts";
+import { ModalProps } from "../../types";
+import Button from "../Button/Button";
 
 function UnpublishModal({
   isOpen,
   onToggle,
   actionRequest,
   isPending
-}: DiscountModalProps) {
+}: ModalProps) {
   return (
     <Modal isOpen={isOpen} toggle={onToggle} size="md">
       <ModalHeader toggle={onToggle}>Sospendi opportunità</ModalHeader>
@@ -24,19 +23,12 @@ function UnpublishModal({
             onToggle();
             actionRequest();
           }}
-          style={{ width: "100%" }}
+          fullwidth
+          isPending={isPending}
         >
-          <div className="d-flex align-items-center justify-content-center">
-            {isPending && <SmallSpinner />}
-            Torna in bozza
-          </div>
-        </Button>{" "}
-        <Button
-          color="primary"
-          outline
-          onClick={onToggle}
-          style={{ width: "100%" }}
-        >
+          Torna in bozza
+        </Button>
+        <Button color="primary" outline onClick={onToggle} fullwidth>
           Annulla
         </Button>
       </ModalFooter>

@@ -1,33 +1,30 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
-import { DiscountModalProps } from "../../types/discounts";
+import AsyncButton from "../Button/Button";
+import { ModalProps } from "../../types";
 
 export function DeleteModal({
   isOpen,
   onToggle,
   actionRequest,
   isPending
-}: DiscountModalProps) {
+}: ModalProps) {
   return (
     <Modal isOpen={isOpen} toggle={onToggle}>
       <ModalHeader toggle={onToggle}>Elimina opportunità</ModalHeader>
       <ModalBody>Sei sicuro di voler eliminare questa opportunità?</ModalBody>
       <ModalFooter className="d-flex flex-column">
-        <Button
+        <AsyncButton
           color="primary"
           onClick={() => {
             actionRequest();
             onToggle();
           }}
-          disabled={isPending}
-          style={{ width: "100%" }}
+          fullwidth
+          isPending={isPending}
         >
-          <div className="d-flex align-items-center justify-content-center">
-            {isPending && <SmallSpinner />}
-            Elimina
-          </div>
-        </Button>{" "}
+          Elimina
+        </AsyncButton>
         <Button
           color="primary"
           outline

@@ -1,4 +1,3 @@
-import { Button } from "design-react-kit";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { z } from "zod/v4";
@@ -21,7 +20,7 @@ import {
 } from "../../discountFormUtils";
 import { useStandardForm } from "../../../../utils/useStandardForm";
 import { discountDataValidationSchema } from "../../ValidationSchemas";
-import SmallSpinner from "../../../SmallSpinner/SmallSpinner";
+import Button from "../../../Button/Button";
 
 type Props = {
   isCompleted: boolean;
@@ -193,7 +192,6 @@ const DiscountData = ({
                       className="px-14"
                       outline
                       color="primary"
-                      tag="button"
                       onClick={handleBack}
                     >
                       Indietro
@@ -202,13 +200,9 @@ const DiscountData = ({
                       type="submit"
                       className="px-14"
                       color="primary"
-                      tag="button"
-                      disabled={isMutating}
+                      isPending={isMutating}
                     >
-                      <div className="d-flex align-items-center">
-                        {isMutating && <SmallSpinner />}
-                        Continua
-                      </div>
+                      Continua
                     </Button>
                   </div>
                 </>

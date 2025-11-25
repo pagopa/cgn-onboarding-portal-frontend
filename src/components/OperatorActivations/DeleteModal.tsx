@@ -1,16 +1,16 @@
-import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { ModalProps } from "../../types";
+import Button from "../Button/Button";
 
-type Props = {
-  isOpen: boolean;
-  toggle: () => void;
-  onDelete: () => void;
-};
-
-function DeleteModal({ isOpen, toggle, onDelete }: Props) {
+function DeleteModal({
+  isOpen,
+  onToggle,
+  actionRequest,
+  isPending
+}: ModalProps) {
   return (
-    <Modal isOpen={isOpen} toggle={toggle} size="md">
-      <ModalHeader toggle={toggle}>Rimuovi operatore</ModalHeader>
+    <Modal isOpen={isOpen} toggle={onToggle} size="md">
+      <ModalHeader toggle={onToggle}>Rimuovi operatore</ModalHeader>
       <ModalBody>
         Sei sicuro di voler rimuovere questo operatore? In questo modo
         l&lsquo;operatore non potrà più accedere al portale operatori e se ha
@@ -21,19 +21,15 @@ function DeleteModal({ isOpen, toggle, onDelete }: Props) {
         <Button
           color="danger"
           onClick={() => {
-            toggle();
-            onDelete();
+            onToggle();
+            actionRequest();
           }}
-          style={{ width: "100%" }}
+          fullwidth
+          isPending={isPending}
         >
           Rimuovi
-        </Button>{" "}
-        <Button
-          color="primary"
-          outline
-          onClick={toggle}
-          style={{ width: "100%" }}
-        >
+        </Button>
+        <Button color="primary" outline onClick={onToggle} fullwidth>
           Annulla
         </Button>
       </ModalFooter>

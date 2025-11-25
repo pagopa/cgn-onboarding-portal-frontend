@@ -1,6 +1,5 @@
 import { Fragment, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
 import { remoteData } from "../../../api/common";
 import { DASHBOARD } from "../../../navigation/routes";
@@ -18,13 +17,36 @@ import {
   profileToProfileFormValues
 } from "../operatorDataUtils";
 import { useStandardForm } from "../../../utils/useStandardForm";
-import SmallSpinner from "../../SmallSpinner/SmallSpinner";
+import Button from "../../Button/Button";
 
-export const EditOperatorForm = ({
-  variant
-}: {
+type OperatorDataButtonsProps = {
+  onBack(): void;
+  isPending: boolean;
+};
+
+type Props = {
   variant: "edit-data" | "edit-profile";
-}) => {
+};
+
+function OperatorDataButtons({ isPending, onBack }: OperatorDataButtonsProps) {
+  return (
+    <div className="d-flex mt-10 gap-4 flex-wrap">
+      <Button className="px-14" outline color="primary" onClick={onBack}>
+        Indietro
+      </Button>
+      <Button
+        type="submit"
+        className="px-14"
+        color="primary"
+        isPending={isPending}
+      >
+        Salva
+      </Button>
+    </div>
+  );
+}
+
+export const EditOperatorForm = ({ variant }: Props) => {
   const history = useHistory();
   const agreement = useSelector((state: RootState) => state.agreement.value);
 
@@ -63,8 +85,8 @@ export const EditOperatorForm = ({
     authentication.currentUserFiscalCode ??
     "";
 
-  const isSubmitEnabled =
-    !editProfileMutation.isPending && !form.formState.isSubmitting;
+  const isPending =
+    editProfileMutation.isPending && form.formState.isSubmitting;
 
   return (
     <form
@@ -97,7 +119,7 @@ export const EditOperatorForm = ({
                 >
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
-                    isEnabled={isSubmitEnabled}
+                    isPending={isPending}
                   />
                 </SalesChannels>
               </Fragment>
@@ -114,7 +136,7 @@ export const EditOperatorForm = ({
                 <ReferentData formLens={form.lens}>
                   <OperatorDataButtons
                     onBack={() => history.push(DASHBOARD)}
-                    isEnabled={isSubmitEnabled}
+                    isPending={isPending}
                   />
                 </ReferentData>
               </Fragment>
@@ -124,37 +146,3 @@ export const EditOperatorForm = ({
     </form>
   );
 };
-
-function OperatorDataButtons({
-  isEnabled,
-  onBack
-}: {
-  onBack(): void;
-  isEnabled: boolean;
-}) {
-  return (
-    <div className="d-flex mt-10 gap-4 flex-wrap">
-      <Button
-        className="px-14"
-        outline
-        color="primary"
-        tag="button"
-        onClick={onBack}
-      >
-        Indietro
-      </Button>
-      <Button
-        type="submit"
-        className="px-14"
-        color="primary"
-        tag="button"
-        disabled={!isEnabled}
-      >
-        <div className="d-flex align-items-center">
-          {!isEnabled && <SmallSpinner />}
-          Salva
-        </div>
-      </Button>
-    </div>
-  );
-}
