@@ -1,6 +1,6 @@
 import { format } from "date-fns";
-import { Button } from "design-react-kit";
 import { useState } from "react";
+import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import {
   ApprovedAgreementDiscount,
@@ -12,21 +12,118 @@ import {
   makeProductCategoriesString
 } from "../../utils/strings";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import BucketCodeModal from "./BucketCodeModal";
 import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
 
-const Discount = ({
-  discount,
-  agreementId,
-  profile,
-  reloadDetails
-}: {
+type DiscountResultButtonsProps = {
+  discount: ApprovedAgreementDiscount;
+  setRejectMode: (value: boolean) => void;
+  approveTest: () => void;
+  rejectMode: boolean;
+  approveDiscountIsPending: boolean;
+};
+
+type RejectProps = {
+  rejectMessage: string;
+  setRejectMessage: (value: string) => void;
+  setRejectMode: (value: boolean) => void;
+  rejectTest: () => void;
+  isPending: boolean;
+};
+
+type Props = {
   discount: ApprovedAgreementDiscount;
   agreementId: string;
   profile: ApprovedAgreementProfile;
   reloadDetails: () => void;
-}) => {
+};
+
+function Reject({
+  rejectMessage,
+  setRejectMessage,
+  setRejectMode,
+  rejectTest,
+  isPending
+}: RejectProps) {
+  return (
+    <div className="mt-10">
+      <h6 className="text-gray">Aggiungi commento</h6>
+      <p>
+        Inserisci il motivo per cui il test è da considerarsi fallito. Il
+        commento sarà inviato all’operatore insieme all’esito.
+      </p>
+      <div className="mb-12">
+        <textarea
+          id="rejectMessage"
+          value={rejectMessage}
+          onChange={e => setRejectMessage(e.target.value)}
+          rows={5}
+          maxLength={250}
+          placeholder="Inserisci commento"
+          className="form-control"
+        />
+      </div>
+      <Button
+        color="primary"
+        outline
+        className="ms-4"
+        tag="button"
+        onClick={() => {
+          setRejectMode(false);
+          setRejectMessage("");
+        }}
+      >
+        Annulla
+      </Button>
+      <AsyncButton
+        color="primary"
+        className="ms-4"
+        onClick={rejectTest}
+        disabled={!rejectMessage.length}
+        isPending={isPending}
+      >
+        Invia esito
+      </AsyncButton>
+    </div>
+  );
+}
+
+function DiscountResultButtons({
+  discount,
+  setRejectMode,
+  approveTest,
+  rejectMode,
+  approveDiscountIsPending
+}: DiscountResultButtonsProps) {
+  return (
+    discount.state === "test_pending" && (
+      <div className="mt-5 d-flex">
+        <Button
+          color="danger"
+          className="me-2"
+          outline
+          tag="button"
+          onClick={() => setRejectMode(true)}
+        >
+          Test fallito
+        </Button>
+        <AsyncButton
+          color="primary"
+          outline
+          onClick={approveTest}
+          disabled={rejectMode}
+          isPending={approveDiscountIsPending}
+        >
+          Test riuscito
+        </AsyncButton>
+      </div>
+    )
+  );
+}
+
+const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
   const [suspendMode, setSuspendMode] = useState(false);
   const [suspendMessage, setSuspendMessage] = useState("");
   const [rejectMode, setRejectMode] = useState(false);
@@ -58,7 +155,6 @@ const Discount = ({
       }
     });
   };
-
   const rejectDiscountMutation =
     remoteData.Backoffice.Discount.setDiscountTestFailed.useMutation({
       onSuccess() {
@@ -189,7 +285,12 @@ const Discount = ({
           <Item
             label="Lista di codici statici"
             value={
-              <Button color="primary" size="xs" onClick={toggleBucketModal}>
+              <Button
+                tag="button"
+                color="primary"
+                size="xs"
+                onClick={toggleBucketModal}
+              >
                 Mostra Codice
               </Button>
             }
@@ -242,8 +343,8 @@ const Discount = ({
           <Button
             color="primary"
             outline
-            tag="button"
             className="ms-4"
+            tag="button"
             onClick={() => {
               setSuspendMode(false);
               setSuspendMessage("");
@@ -251,81 +352,45 @@ const Discount = ({
           >
             Annulla
           </Button>
-          <Button
+          <AsyncButton
             color="primary"
-            tag="button"
             className="ms-4"
             onClick={suspendDiscount}
+            isPending={suspendDiscountMutation.isPending}
             disabled={!suspendMessage.length}
           >
             Invia sospensione
-          </Button>
+          </AsyncButton>
         </div>
       ) : (
         !isSuspended &&
         discount.state === "published" && (
           <div className="mt-5">
-            <Button color="primary" onClick={() => setSuspendMode(true)}>
+            <Button
+              tag="button"
+              color="primary"
+              onClick={() => setSuspendMode(true)}
+            >
               Sospendi opportunità
             </Button>
           </div>
         )
       )}
-      {discount.state === "test_pending" && (
-        <div className="mt-5 d-flex">
-          <Button
-            color="danger"
-            className="me-2"
-            outline
-            onClick={() => setRejectMode(true)}
-          >
-            Test fallito
-          </Button>
-          <Button color="primary" outline onClick={approveTest}>
-            Test riuscito
-          </Button>
-        </div>
-      )}
+      <DiscountResultButtons
+        discount={discount}
+        setRejectMode={setRejectMode}
+        approveTest={approveTest}
+        rejectMode={rejectMode}
+        approveDiscountIsPending={approveDiscountMutation.isPending}
+      />
       {rejectMode && (
-        <div className="mt-10">
-          <h6 className="text-gray">Aggiungi commento</h6>
-          <p>
-            Inserisci il motivo per cui il test è da considerarsi fallito. Il
-            commento sarà inviato all’operatore insieme all’esito.
-          </p>
-          <div className="mb-12">
-            <textarea
-              id="rejectMessage"
-              value={rejectMessage}
-              onChange={e => setRejectMessage(e.target.value)}
-              rows={5}
-              maxLength={250}
-              placeholder="Inserisci commento"
-              className="form-control"
-            />
-          </div>
-          <Button
-            color="primary"
-            outline
-            tag="button"
-            className="ms-4"
-            onClick={() => {
-              setRejectMode(false);
-              setRejectMessage("");
-            }}
-          >
-            Annulla
-          </Button>
-          <Button
-            color="primary"
-            tag="button"
-            className="ms-4"
-            onClick={rejectTest}
-            disabled={!rejectMessage.length}
-          >
-            Invia esito
-          </Button>
-        </div>
+        <Reject
+          rejectMessage={rejectMessage}
+          setRejectMessage={setRejectMessage}
+          setRejectMode={setRejectMode}
+          rejectTest={rejectTest}
+          isPending={rejectDiscountMutation.isPending}
+        />
       )}
     </div>
   );

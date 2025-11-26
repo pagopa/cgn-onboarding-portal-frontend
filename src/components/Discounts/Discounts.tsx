@@ -250,18 +250,19 @@ const Discounts = () => {
       <div>
         <PublishModal
           isOpen={publishModal}
-          toggle={closeActionModal}
-          publish={() => {
+          onToggle={closeActionModal}
+          isPending={publishDiscountMutation.isPending}
+          actionRequest={() => {
             if (selectedDiscountAction) {
               publishDiscount(selectedDiscountAction.discountId);
             }
           }}
-          profile={profile}
         />
         <UnpublishModal
           isOpen={unpublishModal}
-          toggle={closeActionModal}
-          unpublish={() => {
+          onToggle={closeActionModal}
+          isPending={unpublishDiscountMutation.isPending}
+          actionRequest={() => {
             if (selectedDiscountAction) {
               unpublishDiscount(selectedDiscountAction.discountId);
             }
@@ -269,8 +270,9 @@ const Discounts = () => {
         />
         <TestModal
           isOpen={testModal}
-          toggle={closeActionModal}
-          testRequest={() => {
+          onToggle={closeActionModal}
+          isPending={testDiscountMutation.isPending}
+          actionRequest={() => {
             if (selectedDiscountAction) {
               testDiscount(selectedDiscountAction.discountId);
             }
@@ -279,7 +281,8 @@ const Discounts = () => {
         <DeleteModal
           isOpen={deleteModal}
           onToggle={closeActionModal}
-          onDelete={() => {
+          isPending={deleteDiscountMutation.isPending}
+          actionRequest={() => {
             if (selectedDiscountAction) {
               deleteDiscount(selectedDiscountAction.discountId);
             }

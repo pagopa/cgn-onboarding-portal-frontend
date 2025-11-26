@@ -1,8 +1,8 @@
-import { Button } from "design-react-kit";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { z } from "zod/v4";
 import { useFieldArray } from "@hookform/lenses/rhf";
+import { Button } from "design-react-kit";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import { RootState } from "../../../../store/store";
@@ -21,6 +21,7 @@ import {
 } from "../../discountFormUtils";
 import { useStandardForm } from "../../../../utils/useStandardForm";
 import { discountDataValidationSchema } from "../../ValidationSchemas";
+import AsyncButton from "../../../AsyncButton/AsyncButton";
 
 type Props = {
   isCompleted: boolean;
@@ -197,15 +198,14 @@ const DiscountData = ({
                     >
                       Indietro
                     </Button>
-                    <Button
+                    <AsyncButton
                       type="submit"
                       className="px-14"
                       color="primary"
-                      tag="button"
-                      disabled={isMutating}
+                      isPending={isMutating}
                     >
                       Continua
-                    </Button>
+                    </AsyncButton>
                   </div>
                 </>
               )}

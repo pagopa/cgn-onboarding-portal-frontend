@@ -1,16 +1,17 @@
-import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button } from "design-react-kit";
+import { ModalProps } from "../../types";
+import AsyncButton from "../AsyncButton/AsyncButton";
 
-type Props = {
-  isOpen: boolean;
-  toggle: () => void;
-  onDelete: () => void;
-};
-
-function DeleteModal({ isOpen, toggle, onDelete }: Props) {
+function DeleteModal({
+  isOpen,
+  onToggle,
+  actionRequest,
+  isPending
+}: ModalProps) {
   return (
-    <Modal isOpen={isOpen} toggle={toggle} size="md">
-      <ModalHeader toggle={toggle}>Rimuovi operatore</ModalHeader>
+    <Modal isOpen={isOpen} toggle={onToggle} size="md">
+      <ModalHeader toggle={onToggle}>Rimuovi operatore</ModalHeader>
       <ModalBody>
         Sei sicuro di voler rimuovere questo operatore? In questo modo
         l&lsquo;operatore non potrà più accedere al portale operatori e se ha
@@ -18,21 +19,23 @@ function DeleteModal({ isOpen, toggle, onDelete }: Props) {
         modificarle.
       </ModalBody>
       <ModalFooter className="d-flex flex-column">
-        <Button
+        <AsyncButton
           color="danger"
           onClick={() => {
-            toggle();
-            onDelete();
+            onToggle();
+            actionRequest();
           }}
-          style={{ width: "100%" }}
+          fullwidth
+          isPending={isPending}
         >
           Rimuovi
-        </Button>{" "}
+        </AsyncButton>
         <Button
+          tag="button"
           color="primary"
           outline
-          onClick={toggle}
-          style={{ width: "100%" }}
+          onClick={onToggle}
+          className="w-100"
         >
           Annulla
         </Button>

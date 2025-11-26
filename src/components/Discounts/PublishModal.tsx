@@ -1,39 +1,39 @@
-import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Profile } from "../../api/generated";
+import { Button } from "design-react-kit";
+import { ModalProps } from "../../types";
+import AsyncButton from "../AsyncButton/AsyncButton";
 
-type Props = {
-  isOpen: boolean;
-  toggle(): void;
-  publish(): void;
-  profile?: Profile;
-};
-
-function PublishModal({ isOpen, toggle, publish, profile }: Props) {
+function PublishModal({
+  isOpen,
+  onToggle,
+  actionRequest,
+  isPending
+}: ModalProps) {
   return (
-    <Modal isOpen={isOpen} toggle={toggle} size="md">
-      <ModalHeader toggle={toggle}>Pubblica opportunità</ModalHeader>
+    <Modal isOpen={isOpen} toggle={onToggle} size="md">
+      <ModalHeader toggle={onToggle}>Pubblica opportunità</ModalHeader>
       <ModalBody>
-        {profile && profile.salesChannel.channelType !== "OfflineChannel"
-          ? "Se pubblichi, l’opportunità diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."
-          : "Hai informato il personale addetto alle casse o alla relazione col pubblico? Se pubblichi, l’opportunità diventerà visibile su App IO dai beneficiari di Carta Giovani Nazionale."}
+        Se pubblichi, l’opportunità diventerà visibile su App IO dai beneficiari
+        di Carta Giovani Nazionale.
       </ModalBody>
       <ModalFooter className="d-flex flex-column">
-        <Button
+        <AsyncButton
           color="primary"
           onClick={() => {
-            toggle();
-            publish();
+            onToggle();
+            actionRequest();
           }}
-          style={{ width: "100%" }}
+          isPending={isPending}
+          fullwidth
         >
           Sì, pubblica
-        </Button>{" "}
+        </AsyncButton>
         <Button
           color="primary"
+          tag="button"
           outline
-          onClick={toggle}
-          style={{ width: "100%" }}
+          onClick={onToggle}
+          className="w-100"
         >
           No, torna indietro
         </Button>

@@ -1,13 +1,14 @@
 import { format } from "date-fns";
 import { useState } from "react";
-import { Button } from "design-react-kit";
 import { useHistory } from "react-router-dom";
+import { Button } from "design-react-kit";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { getEditOperatorRoute } from "../../navigation/utils";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import DeleteModal from "./DeleteModal";
 
 type Props = {
@@ -79,16 +80,15 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
         </tbody>
       </table>
       <div className="mt-10 d-flex flex-row">
-        <Button
+        <AsyncButton
           className="me-4 btn-sm"
           color="danger"
           outline
-          tag="button"
           onClick={toggleModal}
-          disabled={deleteActivationMutation.isPending}
+          isPending={deleteActivationMutation.isPending}
         >
           Rimuovi
-        </Button>
+        </AsyncButton>
         <Button
           className="me-4 btn-sm"
           color="primary"
@@ -105,8 +105,9 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
       </div>
       <DeleteModal
         isOpen={isModalOpen}
-        toggle={toggleModal}
-        onDelete={askDeleteOrganization}
+        isPending={deleteActivationMutation.isPending}
+        onToggle={toggleModal}
+        actionRequest={askDeleteOrganization}
       />
     </section>
   );

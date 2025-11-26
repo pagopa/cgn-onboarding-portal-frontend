@@ -1,8 +1,9 @@
 import { useHistory, useParams } from "react-router-dom";
 import z from "zod/v4";
 import { useMemo } from "react";
-import { Button, Icon } from "design-react-kit";
+import { Icon } from "design-react-kit";
 import { useFieldArray } from "@hookform/lenses/rhf";
+import { Button } from "design-react-kit";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
 import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
@@ -14,6 +15,7 @@ import {
   OrganizationWithReferents
 } from "../../api/generated_backoffice";
 import PlusCircleIcon from "../../assets/icons/plus-circle.svg?react";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import { activationValidationSchema } from "./ValidationSchemas";
 import FormSection from "./FormSection";
 import FormField from "./FormField";
@@ -101,6 +103,9 @@ const CreateEditActivationForm = () => {
   }
 
   const canChangeEntityType = !operatorFiscalCode;
+
+  const isMutating =
+    form.formState.isSubmitting || upsertActivationMutation.isPending;
 
   return (
     <form
@@ -260,17 +265,14 @@ const CreateEditActivationForm = () => {
           >
             Indietro
           </Button>
-          <Button
+          <AsyncButton
             type="submit"
             className="px-14"
             color="primary"
-            disabled={
-              form.formState.isSubmitting || upsertActivationMutation.isPending
-            }
-            tag="button"
+            isPending={isMutating}
           >
             Salva
-          </Button>
+          </AsyncButton>
         </div>
       </FormSection>
     </form>

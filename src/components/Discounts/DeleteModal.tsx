@@ -1,35 +1,36 @@
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import AsyncButton from "../AsyncButton/AsyncButton";
+import { ModalProps } from "../../types";
 
 export function DeleteModal({
   isOpen,
   onToggle,
-  onDelete
-}: {
-  isOpen: boolean;
-  onToggle(): void;
-  onDelete(): void;
-}) {
+  actionRequest,
+  isPending
+}: ModalProps) {
   return (
     <Modal isOpen={isOpen} toggle={onToggle}>
       <ModalHeader toggle={onToggle}>Elimina opportunità</ModalHeader>
       <ModalBody>Sei sicuro di voler eliminare questa opportunità?</ModalBody>
       <ModalFooter className="d-flex flex-column">
-        <Button
+        <AsyncButton
           color="primary"
           onClick={() => {
-            onDelete();
+            actionRequest();
             onToggle();
           }}
-          style={{ width: "100%" }}
+          fullwidth
+          isPending={isPending}
         >
           Elimina
-        </Button>{" "}
+        </AsyncButton>
         <Button
           color="primary"
           outline
+          tag="button"
           onClick={onToggle}
-          style={{ width: "100%" }}
+          className="w-100"
         >
           Annulla
         </Button>

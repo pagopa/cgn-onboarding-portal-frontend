@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
-import { Button } from "design-react-kit";
 import { useDispatch, useSelector } from "react-redux";
+import { Button } from "design-react-kit";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { remoteData } from "../../../../api/common";
@@ -9,6 +9,7 @@ import type { Documents } from "../../../../api/generated";
 import { EntityType } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
 import { createAgreement } from "../../../../store/agreement/agreementSlice";
+import AsyncButton from "../../../AsyncButton/AsyncButton";
 import FileRow from "./FileRow";
 
 type Props = {
@@ -69,6 +70,8 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
     return <CenteredLoading />;
   }
 
+  const isMutating = requireApprovalMutation.isPending;
+
   return (
     <FormContainer className="mb-20">
       <div className="bg-white px-28 py-16">
@@ -123,14 +126,14 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
             Indietro
           </Button>
           {(isCompleted || allUploaded) && (
-            <Button
+            <AsyncButton
               className="px-14"
               color="primary"
-              tag="button"
               onClick={requireApproval}
+              isPending={isMutating}
             >
               Richiedi approvazione
-            </Button>
+            </AsyncButton>
           )}
         </div>
       </div>

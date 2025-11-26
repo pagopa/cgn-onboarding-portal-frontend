@@ -1,7 +1,7 @@
-import { Button } from "design-react-kit";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import { useTooltip } from "../../context/tooltip";
 import { DASHBOARD } from "../../navigation/routes";
@@ -9,6 +9,7 @@ import { RootState } from "../../store/store";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
 import { useStandardForm } from "../../utils/useStandardForm";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import DiscountInfo from "./CreateProfileForm/DiscountData/DiscountInfo";
 import FormSection from "./FormSection";
 import { discountDataValidationSchema } from "./ValidationSchemas";
@@ -77,6 +78,11 @@ export const CreateEditDiscountForm = () => {
 
   const isDraft = discount?.state === "draft";
 
+  const isMutating =
+    form.formState.isSubmitting ||
+    updateDiscountMutation.isPending ||
+    createDiscountMutation.isPending;
+
   return (
     <form
       autoComplete="off"
@@ -102,26 +108,21 @@ export const CreateEditDiscountForm = () => {
           <Button
             className="px-14"
             outline={!isDraft}
-            color={isDraft ? "secondary" : "primary"}
             tag="button"
+            color={isDraft ? "secondary" : "primary"}
             onClick={() => history.push(DASHBOARD)}
           >
             {isDraft ? "Annulla" : "Indietro"}
           </Button>
-          <Button
+          <AsyncButton
             type="submit"
             className="px-14"
             color="primary"
             outline={isDraft}
-            tag="button"
-            disabled={
-              form.formState.isSubmitting ||
-              updateDiscountMutation.isPending ||
-              createDiscountMutation.isPending
-            }
+            isPending={isMutating}
           >
             Salva
-          </Button>
+          </AsyncButton>
         </div>
       </FormSection>
     </form>

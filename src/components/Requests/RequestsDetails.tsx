@@ -7,17 +7,132 @@ import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import RequestItem from "./RequestsDetailsItem";
 import RequestsDocuments from "./RequestsDocuments";
 import AssignRequest from "./AssignRequest";
 
-const RequestsDetails = ({
-  original,
-  updateList
-}: {
+type RejectButtonsProps = {
+  rejectMessage: string;
+  setRejectMessage: (value: string) => void;
+  setRejectMode: (value: boolean) => void;
+  rejectAgreement: () => void;
+  isPending: boolean;
+};
+
+type ActionButtonsProps = {
+  assignedToMe: boolean;
+  original: NormalizedBackofficeAgreement;
+  checkAllDocs: boolean;
+  approveIsPending: boolean;
+  assignIsPending: boolean;
+  assignAgreements: () => void;
+  approveAgreement: () => void;
+  setRejectMode: (value: boolean) => void;
+};
+
+type Props = {
   original: NormalizedBackofficeAgreement;
   updateList: () => void;
-}) => {
+};
+
+function RejectButtons({
+  rejectMessage,
+  setRejectMessage,
+  setRejectMode,
+  rejectAgreement,
+  isPending
+}: RejectButtonsProps) {
+  return (
+    <div className="mt-10">
+      <h6 className="text-gray">Aggiungi una nota</h6>
+      <p>
+        Inserisci una nota di spiegazione riguardo al motivo per cui l’esercente
+        non può essere convenzionato in questo momento. La nota sarà visibile
+        all’operatore.
+      </p>
+      <div className="mb-12">
+        <textarea
+          id="rejectMessage"
+          value={rejectMessage}
+          onChange={e => setRejectMessage(e.target.value)}
+          rows={5}
+          maxLength={250}
+          placeholder="Inserisci una descrizione"
+          className="form-control"
+        />
+      </div>
+      <Button
+        color="primary"
+        outline
+        tag="button"
+        className="ms-4"
+        onClick={() => {
+          setRejectMode(false);
+          setRejectMessage("");
+        }}
+      >
+        Annulla
+      </Button>
+      <AsyncButton
+        color="primary"
+        className="ms-4"
+        onClick={rejectAgreement}
+        disabled={!rejectMessage.length}
+        isPending={isPending}
+      >
+        Invia rifiuto
+      </AsyncButton>
+    </div>
+  );
+}
+
+function ActionButtons({
+  assignedToMe,
+  original,
+  checkAllDocs,
+  approveIsPending,
+  assignIsPending,
+  approveAgreement,
+  assignAgreements,
+  setRejectMode
+}: ActionButtonsProps) {
+  return (
+    <div className="mt-10">
+      <Button
+        color="primary"
+        outline
+        tag="button"
+        className="ms-4"
+        onClick={() => setRejectMode(true)}
+        disabled={!assignedToMe}
+      >
+        <div className="d-flex align-items-center">Rifiuta</div>
+      </Button>
+      <AsyncButton
+        color="primary"
+        className="ms-4"
+        onClick={approveAgreement}
+        disabled={
+          !assignedToMe ||
+          original.state === "PendingAgreement" ||
+          !checkAllDocs
+        }
+        isPending={approveIsPending}
+      >
+        Approva
+      </AsyncButton>
+      <AssignRequest
+        isPending={assignIsPending}
+        original={original}
+        assignedToMe={assignedToMe}
+        assignAgreements={assignAgreements}
+      />
+    </div>
+  );
+}
+
+const RequestsDetails = ({ original, updateList }: Props) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [checkAllDocs, setCheckAllDocs] = useState(false);
@@ -154,77 +269,24 @@ const RequestsDetails = ({
         setCheckAllDocs={setCheckAllDocs}
       />
       {rejectMode ? (
-        <div className="mt-10">
-          <h6 className="text-gray">Aggiungi una nota</h6>
-          <p>
-            Inserisci una nota di spiegazione riguardo al motivo per cui
-            l’esercente non può essere convenzionato in questo momento. La nota
-            sarà visibile all’operatore.
-          </p>
-          <div className="mb-12">
-            <textarea
-              id="rejectMessage"
-              value={rejectMessage}
-              onChange={e => setRejectMessage(e.target.value)}
-              rows={5}
-              maxLength={250}
-              placeholder="Inserisci una descrizione"
-              className="form-control"
-            />
-          </div>
-          <Button
-            color="primary"
-            outline
-            tag="button"
-            className="ms-4"
-            onClick={() => {
-              setRejectMode(false);
-              setRejectMessage("");
-            }}
-          >
-            Annulla
-          </Button>
-          <Button
-            color="primary"
-            tag="button"
-            className="ms-4"
-            onClick={rejectAgreement}
-            disabled={!rejectMessage.length}
-          >
-            Invia rifiuto
-          </Button>
-        </div>
+        <RejectButtons
+          rejectMessage={rejectMessage}
+          setRejectMessage={setRejectMessage}
+          setRejectMode={setRejectMode}
+          rejectAgreement={rejectAgreement}
+          isPending={isPending}
+        />
       ) : (
-        <div className="mt-10">
-          <Button
-            color="primary"
-            outline
-            tag="button"
-            className="ms-4"
-            onClick={() => setRejectMode(true)}
-            disabled={!assignedToMe}
-          >
-            Rifiuta
-          </Button>
-          <Button
-            color="primary"
-            tag="button"
-            className="ms-4"
-            onClick={approveAgreement}
-            disabled={
-              !assignedToMe ||
-              original.state === "PendingAgreement" ||
-              !checkAllDocs
-            }
-          >
-            Approva
-          </Button>
-          <AssignRequest
-            original={original}
-            assignedToMe={assignedToMe}
-            assignAgreements={assignAgreements}
-          />
-        </div>
+        <ActionButtons
+          assignedToMe={assignedToMe}
+          original={original}
+          checkAllDocs={checkAllDocs}
+          approveIsPending={approveAgreementMutation.isPending}
+          assignIsPending={assignAgreementsMutation.isPending}
+          approveAgreement={approveAgreement}
+          assignAgreements={assignAgreements}
+          setRejectMode={setRejectMode}
+        />
       )}
     </section>
   );

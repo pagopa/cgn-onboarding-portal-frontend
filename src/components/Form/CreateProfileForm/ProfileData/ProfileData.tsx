@@ -13,11 +13,18 @@ import {
 } from "../../operatorDataUtils";
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
 import { useStandardForm } from "../../../../utils/useStandardForm";
+import AsyncButton from "../../../AsyncButton/AsyncButton";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
 import ReferentData from "./ReferentData";
 import SalesChannels from "./SalesChannels";
+
+type OperatorDataButtonsProps = {
+  onBack(): void;
+  isPending: boolean;
+  isEnabled: boolean;
+};
 
 type Props = {
   isCompleted: boolean;
@@ -25,6 +32,35 @@ type Props = {
   handleNext: () => void;
   onUpdate: () => void;
 };
+
+function OperatorDataButtons({
+  isEnabled,
+  isPending,
+  onBack
+}: OperatorDataButtonsProps) {
+  return (
+    <div className="d-flex mt-10 gap-4 flex-wrap">
+      <Button
+        tag="button"
+        className="px-14"
+        outline
+        color="primary"
+        onClick={onBack}
+      >
+        Indietro
+      </Button>
+      <AsyncButton
+        type="submit"
+        className="px-14"
+        color="primary"
+        disabled={!isEnabled}
+        isPending={isPending}
+      >
+        Continua
+      </AsyncButton>
+    </div>
+  );
+}
 
 const ProfileData = ({
   isCompleted,
@@ -147,11 +183,11 @@ const ProfileData = ({
         >
           <OperatorDataButtons
             onBack={handleBack}
-            isEnabled={
-              !!agreement.imageUrl &&
-              !editProfileMutation.isPending &&
-              !createProfileMutation.isPending &&
-              !form.formState.isSubmitting
+            isEnabled={!!agreement.imageUrl}
+            isPending={
+              editProfileMutation.isPending ||
+              createProfileMutation.isPending ||
+              form.formState.isSubmitting
             }
           />
         </SalesChannels>
@@ -161,34 +197,3 @@ const ProfileData = ({
 };
 
 export default ProfileData;
-
-function OperatorDataButtons({
-  isEnabled,
-  onBack
-}: {
-  onBack(): void;
-  isEnabled: boolean;
-}) {
-  return (
-    <div className="d-flex mt-10 gap-4 flex-wrap">
-      <Button
-        className="px-14"
-        outline
-        color="primary"
-        tag="button"
-        onClick={onBack}
-      >
-        Indietro
-      </Button>
-      <Button
-        type="submit"
-        className="px-14"
-        color="primary"
-        tag="button"
-        disabled={!isEnabled}
-      >
-        Continua
-      </Button>
-    </div>
-  );
-}

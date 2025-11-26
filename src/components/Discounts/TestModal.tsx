@@ -1,36 +1,39 @@
-import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button } from "design-react-kit";
+import { ModalProps } from "../../types";
+import AsyncButton from "../AsyncButton/AsyncButton";
 
-type Props = {
-  isOpen: boolean;
-  toggle(): void;
-  testRequest(): void;
-};
-
-const TestModal = ({ isOpen, toggle, testRequest }: Props) => (
-  <Modal isOpen={isOpen} toggle={toggle} size="md">
-    <ModalHeader toggle={toggle}>Richiedi test</ModalHeader>
+const TestModal = ({
+  isOpen,
+  onToggle,
+  actionRequest,
+  isPending
+}: ModalProps) => (
+  <Modal isOpen={isOpen} toggle={onToggle} size="md">
+    <ModalHeader toggle={onToggle}>Richiedi test</ModalHeader>
     <ModalBody>
       Se confermi, dichiari di avere concluso le implementazioni tecniche
       necessarie e il team di CGN procederà con un test funzionale secondo la
       modalità di riconoscimento che avete scelto.
     </ModalBody>
     <ModalFooter className="d-flex flex-column">
-      <Button
+      <AsyncButton
         color="primary"
         onClick={() => {
-          toggle();
-          testRequest();
+          onToggle();
+          actionRequest();
         }}
-        style={{ width: "100%" }}
+        fullwidth
+        isPending={isPending}
       >
         Conferma richiesta
-      </Button>{" "}
+      </AsyncButton>
       <Button
         color="primary"
+        tag="button"
         outline
-        onClick={toggle}
-        style={{ width: "100%" }}
+        onClick={onToggle}
+        className="w-100"
       >
         Annulla
       </Button>
