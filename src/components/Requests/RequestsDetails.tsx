@@ -5,7 +5,6 @@ import { useTooltip, Severity } from "../../context/tooltip";
 import { AgreementState, EntityType } from "../../api/generated_backoffice";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
-import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import AsyncButton from "../AsyncButton/AsyncButton";
 import RequestItem from "./RequestsDetailsItem";
@@ -204,17 +203,6 @@ const RequestsDetails = ({ original, updateList }: Props) => {
     approveAgreementMutation.isPending ||
     rejectAgreementMutation.isPending ||
     assignAgreementsMutation.isPending;
-
-  if (isPending) {
-    return (
-      <section className="px-6 py-4 bg-white">
-        <h1 className="h5 fw-bold text-dark-blue mb-5">Dettagli</h1>
-        <div className="container">
-          <CenteredLoading />
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="px-6 py-4 bg-white">
