@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Button, Icon } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import AsyncButton from "../../../AsyncButton/AsyncButton";
 
 type Props = {
   onDelete: () => void;
+  isPending: boolean;
 };
 
-const DeleteDocument = ({ onDelete }: Props) => {
+const DeleteDocument = ({ onDelete, isPending }: Props) => {
   const [isOpen, toggle] = useState(false);
   return (
     <>
@@ -23,16 +25,17 @@ const DeleteDocument = ({ onDelete }: Props) => {
         </ModalHeader>
         <ModalBody>Sei sicuro di voler eliminare questo documento?</ModalBody>
         <ModalFooter className="d-flex flex-column">
-          <Button
+          <AsyncButton
             color="primary"
             onClick={() => {
               onDelete();
               toggle(false);
             }}
-            style={{ width: "100%" }}
+            isPending={isPending}
+            fullwidth
           >
             Elimina
-          </Button>
+          </AsyncButton>
           <Button
             color="primary"
             outline
