@@ -368,6 +368,14 @@ const Discounts = () => {
                               row={row}
                               agreement={agreement}
                               profile={profile}
+                              isPendingPublish={
+                                publishDiscountMutation.isPending
+                              }
+                              isPendingUnpublish={
+                                unpublishDiscountMutation.isPending
+                              }
+                              isPendingTest={testDiscountMutation.isPending}
+                              isPendingDelete={deleteDiscountMutation.isPending}
                               onPublish={() => {
                                 setSelectedDiscountAction({
                                   action: "publish",

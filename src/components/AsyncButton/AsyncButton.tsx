@@ -3,7 +3,7 @@ import { PropsWithChildren } from "react";
 import SmallSpinner from "../SmallSpinner/SmallSpinner";
 
 type Props = PropsWithChildren & {
-  isPending?: boolean;
+  isPending: boolean;
   fullwidth?: boolean;
 } & ButtonProps;
 
