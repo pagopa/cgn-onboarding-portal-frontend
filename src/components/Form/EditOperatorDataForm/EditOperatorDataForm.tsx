@@ -80,6 +80,11 @@ export const EditOperatorForm = ({ variant }: Props) => {
     zodSchema: ProfileDataValidationSchema
   });
 
+  const isPending = useMemo(
+    () => editProfileMutation.isPending && form.formState.isSubmitting,
+    [editProfileMutation.isPending, form.formState.isSubmitting]
+  );
+
   if (profileQuery.isPending) {
     return <CenteredLoading />;
   }
@@ -91,9 +96,6 @@ export const EditOperatorForm = ({ variant }: Props) => {
     authentication.currentMerchantFiscalCode ??
     authentication.currentUserFiscalCode ??
     "";
-
-  const isPending =
-    editProfileMutation.isPending && form.formState.isSubmitting;
 
   return (
     <form

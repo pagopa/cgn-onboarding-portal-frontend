@@ -189,7 +189,12 @@ const FileRow = ({
                 </>
               )}
             </div>
-            {uploadedDoc && <DeleteDocument onDelete={deleteFile} />}
+            {uploadedDoc && (
+              <DeleteDocument
+                onDelete={deleteFile}
+                isPending={deleteFileMutation.isPending}
+              />
+            )}
           </>
         )}
       </div>

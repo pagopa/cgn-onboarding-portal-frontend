@@ -21,6 +21,7 @@ import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
 import { getEditDiscountRoute } from "../../navigation/utils";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
+import AsyncButton from "../AsyncButton/AsyncButton";
 import ImportationStatus from "./ImportationStatus";
 import { DiscountComponent } from "./getDiscountComponent";
 
@@ -32,6 +33,10 @@ type Props = {
   onDelete: () => void;
   onTest: () => void;
   profile?: Profile;
+  isPendingPublish: boolean;
+  isPendingUnpublish: boolean;
+  isPendingTest: boolean;
+  isPendingDelete: boolean;
   maxPublishedDiscountsReached: boolean;
 };
 
@@ -43,6 +48,10 @@ const DiscountDetailRow = ({
   onUnpublish,
   onDelete,
   onTest,
+  isPendingPublish,
+  isPendingUnpublish,
+  isPendingTest,
+  isPendingDelete,
   maxPublishedDiscountsReached
 }: Props) => {
   const history = useHistory();
@@ -62,17 +71,17 @@ const DiscountDetailRow = ({
 
   const getDiscountButtons = (row: Row<Discount>) => (
     <div className={"mt-10 d-flex flex-row justify-content-end"}>
-      <Button
+      <AsyncButton
         color="danger"
         className="me-2 d-flex align-items-center"
         outline
         icon
-        tag="button"
+        isPending={isPendingDelete}
         onClick={onDelete}
       >
         <TrashIcon fill={"#CC334D"} />
         Elimina
-      </Button>
+      </AsyncButton>
       <Button
         className="me-2 d-flex align-items-center"
         color={"primary"}
@@ -98,40 +107,40 @@ const DiscountDetailRow = ({
         (row.original.state === "test_pending" ||
           row.original.state === "test_failed" ||
           row.original.state === "draft") && (
-          <Button
+          <AsyncButton
             className="me-2 d-flex align-items-center"
             color="primary"
-            tag="button"
             outline
             disabled={row.original.state === "test_pending"}
             onClick={onTest}
+            isPending={isPendingTest}
           >
             <TestIcon fill="#0273E6" />
             <span>Richiedi test</span>
-          </Button>
+          </AsyncButton>
         )}
       {row.original.state !== "published" &&
         row.original.state !== "suspended" &&
         row.original.state !== "expired" && (
-          <Button
+          <AsyncButton
             className="me-2"
             color="primary"
-            tag="button"
             onClick={onPublish}
             disabled={!canPublishAfterTest || maxPublishedDiscountsReached}
+            isPending={isPendingPublish}
           >
             <span>Pubblica</span>
-          </Button>
+          </AsyncButton>
         )}
       {row.original.state === "published" && (
-        <Button
+        <AsyncButton
           className="me-2"
           color="primary"
-          tag="button"
           onClick={onUnpublish}
+          isPending={isPendingUnpublish}
         >
           <span>Torna in bozza</span>
-        </Button>
+        </AsyncButton>
       )}
     </div>
   );
