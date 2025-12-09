@@ -1,20 +1,23 @@
-import { Button } from "design-react-kit";
 import { Link } from "react-router-dom";
 import { DASHBOARD } from "../../../navigation/routes";
+import AsyncButton from "../../AsyncButton/AsyncButton";
 
-const FormButtons = ({ isEnabled }: { isEnabled: boolean }) => (
+type Props = { isPending: boolean };
+
+const FormButtons = ({ isPending }: Props) => (
   <div className="mt-10">
     <Link to={DASHBOARD} className="px-14 me-14 btn btn-outline-primary">
       Annulla
     </Link>
-    <Button
+    <AsyncButton
       type="submit"
+      tag="button"
       className="px-14 me-4"
       color="primary"
-      disabled={!isEnabled}
+      isPending={isPending}
     >
       Invia
-    </Button>
+    </AsyncButton>
   </div>
 );
 

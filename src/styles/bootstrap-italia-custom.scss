@@ -76,4 +76,9 @@ textarea {
     resize: none !important;
 }
 
+.select-wrapper select:invalid {
+  color: #6f6f6f !important;
+  font-weight: normal !important;
+}
+
 @import "~/bootstrap-italia/src/scss/bootstrap-italia.scss";

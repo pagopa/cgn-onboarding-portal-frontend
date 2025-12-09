@@ -1,7 +1,7 @@
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import z from "zod/v4";
-import { ObjectLens } from "@hookform/lenses";
+import { useCallback, useEffect, useMemo } from "react";
 import FormSection from "../FormSection";
 import InputField from "../FormField";
 import {
@@ -118,17 +118,42 @@ const HelpForm = () => {
   });
 
   const form = isLogged ? loggedForm : notLoggedForm;
+  const { category, topic } = form.watch();
 
-  // this is a shortcut to avoid the ternary isLogged ? loggedForm.lens.focus : notLoggedForm.lens.focus
-  // added extra type check that will ensure that the form lens focus is compatible with both LoggedHelpFormValues and NotLoggedHelpFormValues
-  const formLensFocus: NotLoggedHelpFormValues extends LoggedHelpFormValues
-    ? ObjectLens<LoggedHelpFormValues>["focus"]
-    : never = form.lens.focus;
+  useEffect(() => {
+    if (
+      category !== "DataFilling" &&
+      category !== "Documents" &&
+      category !== "Discounts"
+    ) {
+      loggedForm.setValue("topic", "");
+      notLoggedForm.setValue("topic", "");
+    }
+  }, [category]);
 
-  const submitIsEnabled =
-    !form.formState.isSubmitting &&
-    !createLoggedHelpMutation.isPending &&
-    !createNotLoggedHelpMutation.isPending;
+  const formLensFocus = useCallback(
+    (value: Parameters<typeof form.lens.focus>[0]) =>
+      isLogged
+        ? loggedForm.lens.focus(
+            value as Parameters<typeof loggedForm.lens.focus>[0]
+          )
+        : notLoggedForm.lens.focus(
+            value as Parameters<typeof notLoggedForm.lens.focus>[0]
+          ),
+    [form, isLogged, loggedForm, notLoggedForm]
+  );
+
+  const isPending = useMemo(
+    () =>
+      form.formState.isSubmitting &&
+      (createLoggedHelpMutation.isPending ||
+        createNotLoggedHelpMutation.isPending),
+    [
+      createLoggedHelpMutation.isPending,
+      createNotLoggedHelpMutation.isPending,
+      form.formState.isSubmitting
+    ]
+  );
 
   return (
     <form
@@ -265,16 +290,23 @@ const HelpForm = () => {
             <FormErrorMessage formLens={formLensFocus("category")} />
           </div>
         </InputField>
-        {hasTopicDropdown(form.getValues().category) && (
+        {hasTopicDropdown(category) && (
           <InputField
             title="Argomento"
-            htmlFor="argomento"
+            htmlFor="topic"
             description="Seleziona l’argomento per cui hai bisogno di aiuto"
           >
             <div className="select-wrapper">
-              <Field element="select" formLens={formLensFocus("topic")}>
+              <Field
+                element="select"
+                formLens={formLensFocus("topic")}
+                className={topic === "" ? "placeholder" : ""}
+              >
+                <option value={""} disabled>
+                  Seleziona l&apos;argomento
+                </option>
                 {topics()
-                  .find(topic => topic.key === form.getValues().category)
+                  .find(topic => topic.key === category)
                   ?.items.map(item => (
                     <option key={item} value={item}>
                       {item}
@@ -282,6 +314,7 @@ const HelpForm = () => {
                   ))}
               </Field>
             </div>
+            <FormErrorMessage formLens={formLensFocus("topic")} />
           </InputField>
         )}
         <InputField
@@ -293,6 +326,7 @@ const HelpForm = () => {
           <Field
             element="textarea"
             id="message"
+            placeholder="Testo del messaggio"
             formLens={formLensFocus("message")}
             maxLength={200}
             rows={4}
@@ -300,7 +334,7 @@ const HelpForm = () => {
           />
           <FormErrorMessage formLens={formLensFocus("message")} />
         </InputField>
-        {isLogged && <FormButtons isEnabled={submitIsEnabled} />}
+        {isLogged && <FormButtons isPending={isPending} />}
       </FormSection>
       {!isLogged && (
         <FormSection
@@ -402,7 +436,7 @@ const HelpForm = () => {
               </InputFieldMultiple>
             </div>
           </div>
-          <FormButtons isEnabled={submitIsEnabled} />
+          <FormButtons isPending={isPending} />
           <p className="mt-4 text-gray">
             Form protetto tramite reCAPTCHA e Google{" "}
             <a href="https://policies.google.com/privacy">Privacy Policy</a> e{" "}

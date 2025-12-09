@@ -38,3 +38,10 @@
 .tracking {
   letter-spacing: 0.5px;
 }
+
+.select-wrapper select.placeholder {
+  color: #5C6F82;
+  font-weight: 400;
+  font-style: italic;
+  cursor: auto; /* or auto */
+}
