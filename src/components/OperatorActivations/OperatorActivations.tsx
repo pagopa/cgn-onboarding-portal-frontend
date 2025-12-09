@@ -121,7 +121,7 @@ const OperatorActivations = () => {
       enableSorting: false,
       cell: ({ getValue }) => {
         const list = getValue() ?? [];
-        if (!Array.isArray(list) || list.length === 0) {
+        if (list.length === 0) {
           return <span>-</span>;
         }
         const shown = list.slice(0, 2);
