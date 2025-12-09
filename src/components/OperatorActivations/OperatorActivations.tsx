@@ -170,9 +170,7 @@ const OperatorActivations = () => {
     [operators]
   );
 
-  const pageCount = operators?.count
-    ? Math.ceil(operators?.count / pagination.pageSize)
-    : 0;
+  const pageCount = Math.ceil((operators?.count ?? 0) / pagination.pageSize);
 
   const table = useReactTable({
     data,

@@ -189,9 +189,7 @@ const Requests = () => {
     []
   );
 
-  const pageCount = agreements?.total
-    ? Math.ceil(agreements?.total / pageSize)
-    : 0;
+  const pageCount = Math.ceil((agreements?.total ?? 0) / pageSize);
 
   const table = useReactTable({
     data,

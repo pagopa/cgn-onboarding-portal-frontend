@@ -152,9 +152,7 @@ const OperatorConvention = () => {
     })
   ];
 
-  const pageCount = conventions?.total
-    ? Math.ceil(conventions?.total / pagination.pageSize)
-    : 0;
+  const pageCount = Math.ceil((conventions?.total ?? 0) / pagination.pageSize);
 
   const table = useReactTable({
     data,
