@@ -66,7 +66,7 @@ const DateModal = ({
   return (
     <>
       <div
-        className="chip chip-lg m-1 cursor-pointer"
+        className="chip chip-lg pe-3 m-1 cursor-pointer"
         onClick={toggleDateModal}
       >
         <span className="chip-label">

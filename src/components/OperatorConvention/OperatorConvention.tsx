@@ -1,8 +1,18 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { Column, Row, usePagination, useSortBy, useTable } from "react-table";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
+import {
+  ColumnDef,
+  ExpandedState,
+  flexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable
+} from "@tanstack/react-table";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -15,7 +25,6 @@ import TableHeader from "../Table/TableHeader";
 import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
-import { useStableValue } from "../../utils/useStableValue";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
 import { BadgeStatus } from "./BadgeStatus";
@@ -50,13 +59,17 @@ const getConventionSortColumn = (id: string) => {
 };
 
 const OperatorConvention = () => {
-  const pageSize = 20;
   const [showDetails, setShowDetails] = useState(false);
   const [selectedConvention, setSelectedConvention] = useState<
     ApprovedAgreement | undefined
   >();
 
-  const [pageParam, setPageParam] = useState(0);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20
+  });
 
   const [values, setValues] = useState<ConventionFilterFormValues>(
     conventionFilterFormInitialValues
@@ -83,12 +96,13 @@ const OperatorConvention = () => {
         : undefined,
       sortColumn: values.sortColumn,
       sortDirection: values.sortDirection,
-      pageSize,
-      page: pageParam
+      pageSize: pagination.pageSize,
+      page: pagination.pageIndex
     }),
     [
       fullNameDebounced,
-      pageParam,
+      pagination.pageIndex,
+      pagination.pageSize,
       values.lastUpdateDateFrom,
       values.lastUpdateDateTo,
       values.sortColumn,
@@ -100,77 +114,75 @@ const OperatorConvention = () => {
     remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(params);
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
-  const columns = useMemo(
-    (): Array<Column<ApprovedAgreement>> => [
+  const columns = useMemo<Array<ColumnDef<ApprovedAgreement, unknown>>>(
+    () => [
       {
-        Header: "Operatore",
-        accessor: "fullName"
+        accessorKey: "fullName",
+        header: "Operatore"
       },
       {
-        Header: "Tipologia ente",
-        accessor: "entityType",
-        Cell: ({ row }: { row: Row<ApprovedAgreement> }) =>
-          getEntityTypeLabel(row.original.entityType)
+        accessorKey: "entityType",
+        header: "Tipologia ente",
+        cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
       },
       {
-        Header: "Data Convenzionamento",
-        accessor: "agreementStartDate",
-        Cell: ({ row }) =>
-          format(new Date(row.values.agreementStartDate), "dd/MM/yyyy")
+        accessorKey: "agreementStartDate",
+        header: "Data Convenzionamento",
+        cell: ({ getValue }) => {
+          const v = getValue<string | null | undefined>();
+          return v ? format(new Date(v), "dd/MM/yyyy") : "-";
+        }
       },
       {
-        Header: "Data Ultima Modifica",
-        accessor: "agreementLastUpdateDate",
-        Cell: ({ row }) =>
-          format(new Date(row.values.agreementLastUpdateDate), "dd/MM/yyyy")
+        accessorKey: "agreementLastUpdateDate",
+        header: "Data Ultima Modifica",
+        cell: ({ getValue }) => {
+          const v = getValue<string | null | undefined>();
+          return v ? format(new Date(v), "dd/MM/yyyy") : "-";
+        }
       },
       {
-        Header: "Opportunità",
-        accessor: "publishedDiscounts"
+        accessorKey: "publishedDiscounts",
+        header: "Opportunità"
       },
       {
-        Header: "TEST",
-        accessor: "testPending",
-        Cell: ({ row }) =>
-          row.values.testPending && (
+        accessorKey: "testPending",
+        header: "TEST",
+        cell: ({ getValue }) =>
+          getValue<boolean | null | undefined>() ? (
             <BadgeStatus discountState={DiscountState.TestPending} />
-          )
+          ) : null
       }
     ],
     []
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    canPreviousPage,
-    canNextPage,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    state: { pageIndex, sortBy }
-  } = useTable<ApprovedAgreement>(
-    {
-      columns,
-      data,
-      initialState: { pageIndex: 0, pageSize },
-      manualPagination: true,
-      manualSortBy: true,
-      disableMultiSort: true,
-      pageCount: conventions?.total
-        ? Math.ceil(conventions?.total / pageSize)
-        : 0
+  const pageCount = conventions?.total
+    ? Math.ceil(conventions?.total / pagination.pageSize)
+    : 0;
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      pagination,
+      sorting,
+      expanded
     },
-    useSortBy,
-    usePagination
-  );
+    onPaginationChange: setPagination,
+    onSortingChange: setSorting,
+    onExpandedChange: setExpanded,
+    manualPagination: true,
+    manualSorting: true,
+    pageCount,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getPaginationRowModel: getPaginationRowModel()
+  });
 
   useEffect(() => {
-    const sortField = sortBy[0];
+    const sortField = sorting[0];
     if (sortField) {
       setValues(values => ({
         ...values,
@@ -184,16 +196,7 @@ const OperatorConvention = () => {
         sortDirection: undefined
       }));
     }
-  }, [sortBy]);
-
-  useEffect(() => {
-    setPageParam(pageIndex);
-  }, [pageIndex]);
-
-  useEffect(() => {
-    gotoPage(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useStableValue(values)]);
+  }, [sorting]);
 
   if (showDetails && selectedConvention) {
     return (
@@ -208,9 +211,16 @@ const OperatorConvention = () => {
     );
   }
 
-  const startRowIndex: number = pageIndex * pageSize + 1;
+  const canPreviousPage = table.getCanPreviousPage();
+  const canNextPage = table.getCanNextPage();
+
+  const previousPage = () => table.previousPage();
+  const nextPage = () => table.nextPage();
+  const gotoPage = (page: number) => table.setPageIndex(page);
+
+  const startRowIndex: number = pagination.pageIndex * pagination.pageSize + 1;
   // eslint-disable-next-line functional/no-let
-  let endRowIndex: number = startRowIndex - 1 + pageSize;
+  let endRowIndex: number = startRowIndex - 1 + pagination.pageSize;
 
   if (endRowIndex > (conventions?.total || 0)) {
     endRowIndex = conventions?.total || 0;
@@ -235,7 +245,7 @@ const OperatorConvention = () => {
             canNextPage={canNextPage}
             startRowIndex={startRowIndex}
             endRowIndex={endRowIndex}
-            pageIndex={pageIndex}
+            pageIndex={pagination.pageIndex}
             onPreviousPage={previousPage}
             onNextPage={nextPage}
             onGotoPage={gotoPage}
@@ -243,41 +253,34 @@ const OperatorConvention = () => {
             total={conventions?.total}
           />
           <div className="overflow-auto">
-            <table
-              {...getTableProps()}
-              style={{ width: "100%" }}
-              className="mt-2 bg-white"
-            >
-              <TableHeader headerGroups={headerGroups} />
-              <tbody {...getTableBodyProps()}>
-                {page.map(row => {
-                  prepareRow(row);
-                  return (
-                    <Fragment key={row.getRowProps().key}>
-                      <tr
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setShowDetails(true);
-                          setSelectedConvention(row.original);
-                        }}
+            <table style={{ width: "100%" }} className="mt-2 bg-white">
+              <TableHeader headerGroups={table.getHeaderGroups()} />
+
+              <tbody>
+                {table.getRowModel().rows.map(row => (
+                  <tr
+                    key={row.id}
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setShowDetails(true);
+                      setSelectedConvention(row.original);
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell, i, arr) => (
+                      <td
+                        key={cell.id}
+                        className={`${i === 0 ? "ps-6" : ""} ${
+                          i === arr.length - 1 ? "pe-6" : ""
+                        } px-3 py-2 border-bottom text-sm`}
                       >
-                        {row.cells.map((cell, i) => (
-                          <td
-                            className={`
-                          ${i === 0 ? "ps-6" : ""}
-                          ${i === headerGroups.length - 1 ? "pe-6" : ""}
-                          px-3 py-2 border-bottom text-sm
-                          `}
-                            {...cell.getCellProps()}
-                            key={i}
-                          >
-                            {cell.render("Cell")}
-                          </td>
-                        ))}
-                      </tr>
-                    </Fragment>
-                  );
-                })}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
