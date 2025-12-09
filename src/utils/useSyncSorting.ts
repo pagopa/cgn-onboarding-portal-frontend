@@ -1,9 +1,9 @@
 import { SortingState } from "@tanstack/react-table";
 import { useEffect } from "react";
 
-export function useSyncSorting(
+export function useSyncSorting<T>(
   sorting: SortingState,
-  setValues: (fn: (prev: any) => any) => void,
+  setValues: (fn: (prev: T) => T) => void,
   mapColumnFn: (id: string) => string | undefined
 ) {
   useEffect(() => {
