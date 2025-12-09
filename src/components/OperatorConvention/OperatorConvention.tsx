@@ -3,7 +3,7 @@ import { Button } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
-  ColumnDef,
+  createColumnHelper,
   ExpandedState,
   flexRender,
   getCoreRowModel,
@@ -116,48 +116,41 @@ const OperatorConvention = () => {
     remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(params);
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
-  const columns = useMemo<Array<ColumnDef<ApprovedAgreement, unknown>>>(
-    () => [
-      {
-        accessorKey: "fullName",
-        header: "Operatore"
-      },
-      {
-        accessorKey: "entityType",
-        header: "Tipologia ente",
-        cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
-      },
-      {
-        accessorKey: "agreementStartDate",
-        header: "Data Convenzionamento",
-        cell: ({ getValue }) => {
-          const v = getValue<string | null | undefined>();
-          return v ? format(new Date(v), "dd/MM/yyyy") : "-";
-        }
-      },
-      {
-        accessorKey: "agreementLastUpdateDate",
-        header: "Data Ultima Modifica",
-        cell: ({ getValue }) => {
-          const v = getValue<string | null | undefined>();
-          return v ? format(new Date(v), "dd/MM/yyyy") : "-";
-        }
-      },
-      {
-        accessorKey: "publishedDiscounts",
-        header: "Opportunità"
-      },
-      {
-        accessorKey: "testPending",
-        header: "TEST",
-        cell: ({ getValue }) =>
-          getValue<boolean | null | undefined>() ? (
-            <BadgeStatus discountState={DiscountState.TestPending} />
-          ) : null
+  const columnHelper = createColumnHelper<ApprovedAgreement>();
+
+  const columns = [
+    columnHelper.accessor("fullName", {
+      header: "Operatore"
+    }),
+    columnHelper.accessor("entityType", {
+      header: "Tipologia ente",
+      cell: info => getEntityTypeLabel(info.row.original.entityType)
+    }),
+    columnHelper.accessor("agreementStartDate", {
+      header: "Data Convenzionamento",
+      cell: info => {
+        const v = info.getValue<string | null | undefined>();
+        return v ? format(new Date(v), "dd/MM/yyyy") : "-";
       }
-    ],
-    []
-  );
+    }),
+    columnHelper.accessor("agreementLastUpdateDate", {
+      header: "Data Ultima Modifica",
+      cell: info => {
+        const v = info.getValue<string | null | undefined>();
+        return v ? format(new Date(v), "dd/MM/yyyy") : "-";
+      }
+    }),
+    columnHelper.accessor("publishedDiscounts", {
+      header: "Opportunità"
+    }),
+    columnHelper.accessor("testPending", {
+      header: "TEST",
+      cell: info =>
+        info.getValue<boolean | null | undefined>() ? (
+          <BadgeStatus discountState={DiscountState.TestPending} />
+        ) : null
+    })
+  ];
 
   const pageCount = conventions?.total
     ? Math.ceil(conventions?.total / pagination.pageSize)

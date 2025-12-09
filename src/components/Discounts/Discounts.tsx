@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
   flexRender,
   getExpandedRowModel,
-  ColumnDef
+  createColumnHelper
 } from "@tanstack/react-table";
 import { Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
@@ -172,12 +172,13 @@ const Discounts = () => {
 
   const entityType = agreement.entityType;
 
-  const columns: Array<ColumnDef<Discount, unknown>> = [
-    {
-      accessorKey: "name",
+  const columnHelper = createColumnHelper<Discount>();
+
+  const columns = [
+    columnHelper.accessor("name", {
       header: "Nome opportunità",
       sortingFn: "alphanumeric",
-      cell: ({ getValue }) => (
+      cell: info => (
         <div
           style={{
             whiteSpace: "normal",
@@ -191,41 +192,39 @@ const Discounts = () => {
             wordBreak: "break-all"
           }}
         >
-          {getValue<string>()}
+          {info.getValue<string>()}
         </div>
       )
-    },
-    {
-      accessorKey: "startDate",
+    }),
+    columnHelper.accessor("startDate", {
       header: "Aggiunta il",
-      cell: ({ getValue }) => {
-        const v = getValue<string | null | undefined>();
+      cell: info => {
+        const v = info.getValue<string | null | undefined>();
         return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
       }
-    },
-    {
-      accessorKey: "state",
+    }),
+    columnHelper.accessor("state", {
       header: "Stato",
       enableSorting: false,
-      cell: ({ getValue }) => (
+      cell: info => (
         <span>
-          <DiscountComponent discountState={getValue<DiscountState>()} />
+          <DiscountComponent discountState={info.getValue<DiscountState>()} />
         </span>
       )
-    },
-    {
+    }),
+    columnHelper.display({
       id: "visibile",
       header: "Visibile",
       enableSorting: false,
-      cell: ({ row }) => <IsVisible discount={row.original} />
-    },
-    {
+      cell: info => <IsVisible discount={info.row.original} />
+    }),
+    columnHelper.display({
       id: "expander",
       header: () => null,
       enableSorting: false,
       size: 48,
-      cell: ({ row }) => <ExpanderCell row={row} />
-    }
+      cell: info => <ExpanderCell row={info.row} />
+    })
   ];
 
   const tableInstance = useReactTable({

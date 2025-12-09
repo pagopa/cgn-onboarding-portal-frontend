@@ -3,7 +3,7 @@ import { Badge, Button } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
-  ColumnDef,
+  createColumnHelper,
   ExpandedState,
   flexRender,
   getCoreRowModel,
@@ -105,72 +105,67 @@ const OperatorActivations = () => {
     params
   );
 
-  const columns = useMemo<
-    Array<ColumnDef<OrganizationWithReferentsAndStatus, unknown>>
-  >(
-    () => [
-      {
-        accessorKey: "organizationName",
-        header: "RAGIONE SOCIALE"
-      },
-      {
-        id: "entityType",
-        header: "TIPOLOGIA ENTE",
-        cell: ({ row }) => getEntityTypeLabel(row.original.entityType),
-        enableSorting: false
-      },
-      {
-        accessorKey: "referents",
-        header: "UTENTI ABILITATI",
-        enableSorting: false,
-        cell: ({ getValue }) => {
-          const list = getValue<Array<string> | null | undefined>() ?? [];
-          if (!Array.isArray(list) || list.length === 0) {
-            return <span>-</span>;
-          }
-          const shown = list.slice(0, 2);
-          const extra = list.length - shown.length;
-          return (
-            <span>
-              {shown.join(", ")}
-              {extra > 0 ? ` +${extra}` : ""}
-            </span>
-          );
+  const columnHelper = createColumnHelper<OrganizationWithReferentsAndStatus>();
+
+  const columns = [
+    columnHelper.accessor("organizationName", {
+      header: "RAGIONE SOCIALE"
+    }),
+    columnHelper.display({
+      id: "entityType",
+      header: "TIPOLOGIA ENTE",
+      enableSorting: false,
+      cell: info => getEntityTypeLabel(info.row.original.entityType)
+    }),
+    columnHelper.accessor("referents", {
+      header: "UTENTI ABILITATI",
+      enableSorting: false,
+      cell: info => {
+        const list = info.getValue<Array<string> | null | undefined>() ?? [];
+        if (!Array.isArray(list) || list.length === 0) {
+          return <span>-</span>;
         }
-      },
-      {
-        accessorKey: "insertedAt",
-        header: "AGGIUNTO IL",
-        cell: ({ getValue }) => {
-          const v = getValue<string | null | undefined>();
-          return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
-        }
-      },
-      {
-        accessorKey: "status",
-        header: "STATO",
-        enableSorting: false,
-        cell: ({ getValue }) => (
-          <Badge
-            className="fw-semibold border border-primary text-bg-light text-primary"
-            pill
-            tag="span"
-            color="white"
-          >
-            {makeOrganizationStatusReadable(getValue<OrganizationStatus>())}
-          </Badge>
-        )
-      },
-      {
-        id: "expander",
-        header: () => null,
-        enableSorting: false,
-        size: 48,
-        cell: ({ row }) => <ExpanderCell row={row} />
+
+        const shown = list.slice(0, 2);
+        const extra = list.length - shown.length;
+        return (
+          <span>
+            {shown.join(", ")}
+            {extra > 0 ? ` +${extra}` : ""}
+          </span>
+        );
       }
-    ],
-    []
-  );
+    }),
+    columnHelper.accessor("insertedAt", {
+      header: "AGGIUNTO IL",
+      cell: info => {
+        const v = info.getValue<string | null | undefined>();
+        return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
+      }
+    }),
+    columnHelper.accessor("status", {
+      header: "STATO",
+      enableSorting: false,
+      cell: info => (
+        <Badge
+          className="fw-semibold border border-primary text-bg-light text-primary"
+          pill
+          tag="span"
+          color="white"
+        >
+          {makeOrganizationStatusReadable(info.getValue<OrganizationStatus>())}
+        </Badge>
+      )
+    }),
+
+    columnHelper.display({
+      id: "expander",
+      header: () => null,
+      enableSorting: false,
+      size: 48,
+      cell: info => <ExpanderCell row={info.row} />
+    })
+  ];
 
   const data: Array<OrganizationWithReferentsAndStatus> = useMemo(
     () => (operators?.items ? [...operators.items] : []),

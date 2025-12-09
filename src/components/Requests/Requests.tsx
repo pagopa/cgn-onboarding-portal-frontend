@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import { keepPreviousData } from "@tanstack/react-query";
 import {
-  ColumnDef,
+  createColumnHelper,
   ExpandedState,
   flexRender,
   getCoreRowModel,
@@ -132,44 +132,45 @@ const Requests = () => {
     [agreements]
   ) as Array<NormalizedBackofficeAgreement>;
 
-  const columns: Array<ColumnDef<NormalizedBackofficeAgreement, unknown>> = [
-    {
+  const columnHelper = createColumnHelper<NormalizedBackofficeAgreement>();
+
+  const columns = [
+    columnHelper.accessor(row => row.profile?.fullName ?? null, {
       id: "profile.fullName",
-      accessorFn: row => row.profile?.fullName ?? null,
       header: "Operatore",
-      cell: ({ getValue }) => getValue<string | null>() ?? "-"
-    },
-    {
+      cell: info => info.getValue<string | null>() ?? "-"
+    }),
+    columnHelper.accessor(row => row.requestDate ?? null, {
       id: "requestDate",
-      accessorFn: row => row.requestDate ?? null,
       header: "Data Richiesta",
-      cell: ({ getValue }) => {
-        const v = getValue<string | null>();
+      cell: info => {
+        const v = info.getValue<string | null>();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
       }
-    },
-    {
+    }),
+    columnHelper.accessor(row => row.state, {
       id: "state",
-      accessorFn: row => row.state,
       header: "Stato",
-      cell: ({ getValue }) => RequestStateBadge(getValue<AgreementState>())
-    },
-    {
-      id: "assignee.fullName",
-      accessorFn: row =>
+      cell: info => RequestStateBadge(info.getValue<AgreementState>())
+    }),
+    columnHelper.accessor(
+      row =>
         row.state === AgreementState.AssignedAgreement
           ? (row.assignee?.fullName ?? null)
           : null,
-      header: "Revisore",
-      cell: ({ getValue }) => getValue<string | null>() ?? "-"
-    },
-    {
+      {
+        id: "assignee.fullName",
+        header: "Revisore",
+        cell: info => info.getValue<string | null>() ?? "-"
+      }
+    ),
+    columnHelper.display({
       id: "expander",
       header: () => null,
       enableSorting: false,
       size: 48,
-      cell: ({ row }) => <ExpanderCell row={row} />
-    }
+      cell: info => <ExpanderCell row={info.row} />
+    })
   ];
 
   const renderRowSubComponent = useCallback(
