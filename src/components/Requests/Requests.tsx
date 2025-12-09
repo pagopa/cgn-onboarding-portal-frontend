@@ -138,20 +138,20 @@ const Requests = () => {
     columnHelper.accessor(row => row.profile?.fullName ?? null, {
       id: "profile.fullName",
       header: "Operatore",
-      cell: info => info.getValue<string | null>() ?? "-"
+      cell: ({ getValue }) => getValue() ?? "-"
     }),
     columnHelper.accessor(row => row.requestDate ?? null, {
       id: "requestDate",
       header: "Data Richiesta",
-      cell: info => {
-        const v = info.getValue<string | null>();
+      cell: ({ getValue }) => {
+        const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
       }
     }),
     columnHelper.accessor(row => row.state, {
       id: "state",
       header: "Stato",
-      cell: info => RequestStateBadge(info.getValue<AgreementState>())
+      cell: ({ getValue }) => RequestStateBadge(getValue())
     }),
     columnHelper.accessor(
       row =>
@@ -161,7 +161,7 @@ const Requests = () => {
       {
         id: "assignee.fullName",
         header: "Revisore",
-        cell: info => info.getValue<string | null>() ?? "-"
+        cell: ({ getValue }) => getValue() ?? "-"
       }
     ),
     columnHelper.display({
@@ -169,7 +169,7 @@ const Requests = () => {
       header: () => null,
       enableSorting: false,
       size: 48,
-      cell: info => <ExpanderCell row={info.row} />
+      cell: ({ row }) => <ExpanderCell row={row} />
     })
   ];
 

@@ -124,19 +124,19 @@ const OperatorConvention = () => {
     }),
     columnHelper.accessor("entityType", {
       header: "Tipologia ente",
-      cell: info => getEntityTypeLabel(info.row.original.entityType)
+      cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
     }),
     columnHelper.accessor("agreementStartDate", {
       header: "Data Convenzionamento",
-      cell: info => {
-        const v = info.getValue<string | null | undefined>();
+      cell: ({ getValue }) => {
+        const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
       }
     }),
     columnHelper.accessor("agreementLastUpdateDate", {
       header: "Data Ultima Modifica",
-      cell: info => {
-        const v = info.getValue<string | null | undefined>();
+      cell: ({ getValue }) => {
+        const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
       }
     }),
@@ -145,8 +145,8 @@ const OperatorConvention = () => {
     }),
     columnHelper.accessor("testPending", {
       header: "TEST",
-      cell: info =>
-        info.getValue<boolean | null | undefined>() ? (
+      cell: ({ getValue }) =>
+        getValue() ? (
           <BadgeStatus discountState={DiscountState.TestPending} />
         ) : null
     })

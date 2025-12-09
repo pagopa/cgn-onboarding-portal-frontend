@@ -17,7 +17,6 @@ import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   AttributeauthorityApiGetOrganizationsRequest,
-  OrganizationStatus,
   OrganizationWithReferentsAndStatus
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
@@ -115,17 +114,16 @@ const OperatorActivations = () => {
       id: "entityType",
       header: "TIPOLOGIA ENTE",
       enableSorting: false,
-      cell: info => getEntityTypeLabel(info.row.original.entityType)
+      cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
     }),
     columnHelper.accessor("referents", {
       header: "UTENTI ABILITATI",
       enableSorting: false,
-      cell: info => {
-        const list = info.getValue<Array<string> | null | undefined>() ?? [];
+      cell: ({ getValue }) => {
+        const list = getValue() ?? [];
         if (!Array.isArray(list) || list.length === 0) {
           return <span>-</span>;
         }
-
         const shown = list.slice(0, 2);
         const extra = list.length - shown.length;
         return (
@@ -138,22 +136,22 @@ const OperatorActivations = () => {
     }),
     columnHelper.accessor("insertedAt", {
       header: "AGGIUNTO IL",
-      cell: info => {
-        const v = info.getValue<string | null | undefined>();
+      cell: ({ getValue }) => {
+        const v = getValue();
         return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
       }
     }),
     columnHelper.accessor("status", {
       header: "STATO",
       enableSorting: false,
-      cell: info => (
+      cell: ({ getValue }) => (
         <Badge
           className="fw-semibold border border-primary text-bg-light text-primary"
           pill
           tag="span"
           color="white"
         >
-          {makeOrganizationStatusReadable(info.getValue<OrganizationStatus>())}
+          {makeOrganizationStatusReadable(getValue())}
         </Badge>
       )
     }),
@@ -163,7 +161,7 @@ const OperatorActivations = () => {
       header: () => null,
       enableSorting: false,
       size: 48,
-      cell: info => <ExpanderCell row={info.row} />
+      cell: ({ row }) => <ExpanderCell row={row} />
     })
   ];
 

@@ -17,12 +17,7 @@ import { remoteData } from "../../api/common";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
-import {
-  AgreementState,
-  Discount,
-  DiscountState,
-  EntityType
-} from "../../api/generated";
+import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import PublishModal from "./PublishModal";
@@ -178,7 +173,7 @@ const Discounts = () => {
     columnHelper.accessor("name", {
       header: "Nome opportunità",
       sortingFn: "alphanumeric",
-      cell: info => (
+      cell: ({ getValue }) => (
         <div
           style={{
             whiteSpace: "normal",
@@ -192,23 +187,23 @@ const Discounts = () => {
             wordBreak: "break-all"
           }}
         >
-          {info.getValue<string>()}
+          {getValue()}
         </div>
       )
     }),
     columnHelper.accessor("startDate", {
       header: "Aggiunta il",
-      cell: info => {
-        const v = info.getValue<string | null | undefined>();
+      cell: ({ getValue }) => {
+        const v = getValue();
         return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
       }
     }),
     columnHelper.accessor("state", {
       header: "Stato",
       enableSorting: false,
-      cell: info => (
+      cell: ({ getValue }) => (
         <span>
-          <DiscountComponent discountState={info.getValue<DiscountState>()} />
+          <DiscountComponent discountState={getValue()} />
         </span>
       )
     }),
@@ -216,14 +211,14 @@ const Discounts = () => {
       id: "visibile",
       header: "Visibile",
       enableSorting: false,
-      cell: info => <IsVisible discount={info.row.original} />
+      cell: ({ row }) => <IsVisible discount={row.original} />
     }),
     columnHelper.display({
       id: "expander",
       header: () => null,
       enableSorting: false,
       size: 48,
-      cell: info => <ExpanderCell row={info.row} />
+      cell: ({ row }) => <ExpanderCell row={row} />
     })
   ];
 
