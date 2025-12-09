@@ -9,14 +9,49 @@ function TableHeader<D extends object>({
 }: {
   headerGroups: Array<HeaderGroup<D>>;
 }) {
-  const getSortIcon = (sortState: SortState): JSX.Element => (
-    <Icon
-      icon={
-        sortState === "desc" ? "it-arrow-down-triangle" : "it-arrow-up-triangle"
-      }
-      style={{ color: "#5C6F82" }}
-    />
-  );
+  const getSortIcon = (sortState: SortState): JSX.Element => {
+    if (!sortState) {
+      return (
+        <div
+          style={{
+            display: "inline-flex",
+            flexDirection: "column",
+            lineHeight: 0.6,
+            position: "relative"
+          }}
+        >
+          <Icon
+            icon="it-arrow-up-triangle"
+            style={{
+              opacity: 0.3,
+              color: "#5C6F82",
+              position: "absolute",
+              bottom: "-18px"
+            }}
+          />
+          <Icon
+            icon="it-arrow-down-triangle"
+            style={{
+              opacity: 0.3,
+              color: "#5C6F82",
+              position: "absolute",
+              bottom: "-20px"
+            }}
+          />
+        </div>
+      );
+    }
+    return (
+      <Icon
+        icon={
+          sortState === "desc"
+            ? "it-arrow-down-triangle"
+            : "it-arrow-up-triangle"
+        }
+        style={{ color: "#5C6F82" }}
+      />
+    );
+  };
 
   return (
     <thead>
