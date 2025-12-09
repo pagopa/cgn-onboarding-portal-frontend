@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, Fragment, useEffect } from "react";
+import { useState, useMemo, useCallback, Fragment } from "react";
 import { Icon, Button } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
@@ -26,6 +26,8 @@ import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
+import { useSyncSorting } from "../../utils/useSyncSorting";
+import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
@@ -223,29 +225,9 @@ const Requests = () => {
     getPaginationRowModel: getPaginationRowModel()
   });
 
-  useEffect(() => {
-    const sortField = sorting[0];
-    if (sortField) {
-      setValues(values => ({
-        ...values,
-        sortColumn: getRequetsSortColumn(sortField.id),
-        sortDirection: sortField.desc ? "DESC" : "ASC"
-      }));
-    } else {
-      setValues(values => ({
-        ...values,
-        sortColumn: undefined,
-        sortDirection: undefined
-      }));
-    }
-  }, [sorting]);
-
-  const canPreviousPage = table.getCanPreviousPage();
-  const canNextPage = table.getCanNextPage();
-
-  const previousPage = () => table.previousPage();
-  const nextPage = () => table.nextPage();
-  const gotoPage = (page: number) => table.setPageIndex(page);
+  useSyncSorting(sorting, setValues, getRequetsSortColumn);
+  const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
+    usePaginationHelpers(table);
 
   const startRowIndex: number = pagination.pageIndex * pageSize + 1;
   // eslint-disable-next-line functional/no-let

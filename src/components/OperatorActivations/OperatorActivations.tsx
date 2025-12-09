@@ -1,4 +1,4 @@
-import { useState, useMemo, Fragment, useEffect } from "react";
+import { useState, useMemo, Fragment } from "react";
 import { Badge, Button, Icon } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
@@ -27,6 +27,8 @@ import {
   makeOrganizationStatusReadable
 } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
+import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import { useSyncSorting } from "../../utils/useSyncSorting";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
@@ -213,29 +215,9 @@ const OperatorActivations = () => {
     getPaginationRowModel: getPaginationRowModel()
   });
 
-  useEffect(() => {
-    const sortField = sorting[0];
-    if (sortField) {
-      setValues(values => ({
-        ...values,
-        sortColumn: getActivationsSortColumn(sortField.id),
-        sortDirection: sortField.desc ? "DESC" : "ASC"
-      }));
-    } else {
-      setValues(values => ({
-        ...values,
-        sortColumn: undefined,
-        sortDirection: undefined
-      }));
-    }
-  }, [sorting]);
-
-  const canPreviousPage = table.getCanPreviousPage();
-  const canNextPage = table.getCanNextPage();
-
-  const previousPage = () => table.previousPage();
-  const nextPage = () => table.nextPage();
-  const gotoPage = (page: number) => table.setPageIndex(page);
+  useSyncSorting(sorting, setValues, getActivationsSortColumn);
+  const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
+    usePaginationHelpers(table);
 
   const startRowIndex: number = pagination.pageIndex * pagination.pageSize + 1;
   // eslint-disable-next-line functional/no-let

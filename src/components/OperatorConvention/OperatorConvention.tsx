@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
@@ -25,6 +25,8 @@ import TableHeader from "../Table/TableHeader";
 import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
+import { useSyncSorting } from "../../utils/useSyncSorting";
+import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
 import { BadgeStatus } from "./BadgeStatus";
@@ -181,22 +183,9 @@ const OperatorConvention = () => {
     getPaginationRowModel: getPaginationRowModel()
   });
 
-  useEffect(() => {
-    const sortField = sorting[0];
-    if (sortField) {
-      setValues(values => ({
-        ...values,
-        sortColumn: getConventionSortColumn(sortField.id),
-        sortDirection: sortField.desc ? "DESC" : "ASC"
-      }));
-    } else {
-      setValues(values => ({
-        ...values,
-        sortColumn: undefined,
-        sortDirection: undefined
-      }));
-    }
-  }, [sorting]);
+  useSyncSorting(sorting, setValues, getConventionSortColumn);
+  const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
+    usePaginationHelpers(table);
 
   if (showDetails && selectedConvention) {
     return (
@@ -210,13 +199,6 @@ const OperatorConvention = () => {
       />
     );
   }
-
-  const canPreviousPage = table.getCanPreviousPage();
-  const canNextPage = table.getCanNextPage();
-
-  const previousPage = () => table.previousPage();
-  const nextPage = () => table.nextPage();
-  const gotoPage = (page: number) => table.setPageIndex(page);
 
   const startRowIndex: number = pagination.pageIndex * pagination.pageSize + 1;
   // eslint-disable-next-line functional/no-let
