@@ -7,7 +7,7 @@ export function useSyncSorting(
   mapColumnFn: (id: string) => string | undefined
 ) {
   useEffect(() => {
-    const sortField = sorting[0];
+    const sortField = sorting[0] || {};
     const sortFieldDesc = sortField.desc ? "DESC" : "ASC";
     setValues(values => ({
       ...values,

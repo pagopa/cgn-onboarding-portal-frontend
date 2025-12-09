@@ -9,17 +9,14 @@ function TableHeader<D extends object>({
 }: {
   headerGroups: Array<HeaderGroup<D>>;
 }) {
-  const getSortIcon = (sortState: SortState): JSX.Element => {
-    if (sortState === "desc") {
-      return (
-        <Icon icon="it-arrow-down-triangle" style={{ color: "#5C6F82" }} />
-      );
-    }
-    if (sortState === "asc") {
-      return <Icon icon="it-arrow-up-triangle" style={{ color: "#5C6F82" }} />;
-    }
-    return <Icon icon="it-arrow-up-triangle" style={{ color: "#5C6F82" }} />;
-  };
+  const getSortIcon = (sortState: SortState): JSX.Element => (
+    <Icon
+      icon={
+        sortState === "desc" ? "it-arrow-down-triangle" : "it-arrow-up-triangle"
+      }
+      style={{ color: "#5C6F82" }}
+    />
+  );
 
   return (
     <thead>
