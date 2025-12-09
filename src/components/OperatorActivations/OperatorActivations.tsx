@@ -1,5 +1,5 @@
 import { useState, useMemo, Fragment } from "react";
-import { Badge, Button, Icon } from "design-react-kit";
+import { Badge, Button } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
@@ -29,6 +29,7 @@ import {
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import { useSyncSorting } from "../../utils/useSyncSorting";
+import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
 
@@ -165,22 +166,7 @@ const OperatorActivations = () => {
         header: () => null,
         enableSorting: false,
         size: 48,
-        cell: ({ row }) => (
-          <span
-            role="button"
-            style={{ cursor: "pointer" }}
-            onClick={e => {
-              e.stopPropagation();
-              row.toggleExpanded();
-            }}
-          >
-            {row.getIsExpanded() ? (
-              <Icon icon="it-expand" color="primary" />
-            ) : (
-              <Icon icon="it-collapse" color="primary" />
-            )}
-          </span>
-        )
+        cell: ({ row }) => <ExpanderCell row={row} />
       }
     ],
     []

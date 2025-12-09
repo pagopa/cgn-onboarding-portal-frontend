@@ -24,6 +24,7 @@ import {
   EntityType
 } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
+import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow from "./DiscountDetailRow";
@@ -223,22 +224,7 @@ const Discounts = () => {
       header: () => null,
       enableSorting: false,
       size: 48,
-      cell: ({ row }) => (
-        <span
-          role="button"
-          style={{ cursor: "pointer" }}
-          onClick={e => {
-            e.stopPropagation();
-            row.toggleExpanded();
-          }}
-        >
-          {row.getIsExpanded() ? (
-            <Icon icon="it-expand" color="primary" />
-          ) : (
-            <Icon icon="it-collapse" color="primary" />
-          )}
-        </span>
-      )
+      cell: ({ row }) => <ExpanderCell row={row} />
     }
   ];
 

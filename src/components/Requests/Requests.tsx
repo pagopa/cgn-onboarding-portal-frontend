@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, Fragment } from "react";
-import { Icon, Button } from "design-react-kit";
+import { Button } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import { keepPreviousData } from "@tanstack/react-query";
@@ -28,6 +28,7 @@ import { useDebouncedValue } from "../../utils/useDebounce";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import { useSyncSorting } from "../../utils/useSyncSorting";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
@@ -167,21 +168,7 @@ const Requests = () => {
       header: () => null,
       enableSorting: false,
       size: 48,
-      cell: ({ row }) => (
-        <span
-          onClick={e => {
-            e.stopPropagation();
-            row.toggleExpanded();
-          }}
-          style={{ cursor: "pointer" }}
-        >
-          {row.getIsExpanded() ? (
-            <Icon icon="it-expand" color="primary" />
-          ) : (
-            <Icon icon="it-collapse" color="primary" />
-          )}
-        </span>
-      )
+      cell: ({ row }) => <ExpanderCell row={row} />
     }
   ];
 
