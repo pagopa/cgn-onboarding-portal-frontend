@@ -124,6 +124,7 @@ const OperatorConvention = () => {
     }),
     columnHelper.accessor("entityType", {
       header: "Tipologia ente",
+      enableSorting: false,
       cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
     }),
     columnHelper.accessor("agreementStartDate", {
@@ -145,6 +146,7 @@ const OperatorConvention = () => {
     }),
     columnHelper.accessor("testPending", {
       header: "TEST",
+      enableSorting: false,
       cell: ({ getValue }) =>
         getValue() ? (
           <BadgeStatus discountState={DiscountState.TestPending} />
