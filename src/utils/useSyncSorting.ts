@@ -1,4 +1,5 @@
 import { SortingState } from "@tanstack/react-table";
+import { isUndefined } from "lodash";
 import { useEffect } from "react";
 
 export function useSyncSorting<T>(
@@ -8,6 +9,9 @@ export function useSyncSorting<T>(
 ) {
   useEffect(() => {
     const sortField = sorting[0] || {};
+    if (isUndefined(sortField.desc)) {
+      return;
+    }
     const sortFieldDesc = sortField.desc ? "DESC" : "ASC";
     setValues(values => ({
       ...values,

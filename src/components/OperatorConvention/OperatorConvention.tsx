@@ -209,7 +209,10 @@ const OperatorConvention = () => {
         values={values}
         onChange={setValues}
         hasActiveFitlers={hasActiveFitlers}
-        onReset={() => setValues(conventionFilterFormInitialValues)}
+        onReset={() => {
+          setValues(conventionFilterFormInitialValues);
+          setSorting([]);
+        }}
       />
       {isPending ? (
         <CenteredLoading />
