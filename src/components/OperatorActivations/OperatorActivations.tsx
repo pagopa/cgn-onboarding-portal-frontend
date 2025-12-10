@@ -241,7 +241,7 @@ const OperatorActivations = () => {
                   <Fragment key={row.id}>
                     <tr
                       className="cursor-pointer"
-                      onClick={row.getToggleExpandedHandler()}
+                      onClick={() => row.toggleExpanded()}
                     >
                       {row.getVisibleCells().map((cell, i, arr) => (
                         <td
