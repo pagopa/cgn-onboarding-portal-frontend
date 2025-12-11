@@ -1,5 +1,4 @@
-import React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, Fragment } from "react";
 import { useSelector } from "react-redux";
 import {
   useReactTable,
@@ -323,7 +322,7 @@ const Discounts = () => {
               )}
 
               {tableInstance.getRowModel().rows.map(row => (
-                <React.Fragment key={row.id}>
+                <Fragment key={row.id}>
                   <tr
                     className="cursor-pointer"
                     onClick={() => row.toggleExpanded()}
@@ -396,7 +395,7 @@ const Discounts = () => {
                       </td>
                     </tr>
                   )}
-                </React.Fragment>
+                </Fragment>
               ))}
             </tbody>
           </table>
