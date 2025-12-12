@@ -1,20 +1,22 @@
-import { useState, useEffect, useMemo, Fragment } from "react";
-import {
-  useTable,
-  usePagination,
-  useSortBy,
-  Column,
-  useExpanded
-} from "react-table";
-import { Badge, Button, Icon } from "design-react-kit";
+import { useState, useMemo, Fragment } from "react";
+import { Badge, Button } from "design-react-kit";
 import { format } from "date-fns";
-import omit from "lodash/omit";
 import isEqual from "lodash/isEqual";
+import {
+  createColumnHelper,
+  ExpandedState,
+  flexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable
+} from "@tanstack/react-table";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
   AttributeauthorityApiGetOrganizationsRequest,
-  OrganizationStatus,
   OrganizationWithReferentsAndStatus
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
@@ -24,11 +26,11 @@ import {
   makeOrganizationStatusReadable
 } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
-import { useStableValue } from "../../utils/useStableValue";
+import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import { useSyncSorting } from "../../utils/useSyncSorting";
+import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import ActivationsFilter from "./ActivationsFilter";
 import OperatorActivationDetail from "./OperatorActivationDetail";
-
-const PAGE_SIZE = 20;
 
 type OrderType = "fiscalCode" | "name" | "pec" | "insertedAt";
 
@@ -36,6 +38,12 @@ export type ActivationsFilterFormValues = {
   searchQuery: string | undefined;
   sortColumn: OrderType | undefined;
   sortDirection: "ASC" | "DESC" | undefined;
+};
+
+const activationsFilterFormInitialValues: ActivationsFilterFormValues = {
+  searchQuery: undefined,
+  sortColumn: undefined,
+  sortDirection: undefined
 };
 
 const getActivationsSortColumn = (id: string): OrderType => {
@@ -50,15 +58,13 @@ const getActivationsSortColumn = (id: string): OrderType => {
   }
 };
 
-const activationsFilterFormInitialValues: ActivationsFilterFormValues = {
-  searchQuery: undefined,
-  sortColumn: undefined,
-  sortDirection: undefined
-};
-
 const OperatorActivations = () => {
-  const [pageParam, setPageParam] = useState(0);
-
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20
+  });
   const [values, setValues] = useState<ActivationsFilterFormValues>(
     activationsFilterFormInitialValues
   );
@@ -76,12 +82,18 @@ const OperatorActivations = () => {
   const params = useMemo(
     (): AttributeauthorityApiGetOrganizationsRequest => ({
       searchQuery: searchQueryDebounced,
-      page: pageParam,
-      pageSize: PAGE_SIZE,
+      page: pagination.pageIndex,
+      pageSize: pagination.pageSize,
       sortBy: values.sortColumn,
       sortDirection: values.sortDirection
     }),
-    [pageParam, searchQueryDebounced, values.sortColumn, values.sortDirection]
+    [
+      pagination.pageIndex,
+      pagination.pageSize,
+      searchQueryDebounced,
+      values.sortColumn,
+      values.sortDirection
+    ]
   );
 
   const {
@@ -92,145 +104,101 @@ const OperatorActivations = () => {
     params
   );
 
-  const columns = useMemo(
-    (): Array<Column<OrganizationWithReferentsAndStatus>> => [
-      {
-        Header: "RAGIONE SOCIALE",
-        accessor: "organizationName"
-      },
-      {
-        Header: "TIPOLOGIA ENTE",
-        Cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
-      },
-      {
-        Header: "UTENTI ABILITATI",
-        disableSortBy: true,
-        accessor: "referents",
-        Cell: ({ row }) => {
-          if (Array.isArray(row.values.referents)) {
-            return (
-              <span>
-                {row.values.referents.reduce(
-                  (acc: string, curr: string, i: number) => {
-                    if (i > 1) {
-                      return `${acc} +1`;
-                    }
-                    if (i > 2) {
-                      return acc;
-                    }
-                    return `${curr}, ${acc}`;
-                  },
-                  ""
-                )}
-              </span>
-            );
-          }
-          return <span>row.values.referents</span>;
+  const columnHelper = createColumnHelper<OrganizationWithReferentsAndStatus>();
+
+  const columns = [
+    columnHelper.accessor("organizationName", {
+      header: "RAGIONE SOCIALE"
+    }),
+    columnHelper.display({
+      id: "entityType",
+      header: "TIPOLOGIA ENTE",
+      enableSorting: false,
+      cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
+    }),
+    columnHelper.accessor("referents", {
+      header: "UTENTI ABILITATI",
+      enableSorting: false,
+      cell: ({ getValue }) => {
+        const list = getValue() ?? [];
+        if (list.length === 0) {
+          return <span>-</span>;
         }
-      },
-      {
-        Header: "AGGIUNTO IL",
-        accessor: "insertedAt",
-        Cell: ({ row }) => (
-          <span>{format(new Date(row.values.insertedAt), "dd/MM/yyyy")}</span>
-        )
-      },
-      {
-        Header: "STATO",
-        accessor: "status",
-        disableSortBy: true,
-        Cell: ({ row }) => (
-          <Badge
-            className="fw-semibold border border-primary text-bg-light text-primary"
-            pill
-            tag="span"
-            color="white"
-          >
-            {makeOrganizationStatusReadable(
-              row.values.status as OrganizationStatus
-            )}
-          </Badge>
-        )
-      },
-      {
-        Header: () => null,
-        id: "expander",
-        Cell: ({ row }) => (
-          <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
-            {row.isExpanded ? (
-              <Icon icon="it-expand" color="primary" />
-            ) : (
-              <Icon icon="it-collapse" color="primary" />
-            )}
+        const shown = list.slice(0, 2);
+        const extra = list.length - shown.length;
+        return (
+          <span>
+            {shown.join(", ")}
+            {extra > 0 ? ` +${extra}` : ""}
           </span>
-        )
+        );
       }
-    ],
-    []
-  );
+    }),
+    columnHelper.accessor("insertedAt", {
+      header: "AGGIUNTO IL",
+      cell: ({ getValue }) => {
+        const v = getValue();
+        return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
+      }
+    }),
+    columnHelper.accessor("status", {
+      header: "STATO",
+      enableSorting: false,
+      cell: ({ getValue }) => (
+        <Badge
+          className="fw-semibold border border-primary text-bg-light text-primary"
+          pill
+          tag="span"
+          color="white"
+        >
+          {makeOrganizationStatusReadable(getValue())}
+        </Badge>
+      )
+    }),
+
+    columnHelper.display({
+      id: "expander",
+      header: () => null,
+      enableSorting: false,
+      size: 48,
+      cell: ({ row }) => <ExpanderCell row={row} />
+    })
+  ];
 
   const data: Array<OrganizationWithReferentsAndStatus> = useMemo(
     () => (operators?.items ? [...operators.items] : []),
     [operators]
   );
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    canPreviousPage,
-    canNextPage,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    state: { pageIndex, sortBy },
-    visibleColumns
-  } = useTable<OrganizationWithReferentsAndStatus>(
-    {
-      columns,
-      data,
-      initialState: { pageIndex: 0, pageSize: PAGE_SIZE },
-      manualPagination: true,
-      manualSortBy: true,
-      disableMultiSort: true,
-      pageCount: operators?.count ? Math.ceil(operators?.count / PAGE_SIZE) : 0
+
+  const pageCount = Math.ceil((operators?.count ?? 0) / pagination.pageSize);
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      pagination,
+      sorting,
+      expanded
     },
-    useSortBy,
-    useExpanded,
-    usePagination
-  );
+    onPaginationChange: setPagination,
+    onSortingChange: setSorting,
+    onExpandedChange: setExpanded,
+    manualPagination: true,
+    manualSorting: true,
+    pageCount,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getPaginationRowModel: getPaginationRowModel()
+  });
 
-  useEffect(() => {
-    const sortField = sortBy[0];
-    if (sortField) {
-      setValues(values => ({
-        ...values,
-        sortColumn: getActivationsSortColumn(sortField.id),
-        sortDirection: sortField.desc ? "DESC" : "ASC"
-      }));
-    } else {
-      setValues(values => ({
-        ...values,
-        sortColumn: undefined,
-        sortDirection: undefined
-      }));
-    }
-  }, [sortBy]);
+  useSyncSorting(sorting, setValues, getActivationsSortColumn);
+  const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
+    usePaginationHelpers(table);
 
-  useEffect(() => {
-    setPageParam(pageIndex);
-  }, [pageIndex]);
-
-  useEffect(() => {
-    gotoPage(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useStableValue(values)]);
-
-  const startRowIndex: number = pageIndex * PAGE_SIZE + 1;
+  const startRowIndex: number = pagination.pageIndex * pagination.pageSize + 1;
   // eslint-disable-next-line functional/no-let
-  let endRowIndex: number = startRowIndex - 1 + PAGE_SIZE;
+  let endRowIndex: number = startRowIndex - 1 + pagination.pageSize;
 
   if (operators?.count && endRowIndex > operators?.count) {
     endRowIndex = operators.count;
@@ -257,7 +225,7 @@ const OperatorActivations = () => {
             canNextPage={canNextPage}
             startRowIndex={startRowIndex}
             endRowIndex={endRowIndex}
-            pageIndex={pageIndex}
+            pageIndex={pagination.pageIndex}
             onPreviousPage={previousPage}
             onNextPage={nextPage}
             onGotoPage={gotoPage}
@@ -265,53 +233,48 @@ const OperatorActivations = () => {
             total={operators?.count}
           />
           <div className="overflow-auto">
-            <table
-              {...getTableProps()}
-              style={{ width: "100%" }}
-              className="mt-2 bg-white"
-            >
-              <TableHeader headerGroups={headerGroups} />
-              <tbody {...getTableBodyProps()}>
-                {page.map(row => {
-                  prepareRow(row);
-                  return (
-                    <Fragment key={row.getRowProps().key}>
-                      <tr
-                        className="cursor-pointer"
-                        onClick={() => row.toggleRowExpanded()}
-                      >
-                        {row.cells.map((cell, i) => (
-                          <td
-                            className={`
-                          ${i === 0 ? "ps-6" : ""}
-                          ${i === headerGroups.length - 1 ? "pe-6" : ""}
-                          px-3 py-2 border-bottom text-sm
-                          `}
-                            {...cell.getCellProps()}
-                            style={
-                              cell.column.id === "expander"
-                                ? { width: "calc(32px + 0.75rem * 2)" }
-                                : {}
-                            }
-                            key={i}
-                          >
-                            {cell.render("Cell")}
-                          </td>
-                        ))}
+            <table style={{ width: "100%" }} className="mt-2 bg-white">
+              <TableHeader headerGroups={table.getHeaderGroups()} />
+
+              <tbody>
+                {table.getRowModel().rows.map(row => (
+                  <Fragment key={row.id}>
+                    <tr
+                      className="cursor-pointer"
+                      onClick={() => row.toggleExpanded()}
+                    >
+                      {row.getVisibleCells().map((cell, i, arr) => (
+                        <td
+                          key={cell.id}
+                          className={`${i === 0 ? "ps-6" : ""} ${
+                            i === arr.length - 1 ? "pe-6" : ""
+                          } px-3 py-2 border-bottom text-sm`}
+                          style={
+                            cell.column.id === "expander"
+                              ? { width: "calc(32px + 0.75rem * 2)" }
+                              : undefined
+                          }
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+
+                    {row.getIsExpanded() && (
+                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                        <td colSpan={table.getVisibleLeafColumns().length}>
+                          <OperatorActivationDetail
+                            operator={row.original}
+                            getActivations={() => refetch()}
+                          />
+                        </td>
                       </tr>
-                      {row.isExpanded && (
-                        <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                          <td colSpan={visibleColumns.length}>
-                            <OperatorActivationDetail
-                              operator={row.original}
-                              getActivations={() => refetch()}
-                            />
-                          </td>
-                        </tr>
-                      )}
-                    </Fragment>
-                  );
-                })}
+                    )}
+                  </Fragment>
+                ))}
               </tbody>
             </table>
           </div>

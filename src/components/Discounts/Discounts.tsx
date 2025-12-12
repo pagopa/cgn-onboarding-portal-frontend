@@ -1,16 +1,24 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, Fragment } from "react";
 import { useSelector } from "react-redux";
-import { Column, useExpanded, useSortBy, useTable } from "react-table";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  flexRender,
+  getExpandedRowModel,
+  createColumnHelper
+} from "@tanstack/react-table";
 import { Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
 import { compareAsc, format } from "date-fns";
-import omit from "lodash/omit";
 import { remoteData } from "../../api/common";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
+import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow from "./DiscountDetailRow";
@@ -158,88 +166,71 @@ const Discounts = () => {
 
   const entityType = agreement.entityType;
 
-  const columns: Array<Column<Discount>> = useMemo(
-    () => [
-      {
-        Header: "Nome opportunità",
-        accessor: "name",
-        sortType: "string",
-        Cell({ row }) {
-          return (
-            <div
-              style={{
-                whiteSpace: "normal",
-                textOverflow: "ellipsis",
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                maxWidth: "calc(190px - 1.5rem)",
-                maxHeight: "calc(56px - 0.5rem)",
-                overflow: "hidden",
-                wordBreak: "break-all"
-              }}
-            >
-              {row.original.name}
-            </div>
-          );
-        }
-      },
-      {
-        Header: "Aggiunta il",
-        accessor: "startDate",
-        Cell({ row }) {
-          return (
-            <span>{format(new Date(row.values.startDate), "dd/MM/yyyy")}</span>
-          );
-        }
-      },
-      {
-        Header: "Stato",
-        accessor: "state",
-        Cell({ row }) {
-          return (
-            <span>
-              <DiscountComponent discountState={row.values.state} />
-            </span>
-          );
-        },
-        disableSortBy: true
-      },
-      {
-        Header: "Visibile",
-        Cell({ row }) {
-          return <IsVisible discount={row.original} />;
-        },
-        disableSortBy: true
-      },
-      {
-        Header: () => null,
-        id: "expander",
-        Cell({ row }) {
-          return (
-            <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
-              {row.isExpanded ? (
-                <Icon icon="it-expand" color="primary" />
-              ) : (
-                <Icon icon="it-collapse" color="primary" />
-              )}
-            </span>
-          );
-        }
+  const columnHelper = createColumnHelper<Discount>();
+
+  const columns = [
+    columnHelper.accessor("name", {
+      header: "Nome opportunità",
+      sortingFn: "alphanumeric",
+      cell: ({ getValue }) => (
+        <div
+          style={{
+            whiteSpace: "normal",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            maxWidth: "calc(190px - 1.5rem)",
+            maxHeight: "calc(56px - 0.5rem)",
+            overflow: "hidden",
+            wordBreak: "break-all"
+          }}
+        >
+          {getValue()}
+        </div>
+      )
+    }),
+    columnHelper.accessor("startDate", {
+      header: "Aggiunta il",
+      cell: ({ getValue }) => {
+        const v = getValue();
+        return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
       }
-    ],
-    []
-  );
+    }),
+    columnHelper.accessor("state", {
+      header: "Stato",
+      enableSorting: false,
+      cell: ({ getValue }) => (
+        <span>
+          <DiscountComponent discountState={getValue()} />
+        </span>
+      )
+    }),
+    columnHelper.display({
+      id: "visibile",
+      header: "Visibile",
+      enableSorting: false,
+      cell: ({ row }) => <IsVisible discount={row.original} />
+    }),
+    columnHelper.display({
+      id: "expander",
+      header: () => null,
+      enableSorting: false,
+      size: 48,
+      cell: ({ row }) => <ExpanderCell row={row} />
+    })
+  ];
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    visibleColumns
-  } = useTable<Discount>({ columns, data: discounts }, useSortBy, useExpanded);
+  const tableInstance = useReactTable({
+    columns,
+    data: discounts,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel()
+  });
 
+  const headerGroups = tableInstance.getHeaderGroups();
   const MAX_PUBLISHED_DISCOUNTS = 5;
   const maxPublishedDiscountsReached =
     discounts.filter(discount => discount.state === "published").length >=
@@ -296,17 +287,13 @@ const Discounts = () => {
       {(agreement.state === AgreementState.ApprovedAgreement ||
         entityType === EntityType.Private) && (
         <div className="table-responsive mb-0 mt-2 bg-white table">
-          <table
-            {...getTableProps()}
-            style={{ width: "100%" }}
-            className="table mb-0"
-          >
+          <table style={{ width: "100%" }} className="table mb-0">
             <TableHeader headerGroups={headerGroups} />
-            <tbody {...getTableBodyProps()}>
+            <tbody>
               {maxPublishedDiscountsReached && (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={tableInstance.getVisibleLeafColumns().length}
                     style={{ padding: "24px 32px" }}
                     className="border-bottom align-middle"
                   >
@@ -333,84 +320,83 @@ const Discounts = () => {
                   </td>
                 </tr>
               )}
-              {rows.map(row => {
-                prepareRow(row);
-                return (
-                  <Fragment key={row.getRowProps().key}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => row.toggleRowExpanded()}
-                    >
-                      {row.cells.map((cell, i) => (
-                        <td
-                          className={`
-                        ${i === 0 ? "ps-6" : ""}
-                        ${i === headerGroups.length - 1 ? "pe-6" : ""}
-                        px-3 py-2 border-bottom text-sm align-middle
-                        `}
-                          {...cell.getCellProps()}
-                          key={i}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : {}
+
+              {tableInstance.getRowModel().rows.map(row => (
+                <Fragment key={row.id}>
+                  <tr
+                    className="cursor-pointer"
+                    onClick={() => row.toggleExpanded()}
+                  >
+                    {row.getVisibleCells().map((cell, i) => (
+                      <td
+                        key={cell.id}
+                        className={`
+                ${i === 0 ? "ps-6" : ""}
+                ${i === headerGroups[0].headers.length - 1 ? "pe-6" : ""}
+                px-3 py-2 border-bottom text-sm align-middle
+              `}
+                        style={
+                          cell.column.id === "expander"
+                            ? { width: "calc(32px + 0.75rem * 2)" }
+                            : {}
+                        }
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+
+                  {row.getIsExpanded() && (
+                    <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                      <td
+                        colSpan={tableInstance.getVisibleLeafColumns().length}
+                      >
+                        <DiscountDetailRow
+                          row={row}
+                          agreement={agreement}
+                          profile={profile}
+                          onPublish={() =>
+                            setSelectedDiscountAction({
+                              action: "publish",
+                              discountId: row.original.id
+                            })
                           }
-                        >
-                          {cell.render("Cell")}
-                        </td>
-                      ))}
+                          isPendingPublish={publishDiscountMutation.isPending}
+                          isPendingUnpublish={
+                            unpublishDiscountMutation.isPending
+                          }
+                          isPendingTest={testDiscountMutation.isPending}
+                          isPendingDelete={deleteDiscountMutation.isPending}
+                          onUnpublish={() =>
+                            setSelectedDiscountAction({
+                              action: "unpublish",
+                              discountId: row.original.id
+                            })
+                          }
+                          onDelete={() =>
+                            setSelectedDiscountAction({
+                              action: "delete",
+                              discountId: row.original.id
+                            })
+                          }
+                          onTest={() =>
+                            setSelectedDiscountAction({
+                              action: "test",
+                              discountId: row.original.id
+                            })
+                          }
+                          maxPublishedDiscountsReached={
+                            maxPublishedDiscountsReached
+                          }
+                        />
+                      </td>
                     </tr>
-                    {row.isExpanded ? (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                        <td colSpan={visibleColumns.length}>
-                          {
-                            <DiscountDetailRow
-                              row={row}
-                              agreement={agreement}
-                              profile={profile}
-                              isPendingPublish={
-                                publishDiscountMutation.isPending
-                              }
-                              isPendingUnpublish={
-                                unpublishDiscountMutation.isPending
-                              }
-                              isPendingTest={testDiscountMutation.isPending}
-                              isPendingDelete={deleteDiscountMutation.isPending}
-                              onPublish={() => {
-                                setSelectedDiscountAction({
-                                  action: "publish",
-                                  discountId: row.original.id
-                                });
-                              }}
-                              onUnpublish={() => {
-                                setSelectedDiscountAction({
-                                  action: "unpublish",
-                                  discountId: row.original.id
-                                });
-                              }}
-                              onDelete={() => {
-                                setSelectedDiscountAction({
-                                  action: "delete",
-                                  discountId: row.original.id
-                                });
-                              }}
-                              onTest={() => {
-                                setSelectedDiscountAction({
-                                  action: "test",
-                                  discountId: row.original.id
-                                });
-                              }}
-                              maxPublishedDiscountsReached={
-                                maxPublishedDiscountsReached
-                              }
-                            />
-                          }
-                        </td>
-                      </tr>
-                    ) : null}
-                  </Fragment>
-                );
-              })}
+                  )}
+                </Fragment>
+              ))}
             </tbody>
           </table>
         </div>

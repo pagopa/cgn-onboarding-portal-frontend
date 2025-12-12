@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { Button, Icon } from "design-react-kit";
 import { Fragment, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Row } from "react-table";
+import { Row } from "@tanstack/react-table";
 import {
   Agreement,
   BucketCodeLoadStatus,
@@ -207,7 +207,7 @@ const DiscountDetailRow = ({
               Stato opportunità
             </td>
             <td className={`border-bottom-0`}>
-              <DiscountComponent discountState={row.values.state} />
+              <DiscountComponent discountState={row.original.state} />
             </td>
           </tr>
           <ProfileItem

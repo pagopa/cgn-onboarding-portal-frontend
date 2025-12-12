@@ -1,16 +1,19 @@
-import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
-import {
-  useTable,
-  useExpanded,
-  usePagination,
-  useSortBy,
-  ColumnWithLooseAccessor
-} from "react-table";
-import { Icon, Button } from "design-react-kit";
+import { useState, useMemo, useCallback, Fragment } from "react";
+import { Button } from "design-react-kit";
 import { format } from "date-fns";
-import omit from "lodash/omit";
 import isEqual from "lodash/isEqual";
 import { keepPreviousData } from "@tanstack/react-query";
+import {
+  createColumnHelper,
+  ExpandedState,
+  flexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable
+} from "@tanstack/react-table";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -22,8 +25,10 @@ import {
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { useDebouncedValue } from "../../utils/useDebounce";
-import { useStableValue } from "../../utils/useStableValue";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
+import { useSyncSorting } from "../../utils/useSyncSorting";
+import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import RequestFilter from "./RequestsFilter";
 import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
@@ -67,10 +72,14 @@ const Requests = () => {
   const [values, setValues] = useState<RequestsFilterFormValues>(
     requestFilterFormInitialValues
   );
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20
+  });
 
   const hasActiveFitlers = !isEqual(values, requestFilterFormInitialValues);
-
-  const [pageParam, setPageParam] = useState<number>(0);
 
   const debouncedProfileFullName = useDebouncedValue({
     value: values.profileFullName,
@@ -99,7 +108,7 @@ const Requests = () => {
       states: requestAssignedAgreements ? "AssignedAgreement" : values.states,
       sortColumn: values.sortColumn,
       sortDirection: values.sortDirection,
-      page: pageParam,
+      page: pagination.pageIndex,
       pageSize
     };
   }, [
@@ -109,7 +118,7 @@ const Requests = () => {
     values.sortColumn,
     values.sortDirection,
     debouncedProfileFullName,
-    pageParam
+    pagination.pageIndex
   ]);
 
   const { data: agreements, isPending } =
@@ -122,50 +131,47 @@ const Requests = () => {
     () => agreements?.items || [],
     [agreements]
   ) as Array<NormalizedBackofficeAgreement>;
-  const columns = useMemo(
-    (): Array<ColumnWithLooseAccessor<NormalizedBackofficeAgreement>> => [
-      {
-        id: "profile.fullName",
-        Header: "Operatore",
-        accessor: data => data.profile?.fullName
-      },
-      {
-        id: "requestDate",
-        Header: "Data Richiesta",
-        accessor: data => data.requestDate,
-        Cell: ({ row }) =>
-          format(new Date(row.values.requestDate), "dd/MM/yyyy")
-      },
-      {
-        id: "state",
-        Header: "Stato",
-        accessor: data => data.state,
-        Cell: ({ row }) => RequestStateBadge(row.values.state)
-      },
+
+  const columnHelper = createColumnHelper<NormalizedBackofficeAgreement>();
+
+  const columns = [
+    columnHelper.accessor(row => row.profile?.fullName ?? null, {
+      id: "profile.fullName",
+      header: "Operatore",
+      cell: ({ getValue }) => getValue() ?? "-"
+    }),
+    columnHelper.accessor(row => row.requestDate ?? null, {
+      id: "requestDate",
+      header: "Data Richiesta",
+      cell: ({ getValue }) => {
+        const v = getValue();
+        return v ? format(new Date(v), "dd/MM/yyyy") : "-";
+      }
+    }),
+    columnHelper.accessor(row => row.state, {
+      id: "state",
+      header: "Stato",
+      cell: ({ getValue }) => RequestStateBadge(getValue())
+    }),
+    columnHelper.accessor(
+      row =>
+        row.state === AgreementState.AssignedAgreement
+          ? (row.assignee?.fullName ?? null)
+          : null,
       {
         id: "assignee.fullName",
-        Header: "Revisore",
-        accessor: data =>
-          data.state === AgreementState.AssignedAgreement
-            ? data.assignee.fullName
-            : undefined
-      },
-      {
-        id: "expander",
-        Header: () => null,
-        Cell: ({ row }) => (
-          <span {...omit(row.getToggleRowExpandedProps(), "onClick")}>
-            {row.isExpanded ? (
-              <Icon icon="it-expand" color="primary" />
-            ) : (
-              <Icon icon="it-collapse" color="primary" />
-            )}
-          </span>
-        )
+        header: "Revisore",
+        cell: ({ getValue }) => getValue() ?? "-"
       }
-    ],
-    []
-  );
+    ),
+    columnHelper.display({
+      id: "expander",
+      header: () => null,
+      enableSorting: false,
+      size: 48,
+      cell: ({ row }) => <ExpanderCell row={row} />
+    })
+  ];
 
   const renderRowSubComponent = useCallback(
     ({
@@ -183,62 +189,33 @@ const Requests = () => {
     []
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    visibleColumns,
-    canPreviousPage,
-    canNextPage,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    state: { pageIndex, sortBy }
-  } = useTable<NormalizedBackofficeAgreement>(
-    {
-      columns,
-      data,
-      initialState: { pageIndex: 0, pageSize },
-      manualPagination: true,
-      manualSortBy: true,
-      disableMultiSort: true,
-      pageCount: agreements?.total ? Math.ceil(agreements?.total / pageSize) : 0
+  const pageCount = Math.ceil((agreements?.total ?? 0) / pageSize);
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      pagination,
+      sorting,
+      expanded
     },
-    useSortBy,
-    useExpanded,
-    usePagination
-  );
+    onPaginationChange: setPagination,
+    onSortingChange: setSorting,
+    onExpandedChange: setExpanded,
+    manualPagination: true,
+    manualSorting: true,
+    pageCount,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getPaginationRowModel: getPaginationRowModel()
+  });
 
-  useEffect(() => {
-    const sortField = sortBy[0];
-    if (sortField) {
-      setValues(values => ({
-        ...values,
-        sortColumn: getRequetsSortColumn(sortField.id),
-        sortDirection: sortField.desc ? "DESC" : "ASC"
-      }));
-    } else {
-      setValues(values => ({
-        ...values,
-        sortColumn: undefined,
-        sortDirection: undefined
-      }));
-    }
-  }, [sortBy]);
+  useSyncSorting(sorting, setValues, getRequetsSortColumn);
+  const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
+    usePaginationHelpers(table);
 
-  useEffect(() => {
-    setPageParam(pageIndex);
-  }, [pageIndex]);
-
-  useEffect(() => {
-    gotoPage(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useStableValue(values)]);
-
-  const startRowIndex: number = pageIndex * pageSize + 1;
+  const startRowIndex: number = pagination.pageIndex * pageSize + 1;
   // eslint-disable-next-line functional/no-let
   let endRowIndex: number = startRowIndex - 1 + pageSize;
 
@@ -267,7 +244,7 @@ const Requests = () => {
             canNextPage={canNextPage}
             startRowIndex={startRowIndex}
             endRowIndex={endRowIndex}
-            pageIndex={pageIndex}
+            pageIndex={pagination.pageIndex}
             onPreviousPage={previousPage}
             onNextPage={nextPage}
             onGotoPage={gotoPage}
@@ -275,50 +252,50 @@ const Requests = () => {
             total={agreements?.total}
           />
           <div className="overflow-auto">
-            <table
-              {...getTableProps()}
-              style={{ width: "100%" }}
-              className="mt-2 bg-white"
-            >
-              <TableHeader headerGroups={headerGroups} />
-              <tbody {...getTableBodyProps()}>
-                {page.map(row => {
-                  prepareRow(row);
-                  return (
-                    <Fragment key={row.getRowProps().key}>
-                      <tr
-                        className="cursor-pointer"
-                        onClick={() => row.toggleRowExpanded()}
-                      >
-                        {row.cells.map((cell, i) => (
-                          <td
-                            className={`
-                          ${i === 0 ? "ps-6" : ""}
-                          ${i === headerGroups.length - 1 ? "pe-6" : ""}
-                          px-3 py-2 border-bottom text-sm
-                          `}
-                            {...cell.getCellProps()}
-                            style={
-                              cell.column.id === "expander"
-                                ? { width: "calc(32px + 0.75rem * 2)" }
-                                : {}
-                            }
-                            key={i}
-                          >
-                            {cell.render("Cell")}
-                          </td>
-                        ))}
+            <table style={{ width: "100%" }} className="mt-2 bg-white">
+              <TableHeader headerGroups={table.getHeaderGroups()} />
+              <tbody>
+                {table.getRowModel().rows.map(row => (
+                  <Fragment key={row.id}>
+                    <tr
+                      className="cursor-pointer"
+                      onClick={() => row.toggleExpanded()}
+                    >
+                      {row.getVisibleCells().map((cell, i) => (
+                        <td
+                          key={cell.id}
+                          className={`
+                ${i === 0 ? "ps-6" : ""}
+                ${
+                  i === table.getHeaderGroups()[0].headers.length - 1
+                    ? "pe-6"
+                    : ""
+                }
+                px-3 py-2 border-bottom text-sm
+              `}
+                          style={
+                            cell.column.id === "expander"
+                              ? { width: "calc(32px + 0.75rem * 2)" }
+                              : {}
+                          }
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+
+                    {row.getIsExpanded() && (
+                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                        <td colSpan={table.getVisibleLeafColumns().length}>
+                          {renderRowSubComponent({ row })}
+                        </td>
                       </tr>
-                      {row.isExpanded ? (
-                        <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                          <td colSpan={visibleColumns.length}>
-                            {renderRowSubComponent({ row })}
-                          </td>
-                        </tr>
-                      ) : null}
-                    </Fragment>
-                  );
-                })}
+                    )}
+                  </Fragment>
+                ))}
               </tbody>
             </table>
           </div>
