@@ -8,12 +8,12 @@ import Introduction from "../components/Introduction/Introduction";
 import Discounts from "../components/Discounts/Discounts";
 import Profile from "../components/Profile/Profile";
 import ProfileData from "../components/ProfileData/ProfileData";
-import { RootState } from "../store/store";
 import { useAuthentication } from "../authentication/AuthenticationContext";
+import { selectAgreement } from "../store/agreement/selectors";
 
 const Dashboard = () => {
   const [tab, setTab] = useState(0);
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
 
   const authentication = useAuthentication();
   const user = authentication.currentUserSession;

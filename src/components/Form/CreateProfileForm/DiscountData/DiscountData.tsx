@@ -5,7 +5,6 @@ import { useFieldArray } from "@hookform/lenses/rhf";
 import { Button } from "design-react-kit";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import { Severity, useTooltip } from "../../../../context/tooltip";
-import { RootState } from "../../../../store/store";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import DiscountInfo from "../../CreateProfileForm/DiscountData/DiscountInfo";
 import { getDiscountTypeChecks } from "../../../../utils/formChecks";
@@ -22,6 +21,7 @@ import {
 import { useStandardForm } from "../../../../utils/useStandardForm";
 import { discountDataValidationSchema } from "../../ValidationSchemas";
 import AsyncButton from "../../../AsyncButton/AsyncButton";
+import { selectAgreement } from "../../../../store/agreement/selectors";
 
 type Props = {
   isCompleted: boolean;
@@ -36,7 +36,7 @@ const DiscountData = ({
   onUpdate,
   isCompleted
 }: Props) => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
   const { triggerTooltip } = useTooltip();
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({

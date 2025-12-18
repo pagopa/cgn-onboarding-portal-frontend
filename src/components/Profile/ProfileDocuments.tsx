@@ -4,10 +4,10 @@ import { Fragment } from "react";
 import { remoteData } from "../../api/common";
 import { formatDate } from "../../utils/dates";
 import { EntityType } from "../../api/generated";
-import { RootState } from "../../store/store";
+import { selectAgreement } from "../../store/agreement/selectors";
 
 const ProfileDocuments = () => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
 
   const documentsQuery = remoteData.Index.Document.getDocuments.useQuery({
     agreementId: agreement.id

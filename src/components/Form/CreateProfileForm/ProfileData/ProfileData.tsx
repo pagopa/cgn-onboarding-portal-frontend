@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../../../api/common";
 import { Severity, useTooltip } from "../../../../context/tooltip";
-import { RootState } from "../../../../store/store";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { ProfileDataValidationSchema } from "../../ValidationSchemas";
@@ -14,6 +13,7 @@ import {
 import { useAuthentication } from "../../../../authentication/AuthenticationContext";
 import { useStandardForm } from "../../../../utils/useStandardForm";
 import AsyncButton from "../../../AsyncButton/AsyncButton";
+import { selectAgreement } from "../../../../store/agreement/selectors";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -68,7 +68,7 @@ const ProfileData = ({
   handleNext,
   onUpdate
 }: Props) => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {

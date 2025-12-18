@@ -6,15 +6,15 @@ import Documentation from "../components/Form/CreateProfileForm/Documentation/Do
 import ProfileData from "../components/Form/CreateProfileForm/ProfileData/ProfileData";
 import DiscountData from "../components/Form/CreateProfileForm/DiscountData/DiscountData";
 import Documents from "../components/Form/CreateProfileForm/Documents/Documents";
-import { RootState } from "../store/store";
 import { AgreementState, CompletedStep, EntityType } from "../api/generated";
 import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
 import CgnLogo from "../components/Logo/CgnLogo";
+import { selectAgreement } from "../store/agreement/selectors";
 
 type ExtendedCompletedStep = CompletedStep | "Guide";
 
 const CreateProfile = () => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
   const [step, setStep] = useState<number>(agreement.completedSteps.length);
   const [completedSteps, setCompletedSteps] = useState<
     Array<ExtendedCompletedStep>

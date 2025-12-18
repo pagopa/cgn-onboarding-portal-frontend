@@ -3,13 +3,13 @@ import { Lens } from "@hookform/lenses";
 import FormField from "../../FormField";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
 import { Profile } from "../../../../api/generated";
-import { RootState } from "../../../../store/store";
 import { getDiscountTypeChecks } from "../../../../utils/formChecks";
 import { DiscountFormInputValues } from "../../discountFormUtils";
 import {
   Field,
   FormErrorMessage
 } from "../../../../utils/react-hook-form-helpers";
+import { selectAgreement } from "../../../../store/agreement/selectors";
 import ProductCategories from "./ProductCategories";
 import DiscountConditions from "./DiscountConditions";
 import EnrollToEyca from "./EnrollToEyca";
@@ -29,7 +29,7 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
   const { checkBucket, checkLanding, checkStaticCode } =
     getDiscountTypeChecks(profile);
 
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
 
   return (
     <>

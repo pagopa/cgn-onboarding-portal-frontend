@@ -5,11 +5,11 @@ import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import { useTooltip } from "../../context/tooltip";
 import { DASHBOARD } from "../../navigation/routes";
-import { RootState } from "../../store/store";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
 import { useStandardForm } from "../../utils/useStandardForm";
 import AsyncButton from "../AsyncButton/AsyncButton";
+import { selectAgreement } from "../../store/agreement/selectors";
 import DiscountInfo from "./CreateProfileForm/DiscountData/DiscountInfo";
 import FormSection from "./FormSection";
 import { discountDataValidationSchema } from "./ValidationSchemas";
@@ -23,7 +23,7 @@ import {
 export const CreateEditDiscountForm = () => {
   const { discountId } = useParams<{ discountId: string }>();
   const history = useHistory();
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
   const { triggerTooltip } = useTooltip();
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({

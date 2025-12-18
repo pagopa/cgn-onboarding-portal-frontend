@@ -2,12 +2,12 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { remoteData } from "../../api/common";
 import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
-import { RootState } from "../../store/store";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
+import { selectAgreement } from "../../store/agreement/selectors";
 import ProfileDataItem from "./ProfileDataItem";
 
 const ProfileData = () => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
 
   const { data: profile } = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id

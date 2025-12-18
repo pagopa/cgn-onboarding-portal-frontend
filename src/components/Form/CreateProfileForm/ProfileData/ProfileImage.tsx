@@ -6,8 +6,8 @@ import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormSection from "../../FormSection";
 import { setImage } from "../../../../store/agreement/agreementSlice";
 import PlusIcon from "../../../../assets/icons/plus.svg?react";
-import { RootState } from "../../../../store/store";
 import { remoteData } from "../../../../api/common";
+import { selectAgreement } from "../../../../store/agreement/selectors";
 
 const FooterDescription = (
   <div>
@@ -24,7 +24,7 @@ const FooterDescription = (
 
 const ProfileImage = () => {
   const dispatch = useDispatch();
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
   const imageInput = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const { triggerTooltip } = useTooltip();

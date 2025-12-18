@@ -2,7 +2,6 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { remoteData } from "../../api/common";
 import { EDIT_PROFILE } from "../../navigation/routes";
-import { RootState } from "../../store/store";
 import {
   SalesChannelType,
   type Profile,
@@ -10,12 +9,13 @@ import {
 } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { NormalizedSalesChannel } from "../../api/dtoTypeFixes";
+import { selectAgreement } from "../../store/agreement/selectors";
 import ProfileItem from "./ProfileItem";
 import ProfileDocuments from "./ProfileDocuments";
 import ProfileApiToken from "./ProfileApiToken";
 
 const Profile = () => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
 
   const { data: profile } = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id

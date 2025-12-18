@@ -1,15 +1,16 @@
 import { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { remoteData } from "../../../../api/common";
-import { RootState } from "../../../../store/store";
 import type { Documents } from "../../../../api/generated";
 import { EntityType } from "../../../../api/generated";
 import { useTooltip, Severity } from "../../../../context/tooltip";
 import { createAgreement } from "../../../../store/agreement/agreementSlice";
 import AsyncButton from "../../../AsyncButton/AsyncButton";
+import { selectAgreement } from "../../../../store/agreement/selectors";
+import { useAppDispatch } from "../../../../store/hooks";
 import FileRow from "./FileRow";
 
 type Props = {
@@ -18,7 +19,7 @@ type Props = {
 };
 
 const Documents = ({ handleBack, isCompleted }: Props) => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {
@@ -34,12 +35,12 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
   );
   const getFiles = () => documentsQuery.refetch();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const requireApprovalMutation =
     remoteData.Index.Agreement.requestApproval.useMutation({
       onSuccess() {
-        dispatch(createAgreement());
+        void dispatch(createAgreement());
       },
       onError() {
         triggerTooltip({

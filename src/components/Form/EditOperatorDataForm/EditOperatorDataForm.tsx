@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../../api/common";
 import { DASHBOARD } from "../../../navigation/routes";
-import { RootState } from "../../../store/store";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
 import ProfileDescription from "../CreateProfileForm/ProfileData/ProfileDescription";
 import ProfileImage from "../CreateProfileForm/ProfileData/ProfileImage";
@@ -19,6 +18,7 @@ import {
 } from "../operatorDataUtils";
 import { useStandardForm } from "../../../utils/useStandardForm";
 import AsyncButton from "../../AsyncButton/AsyncButton";
+import { selectAgreement } from "../../../store/agreement/selectors";
 
 type OperatorDataButtonsProps = {
   onBack(): void;
@@ -55,7 +55,7 @@ function OperatorDataButtons({ isPending, onBack }: OperatorDataButtonsProps) {
 
 export const EditOperatorForm = ({ variant }: Props) => {
   const history = useHistory();
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useSelector(selectAgreement);
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
