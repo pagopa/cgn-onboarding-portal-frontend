@@ -1,18 +1,7 @@
 /* eslint-disable functional/immutable-data */
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { remoteData } from "../../api/common";
 import { Agreement } from "../../api/generated";
-
-export const createAgreement = createAsyncThunk(
-  "agreement/createStatus",
-  async () => {
-    try {
-      return await remoteData.Index.Agreement.createAgreement.method(undefined);
-    } catch {
-      return undefined;
-    }
-  }
-);
 
 interface ExtendedAgreement extends Agreement {
   reasonMessage?: string;
@@ -24,30 +13,46 @@ interface AgreementState {
   loading: boolean;
 }
 
+const initialState: AgreementState = {
+  value: {} as ExtendedAgreement,
+  loading: true
+};
+
+export const createAgreement = createAsyncThunk(
+  "agreement/create",
+  async () => {
+    try {
+      return await remoteData.Index.Agreement.createAgreement.method(undefined);
+    } catch {
+      return undefined;
+    }
+  }
+);
+
 const agreementSlice = createSlice({
   name: "agreement",
-  initialState: { value: {}, loading: true } as AgreementState,
+  initialState,
   reducers: {
-    setImage: (state, action) => {
+    setImage(state, action: PayloadAction<string>) {
       state.value.imageUrl = action.payload;
     }
   },
   extraReducers: builder => {
-    builder.addCase(createAgreement.pending, state => {
-      state.loading = true;
-    });
-    builder.addCase(createAgreement.fulfilled, (state, action) => {
-      if (action.payload) {
-        state.value = action.payload;
-      }
-      state.loading = false;
-    });
-    builder.addCase(createAgreement.rejected, state => {
-      state.loading = false;
-    });
+    builder
+      .addCase(createAgreement.pending, state => {
+        state.loading = true;
+      })
+      .addCase(createAgreement.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.value = action.payload;
+        }
+        state.loading = false;
+      })
+      .addCase(createAgreement.rejected, state => {
+        state.loading = false;
+      });
   }
 });
 
 export const { setImage } = agreementSlice.actions;
-
 export default agreementSlice.reducer;

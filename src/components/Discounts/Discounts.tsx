@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState, Fragment } from "react";
-import { useSelector } from "react-redux";
 import {
   useReactTable,
   getCoreRowModel,
@@ -14,11 +13,12 @@ import { Link } from "react-router-dom";
 import { compareAsc, format } from "date-fns";
 import { remoteData } from "../../api/common";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
-import { RootState } from "../../store/store";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
+import { selectAgreement } from "../../store/agreement/selectors";
+import { useCgnSelector } from "../../store/hooks";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow from "./DiscountDetailRow";
@@ -28,7 +28,7 @@ import TestModal from "./TestModal";
 import { TestErrorModal } from "./TestErrorModal";
 
 const Discounts = () => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useCgnSelector(selectAgreement);
   const [selectedDiscountAction, setSelectedDiscountAction] = useState<{
     action: "publish" | "unpublish" | "test" | "delete";
     discountId: string;

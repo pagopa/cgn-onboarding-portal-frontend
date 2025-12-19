@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AxiosError } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormSection from "../../FormSection";
 import { setImage } from "../../../../store/agreement/agreementSlice";
 import PlusIcon from "../../../../assets/icons/plus.svg?react";
-import { RootState } from "../../../../store/store";
 import { remoteData } from "../../../../api/common";
+import { selectAgreement } from "../../../../store/agreement/selectors";
+import { useCgnSelector } from "../../../../store/hooks";
 
 const FooterDescription = (
   <div>
@@ -24,7 +25,7 @@ const FooterDescription = (
 
 const ProfileImage = () => {
   const dispatch = useDispatch();
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useCgnSelector(selectAgreement);
   const imageInput = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const { triggerTooltip } = useTooltip();

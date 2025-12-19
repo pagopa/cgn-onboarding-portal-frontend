@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button, Icon } from "design-react-kit";
-import { useSelector } from "react-redux";
 import { remoteData } from "../../api/common";
 import { ApiTokens } from "../../api/generated";
-import { RootState } from "../../store/store";
+import { selectAgreement } from "../../store/agreement/selectors";
+import { useCgnSelector } from "../../store/hooks";
 
 const ProfileApiToken = () => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useCgnSelector(selectAgreement);
   const [isPrimaryTokenShown, setIsPrimaryTokenShown] = useState(false);
   const [isSecondaryTokenShown, setIsSecondaryTokenShown] = useState(false);
 

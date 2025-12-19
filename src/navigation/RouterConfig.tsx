@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import { createAgreement } from "../store/agreement/agreementSlice";
 import { RootState } from "../store/store";
 import Dashboard from "../pages/Dashboard";
@@ -20,6 +19,7 @@ import { useAuthentication } from "../authentication/AuthenticationContext";
 import Login from "../pages/Login";
 import SelectCompany from "../pages/SelectCompany";
 import { LoginRedirect } from "../pages/LoginRedirect";
+import { useCgnDispatch, useCgnSelector } from "../store/hooks";
 import {
   DASHBOARD,
   CREATE_PROFILE,
@@ -39,17 +39,17 @@ import {
 } from "./routes";
 
 const RouterConfig = () => {
-  const { value: agreement, loading } = useSelector(
+  const { value: agreement, loading } = useCgnSelector(
     (state: RootState) => state.agreement
   );
-  const dispatch = useDispatch();
+  const dispatch = useCgnDispatch();
   const authentication = useAuthentication();
 
   const merchantFiscalCode = authentication.currentMerchantFiscalCode;
 
   useEffect(() => {
     if (merchantFiscalCode) {
-      dispatch(createAgreement());
+      void dispatch(createAgreement());
     }
   }, [dispatch, merchantFiscalCode]);
 
