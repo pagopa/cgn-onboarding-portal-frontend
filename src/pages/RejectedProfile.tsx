@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button } from "design-react-kit";
 import Layout from "../components/Layout/Layout";
@@ -8,9 +7,10 @@ import { CREATE_PROFILE } from "../navigation/routes";
 import CgnLogo from "../components/Logo/CgnLogo";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import { selectAgreement } from "../store/agreement/selectors";
+import { useCgnSelector } from "../store/hooks";
 
 const RejectedProfile = () => {
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
   const history = useHistory();
   const authentication = useAuthentication();
   return (

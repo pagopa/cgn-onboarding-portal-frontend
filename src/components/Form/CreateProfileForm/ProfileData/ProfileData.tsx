@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../../../api/common";
 import { Severity, useTooltip } from "../../../../context/tooltip";
@@ -14,6 +13,7 @@ import { useAuthentication } from "../../../../authentication/AuthenticationCont
 import { useStandardForm } from "../../../../utils/useStandardForm";
 import AsyncButton from "../../../AsyncButton/AsyncButton";
 import { selectAgreement } from "../../../../store/agreement/selectors";
+import { useCgnSelector } from "../../../../store/hooks";
 import ProfileDescription from "./ProfileDescription";
 import ProfileImage from "./ProfileImage";
 import ProfileInfo from "./ProfileInfo";
@@ -68,7 +68,7 @@ const ProfileData = ({
   handleNext,
   onUpdate
 }: Props) => {
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {

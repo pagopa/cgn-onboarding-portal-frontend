@@ -1,13 +1,13 @@
 import { Icon, LinkList, LinkListItem } from "design-react-kit";
-import { useSelector } from "react-redux";
 import { Fragment } from "react";
 import { remoteData } from "../../api/common";
 import { formatDate } from "../../utils/dates";
 import { EntityType } from "../../api/generated";
 import { selectAgreement } from "../../store/agreement/selectors";
+import { useCgnSelector } from "../../store/hooks";
 
 const ProfileDocuments = () => {
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
 
   const documentsQuery = remoteData.Index.Document.getDocuments.useQuery({
     agreementId: agreement.id

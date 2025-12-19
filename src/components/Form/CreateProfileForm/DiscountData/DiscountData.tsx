@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { z } from "zod/v4";
 import { useFieldArray } from "@hookform/lenses/rhf";
 import { Button } from "design-react-kit";
@@ -22,6 +21,7 @@ import { useStandardForm } from "../../../../utils/useStandardForm";
 import { discountDataValidationSchema } from "../../ValidationSchemas";
 import AsyncButton from "../../../AsyncButton/AsyncButton";
 import { selectAgreement } from "../../../../store/agreement/selectors";
+import { useCgnSelector } from "../../../../store/hooks";
 
 type Props = {
   isCompleted: boolean;
@@ -36,7 +36,7 @@ const DiscountData = ({
   onUpdate,
   isCompleted
 }: Props) => {
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
   const { triggerTooltip } = useTooltip();
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({

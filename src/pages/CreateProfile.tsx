@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import Layout from "../components/Layout/Layout";
 import Stepper from "../components/Stepper/Stepper";
 import Documentation from "../components/Form/CreateProfileForm/Documentation/Documentation";
@@ -10,11 +9,12 @@ import { AgreementState, CompletedStep, EntityType } from "../api/generated";
 import RequestApproval from "../components/Form/CreateProfileForm/Documents/RequestApproval";
 import CgnLogo from "../components/Logo/CgnLogo";
 import { selectAgreement } from "../store/agreement/selectors";
+import { useCgnSelector } from "../store/hooks";
 
 type ExtendedCompletedStep = CompletedStep | "Guide";
 
 const CreateProfile = () => {
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
   const [step, setStep] = useState<number>(agreement.completedSteps.length);
   const [completedSteps, setCompletedSteps] = useState<
     Array<ExtendedCompletedStep>

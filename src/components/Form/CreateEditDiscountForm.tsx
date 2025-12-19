@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
@@ -10,6 +9,7 @@ import { getDiscountTypeChecks } from "../../utils/formChecks";
 import { useStandardForm } from "../../utils/useStandardForm";
 import AsyncButton from "../AsyncButton/AsyncButton";
 import { selectAgreement } from "../../store/agreement/selectors";
+import { useCgnSelector } from "../../store/hooks";
 import DiscountInfo from "./CreateProfileForm/DiscountData/DiscountInfo";
 import FormSection from "./FormSection";
 import { discountDataValidationSchema } from "./ValidationSchemas";
@@ -23,7 +23,7 @@ import {
 export const CreateEditDiscountForm = () => {
   const { discountId } = useParams<{ discountId: string }>();
   const history = useHistory();
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
   const { triggerTooltip } = useTooltip();
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({

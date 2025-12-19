@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { Button } from "design-react-kit";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
@@ -10,7 +9,7 @@ import { useTooltip, Severity } from "../../../../context/tooltip";
 import { createAgreement } from "../../../../store/agreement/agreementSlice";
 import AsyncButton from "../../../AsyncButton/AsyncButton";
 import { selectAgreement } from "../../../../store/agreement/selectors";
-import { useAppDispatch } from "../../../../store/hooks";
+import { useCgnDispatch, useCgnSelector } from "../../../../store/hooks";
 import FileRow from "./FileRow";
 
 type Props = {
@@ -19,7 +18,7 @@ type Props = {
 };
 
 const Documents = ({ handleBack, isCompleted }: Props) => {
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
   const { triggerTooltip } = useTooltip();
 
   useEffect(() => {
@@ -35,7 +34,7 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
   );
   const getFiles = () => documentsQuery.refetch();
 
-  const dispatch = useAppDispatch();
+  const dispatch = useCgnDispatch();
 
   const requireApprovalMutation =
     remoteData.Index.Agreement.requestApproval.useMutation({

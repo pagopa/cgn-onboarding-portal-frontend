@@ -1,13 +1,13 @@
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { remoteData } from "../../api/common";
 import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import { selectAgreement } from "../../store/agreement/selectors";
+import { useCgnSelector } from "../../store/hooks";
 import ProfileDataItem from "./ProfileDataItem";
 
 const ProfileData = () => {
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
 
   const { data: profile } = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id

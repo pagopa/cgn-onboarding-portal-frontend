@@ -1,5 +1,4 @@
 import { Fragment, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../../api/common";
@@ -19,6 +18,7 @@ import {
 import { useStandardForm } from "../../../utils/useStandardForm";
 import AsyncButton from "../../AsyncButton/AsyncButton";
 import { selectAgreement } from "../../../store/agreement/selectors";
+import { useCgnSelector } from "../../../store/hooks";
 
 type OperatorDataButtonsProps = {
   onBack(): void;
@@ -55,7 +55,7 @@ function OperatorDataButtons({ isPending, onBack }: OperatorDataButtonsProps) {
 
 export const EditOperatorForm = ({ variant }: Props) => {
   const history = useHistory();
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id

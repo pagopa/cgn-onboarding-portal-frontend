@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { Lens } from "@hookform/lenses";
 import FormField from "../../FormField";
 import { MAX_SELECTABLE_CATEGORIES } from "../../../../utils/constants";
@@ -10,6 +9,7 @@ import {
   FormErrorMessage
 } from "../../../../utils/react-hook-form-helpers";
 import { selectAgreement } from "../../../../store/agreement/selectors";
+import { useCgnSelector } from "../../../../store/hooks";
 import ProductCategories from "./ProductCategories";
 import DiscountConditions from "./DiscountConditions";
 import EnrollToEyca from "./EnrollToEyca";
@@ -29,7 +29,7 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
   const { checkBucket, checkLanding, checkStaticCode } =
     getDiscountTypeChecks(profile);
 
-  const agreement = useSelector(selectAgreement);
+  const agreement = useCgnSelector(selectAgreement);
 
   return (
     <>
