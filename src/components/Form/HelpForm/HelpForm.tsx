@@ -1,5 +1,4 @@
 import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
 import z from "zod/v4";
 import { ObjectLens } from "@hookform/lenses";
 import FormSection from "../FormSection";
@@ -8,7 +7,6 @@ import {
   loggedHelpValidationSchema,
   notLoggedHelpValidationSchema
 } from "../ValidationSchemas";
-import { RootState } from "../../../store/store";
 import { HelpRequestCategoryEnum } from "../../../api/generated";
 import { remoteData } from "../../../api/common";
 import InputFieldMultiple from "../InputFieldMultiple";
@@ -19,6 +17,8 @@ import {
   FormErrorMessage
 } from "../../../utils/react-hook-form-helpers";
 import { useStandardForm } from "../../../utils/useStandardForm";
+import { selectAgreement } from "../../../store/agreement/selectors";
+import { useCgnSelector } from "../../../store/hooks";
 import FormButtons from "./HelpFormButtons";
 import ReCAPTCHAFormComponent from "./ReCAPTCHAFormComponent";
 
@@ -74,7 +74,7 @@ const topics = () => [
 ];
 
 const HelpForm = () => {
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useCgnSelector(selectAgreement);
   const history = useHistory();
   const authentication = useAuthentication();
   const isLogged = authentication.currentSession.type !== "none";

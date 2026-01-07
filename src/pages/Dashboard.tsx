@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { AgreementState as AgreementStateType } from "../api/generated";
 import AgreementState from "../components/AgreementState/AgreementState";
 import Layout from "../components/Layout/Layout";
@@ -8,12 +7,13 @@ import Introduction from "../components/Introduction/Introduction";
 import Discounts from "../components/Discounts/Discounts";
 import Profile from "../components/Profile/Profile";
 import ProfileData from "../components/ProfileData/ProfileData";
-import { RootState } from "../store/store";
 import { useAuthentication } from "../authentication/AuthenticationContext";
+import { selectAgreement } from "../store/agreement/selectors";
+import { useCgnSelector } from "../store/hooks";
 
 const Dashboard = () => {
   const [tab, setTab] = useState(0);
-  const agreement = useSelector((state: RootState) => state.agreement.value);
+  const agreement = useCgnSelector(selectAgreement);
 
   const authentication = useAuthentication();
   const user = authentication.currentUserSession;
