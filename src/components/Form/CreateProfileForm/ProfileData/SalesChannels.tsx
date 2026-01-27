@@ -26,16 +26,12 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
   );
   const addresses = useWatch(formLens.focus("addresses").interop());
   const addressesArray = useFieldArray(formLens.focus("addresses").interop());
-  const hasOnlineOrBothChannels =
-    channelType === "OnlineChannel" || channelType === "BothChannels";
-  const hasWebsite =
-    hasOnlineOrBothChannels || entityType === EntityType.PublicAdministration;
   return (
     <>
       <SalesChannelDiscountCodeType formLens={formLens} />
       {formLens
         .focus("addresses")
-        .map(addressesArray.fields, (_, itemLens, index, array) => (
+        .map(addressesArray.fields, (_, itemLens, index) => (
           <FormSection
             key={index}
             title={index + 1 >= 2 ? `Indirizzo ${index + 1}` : `Indirizzo`}
@@ -172,38 +168,34 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
                       </span>
                     </div>
                   )}
-                  {!hasWebsite && index === array.length - 1 ? children : null}
                 </>
               )}
             </div>
           </FormSection>
         ))}
-      {hasWebsite && (
-        <FormSection
-          title="Sito web"
-          description={(() => {
-            switch (entityType) {
-              case EntityType.Private:
-                return "Inserire l'URL del proprio e-commerce o del proprio sito istituzionale";
-              case EntityType.PublicAdministration:
-              default:
-                return "Inserisci l’URL del tuo e-commerce o sito per permettere alle persone di conoscere la tua attività";
-            }
-          })()}
-          required
-          isVisible
-        >
-          <Field
-            id="websiteUrl"
-            formLens={formLens.focus("websiteUrl")}
-            type="text"
-            placeholder="Inserisci un sito web (completo di protocollo https)"
-            className="form-control"
-          />
-          <FormErrorMessage formLens={formLens.focus("websiteUrl")} />
-          {children}
-        </FormSection>
-      )}
+      <FormSection
+        title="Sito web"
+        description={(() => {
+          switch (entityType) {
+            case EntityType.Private:
+              return "Inserire l'URL del proprio e-commerce o del proprio sito istituzionale";
+            case EntityType.PublicAdministration:
+            default:
+              return "Inserisci l’URL del tuo e-commerce o sito per permettere alle persone di conoscere la tua attività";
+          }
+        })()}
+        isVisible
+      >
+        <Field
+          id="websiteUrl"
+          formLens={formLens.focus("websiteUrl")}
+          type="text"
+          placeholder="Inserisci un sito web (completo di protocollo https)"
+          className="form-control"
+        />
+        <FormErrorMessage formLens={formLens.focus("websiteUrl")} />
+        {children}
+      </FormSection>
     </>
   );
 };
