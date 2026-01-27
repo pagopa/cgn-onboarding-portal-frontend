@@ -135,15 +135,6 @@ export const SalesChannelValidationSchema = z
       ctx.value.channelType === SalesChannelType.OnlineChannel ||
       ctx.value.channelType === SalesChannelType.BothChannels
     ) {
-      if (!ctx.value.websiteUrl) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          input: ctx.value.websiteUrl,
-          path: ["websiteUrl"],
-          code: "custom",
-          message: REQUIRED_FIELD
-        });
-      }
       if (!ctx.value.discountCodeType) {
         // eslint-disable-next-line functional/immutable-data
         ctx.issues.push({
