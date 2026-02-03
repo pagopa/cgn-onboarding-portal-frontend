@@ -9,6 +9,7 @@
     "src/api/generated_backoffice/**",
     "src/api/generated_public/**",
     "src/types/**",
-    "extensions/**"
+    "extensions/**",
+    ".yarn/**"
   ]
 }
