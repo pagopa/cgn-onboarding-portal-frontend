@@ -26,6 +26,8 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
   );
   const addresses = useWatch(formLens.focus("addresses").interop());
   const addressesArray = useFieldArray(formLens.focus("addresses").interop());
+  const hasOnlineOrBothChannels =
+    channelType === "OnlineChannel" || channelType === "BothChannels";
   return (
     <>
       <SalesChannelDiscountCodeType formLens={formLens} />
@@ -184,6 +186,7 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
               return "Inserisci l’URL del tuo e-commerce o sito per permettere alle persone di conoscere la tua attività";
           }
         })()}
+        required={hasOnlineOrBothChannels}
         isVisible
       >
         <Field
