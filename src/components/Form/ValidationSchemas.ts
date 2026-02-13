@@ -12,6 +12,8 @@ import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
 const INCORRECT_CONFIRM_EMAIL_ADDRESS = "I due indirizzi devono combaciare";
 const REQUIRED_FIELD = "Campo obbligatorio";
+const MAX_LENGTH_REACHED =
+  "Hai raggiunto il numero massimo di caratteri consentiti";
 const ONLY_NUMBER = "Solo numeri";
 const ONLY_STRING = "Solo lettere";
 const DISCOUNT_RANGE =
@@ -283,29 +285,28 @@ export const discountDataValidationSchema = (
       name: z
         .string({ error: undefinedRequired })
         .trim()
-        .max(100)
+        .max(100, MAX_LENGTH_REACHED)
         .min(1, REQUIRED_FIELD),
       name_en: z
         .string({ error: undefinedRequired })
         .trim()
-        .max(100)
+        .max(100, MAX_LENGTH_REACHED)
         .min(1, REQUIRED_FIELD),
       name_de: z
         .string({ error: undefinedRequired })
         .trim()
-        .max(100)
+        .max(100, MAX_LENGTH_REACHED)
         .min(1, REQUIRED_FIELD),
-      description: z.string().max(250).optional(),
-      description_en: z.string().max(250).optional(),
-      description_de: z.string().max(250).optional(),
-      discountUrl: z.union([
-        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
-        z.url({
-          error: INCORRECT_WEBSITE_URL,
-          protocol: /^https$/,
-          hostname: z.regexes.domain
-        })
-      ]),
+      description: z.string().max(250, MAX_LENGTH_REACHED).optional(),
+      description_en: z.string().max(250, MAX_LENGTH_REACHED).optional(),
+      description_de: z.string().max(250, MAX_LENGTH_REACHED).optional(),
+      discountUrl: z
+        .string()
+        .trim()
+        .max(500, MAX_LENGTH_REACHED)
+        .regex(/^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[A-Za-z]{2,}$/, {
+          message: INCORRECT_WEBSITE_URL
+        }),
       startDate: z.pipe(
         z.date().optional(),
         z.date({ error: undefinedRequired })
@@ -347,31 +348,29 @@ export const discountDataValidationSchema = (
           .min(1, PRODUCT_CATEGORIES_ONE)
           .max(MAX_SELECTABLE_CATEGORIES, PRODUCT_CATEGORIES_MAX)
       ),
-      condition: z.string().optional(),
-      condition_en: z.string().optional(),
-      condition_de: z.string().optional(),
-      staticCode: z.string().optional(),
-      landingPageUrl: z.union([
-        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
-        z.url({
-          error: INCORRECT_WEBSITE_URL,
-          protocol: /^https$/,
-          hostname: z.regexes.domain
-        })
-      ]),
-      landingPageReferrer: z.string().optional(),
+      condition: z.string().max(200, MAX_LENGTH_REACHED).optional(),
+      condition_en: z.string().max(200, MAX_LENGTH_REACHED).optional(),
+      condition_de: z.string().max(200, MAX_LENGTH_REACHED).optional(),
+      staticCode: z.string().max(100, MAX_LENGTH_REACHED).optional(),
+      landingPageUrl: z
+        .string()
+        .trim()
+        .max(500, MAX_LENGTH_REACHED)
+        .regex(/^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[A-Za-z]{2,}$/, {
+          message: INCORRECT_WEBSITE_URL
+        }),
+      landingPageReferrer: z.string().max(100, MAX_LENGTH_REACHED).optional(),
       lastBucketCodeLoadUid: z.string().optional(),
       lastBucketCodeLoadFileName: z.string().optional(),
       lastBucketCodeLoadStatus: z.enum(BucketCodeLoadStatus).optional(),
       visibleOnEyca: z.boolean().optional(),
-      eycaLandingPageUrl: z.union([
-        z.string().trim().max(0, INCORRECT_WEBSITE_URL),
-        z.url({
-          error: INCORRECT_WEBSITE_URL,
-          protocol: /^https$/,
-          hostname: z.regexes.domain
+      eycaLandingPageUrl: z
+        .string()
+        .trim()
+        .max(500, MAX_LENGTH_REACHED)
+        .regex(/^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[A-Za-z]{2,}$/, {
+          message: INCORRECT_WEBSITE_URL
         })
-      ])
     })
     // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
     .check(ctx => {
