@@ -19,7 +19,6 @@ function StaticCode({ formLens, children }: Props) {
         id="staticCode"
         formLens={formLens.focus("staticCode")}
         type="text"
-        maxLength={100}
         className="form-control"
       />
       <FormErrorMessage formLens={formLens.focus("staticCode")} />

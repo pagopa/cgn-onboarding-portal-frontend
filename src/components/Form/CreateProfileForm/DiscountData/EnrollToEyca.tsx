@@ -210,7 +210,6 @@ const EnrollToEyca = ({ profile, index, formLens }: Props) => {
           placeholder="Inserisci indirizzo (completo di protocollo https, max 500 caratteri)"
           className="form-control"
           type="text"
-          maxLength={500}
         />
         <FormErrorMessage formLens={formLens.focus("eycaLandingPageUrl")} />
       </FormGroup>

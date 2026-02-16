@@ -18,7 +18,6 @@ function LandingPage({ formLens, children }: Props) {
         formLens={formLens.focus("landingPageUrl")}
         placeholder="Inserisci indirizzo (completo di protocollo https)"
         type="text"
-        maxLength={500}
         className="form-control"
       />
       <FormErrorMessage formLens={formLens.focus("landingPageUrl")} />
@@ -31,7 +30,6 @@ function LandingPage({ formLens, children }: Props) {
         formLens={formLens.focus("landingPageReferrer")}
         placeholder="Inserisci valore referrer"
         type="text"
-        maxLength={100}
         className="form-control"
       />
       <FormErrorMessage formLens={formLens.focus("landingPageReferrer")} />
