@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState, Fragment } from "react";
 import {
   useReactTable,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   flexRender,
   getExpandedRowModel,
@@ -226,7 +225,6 @@ const Discounts = () => {
     data: discounts,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel()
   });
 
