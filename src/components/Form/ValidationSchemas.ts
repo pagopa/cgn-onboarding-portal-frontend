@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/regex-complexity */
 import { z } from "zod/v4";
 import {
   BucketCodeLoadStatus,
@@ -304,9 +305,12 @@ export const discountDataValidationSchema = (
         .string()
         .trim()
         .max(500, MAX_LENGTH_REACHED)
-        .regex(/^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[A-Za-z]{2,}$/, {
-          message: INCORRECT_WEBSITE_URL
-        }),
+        .regex(
+          /^https:\/\/(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[A-Za-z]{2,}(\/[^?#]*)?(\?[^#]*)?(#.*)?$/,
+          {
+            message: INCORRECT_WEBSITE_URL
+          }
+        ),
       startDate: z.pipe(
         z.date().optional(),
         z.date({ error: undefinedRequired })
@@ -356,9 +360,12 @@ export const discountDataValidationSchema = (
         .string()
         .trim()
         .max(500, MAX_LENGTH_REACHED)
-        .regex(/^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[A-Za-z]{2,}$/, {
-          message: INCORRECT_WEBSITE_URL
-        }),
+        .regex(
+          /^https:\/\/(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[A-Za-z]{2,}(\/[^?#]*)?(\?[^#]*)?(#.*)?$/,
+          {
+            message: INCORRECT_WEBSITE_URL
+          }
+        ),
       landingPageReferrer: z.string().max(100, MAX_LENGTH_REACHED).optional(),
       lastBucketCodeLoadUid: z.string().optional(),
       lastBucketCodeLoadFileName: z.string().optional(),
@@ -368,9 +375,12 @@ export const discountDataValidationSchema = (
         .string()
         .trim()
         .max(500, MAX_LENGTH_REACHED)
-        .regex(/^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[A-Za-z]{2,}$/, {
-          message: INCORRECT_WEBSITE_URL
-        })
+        .regex(
+          /^https:\/\/(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[A-Za-z]{2,}(\/[^?#]*)?(\?[^#]*)?(#.*)?$/,
+          {
+            message: INCORRECT_WEBSITE_URL
+          }
+        )
     })
     // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
     .check(ctx => {
