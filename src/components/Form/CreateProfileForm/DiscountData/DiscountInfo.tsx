@@ -44,7 +44,6 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
           <div className="col-6">
             <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
             <Field
-              maxLength={100}
               id="name"
               formLens={formLens.focus("name")}
               type="text"
@@ -55,7 +54,6 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
           <div className="col-6">
             <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
             <Field
-              maxLength={100}
               id="name"
               formLens={formLens.focus("name_en")}
               type="text"
@@ -79,7 +77,6 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
               id="description"
               formLens={formLens.focus("description")}
               placeholder="Es. Sconto valido per l’acquisto di due ingressi per la stagione di prosa 2021/2022 presso il Teatro Comunale"
-              maxLength={250}
               rows={4}
               className="form-control"
             />
@@ -92,7 +89,6 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
               id="description_en"
               formLens={formLens.focus("description_en")}
               placeholder="Ex. Discount valid for the purchase of two tickets for the 2021/2022 prose season at the Municipal Theatre"
-              maxLength={250}
               rows={4}
               className="form-control"
             />
@@ -141,7 +137,7 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
         <FormField
           htmlFor="discountUrl"
           title="Link all’opportunità"
-          description="Inserisci l’URL del sito o dell’app dove sarà possibile accedere all’opportunità"
+          description="Inserisci l’URL del sito o dell’app dove sarà possibile accedere all’opportunità (max 500 caratteri)"
           isTitleHeading
           isVisible
         >
@@ -153,7 +149,7 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
           htmlFor="staticCode"
           isTitleHeading
           title="Codice statico"
-          description="Inserisci il codice che l’utente dovrà inserire per usufruire dell’opportunità"
+          description="Inserisci il codice che l’utente dovrà inserire per usufruire dell’opportunità (max 100 caratteri)"
           isVisible
           required
         >
@@ -165,7 +161,7 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
           htmlFor="landingPage"
           isTitleHeading
           title="Indirizzo della landing page"
-          description="Inserisci l’URL della pagina web da cui sarà possibile accedere all’opportunità"
+          description="Inserisci l’URL della pagina web da cui sarà possibile accedere all’opportunità (max 500 caratteri)"
           isVisible
           required
         >
