@@ -23,7 +23,7 @@ function LandingPage({ formLens, children }: Props) {
       <FormErrorMessage formLens={formLens.focus("landingPageUrl")} />
       <p className="mt-4 text-sm fw-normal text-black">
         Inserisci il valore del parametro referrer da trasmettere alla pagina
-        web
+        web (max 100 caratteri)
       </p>
       <Field
         id="referrer"

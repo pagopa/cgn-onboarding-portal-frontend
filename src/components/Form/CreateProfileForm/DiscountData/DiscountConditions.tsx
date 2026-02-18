@@ -19,7 +19,6 @@ function DiscountConditions({ formLens }: Props) {
           id="condition"
           formLens={formLens.focus("condition")}
           placeholder="Es. Sconto valido per l’acquisto di un solo abbonamento alla stagione di prosa presso gli sportelli del teatro."
-          maxLength={200}
           rows={4}
           className="form-control"
         />
@@ -32,7 +31,6 @@ function DiscountConditions({ formLens }: Props) {
           id="condition_en"
           formLens={formLens.focus("condition_en")}
           placeholder="Ex. Discount valid for the purchase of only one prose season ticket at the theatre’s counters "
-          maxLength={200}
           rows={4}
           className="form-control"
         />
