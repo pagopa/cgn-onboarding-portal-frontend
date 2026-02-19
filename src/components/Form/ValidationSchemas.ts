@@ -307,7 +307,7 @@ export const discountDataValidationSchema = (
         .string()
         .trim()
         .max(500, MAX_LENGTH_REACHED)
-        .regex(urlRegex, {
+        .refine(val => val === "" || urlRegex.test(val), {
           message: INCORRECT_WEBSITE_URL
         }),
       startDate: z.pipe(
