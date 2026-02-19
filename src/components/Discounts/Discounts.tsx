@@ -37,7 +37,7 @@ const Discounts = () => {
   }>();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 10
+    pageSize: 20
   });
 
   const closeActionModal = () => setSelectedDiscountAction(undefined);
