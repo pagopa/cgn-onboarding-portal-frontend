@@ -307,7 +307,7 @@ export const discountDataValidationSchema = (
         .string()
         .trim()
         .max(500, MAX_LENGTH_REACHED)
-        .regex(urlRegex, {
+        .refine(val => val === "" || urlRegex.test(val), {
           message: INCORRECT_WEBSITE_URL
         }),
       startDate: z.pipe(
@@ -359,7 +359,7 @@ export const discountDataValidationSchema = (
         .string()
         .trim()
         .max(500, MAX_LENGTH_REACHED)
-        .regex(urlRegex, {
+        .refine(val => val === "" || urlRegex.test(val), {
           message: INCORRECT_WEBSITE_URL
         }),
       landingPageReferrer: z.string().max(100, MAX_LENGTH_REACHED).optional(),
@@ -371,7 +371,7 @@ export const discountDataValidationSchema = (
         .string()
         .trim()
         .max(500, MAX_LENGTH_REACHED)
-        .regex(urlRegex, {
+        .refine(val => val === "" || urlRegex.test(val), {
           message: INCORRECT_WEBSITE_URL
         })
     })
