@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useState, Fragment } from "react";
 import {
   useReactTable,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   flexRender,
   getExpandedRowModel,
-  createColumnHelper
+  createColumnHelper,
+  getPaginationRowModel
 } from "@tanstack/react-table";
 import { Icon } from "design-react-kit";
 import { Link } from "react-router-dom";
@@ -19,6 +19,8 @@ import TableHeader from "../Table/TableHeader";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import { selectAgreement } from "../../store/agreement/selectors";
 import { useCgnSelector } from "../../store/hooks";
+import Pager from "../Table/Pager";
+import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow from "./DiscountDetailRow";
@@ -33,6 +35,11 @@ const Discounts = () => {
     action: "publish" | "unpublish" | "test" | "delete";
     discountId: string;
   }>();
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20
+  });
+
   const closeActionModal = () => setSelectedDiscountAction(undefined);
   const publishModal = selectedDiscountAction?.action === "publish";
   const unpublishModal = selectedDiscountAction?.action === "unpublish";
@@ -221,14 +228,35 @@ const Discounts = () => {
     })
   ];
 
+  const pageCount = Math.ceil((discounts.length ?? 0) / pagination.pageSize);
   const tableInstance = useReactTable({
+    state: {
+      pagination
+    },
     columns,
     data: discounts,
     getCoreRowModel: getCoreRowModel(),
+    onPaginationChange: setPagination,
+    autoResetPageIndex: false,
     getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel()
   });
+
+  const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
+    usePaginationHelpers(tableInstance);
+
+  const startRowIndex =
+    tableInstance.getState().pagination.pageIndex *
+      tableInstance.getState().pagination.pageSize +
+    1;
+
+  const endRowIndex = Math.min(
+    (tableInstance.getState().pagination.pageIndex + 1) *
+      tableInstance.getState().pagination.pageSize,
+    discounts.length
+  );
+  const pageArray = Array.from(Array(pageCount).keys());
 
   const headerGroups = tableInstance.getHeaderGroups();
   const MAX_PUBLISHED_DISCOUNTS = 5;
@@ -286,120 +314,134 @@ const Discounts = () => {
       </div>
       {(agreement.state === AgreementState.ApprovedAgreement ||
         entityType === EntityType.Private) && (
-        <div className="table-responsive mb-0 mt-2 bg-white table">
-          <table style={{ width: "100%" }} className="table mb-0">
-            <TableHeader headerGroups={headerGroups} />
-            <tbody>
-              {maxPublishedDiscountsReached && (
-                <tr>
-                  <td
-                    colSpan={tableInstance.getVisibleLeafColumns().length}
-                    style={{ padding: "24px 32px" }}
-                    className="border-bottom align-middle"
-                  >
-                    <div
-                      style={{
-                        borderRadius: "4px",
-                        borderLeft: "4px solid #FFCB46",
-                        padding: "16px",
-                        gap: "16px",
-                        boxShadow:
-                          "0px 1px 10px 0px #002B551A, 0px 4px 5px 0px #002B550D, 0px 2px 4px -1px #002B551A"
-                      }}
-                      className="d-flex flex-row align-items-center"
+        <>
+          <Pager
+            canPreviousPage={canPreviousPage}
+            canNextPage={canNextPage}
+            startRowIndex={startRowIndex}
+            endRowIndex={endRowIndex}
+            pageIndex={pagination.pageIndex}
+            onPreviousPage={previousPage}
+            onNextPage={nextPage}
+            onGotoPage={gotoPage}
+            pageArray={pageArray}
+            total={discounts.length}
+          />
+          <div className="table-responsive mb-0 mt-2 bg-white table">
+            <table style={{ width: "100%" }} className="table mb-0">
+              <TableHeader headerGroups={headerGroups} />
+              <tbody>
+                {maxPublishedDiscountsReached && (
+                  <tr>
+                    <td
+                      colSpan={tableInstance.getVisibleLeafColumns().length}
+                      style={{ padding: "24px 32px" }}
+                      className="border-bottom align-middle"
                     >
-                      <Icon
-                        icon="it-warning-circle"
-                        style={{ fill: "#FFCB46" }}
-                      />
-                      <div style={{ fontSize: "16px", fontWeight: 600 }}>
-                        Hai raggiunto il numero massimo di opportunità
-                        pubblicate nello stesso momento
+                      <div
+                        style={{
+                          borderRadius: "4px",
+                          borderLeft: "4px solid #FFCB46",
+                          padding: "16px",
+                          gap: "16px",
+                          boxShadow:
+                            "0px 1px 10px 0px #002B551A, 0px 4px 5px 0px #002B550D, 0px 2px 4px -1px #002B551A"
+                        }}
+                        className="d-flex flex-row align-items-center"
+                      >
+                        <Icon
+                          icon="it-warning-circle"
+                          style={{ fill: "#FFCB46" }}
+                        />
+                        <div style={{ fontSize: "16px", fontWeight: 600 }}>
+                          Hai raggiunto il numero massimo di opportunità
+                          pubblicate nello stesso momento
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
+                    </td>
+                  </tr>
+                )}
 
-              {tableInstance.getRowModel().rows.map(row => (
-                <Fragment key={row.id}>
-                  <tr
-                    className="cursor-pointer"
-                    onClick={() => row.toggleExpanded()}
-                  >
-                    {row.getVisibleCells().map((cell, i) => (
-                      <td
-                        key={cell.id}
-                        className={`
+                {tableInstance.getRowModel().rows.map(row => (
+                  <Fragment key={row.id}>
+                    <tr
+                      className="cursor-pointer"
+                      onClick={() => row.toggleExpanded()}
+                    >
+                      {row.getVisibleCells().map((cell, i) => (
+                        <td
+                          key={cell.id}
+                          className={`
                 ${i === 0 ? "ps-6" : ""}
                 ${i === headerGroups[0].headers.length - 1 ? "pe-6" : ""}
                 px-3 py-2 border-bottom text-sm align-middle
               `}
-                        style={
-                          cell.column.id === "expander"
-                            ? { width: "calc(32px + 0.75rem * 2)" }
-                            : {}
-                        }
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-
-                  {row.getIsExpanded() && (
-                    <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                      <td
-                        colSpan={tableInstance.getVisibleLeafColumns().length}
-                      >
-                        <DiscountDetailRow
-                          row={row}
-                          agreement={agreement}
-                          profile={profile}
-                          onPublish={() =>
-                            setSelectedDiscountAction({
-                              action: "publish",
-                              discountId: row.original.id
-                            })
+                          style={
+                            cell.column.id === "expander"
+                              ? { width: "calc(32px + 0.75rem * 2)" }
+                              : {}
                           }
-                          isPendingPublish={publishDiscountMutation.isPending}
-                          isPendingUnpublish={
-                            unpublishDiscountMutation.isPending
-                          }
-                          isPendingTest={testDiscountMutation.isPending}
-                          isPendingDelete={deleteDiscountMutation.isPending}
-                          onUnpublish={() =>
-                            setSelectedDiscountAction({
-                              action: "unpublish",
-                              discountId: row.original.id
-                            })
-                          }
-                          onDelete={() =>
-                            setSelectedDiscountAction({
-                              action: "delete",
-                              discountId: row.original.id
-                            })
-                          }
-                          onTest={() =>
-                            setSelectedDiscountAction({
-                              action: "test",
-                              discountId: row.original.id
-                            })
-                          }
-                          maxPublishedDiscountsReached={
-                            maxPublishedDiscountsReached
-                          }
-                        />
-                      </td>
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
                     </tr>
-                  )}
-                </Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
+
+                    {row.getIsExpanded() && (
+                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                        <td
+                          colSpan={tableInstance.getVisibleLeafColumns().length}
+                        >
+                          <DiscountDetailRow
+                            row={row}
+                            agreement={agreement}
+                            profile={profile}
+                            onPublish={() =>
+                              setSelectedDiscountAction({
+                                action: "publish",
+                                discountId: row.original.id
+                              })
+                            }
+                            isPendingPublish={publishDiscountMutation.isPending}
+                            isPendingUnpublish={
+                              unpublishDiscountMutation.isPending
+                            }
+                            isPendingTest={testDiscountMutation.isPending}
+                            isPendingDelete={deleteDiscountMutation.isPending}
+                            onUnpublish={() =>
+                              setSelectedDiscountAction({
+                                action: "unpublish",
+                                discountId: row.original.id
+                              })
+                            }
+                            onDelete={() =>
+                              setSelectedDiscountAction({
+                                action: "delete",
+                                discountId: row.original.id
+                              })
+                            }
+                            onTest={() =>
+                              setSelectedDiscountAction({
+                                action: "test",
+                                discountId: row.original.id
+                              })
+                            }
+                            maxPublishedDiscountsReached={
+                              maxPublishedDiscountsReached
+                            }
+                          />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
       {agreement.state === AgreementState.ApprovedAgreement ? (
         <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
