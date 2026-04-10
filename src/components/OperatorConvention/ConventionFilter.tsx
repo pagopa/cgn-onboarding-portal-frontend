@@ -43,7 +43,7 @@ const ConventionFilter = ({
         blob,
         `${today.getFullYear()}-${
           today.getMonth() + 1
-        }-${today.getDate()}/Esercenti CGN`
+        }-${today.getDate()}_Esercenti CGN`
       );
     } catch {
       triggerTooltip({
@@ -74,7 +74,7 @@ const ConventionFilter = ({
         blob,
         `${today.getFullYear()}-${
           today.getMonth() + 1
-        }-${today.getDate()}/Opportunità Eyca`
+        }-${today.getDate()}_Opportunità Eyca`
       );
     } catch {
       triggerTooltip({
