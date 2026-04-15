@@ -39,12 +39,7 @@ const ConventionFilter = ({
       );
       const blob = new Blob([data], { type: "text/csv" });
       const today = new Date();
-      saveAs(
-        blob,
-        `${today.getFullYear()}-${
-          today.getMonth() + 1
-        }-${today.getDate()}_Esercenti CGN`
-      );
+      saveAs(blob, `${today.toISOString().split("T")[0]}_Esercenti CGN`);
     } catch {
       triggerTooltip({
         severity: Severity.DANGER,
@@ -70,12 +65,7 @@ const ConventionFilter = ({
         );
       const blob = new Blob([data], { type: "text/csv" });
       const today = new Date();
-      saveAs(
-        blob,
-        `${today.getFullYear()}-${
-          today.getMonth() + 1
-        }-${today.getDate()}_Opportunità Eyca`
-      );
+      saveAs(blob, `${today.toISOString().split("T")[0]}_Opportunità Eyca`);
     } catch {
       triggerTooltip({
         severity: Severity.DANGER,
