@@ -39,7 +39,7 @@ const ConventionFilter = ({
       );
       const blob = new Blob([data], { type: "text/csv" });
       const today = new Date();
-      saveAs(blob, `${today.toISOString().split("T")[0]}__Esercenti CGN`);
+      saveAs(blob, `${today.toISOString().split("T")[0]}_Esercenti CGN`);
     } catch {
       triggerTooltip({
         severity: Severity.DANGER,
