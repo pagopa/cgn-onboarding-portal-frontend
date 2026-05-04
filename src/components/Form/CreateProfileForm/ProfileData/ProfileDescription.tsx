@@ -11,15 +11,22 @@ const ProfileDescription = ({
 }: {
   formLens: Lens<ProfileFormValues>;
 }) => (
-  <FormSection title="Descrizione dell'operatore" required isVisible>
-    <p className="text-sm fw-normal text-black">
-      Descrivi in modo chiaro e semplice i servizi offerti agli utenti di Carta
-      Giovani (obbligatoria in italiano e in inglese – max 300 caratteri).
-      <br />
-      Usa parole chiave pertinenti: questo testo viene indicizzato nella
-      funzione “Ricerca” dell’app IO e influisce direttamente sulla visibilità
-      della tua offerta e sull’esperienza degli utenti.
-    </p>
+  <FormSection
+    title="Descrizione dell'operatore"
+    required
+    isVisible
+    description={
+      <>
+        Descrivi in modo chiaro e semplice i servizi offerti agli utenti di
+        Carta Giovani (obbligatoria in italiano e in inglese - max 300
+        caratteri).
+        <br />
+        Usa parole chiave pertinenti: questo testo viene indicizzato nella
+        funzione “Ricerca” dell’app IO e influisce direttamente sulla visibilità
+        della tua offerta e sull’esperienza degli utenti.
+      </>
+    }
+  >
     <div className="row">
       <div className="col-6">
         <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
