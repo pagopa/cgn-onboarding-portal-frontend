@@ -13,9 +13,19 @@ const ProfileDescription = ({
 }) => (
   <FormSection
     title="Descrizione dell'operatore"
-    description="Inserisci una descrizione dei beni o servizi offerti agli utenti tramite app IO. La descrizione è obbligatoria sia in italiano che in inglese - Max 300 caratteri"
     required
     isVisible
+    description={
+      <>
+        Descrivi in modo chiaro e semplice i servizi offerti agli utenti di
+        Carta Giovani (obbligatoria in italiano e in inglese - max 300
+        caratteri).
+        <br />
+        Usa parole chiave pertinenti: questo testo viene indicizzato nella
+        funzione “Ricerca” dell’app IO e influisce direttamente sulla visibilità
+        della tua offerta e sull’esperienza degli utenti.
+      </>
+    }
   >
     <div className="row">
       <div className="col-6">

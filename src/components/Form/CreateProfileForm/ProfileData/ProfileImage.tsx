@@ -95,7 +95,7 @@ const ProfileImage = () => {
   return (
     <FormSection
       title="Immagine operatore"
-      description="Carica un'immagine che rappresenti i beni o i servizi trattati dall'operatore"
+      description="Carica il tuo logo ufficiale o un’immagine che possa aiutare a identificare la tua offerta"
       footerDescription={FooterDescription}
       isVisible
       required
