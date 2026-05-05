@@ -2,7 +2,6 @@ import { z } from "zod/v4";
 import {
   BucketCodeLoadStatus,
   DiscountCodeType,
-  HelpRequestCategoryEnum,
   ProductCategory,
   SalesChannelType
 } from "../../api/generated";
@@ -10,7 +9,6 @@ import { EntityType } from "../../api/generated_backoffice";
 import { MAX_SELECTABLE_CATEGORIES } from "../../utils/constants";
 
 const INCORRECT_EMAIL_ADDRESS = "L’indirizzo inserito non è corretto";
-const INCORRECT_CONFIRM_EMAIL_ADDRESS = "I due indirizzi devono combaciare";
 const REQUIRED_FIELD = "Campo obbligatorio";
 const MAX_LENGTH_REACHED =
   "Hai raggiunto il numero massimo di caratteri consentiti";
@@ -508,95 +506,6 @@ export const discountDataValidationSchema = (
         }
       }
     });
-
-function helpTopicValidation(
-  ctx: z.core.ParsePayload<{
-    category: HelpRequestCategoryEnum;
-    topic?: string;
-  }>
-) {
-  if (
-    ctx.value.category === HelpRequestCategoryEnum.Discounts ||
-    ctx.value.category === HelpRequestCategoryEnum.Documents ||
-    ctx.value.category === HelpRequestCategoryEnum.DataFilling
-  ) {
-    if (!ctx.value.topic) {
-      // eslint-disable-next-line functional/immutable-data
-      ctx.issues.push({
-        path: ["topic"],
-        code: "custom",
-        input: ctx.value.topic,
-        message: REQUIRED_FIELD
-      });
-    }
-  }
-}
-
-export const loggedHelpValidationSchema = z
-  .object({
-    category: z.string().pipe(
-      z.enum(HelpRequestCategoryEnum, {
-        error: REQUIRED_FIELD
-      })
-    ),
-    topic: z.string().optional(),
-    message: z
-      .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD)
-  })
-  .check(ctx => {
-    helpTopicValidation(ctx);
-  });
-
-export const notLoggedHelpValidationSchema = z
-  .object({
-    category: z.string().pipe(
-      z.enum(HelpRequestCategoryEnum, {
-        error: REQUIRED_FIELD
-      })
-    ),
-    topic: z.string().optional(),
-    message: z
-      .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD),
-    referentFirstName: z
-      .string({ error: undefinedRequired })
-      .trim()
-      .regex(onlyAlphaRegex, ONLY_STRING)
-      .min(1, REQUIRED_FIELD),
-    referentLastName: z
-      .string({ error: undefinedRequired })
-      .trim()
-      .regex(onlyAlphaRegex, ONLY_STRING)
-      .min(1, REQUIRED_FIELD),
-    legalName: z
-      .string({ error: undefinedRequired })
-      .trim()
-      .regex(onlyAlphaRegex, ONLY_STRING)
-      .min(1, REQUIRED_FIELD),
-    emailAddress: z.email(INCORRECT_EMAIL_ADDRESS).min(1, REQUIRED_FIELD),
-    confirmEmailAddress: z.email(INCORRECT_EMAIL_ADDRESS).optional(),
-    recaptchaToken: z
-      .string({ error: undefinedRequired })
-      .trim()
-      .min(1, REQUIRED_FIELD)
-  })
-  .check(ctx => {
-    helpTopicValidation(ctx);
-    if (ctx.value.emailAddress && ctx.value.confirmEmailAddress) {
-      if (ctx.value.emailAddress !== ctx.value.confirmEmailAddress) {
-        // eslint-disable-next-line functional/immutable-data
-        ctx.issues.push({
-          path: ["confirmEmailAddress"],
-          code: "custom",
-          input: ctx.value.confirmEmailAddress,
-          message: INCORRECT_CONFIRM_EMAIL_ADDRESS
-        });
-      }
-    }
-  });
 
 export const activationValidationSchema = z.object({
   keyOrganizationFiscalCode: z.string().optional(),
