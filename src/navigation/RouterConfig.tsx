@@ -1,41 +1,39 @@
 import { useEffect } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
-import { createAgreement } from "../store/agreement/agreementSlice";
-import { RootState } from "../store/store";
-import Dashboard from "../pages/Dashboard";
-import Help from "../pages/Help";
-import CreateProfile from "../pages/CreateProfile";
-import EditProfile from "../pages/EditProfile";
-import CreateDiscount from "../pages/CreateDiscount";
-import EditDiscount from "../pages/EditDiscount";
-import AdminPanel from "../pages/AdminPanel";
-import EditOperatorData from "../pages/EditOperatorData";
-import RejectedProfile from "../pages/RejectedProfile";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { AgreementState } from "../api/generated";
-import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
-import CreateActivation from "../pages/CreateActivation";
-import EditActivation from "../pages/EditActivation";
 import { useAuthentication } from "../authentication/AuthenticationContext";
+import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
+import AdminPanel from "../pages/AdminPanel";
+import CreateActivation from "../pages/CreateActivation";
+import CreateDiscount from "../pages/CreateDiscount";
+import CreateProfile from "../pages/CreateProfile";
+import Dashboard from "../pages/Dashboard";
+import EditActivation from "../pages/EditActivation";
+import EditDiscount from "../pages/EditDiscount";
+import EditOperatorData from "../pages/EditOperatorData";
+import EditProfile from "../pages/EditProfile";
 import Login from "../pages/Login";
-import SelectCompany from "../pages/SelectCompany";
 import { LoginRedirect } from "../pages/LoginRedirect";
+import RejectedProfile from "../pages/RejectedProfile";
+import SelectCompany from "../pages/SelectCompany";
+import { createAgreement } from "../store/agreement/agreementSlice";
 import { useCgnDispatch, useCgnSelector } from "../store/hooks";
+import { RootState } from "../store/store";
 import {
-  DASHBOARD,
-  CREATE_PROFILE,
-  EDIT_PROFILE,
-  HELP,
+  ADMIN_PANEL_ACCESSI,
+  ADMIN_PANEL_ACCESSI_CREA,
+  ADMIN_PANEL_ACCESSI_EDIT,
+  ADMIN_PANEL_CONVENZIONATI,
+  ADMIN_PANEL_RICHIESTE,
   CREATE_DISCOUNT,
+  CREATE_PROFILE,
+  DASHBOARD,
   EDIT_DISCOUNT,
   EDIT_OPERATOR_DATA,
-  ADMIN_PANEL_RICHIESTE,
-  ADMIN_PANEL_CONVENZIONATI,
-  REJECT_PROFILE,
-  ADMIN_PANEL_ACCESSI,
-  ADMIN_PANEL_ACCESSI_EDIT,
-  ADMIN_PANEL_ACCESSI_CREA,
+  EDIT_PROFILE,
+  LOGIN,
   LOGIN_REDIRECT,
-  LOGIN
+  REJECT_PROFILE
 } from "./routes";
 
 const RouterConfig = () => {
@@ -58,7 +56,6 @@ const RouterConfig = () => {
       <Switch>
         <Route exact path={LOGIN} component={Login} />
         <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-        <Route exact path={HELP} component={Help} />
         <Route path="*">
           <Redirect to={LOGIN} />
         </Route>
@@ -70,7 +67,6 @@ const RouterConfig = () => {
       <Switch>
         <Route exact path={LOGIN} component={Login} />
         <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-        <Route exact path={HELP} component={Help} />
         <Route
           exact
           path={[
@@ -101,7 +97,6 @@ const RouterConfig = () => {
       <Switch>
         <Route exact path={LOGIN} component={Login} />
         <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-        <Route exact path={HELP} component={Help} />
         <Route path="*" component={SelectCompany} />
       </Switch>
     );
@@ -115,7 +110,6 @@ const RouterConfig = () => {
         <Switch>
           <Route exact path={LOGIN} component={Login} />
           <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-          <Route exact path={HELP} component={Help} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />
           <Route path="*">
             <Redirect to={CREATE_PROFILE} />
@@ -128,7 +122,6 @@ const RouterConfig = () => {
         <Switch>
           <Route exact path={LOGIN} component={Login} />
           <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-          <Route exact path={HELP} component={Help} />
           <Route exact path={CREATE_PROFILE} component={CreateProfile} />
           <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
           <Route path="*">
@@ -142,7 +135,6 @@ const RouterConfig = () => {
         <Switch>
           <Route exact path={LOGIN} component={Login} />
           <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-          <Route exact path={HELP} component={Help} />
           <Route exact path={DASHBOARD} component={Dashboard} />
           <Route exact path={EDIT_PROFILE} component={EditProfile} />
           <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
