@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
 import { Button } from "design-react-kit";
-import { CREATE_PROFILE, HELP } from "../../navigation/routes";
-import Logo from "../Logo/Logo";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
 import { SessionSwitch } from "../../authentication/SessionSwitch";
+import { CREATE_PROFILE } from "../../navigation/routes";
+import Logo from "../Logo/Logo";
 import LogoutModal from "./LogoutModal";
 
 type Props = {
@@ -32,14 +32,6 @@ const Header = ({ hasBorder = false }: Props) => {
           <Logo />
         </div>
         <div className="d-flex align-items-center">
-          {authentication.currentSession?.type !== "admin" && (
-            <Link
-              to={HELP}
-              className="me-11 text-base text-blue fw-semibold text-decoration-none"
-            >
-              Serve aiuto?
-            </Link>
-          )}
           <SessionSwitch />
           {isLogged && (
             <>

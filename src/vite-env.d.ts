@@ -14,7 +14,6 @@ interface ImportMetaEnv {
   readonly CGN_MSAL_AUTHORITY: string;
   readonly CGN_MSAL_REDIRECT_URI: string;
   readonly CGN_IMAGE_BASE_URL: string;
-  readonly CGN_RECAPTCHA_API_KEY: string;
   readonly CGN_ALLOW_MULTIPLE_LOGIN?: string;
   readonly CGN_FRONTEND_URL?: string;
   readonly CGN_API_PROXY_TARGET_URL?: string;

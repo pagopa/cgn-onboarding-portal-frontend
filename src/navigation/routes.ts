@@ -3,7 +3,6 @@ import { getEditDiscountRoute, getEditOperatorRoute } from "./utils";
 export const LOGIN = "/admin/operatori/login";
 export const LOGIN_REDIRECT = "/session";
 export const DASHBOARD = "/admin/operatori/home";
-export const HELP = "/admin/operatori/serve-aiuto";
 export const CREATE_PROFILE = "/admin/operatori/richiesta-convenzione";
 export const EDIT_PROFILE = "/admin/operatori/dati-operatore/modifica";
 export const CREATE_DISCOUNT = "/admin/operatori/agevolazioni/crea";
