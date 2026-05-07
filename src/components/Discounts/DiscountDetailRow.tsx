@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { Button, Icon } from "design-react-kit";
 import { Fragment, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Row } from "@tanstack/react-table";
 import {
   Agreement,
@@ -54,7 +54,7 @@ const DiscountDetailRow = ({
   isPendingDelete,
   maxPublishedDiscountsReached
 }: Props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [canBePublished, setCanBePublished] = useState(
     row.original.lastBucketCodeLoadStatus
       ? row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
@@ -87,7 +87,7 @@ const DiscountDetailRow = ({
         color={"primary"}
         outline
         tag="button"
-        onClick={() => history.push(getEditDiscountRoute(row.original.id))}
+        onClick={() => navigate(getEditDiscountRoute(row.original.id))}
       >
         {row.original.state !== "expired" ? (
           <EditIcon fill={"#0273E6"} />
@@ -167,7 +167,7 @@ const DiscountDetailRow = ({
                 <button
                   className="btn btn-link fw-bold p-0 my-2"
                   onClick={() => {
-                    history.push(getEditDiscountRoute(row.original.id));
+                    navigate(getEditDiscountRoute(row.original.id));
                   }}
                 >
                   Modifica opportunità

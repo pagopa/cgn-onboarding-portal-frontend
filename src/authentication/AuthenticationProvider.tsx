@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DASHBOARD, ADMIN_PANEL_RICHIESTE, LOGIN } from "../navigation/routes";
 import { useLoginRedirect, adminLogoutRedirect } from "./authentication";
 import {
@@ -16,8 +16,7 @@ export function AuthenticationProvider({
   children: React.ReactNode;
 }) {
   useLoginRedirect();
-  const history = useHistory();
-  const historyPush = history.push;
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [persistedState, setPersistedState] = useState(authenticationStore.get);
   useEffect(
@@ -37,26 +36,26 @@ export function AuthenticationProvider({
     (session: CurrentSession) => {
       authenticationStore.setCurrentSession(session);
       if (session?.type === "user") {
-        historyPush(DASHBOARD);
+        navigate(DASHBOARD);
       }
       if (session?.type === "admin") {
-        historyPush(ADMIN_PANEL_RICHIESTE);
+        navigate(ADMIN_PANEL_RICHIESTE);
       }
       resetQueries();
     },
-    [historyPush, resetQueries]
+    [navigate, resetQueries]
   );
   const logout = useCallback(
     (session: CurrentSession) => {
       authenticationStore.deleteSession(session);
       authenticationStore.setCurrentSession({ type: "none" });
-      historyPush(LOGIN);
+      navigate(LOGIN);
       resetQueries();
       if (session?.type === "admin") {
         adminLogoutRedirect();
       }
     },
-    [historyPush, resetQueries]
+    [navigate, resetQueries]
   );
   const value = useMemo<AuthenticationContextType>(
     () => ({

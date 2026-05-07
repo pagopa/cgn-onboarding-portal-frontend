@@ -2,7 +2,7 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod/v4";
 import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
 import { OrganizationsDataApi } from "../api/generated";
@@ -174,8 +174,7 @@ const userLoginRedirectPromise = onUserLoginRedirect();
 const adminLoginRedirectPromise = onAdminLoginRedirect();
 
 export function useLoginRedirect() {
-  const history = useHistory();
-  const historyPush = history.push;
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -192,9 +191,9 @@ export function useLoginRedirect() {
           merchantFiscalCode: undefined
         });
         resetQueries();
-        historyPush(DASHBOARD);
+        navigate(DASHBOARD);
       } else if (state.type === "error") {
-        historyPush(LOGIN);
+        navigate(LOGIN);
       }
     });
 
@@ -205,8 +204,8 @@ export function useLoginRedirect() {
           name: state.name
         });
         resetQueries();
-        historyPush(ADMIN_PANEL_RICHIESTE);
+        navigate(ADMIN_PANEL_RICHIESTE);
       }
     });
-  }, [historyPush, queryClient]);
+  }, [navigate, queryClient]);
 }

@@ -1,5 +1,5 @@
 import { Fragment, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../../api/common";
 import { DASHBOARD } from "../../../navigation/routes";
@@ -54,7 +54,7 @@ function OperatorDataButtons({ isPending, onBack }: OperatorDataButtonsProps) {
 }
 
 export const EditOperatorForm = ({ variant }: Props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const agreement = useCgnSelector(selectAgreement);
 
   const profileQuery = remoteData.Index.Profile.getProfile.useQuery({
@@ -69,7 +69,7 @@ export const EditOperatorForm = ({ variant }: Props) => {
   const editProfileMutation =
     remoteData.Index.Profile.updateProfile.useMutation({
       onSuccess() {
-        history.push(DASHBOARD);
+        navigate(DASHBOARD);
       }
     });
 
@@ -127,7 +127,7 @@ export const EditOperatorForm = ({ variant }: Props) => {
                   entityType={entityType}
                 >
                   <OperatorDataButtons
-                    onBack={() => history.push(DASHBOARD)}
+                    onBack={() => navigate(DASHBOARD)}
                     isPending={isPending}
                   />
                 </SalesChannels>
@@ -144,7 +144,7 @@ export const EditOperatorForm = ({ variant }: Props) => {
                 />
                 <ReferentData formLens={form.lens}>
                   <OperatorDataButtons
-                    onBack={() => history.push(DASHBOARD)}
+                    onBack={() => navigate(DASHBOARD)}
                     isPending={isPending}
                   />
                 </ReferentData>

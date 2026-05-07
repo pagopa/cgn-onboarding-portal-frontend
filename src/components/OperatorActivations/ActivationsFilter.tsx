@@ -1,5 +1,5 @@
 import { Button } from "design-react-kit";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ADMIN_PANEL_ACCESSI_CREA } from "../../navigation/routes";
 import { ActivationsFilterFormValues } from "./OperatorActivations";
 
@@ -18,7 +18,7 @@ function ActivationsFilter({
   onReset(): void;
   hasActiveFitlers: boolean;
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <form>
@@ -60,7 +60,7 @@ function ActivationsFilter({
             className="ms-5 btn-sm"
             color="primary"
             tag="button"
-            onClick={() => history.push(ADMIN_PANEL_ACCESSI_CREA)}
+            onClick={() => navigate(ADMIN_PANEL_ACCESSI_CREA)}
           >
             <span>Aggiungi operatore</span>
           </Button>

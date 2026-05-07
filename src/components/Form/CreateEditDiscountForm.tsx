@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { remoteData } from "../../api/common";
 import { useTooltip } from "../../context/tooltip";
@@ -22,7 +22,7 @@ import {
 
 export const CreateEditDiscountForm = () => {
   const { discountId } = useParams<{ discountId: string }>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const agreement = useCgnSelector(selectAgreement);
   const { triggerTooltip } = useTooltip();
 
@@ -37,7 +37,7 @@ export const CreateEditDiscountForm = () => {
   const createDiscountMutation =
     remoteData.Index.Discount.createDiscount.useMutation({
       onSuccess() {
-        history.push(DASHBOARD);
+        navigate(DASHBOARD);
       },
       onError: createDiscountMutationOnError(triggerTooltip)
     });
@@ -45,13 +45,13 @@ export const CreateEditDiscountForm = () => {
   const updateDiscountMutation =
     remoteData.Index.Discount.updateDiscount.useMutation({
       onSuccess() {
-        history.push(DASHBOARD);
+        navigate(DASHBOARD);
       },
       onError: updateDiscountMutationOnError(triggerTooltip)
     });
 
   const discountQuery = remoteData.Index.Discount.getDiscountById.useQuery(
-    { agreementId: agreement.id, discountId },
+    { agreementId: agreement.id, discountId: discountId! },
     { enabled: Boolean(discountId) }
   );
   const discount = discountQuery.data;
@@ -110,7 +110,7 @@ export const CreateEditDiscountForm = () => {
             outline={!isDraft}
             tag="button"
             color={isDraft ? "secondary" : "primary"}
-            onClick={() => history.push(DASHBOARD)}
+            onClick={() => navigate(DASHBOARD)}
           >
             {isDraft ? "Annulla" : "Indietro"}
           </Button>
