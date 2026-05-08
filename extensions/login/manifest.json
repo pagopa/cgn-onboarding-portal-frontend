@@ -9,10 +9,11 @@
     "128": "icon.png"
   },
   "permissions": [
-    "cookies",
     "clipboardWrite",
     "scripting",
-    "activeTab"
+    "activeTab",
+    "tabs",
+    "storage"
   ],
   "host_permissions": [
     "http://localhost/*",
