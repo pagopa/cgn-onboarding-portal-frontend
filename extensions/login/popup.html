@@ -7,10 +7,32 @@
 </head>
 
 <body>
-  <button class="button" id="button">
-    <img src="icon.png" alt="icon" width="20" height="20">
-    Retrieve CGN token
-  </button>
+  <main class="panel">
+    <h1 class="title">CGN Sessions</h1>
+
+    <label class="label" for="sessionName">Session name</label>
+    <input id="sessionName" type="text" placeholder="admin or user" autocomplete="off">
+
+    <div class="actions">
+      <button class="button" id="saveCurrentButton" type="button">
+        <img src="icon.png" alt="icon" width="20" height="20">
+        Save current session
+      </button>
+      <button class="button secondary" id="sendCurrentButton" type="button">
+        Use current on localhost
+      </button>
+    </div>
+
+    <label class="label" for="sessionSelect">Saved sessions</label>
+    <select id="sessionSelect"></select>
+
+    <div class="actions">
+      <button class="button" id="sendSelectedButton" type="button">Use selected on localhost</button>
+      <button class="button danger" id="deleteSelectedButton" type="button">Delete selected</button>
+    </div>
+
+    <p id="status" class="status" aria-live="polite"></p>
+  </main>
   <script src="popup.js"></script>
 </body>
 
