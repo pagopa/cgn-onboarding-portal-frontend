@@ -16,7 +16,7 @@
   - [Login in localhost](#login-in-localhost)
     - [Option 1: Using the Browser Console](#option-1-using-the-browser-console)
     - [Option 2: Using the Browser Extension](#option-2-using-the-browser-extension)
-      - [Steps to Use the Extension](#steps-to-use-the-extension)
+      - [Extension Documentation](#extension-documentation)
  
 
 # Getting started
@@ -94,35 +94,12 @@ dialog.showModal();
 
 ### Option 2: Using the Browser Extension
 
-To simplify the process, you can use the provided browser extension. The extension reads the `oneidentity` session from the authenticated page and applies it to `http://localhost:3000`.
+To simplify the process, you can use the provided browser extension.
 
-The extension supports:
-- Direct transfer of the current session to localhost
-- Multiple saved named sessions (for example `admin` and `user`)
-- Reusing a selected saved session on localhost
+#### Extension Documentation
 
-#### Steps to Use the Extension
-1. Install the extension in your browser from the [extensions/login](extensions/login) folder.
-2. Navigate to the authenticated environment (for example UAT) and log in.
-3. Open the extension popup.
-4. Choose one of the following flows:
-   - Quick transfer: click `Use current on localhost`
-   - Save session for reuse:
-     - Type a session name (for example `admin` or `user`)
-     - Click `Save current session`
-     - Select that session from `Saved sessions`
-     - Click `Use selected on localhost`
-5. A localhost tab opens and the extension injects `localStorage.setItem("oneidentity", token)` and reloads the page.
+Extension setup, multi-session management (admin/user), and troubleshooting are documented in:
 
-#### Manage multiple sessions
-- Save one session as `admin`
-- Log in with another account and save as `user`
-- Switch between them from the popup `Saved sessions` selector
-- Use `Delete selected` to remove old sessions
-
-#### Troubleshooting
-- If the popup or background script changed, reload the unpacked extension from `chrome://extensions`
-- Ensure localhost is running on `http://localhost:3000`
-- If transfer fails, open extension logs from `chrome://extensions` and check popup/background console errors
+- [extensions/login/README.md](extensions/login/README.md)
 
 This eliminates the need to manually execute the JavaScript snippet in the browser console.
