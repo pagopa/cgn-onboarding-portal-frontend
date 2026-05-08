@@ -72,7 +72,7 @@ to test minified bundled version of the dashboard use `yarn build:uat-local && y
 
 ## Login in localhost 
 As soon as the dashboard is up and running, you will see a landing page where you should login. Choose what kind of login do you want (login as Operator or login as Admin).
-After that you logged in successfully, you will be redirected to UAT environment dashboard. In this case, you need to retrieve the token generated in UAT and put it in the localhost environment. You can do this in three ways:
+After that you logged in successfully, you will be redirected to UAT environment dashboard. In this case, you need to retrieve the token generated in UAT and put it in the localhost environment. You can do this in two ways:
 
 ### Option 1: Using the Browser Console
 
@@ -94,12 +94,35 @@ dialog.showModal();
 
 ### Option 2: Using the Browser Extension
 
-To simplify the process, you can use the provided browser extension. This extension automates the retrieval of the token from the UAT environment and applies it to the localhost environment.
+To simplify the process, you can use the provided browser extension. The extension reads the `oneidentity` session from the authenticated page and applies it to `http://localhost:3000`.
+
+The extension supports:
+- Direct transfer of the current session to localhost
+- Multiple saved named sessions (for example `admin` and `user`)
+- Reusing a selected saved session on localhost
 
 #### Steps to Use the Extension
-1. Install the extension in your browser. You can find the extension in the [extensions/login](extensions/login) folder.
-2. Navigate to the UAT environment dashboard and log in.
-3. Open the extension and click the "Retrieve CGN token" button.
-4. The extension will automatically copy the token and apply it to the localhost environment.
+1. Install the extension in your browser from the [extensions/login](extensions/login) folder.
+2. Navigate to the authenticated environment (for example UAT) and log in.
+3. Open the extension popup.
+4. Choose one of the following flows:
+   - Quick transfer: click `Use current on localhost`
+   - Save session for reuse:
+     - Type a session name (for example `admin` or `user`)
+     - Click `Save current session`
+     - Select that session from `Saved sessions`
+     - Click `Use selected on localhost`
+5. A localhost tab opens and the extension injects `localStorage.setItem("oneidentity", token)` and reloads the page.
+
+#### Manage multiple sessions
+- Save one session as `admin`
+- Log in with another account and save as `user`
+- Switch between them from the popup `Saved sessions` selector
+- Use `Delete selected` to remove old sessions
+
+#### Troubleshooting
+- If the popup or background script changed, reload the unpacked extension from `chrome://extensions`
+- Ensure localhost is running on `http://localhost:3000`
+- If transfer fails, open extension logs from `chrome://extensions` and check popup/background console errors
 
 This eliminates the need to manually execute the JavaScript snippet in the browser console.
