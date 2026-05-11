@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "design-react-kit";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
@@ -17,7 +17,7 @@ type Props = {
 };
 
 const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { triggerTooltip } = useTooltip();
 
@@ -95,9 +95,7 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
           outline
           tag="button"
           onClick={() =>
-            history.push(
-              getEditOperatorRoute(operator.keyOrganizationFiscalCode)
-            )
+            navigate(getEditOperatorRoute(operator.keyOrganizationFiscalCode))
           }
         >
           <span>Modifica</span>

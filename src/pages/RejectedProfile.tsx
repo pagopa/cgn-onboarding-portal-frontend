@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "design-react-kit";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
@@ -11,7 +11,7 @@ import { useCgnSelector } from "../store/hooks";
 
 const RejectedProfile = () => {
   const agreement = useCgnSelector(selectAgreement);
-  const history = useHistory();
+  const navigate = useNavigate();
   const authentication = useAuthentication();
   return (
     <Layout>
@@ -55,7 +55,7 @@ const RejectedProfile = () => {
               <Button
                 color="primary"
                 className="ms-4"
-                onClick={() => history.push(CREATE_PROFILE)}
+                onClick={() => navigate(CREATE_PROFILE)}
                 style={{ width: "175px" }}
               >
                 Modifica dati

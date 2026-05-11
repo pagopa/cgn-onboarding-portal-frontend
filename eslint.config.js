@@ -108,7 +108,18 @@ export default tseslint.config(
           }
         }
       ],
-      "@typescript-eslint/no-floating-promises": "error",
+      "@typescript-eslint/no-floating-promises": [
+        "error",
+        {
+          allowForKnownSafeCalls: [
+            {
+              from: "package",
+              name: "NavigateFunction",
+              package: "react-router"
+            }
+          ]
+        }
+      ],
       "no-unused-expressions": "off",
       "@typescript-eslint/no-unused-expressions": ["error"],
       "@typescript-eslint/prefer-function-type": "error",

@@ -1,4 +1,4 @@
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout/Layout";
 import { ContainerFluid } from "../components/Container/Container";
 import IntroductionAdmin from "../components/Introduction/IntroductionAdmin";
@@ -14,13 +14,13 @@ import { useAuthentication } from "../authentication/AuthenticationContext";
 
 const AdminPanel = () => {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const authentication = useAuthentication();
   const user = authentication.currentAdminSession;
 
   const handleClick = (newTab: string) => {
-    history.push(newTab);
+    navigate(newTab);
   };
 
   const selectedTab = () => {

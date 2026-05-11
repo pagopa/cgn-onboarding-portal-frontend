@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AgreementState } from "../api/generated";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
@@ -53,52 +53,37 @@ const RouterConfig = () => {
 
   if (authentication.currentSession.type === "none") {
     return (
-      <Switch>
-        <Route exact path={LOGIN} component={Login} />
-        <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-        <Route path="*">
-          <Redirect to={LOGIN} />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path={LOGIN} element={<Login />} />
+        <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+        <Route path="*" element={<Navigate to={LOGIN} replace />} />
+      </Routes>
     );
   }
   if (authentication.currentSession.type === "admin") {
     return (
-      <Switch>
-        <Route exact path={LOGIN} component={Login} />
-        <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
+      <Routes>
+        <Route path={LOGIN} element={<Login />} />
+        <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+        <Route path={ADMIN_PANEL_RICHIESTE} element={<AdminPanel />} />
+        <Route path={ADMIN_PANEL_CONVENZIONATI} element={<AdminPanel />} />
+        <Route path={ADMIN_PANEL_ACCESSI} element={<AdminPanel />} />
+        <Route path={ADMIN_PANEL_ACCESSI_EDIT} element={<EditActivation />} />
+        <Route path={ADMIN_PANEL_ACCESSI_CREA} element={<CreateActivation />} />
         <Route
-          exact
-          path={[
-            ADMIN_PANEL_RICHIESTE,
-            ADMIN_PANEL_CONVENZIONATI,
-            ADMIN_PANEL_ACCESSI
-          ]}
-          component={AdminPanel}
+          path="*"
+          element={<Navigate to={ADMIN_PANEL_RICHIESTE} replace />}
         />
-        <Route
-          exact
-          path={ADMIN_PANEL_ACCESSI_EDIT}
-          component={EditActivation}
-        />
-        <Route
-          exact
-          path={ADMIN_PANEL_ACCESSI_CREA}
-          component={CreateActivation}
-        />
-        <Route path="*">
-          <Redirect to={ADMIN_PANEL_RICHIESTE} />
-        </Route>
-      </Switch>
+      </Routes>
     );
   }
   if (!authentication.currentSession.merchantFiscalCode) {
     return (
-      <Switch>
-        <Route exact path={LOGIN} component={Login} />
-        <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-        <Route path="*" component={SelectCompany} />
-      </Switch>
+      <Routes>
+        <Route path={LOGIN} element={<Login />} />
+        <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+        <Route path="*" element={<SelectCompany />} />
+      </Routes>
     );
   }
   if (loading) {
@@ -107,44 +92,38 @@ const RouterConfig = () => {
   switch (agreement.state) {
     case AgreementState.DraftAgreement: {
       return (
-        <Switch>
-          <Route exact path={LOGIN} component={Login} />
-          <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-          <Route exact path={CREATE_PROFILE} component={CreateProfile} />
-          <Route path="*">
-            <Redirect to={CREATE_PROFILE} />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path={LOGIN} element={<Login />} />
+          <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+          <Route path={CREATE_PROFILE} element={<CreateProfile />} />
+          <Route path="*" element={<Navigate to={CREATE_PROFILE} replace />} />
+        </Routes>
       );
     }
     case AgreementState.RejectedAgreement: {
       return (
-        <Switch>
-          <Route exact path={LOGIN} component={Login} />
-          <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-          <Route exact path={CREATE_PROFILE} component={CreateProfile} />
-          <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
-          <Route path="*">
-            <Redirect to={REJECT_PROFILE} />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path={LOGIN} element={<Login />} />
+          <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+          <Route path={CREATE_PROFILE} element={<CreateProfile />} />
+          <Route path={REJECT_PROFILE} element={<RejectedProfile />} />
+          <Route path="*" element={<Navigate to={REJECT_PROFILE} replace />} />
+        </Routes>
       );
     }
     default: {
       return (
-        <Switch>
-          <Route exact path={LOGIN} component={Login} />
-          <Route exact path={LOGIN_REDIRECT} component={LoginRedirect} />
-          <Route exact path={DASHBOARD} component={Dashboard} />
-          <Route exact path={EDIT_PROFILE} component={EditProfile} />
-          <Route exact path={CREATE_DISCOUNT} component={CreateDiscount} />
-          <Route exact path={EDIT_DISCOUNT} component={EditDiscount} />
-          <Route exact path={EDIT_OPERATOR_DATA} component={EditOperatorData} />
-          <Route exact path={REJECT_PROFILE} component={RejectedProfile} />
-          <Route path="*">
-            <Redirect to={DASHBOARD} />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path={LOGIN} element={<Login />} />
+          <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+          <Route path={DASHBOARD} element={<Dashboard />} />
+          <Route path={EDIT_PROFILE} element={<EditProfile />} />
+          <Route path={CREATE_DISCOUNT} element={<CreateDiscount />} />
+          <Route path={EDIT_DISCOUNT} element={<EditDiscount />} />
+          <Route path={EDIT_OPERATOR_DATA} element={<EditOperatorData />} />
+          <Route path={REJECT_PROFILE} element={<RejectedProfile />} />
+          <Route path="*" element={<Navigate to={DASHBOARD} replace />} />
+        </Routes>
       );
     }
   }

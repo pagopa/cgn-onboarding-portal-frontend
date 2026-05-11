@@ -1,4 +1,4 @@
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import z from "zod/v4";
 import { useMemo } from "react";
 import { Icon } from "design-react-kit";
@@ -47,13 +47,13 @@ function dataToFormValues(
 
 const CreateEditActivationForm = () => {
   const { operatorFiscalCode } = useParams<{ operatorFiscalCode: string }>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { triggerTooltip } = useTooltip();
 
   const upsertActivationMutation =
     remoteData.Backoffice.AttributeAuthority.upsertOrganization.useMutation({
       onSuccess() {
-        history.push(ADMIN_PANEL_ACCESSI);
+        navigate(ADMIN_PANEL_ACCESSI);
       },
       async onError(error) {
         if (
@@ -77,7 +77,7 @@ const CreateEditActivationForm = () => {
   const organizationQuery =
     remoteData.Backoffice.AttributeAuthority.getOrganization.useQuery(
       {
-        keyOrganizationFiscalCode: operatorFiscalCode
+        keyOrganizationFiscalCode: operatorFiscalCode!
       },
       {
         enabled: Boolean(operatorFiscalCode)
@@ -115,7 +115,7 @@ const CreateEditActivationForm = () => {
           body: {
             ...values,
             keyOrganizationFiscalCode:
-              operatorFiscalCode ?? values.organizationFiscalCode
+              operatorFiscalCode ?? values.organizationFiscalCode!
           }
         });
       })}
@@ -261,7 +261,7 @@ const CreateEditActivationForm = () => {
             outline
             color="primary"
             tag="button"
-            onClick={() => history.push(ADMIN_PANEL_ACCESSI)}
+            onClick={() => navigate(ADMIN_PANEL_ACCESSI)}
           >
             Indietro
           </Button>
