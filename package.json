@@ -1,6 +1,6 @@
 {
   "name": "cgn-onboarding-portal-frontend",
-  "version": "3.33.14",
+  "version": "3.33.15",
   "license": "MIT",
   "type": "module",
   "scripts": {
