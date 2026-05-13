@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { useNavigate } from "react-router-dom";
 import { DASHBOARD, ADMIN_PANEL_RICHIESTE, LOGIN } from "../navigation/routes";
 import { useLoginRedirect, adminLogoutRedirect } from "./authentication";
@@ -12,20 +12,16 @@ import { authenticationStore } from "./authenticationStore";
 
 export function AuthenticationProvider({
   children
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
-  useLoginRedirect();
+}>) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [persistedState, setPersistedState] = useState(authenticationStore.get);
-  useEffect(
-    () =>
-      authenticationStore.subscribe(() => {
-        setPersistedState(authenticationStore.get());
-      }),
-    []
+  const persistedState = useSyncExternalStore(
+    authenticationStore.subscribe,
+    authenticationStore.get
   );
+  useLoginRedirect();
   const { currentSession, userSessionByFiscalCode, adminSessionByName } =
     persistedState;
   const resetQueries = useCallback(() => {
@@ -63,19 +59,19 @@ export function AuthenticationProvider({
       adminSessionByName,
       currentSession,
       currentUserFiscalCode:
-        currentSession && currentSession.type === "user"
+        currentSession?.type === "user"
           ? currentSession.userFiscalCode
           : undefined,
       currentUserSession:
-        currentSession && currentSession.type === "user"
+        currentSession?.type === "user"
           ? userSessionByFiscalCode[currentSession.userFiscalCode]
           : undefined,
       currentMerchantFiscalCode:
-        currentSession && currentSession.type === "user"
+        currentSession?.type === "user"
           ? currentSession.merchantFiscalCode
           : undefined,
       currentMerchant:
-        currentSession && currentSession.type === "user"
+        currentSession?.type === "user"
           ? userSessionByFiscalCode[
               currentSession.userFiscalCode
             ]?.merchants.find(
@@ -85,7 +81,7 @@ export function AuthenticationProvider({
             )
           : undefined,
       currentAdminSession:
-        currentSession && currentSession.type === "admin"
+        currentSession?.type === "admin"
           ? adminSessionByName[currentSession.name]
           : undefined,
       setCurrentSession,
