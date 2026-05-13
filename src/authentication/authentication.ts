@@ -1,7 +1,7 @@
 import { PublicClientApplication } from "@azure/msal-browser";
 import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod/v4";
 import { API_INDEX_BASE_URL, API_PUBLIC_BASE_URL } from "../api/common";
@@ -177,10 +177,21 @@ export function useLoginRedirect() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // Keep refs current so the one-time effect always calls the latest functions,
+  // without re-running the effect on every navigation.
+  // In React Router v7, `navigate` changes on every location change (it closes
+  // over `locationPathname`), which would cause the effect to re-attach .then()
+  // handlers to the already-resolved singleton promises and re-trigger the
+  // post-login redirects on every subsequent navigation.
+  const navigateRef = useRef(navigate);
+  const queryClientRef = useRef(queryClient);
+  navigateRef.current = navigate;
+  queryClientRef.current = queryClient;
+
   useEffect(() => {
     const resetQueries = () => {
-      queryClient.clear();
-      void queryClient.invalidateQueries();
+      queryClientRef.current.clear();
+      void queryClientRef.current.invalidateQueries();
     };
 
     void userLoginRedirectPromise.then(state => {
@@ -191,9 +202,9 @@ export function useLoginRedirect() {
           merchantFiscalCode: undefined
         });
         resetQueries();
-        navigate(DASHBOARD);
+        navigateRef.current(DASHBOARD);
       } else if (state.type === "error") {
-        navigate(LOGIN);
+        navigateRef.current(LOGIN);
       }
     });
 
@@ -204,8 +215,8 @@ export function useLoginRedirect() {
           name: state.name
         });
         resetQueries();
-        navigate(ADMIN_PANEL_RICHIESTE);
+        navigateRef.current(ADMIN_PANEL_RICHIESTE);
       }
     });
-  }, [navigate, queryClient]);
+  }, []); // intentionally empty: this must run only once on mount
 }
