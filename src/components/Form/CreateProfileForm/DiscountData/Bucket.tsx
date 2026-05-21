@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Progress } from "design-react-kit";
+import { Button, LinearProgress } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Lens } from "@hookform/lenses";
@@ -120,7 +120,6 @@ const Bucket = ({ label, agreementId, formLens }: Props) => {
           <br />
           Per maggiori informazioni, consultare la{" "}
           <a
-            className="fw-semibold"
             href="https://docs.pagopa.it/carta-giovani-nazionale"
             target="_blank"
             rel="noreferrer"
@@ -139,13 +138,13 @@ const Bucket = ({ label, agreementId, formLens }: Props) => {
       isVisible
       required
     >
-      <div className="border-bottom py-4">
-        <div className="d-flex flex-row justify-content-between align-items-center">
-          <div className="d-flex flex-row align-items-center">
+      <div>
+        <div>
+          <div>
             {currentDoc ? (
               <>
-                <DocumentSuccess className="me-4" />
-                <div className="d-flex flex-column ">
+                <DocumentSuccess />
+                <div>
                   <a href="#">{currentDoc.name}</a>
                 </div>
               </>
@@ -156,9 +155,9 @@ const Bucket = ({ label, agreementId, formLens }: Props) => {
           {!uploadBucketMutation.isPending && canUploadFile && (
             <Button
               color="primary"
-              icon
-              size="sm"
-              tag="button"
+              variant="outlined"
+              size="small"
+              type="button"
               onClick={handleClick}
             >
               {loadStatus === BucketCodeLoadStatus.Failed ||
@@ -181,12 +180,11 @@ const Bucket = ({ label, agreementId, formLens }: Props) => {
           )}
         </div>
         {uploadBucketMutation.isPending && (
-          <div className="pt-3">
-            <Progress
+          <div>
+            <LinearProgress
+              variant="determinate"
               value={uploadProgress}
-              label="progresso"
-              role="progressbar"
-              tag="div"
+              aria-label="progresso"
             />
           </div>
         )}

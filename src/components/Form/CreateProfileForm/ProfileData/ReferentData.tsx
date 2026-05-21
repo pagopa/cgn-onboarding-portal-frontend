@@ -71,7 +71,6 @@ const Referent = ({
           formLens={formLens.focus("firstName")}
           placeholder="Inserisci il nome del referente"
           type="text"
-          className="form-control"
         />
         <FormErrorMessage formLens={formLens.focus("firstName")} />
       </InputField>
@@ -85,7 +84,6 @@ const Referent = ({
           formLens={formLens.focus("lastName")}
           placeholder="Inserisci il cognome del referente"
           type="text"
-          className="form-control"
         />
         <FormErrorMessage formLens={formLens.focus("lastName")} />
       </InputField>
@@ -98,7 +96,6 @@ const Referent = ({
           id={`${referentFieldId}.role`}
           formLens={formLens.focus("role")}
           type="text"
-          className="form-control"
           placeholder="Inserisci il ruolo del referente"
         />
         <FormErrorMessage formLens={formLens.focus("role")} />
@@ -112,7 +109,6 @@ const Referent = ({
           id={`${referentFieldId}.emailAddress`}
           formLens={formLens.focus("emailAddress")}
           type="email"
-          className="form-control"
           placeholder="Inserisci la e-mail del referente"
         />
         <FormErrorMessage formLens={formLens.focus("emailAddress")} />
@@ -128,16 +124,13 @@ const Referent = ({
           formLens={formLens.focus("telephoneNumber")}
           type="tel"
           placeholder="Inserisci il numero di telefono del referente"
-          className="form-control"
         />
         <FormErrorMessage formLens={formLens.focus("telephoneNumber")} />
       </InputField>
       {showAdd && (
-        <div className="mt-8 cursor-pointer" onClick={onAdd}>
-          <PlusCircleIcon className="me-2" />
-          <span className="text-base fw-semibold text-blue">
-            Aggiungi un referente
-          </span>
+        <div onClick={onAdd}>
+          <PlusCircleIcon />
+          <span>Aggiungi un referente</span>
         </div>
       )}
       {children}

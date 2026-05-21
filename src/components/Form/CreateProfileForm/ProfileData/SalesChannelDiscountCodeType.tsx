@@ -89,7 +89,6 @@ const SalesChannelDiscountCodeType = ({
         <>
           Le modalità possibili sono definite nella&nbsp;
           <a
-            className="font-weight-semibold"
             href="https://docs.pagopa.it/carta-giovani-nazionale"
             target="_blank"
             rel="noreferrer"
@@ -102,8 +101,8 @@ const SalesChannelDiscountCodeType = ({
       required
       isVisible={false}
     >
-      <div className="d-flex flex-column">
-        <div className="form-check">
+      <div>
+        <div>
           <Field
             id="api"
             type="radio"
@@ -113,11 +112,8 @@ const SalesChannelDiscountCodeType = ({
               updateSalesChannelType(SalesChannelType.OnlineChannel)
             }
           />
-          <label
-            className="text-sm fw-normal text-black form-label"
-            htmlFor="api"
-          >
-            <span className="text-sm">
+          <label htmlFor="api">
+            <span>
               <a
                 href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/modalita-api"
                 target="_blank"
@@ -132,7 +128,7 @@ const SalesChannelDiscountCodeType = ({
             </span>
           </label>
         </div>
-        <div className="form-check">
+        <div>
           <Field
             id="staticCode"
             type="radio"
@@ -142,11 +138,8 @@ const SalesChannelDiscountCodeType = ({
               updateSalesChannelType(SalesChannelType.OnlineChannel)
             }
           />
-          <label
-            className="text-sm fw-normal text-black form-label"
-            htmlFor="staticCode"
-          >
-            <span className="text-sm">
+          <label htmlFor="staticCode">
+            <span>
               <a
                 href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/modalita-codice-sconto-statico"
                 target="_blank"
@@ -159,7 +152,7 @@ const SalesChannelDiscountCodeType = ({
             </span>
           </label>
         </div>
-        <div className="form-check">
+        <div>
           <Field
             id="bucket"
             type="radio"
@@ -169,11 +162,8 @@ const SalesChannelDiscountCodeType = ({
               updateSalesChannelType(SalesChannelType.OnlineChannel)
             }
           />
-          <label
-            className="text-sm fw-normal text-black form-label"
-            htmlFor="bucket"
-          >
-            <span className="text-sm">
+          <label htmlFor="bucket">
+            <span>
               <a
                 href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/modalita-lista-di-codici-statici"
                 target="_blank"
@@ -189,7 +179,7 @@ const SalesChannelDiscountCodeType = ({
             </span>
           </label>
         </div>
-        <div className="form-check">
+        <div>
           <Field
             id="landingPage"
             type="radio"
@@ -199,11 +189,8 @@ const SalesChannelDiscountCodeType = ({
               updateSalesChannelType(SalesChannelType.OnlineChannel)
             }
           />
-          <label
-            className="text-sm fw-normal text-black form-label"
-            htmlFor="landingPage"
-          >
-            <span className="text-sm">
+          <label htmlFor="landingPage">
+            <span>
               <a
                 href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/modalita-landing-page"
                 target="_blank"
@@ -217,7 +204,7 @@ const SalesChannelDiscountCodeType = ({
             </span>
           </label>
         </div>
-        <div className="form-check">
+        <div>
           <Field
             id="physcalPlace"
             type="radio"
@@ -227,11 +214,8 @@ const SalesChannelDiscountCodeType = ({
               updateSalesChannelType(SalesChannelType.OfflineChannel)
             }
           />
-          <label
-            className="text-sm fw-normal text-black form-label"
-            htmlFor="physcalPlace"
-          >
-            <span className="text-sm">
+          <label htmlFor="physcalPlace">
+            <span>
               <a
                 href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/le-opportunita/le-modalita-di-riconoscimento-e-validazione-delle-opportunita/presenza-fisica-del-beneficiario"
                 target="_blank"

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { z } from "zod/v4";
 import { useFieldArray } from "@hookform/lenses/rhf";
-import { Button } from "design-react-kit";
+import { Button } from "@mui/material";
 import PlusCircleIcon from "../../../../assets/icons/plus-circle.svg?react";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
@@ -153,7 +153,7 @@ const DiscountData = ({
       {form.lens
         .focus("discounts")
         .map(discountsArray.fields, (discount, itemLens, index, array) => (
-          <FormContainer key={index} className={index <= 1 ? "mb-20" : ""}>
+          <FormContainer key={index} sx={index <= 1 ? { mb: 10 } : undefined}>
             <FormSection
               hasIntroduction
               hasClose={index >= 1}
@@ -178,31 +178,27 @@ const DiscountData = ({
               {array.length - 1 === index && (
                 <>
                   <div
-                    className="mt-8 cursor-pointer"
                     onClick={() =>
                       discountsArray.append(discountEmptyInitialValues)
                     }
                   >
-                    <PlusCircleIcon className="me-2" />
-                    <span className="text-base fw-semibold text-blue">
-                      {"Aggiungi un'altra opportunità"}
-                    </span>
+                    <PlusCircleIcon />
+                    <span>{"Aggiungi un'altra opportunità"}</span>
                   </div>
-                  <div className="d-flex mt-10 gap-4 flex-wrap">
+                  <div>
                     <Button
-                      className="px-14"
-                      outline
+                      sx={{ px: 7 }}
+                      variant="outlined"
                       color="primary"
-                      tag="button"
+                      type="button"
                       onClick={handleBack}
                     >
                       Indietro
                     </Button>
                     <AsyncButton
-                      type="submit"
-                      className="px-14"
+                      sx={{ px: 7 }}
                       color="primary"
-                      isPending={isMutating}
+                      loading={isMutating}
                     >
                       Continua
                     </AsyncButton>

@@ -8,8 +8,6 @@ import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren & {
   loading?: boolean;
-  /** @deprecated Use `loading` instead */
-  isPending?: boolean;
   fullWidth?: boolean;
 } & Omit<ButtonProps, "fontSize">;
 

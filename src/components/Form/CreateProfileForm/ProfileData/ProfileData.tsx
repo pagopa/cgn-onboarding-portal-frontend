@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Button } from "design-react-kit";
+import { Button } from "@mui/material";
 import { remoteData } from "../../../../api/common";
 import { Severity, useTooltip } from "../../../../context/tooltip";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
@@ -39,22 +39,16 @@ function OperatorDataButtons({
   onBack
 }: OperatorDataButtonsProps) {
   return (
-    <div className="d-flex mt-10 gap-4 flex-wrap">
-      <Button
-        tag="button"
-        className="px-14"
-        outline
-        color="primary"
-        onClick={onBack}
-      >
+    <div>
+      <Button type="button" variant="outlined" color="primary" onClick={onBack}>
         Indietro
       </Button>
       <AsyncButton
         type="submit"
-        className="px-14"
+        variant="contained"
         color="primary"
         disabled={!isEnabled}
-        isPending={isPending}
+        loading={isPending}
       >
         Continua
       </AsyncButton>
@@ -167,7 +161,7 @@ const ProfileData = ({
         }
       })}
     >
-      <FormContainer className="mb-20">
+      <FormContainer>
         <ProfileInfo
           formLens={form.lens}
           entityType={entityType}

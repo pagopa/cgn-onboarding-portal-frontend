@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
-import { Button, Icon, Progress } from "design-react-kit";
+import { Button, LinearProgress } from "@mui/material";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { saveAs } from "file-saver";
 import { AxiosError, AxiosProgressEvent } from "axios";
 import { Severity, useTooltip } from "../../../../context/tooltip";
@@ -119,20 +121,18 @@ const FileRow = ({
   };
 
   return (
-    <div className="border-bottom py-8">
-      <div className="d-flex flex-row justify-content-between align-items-center flex-wrap gap-4">
-        <div className="d-flex flex-row align-items-center">
+    <div>
+      <div>
+        <div>
           {!uploadedDoc ? (
-            <DocumentIcon className="me-4" style={{ flexShrink: 0 }} />
+            <DocumentIcon style={{ flexShrink: 0 }} />
           ) : (
-            <DocumentSuccess className="me-4" style={{ flexShrink: 0 }} />
+            <DocumentSuccess style={{ flexShrink: 0 }} />
           )}
           {uploadedDoc ? (
-            <div className="d-flex flex-column ">
+            <div>
               <a href={uploadedDoc.documentUrl}>{label}</a>
-              <span className="text-gray">
-                {formatDate(uploadedDoc.documentTimestamp)}
-              </span>
+              <span>{formatDate(uploadedDoc.documentTimestamp)}</span>
             </div>
           ) : (
             <div>{label}</div>
@@ -140,39 +140,28 @@ const FileRow = ({
         </div>
         {!loadingTemplate && !loadingDoc && (
           <>
-            <div className="d-flex flex-row">
+            <div>
               {!uploadedDoc && (
                 <>
                   <Button
+                    variant="contained"
                     color="primary"
-                    icon
-                    size="sm"
-                    tag="button"
-                    className="me-2"
+                    size="small"
+                    type="button"
+                    sx={{ mr: 1 }}
+                    startIcon={<FileDownloadIcon />}
                     onClick={getTemplates}
                   >
-                    <Icon
-                      color="white"
-                      icon="it-download"
-                      padding={false}
-                      size="xs"
-                    />
                     Scarica
                   </Button>
                   <Button
+                    variant="contained"
                     color="primary"
-                    icon
-                    size="sm"
-                    tag="button"
+                    size="small"
+                    type="button"
+                    startIcon={<FileUploadIcon />}
                     onClick={handleClick}
                   >
-                    <Icon
-                      color="white"
-                      icon="it-upload"
-                      padding={false}
-                      size="xs"
-                      className="me-2"
-                    />
                     Carica
                     <input
                       type="file"
@@ -199,12 +188,11 @@ const FileRow = ({
         )}
       </div>
       {(loadingTemplate || loadingDoc) && (
-        <div className="pt-3">
-          <Progress
+        <div>
+          <LinearProgress
+            variant="determinate"
             value={uploadProgress}
-            label="progresso"
-            role="progressbar"
-            tag="div"
+            aria-label="progresso"
           />
         </div>
       )}

@@ -1,5 +1,6 @@
-import { Icon } from "design-react-kit";
 import { ReactNode } from "react";
+import { Box, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import VisibleIcon from "../../assets/icons/visible.svg?react";
 
 type Props = {
@@ -10,7 +11,6 @@ type Props = {
   required?: boolean;
   isVisible?: boolean;
   footerDescription?: ReactNode;
-  className?: string;
   hasClose?: boolean;
   handleClose?(): void;
   hasRemove?: boolean;
@@ -18,7 +18,7 @@ type Props = {
 };
 
 const FormAlertInfoContent = () => (
-  <p className="alert alert-primary mb-10 text-base font-weight-normal text-black">
+  <p>
     Le domande contrassegnate con il simbolo * sono obbligatorie
     <br /> Le informazioni contrassegnate con il simbolo <VisibleIcon /> saranno
     visibili in app.
@@ -33,62 +33,57 @@ const FormSection = ({
   isVisible = true,
   footerDescription = "",
   children,
-  className = "",
   hasClose = false,
   handleClose,
   hasRemove = false,
   onRemove
 }: Props) => (
-  <section className={`${className} mt-4 container bg-white`}>
-    <div className="row" style={{ position: "relative" }}>
+  <Box component="section" sx={{ mt: 2, backgroundColor: "white", p: 2 }}>
+    <Box sx={{ position: "relative" }}>
       {hasRemove && (
-        <Icon
-          icon="it-close"
-          className="cursor-pointer"
-          size="xl"
-          onClick={onRemove}
-          style={{
+        <CloseIcon
+          sx={{
+            cursor: "pointer",
+            color: "#0073E5",
             position: "absolute",
             top: "16px",
-            right: "16px",
-            fill: "#0073E5"
+            right: "16px"
           }}
+          onClick={onRemove}
         />
       )}
-      <div className="col-10 offset-1 py-8">
+      <Box>
         {hasIntroduction && (
           <>
             {hasClose && (
-              <div className="d-flex flex-row justify-content-between">
+              <Box>
                 <FormAlertInfoContent />
-                <Icon
-                  icon="it-close"
-                  size="xl"
-                  className="cursor-pointer"
+                <CloseIcon
+                  sx={{
+                    cursor: "pointer"
+                  }}
                   onClick={handleClose}
                 />
-              </div>
+              </Box>
             )}
             {!hasClose && <FormAlertInfoContent />}
           </>
         )}
         {title && (
-          <div className="d-flex flex-row align-items-center">
-            <h1 className="h4 fw-bold text-dark-blue me-4">
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="h5" component="h1">
               {title}
               {required && "*"}
-            </h1>
+            </Typography>
             {isVisible && <VisibleIcon />}
-          </div>
+          </Box>
         )}
-        {description && (
-          <p className="text-sm fw-normal text-black">{description}</p>
-        )}
+        {description && <Typography sx={{ mt: 1 }}>{description}</Typography>}
         {children}
         {footerDescription !== "" && footerDescription}
-      </div>
-    </div>
-  </section>
+      </Box>
+    </Box>
+  </Box>
 );
 
 export default FormSection;

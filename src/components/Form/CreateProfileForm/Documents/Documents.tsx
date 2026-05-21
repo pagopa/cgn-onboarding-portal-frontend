@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Button } from "design-react-kit";
+import { Box, Button } from "@mui/material";
 import CenteredLoading from "../../../CenteredLoading/CenteredLoading";
 import FormContainer from "../../FormContainer";
 import { remoteData } from "../../../../api/common";
@@ -73,13 +73,12 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
   const isMutating = requireApprovalMutation.isPending;
 
   return (
-    <FormContainer className="mb-20">
-      <div className="bg-white px-28 py-16">
-        <p className="text-base fw-normal text-black">
+    <FormContainer>
+      <Box sx={{ backgroundColor: "white", p: 4 }}>
+        <p>
           Per inviare la richiesta di convenzione, scarica e firma digitalmente
           in{" "}
           <a
-            className="fw-semibold"
             target="_blank"
             rel="noreferrer"
             href="https://developer.pagopa.it/app-io/guides/carta-giovani-nazionale/il-convenzionamento/firma-della-convenzione"
@@ -87,10 +86,10 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
             modalità PAdES
           </a>{" "}
           i documenti. Una volta fatto, carica i documenti firmati in{" "}
-          <span className="fw-bold">formato .pdf</span> sul portale. I documenti
-          sono già compilati con i dati inseriti fino a questo momento. Se
-          desideri apportare delle modifiche, puoi farlo prima di procedere,
-          tornando alla fase di compilazione.
+          <span>formato .pdf</span> sul portale. I documenti sono già compilati
+          con i dati inseriti fino a questo momento. Se desideri apportare delle
+          modifiche, puoi farlo prima di procedere, tornando alla fase di
+          compilazione.
         </p>
         <FileRow
           getFiles={getFiles}
@@ -109,34 +108,34 @@ const Documents = ({ handleBack, isCompleted }: Props) => {
           />
         )}
         {(isCompleted || allUploaded) && (
-          <p className="mt-8 text-gray">
+          <p>
             Invia la tua candidatura per approvazione. <br />
             Invieremo un messaggio all’indirizzo e-mail del referente con
             l’esito.
           </p>
         )}
-        <div className="d-flex mt-10 gap-4 flex-wrap">
+        <div>
           <Button
-            className="px-14"
+            sx={{ px: 7 }}
             color="primary"
-            outline
-            tag="button"
+            variant="outlined"
+            type="button"
             onClick={handleBack}
           >
             Indietro
           </Button>
           {(isCompleted || allUploaded) && (
             <AsyncButton
-              className="px-14"
+              sx={{ px: 7 }}
               color="primary"
               onClick={requireApproval}
-              isPending={isMutating}
+              loading={isMutating}
             >
               Richiedi approvazione
             </AsyncButton>
           )}
         </div>
-      </div>
+      </Box>
     </FormContainer>
   );
 };

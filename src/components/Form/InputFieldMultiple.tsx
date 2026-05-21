@@ -19,18 +19,16 @@ const InputFieldMultiple = ({
   isVisible = false
 }: Props) => (
   <>
-    <label htmlFor={htmlFor} className="form-label">
-      <span className="d-flex flex-row align-items-center">
-        <span className="text-base fw-bold me-4">
+    <label htmlFor={htmlFor}>
+      <span>
+        <span>
           {title}
           {required && "*"}
         </span>
         {isVisible && <VisibleIcon />}
       </span>
 
-      {description && (
-        <p className="mt-2 text-sm fw-normal text-black">{description}</p>
-      )}
+      {description && <p>{description}</p>}
     </label>
     {children}
   </>

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "design-react-kit";
+import { Button } from "@mui/material";
 import { remoteData } from "../../api/common";
 import { useTooltip } from "../../context/tooltip";
 import { DASHBOARD } from "../../navigation/routes";
@@ -104,11 +104,10 @@ export const CreateEditDiscountForm = () => {
     >
       <FormSection hasIntroduction>
         {profile && <DiscountInfo profile={profile} formLens={form.lens} />}
-        <div className="d-flex mt-10 gap-4 flex-wrap">
+        <div>
           <Button
-            className="px-14"
-            outline={!isDraft}
-            tag="button"
+            variant={isDraft ? "contained" : "outlined"}
+            type="button"
             color={isDraft ? "secondary" : "primary"}
             onClick={() => navigate(DASHBOARD)}
           >
@@ -116,10 +115,9 @@ export const CreateEditDiscountForm = () => {
           </Button>
           <AsyncButton
             type="submit"
-            className="px-14"
             color="primary"
-            outline={isDraft}
-            isPending={isMutating}
+            variant={isDraft ? "outlined" : "contained"}
+            loading={isMutating}
           >
             Salva
           </AsyncButton>

@@ -12,10 +12,8 @@ import { useCgnSelector } from "../../../../store/hooks";
 
 const FooterDescription = (
   <div>
-    <p className="text-base fw-normal text-gray mb-0">
-      Il file deve avere le seguenti caratteristiche:
-    </p>
-    <ul className="ps-4 text-base fw-normal text-gray">
+    <p>Il file deve avere le seguenti caratteristiche:</p>
+    <ul>
       <li>Dimensione dell’immagine: minimo 800x600px</li>
       <li>Dimensione del file: massimo 5Mb</li>
       <li>Formato del file: JPG, PNG</li>
@@ -100,14 +98,14 @@ const ProfileImage = () => {
       isVisible
       required
     >
-      <ul className="upload-pictures-wall">
+      <ul>
         <li>
           {loading ? (
             <CenteredLoading />
           ) : (
             <>
               {agreement.imageUrl ? (
-                <div className="d-flex flex-row align-items-end">
+                <div>
                   <img
                     src={`${agreement.imageUrl}?${imageRefreshTimestamp}`}
                     style={{
@@ -127,12 +125,7 @@ const ProfileImage = () => {
                     }}
                     style={{ display: "none" }}
                   />
-                  <label
-                    htmlFor="profileImage"
-                    className="ms-4 mb-0 text-primary text-decoration-underline cursor-pointer form-label"
-                  >
-                    Cambia immagine
-                  </label>
+                  <label htmlFor="profileImage">Cambia immagine</label>
                 </div>
               ) : (
                 <>
@@ -140,15 +133,14 @@ const ProfileImage = () => {
                     type="file"
                     name="profileImage"
                     id="profileImage"
-                    className="upload pictures-wall"
                     ref={imageInput}
                     accept="image/png, image/jpeg"
                     onChange={() => {
                       void uploadImage(imageInput.current?.files);
                     }}
                   />
-                  <label htmlFor="profileImage" className="form-label">
-                    <PlusIcon className="icon icon-sm" />
+                  <label htmlFor="profileImage">
+                    <PlusIcon />
                     <span>Carica foto</span>
                   </label>
                 </>

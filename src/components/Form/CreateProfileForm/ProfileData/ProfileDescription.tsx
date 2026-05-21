@@ -27,9 +27,9 @@ const ProfileDescription = ({
       </>
     }
   >
-    <div className="row">
-      <div className="col-6">
-        <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
+    <div>
+      <div>
+        <p>Italiano 🇮🇹</p>
         <Field
           element="textarea"
           id="description"
@@ -37,12 +37,11 @@ const ProfileDescription = ({
           placeholder="Inserisci una descrizione"
           maxLength={300}
           rows={4}
-          className="form-control"
         />
         <FormErrorMessage formLens={formLens.focus("description")} />
       </div>
-      <div className="col-6">
-        <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
+      <div>
+        <p>Inglese 🇬🇧</p>
         <Field
           element="textarea"
           id="description_en"
@@ -50,7 +49,6 @@ const ProfileDescription = ({
           placeholder="Type in the description"
           maxLength={300}
           rows={4}
-          className="form-control"
         />
         <FormErrorMessage formLens={formLens.focus("description_en")} />
       </div>

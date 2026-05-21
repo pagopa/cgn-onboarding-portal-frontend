@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button, FormGroup } from "design-react-kit";
-import { Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from "@mui/material";
 import { Lens } from "@hookform/lenses";
 import { useController, useWatch } from "react-hook-form";
 import FormField from "../../FormField";
@@ -29,18 +34,23 @@ type EycaAlertModalProps = {
 };
 
 const EycaAlertModal = ({ isOpen, onClose }: EycaAlertModalProps) => (
-  <Modal isOpen={isOpen} toggle={onClose} size="md">
-    <ModalHeader toggle={onClose}>Circuito Eyca</ModalHeader>
-    <ModalBody>
+  <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
+    <DialogTitle>Circuito Eyca</DialogTitle>
+    <DialogContent>
       Grazie per la tua scelta! <br />
       Sarai contattato dal Dipartimento per definire i dettagli dell’adesione.
-    </ModalBody>
-    <ModalFooter className="d-flex flex-column">
-      <Button color="primary" onClick={onClose} style={{ width: "100%" }}>
+    </DialogContent>
+    <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={onClose}
+        style={{ width: "100%" }}
+      >
         Ho capito!
       </Button>
-    </ModalFooter>
-  </Modal>
+    </DialogActions>
+  </Dialog>
 );
 
 const EnrollToEyca = ({ profile, index, formLens }: Props) => {
@@ -123,7 +133,6 @@ const EnrollToEyca = ({ profile, index, formLens }: Props) => {
                 <br />
                 Per maggiori informazioni, consultare la{" "}
                 <a
-                  className="fw-semibold"
                   href="https://docs.pagopa.it/carta-giovani-nazionale/le-opportunita/riconoscimento-delle-opportunita-ai-titolari-di-eyca"
                   target="_blank"
                   rel="noreferrer"
@@ -139,7 +148,6 @@ const EnrollToEyca = ({ profile, index, formLens }: Props) => {
                 momento.
                 <br /> Per maggiori informazioni, consultare la{" "}
                 <a
-                  className="fw-semibold"
                   href="https://docs.pagopa.it/carta-giovani-nazionale"
                   target="_blank"
                   rel="noreferrer"
@@ -150,7 +158,7 @@ const EnrollToEyca = ({ profile, index, formLens }: Props) => {
             )
           }
         >
-          <FormGroup check tag="div" className="mt-4">
+          <div>
             <Field
               id={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
               formLens={formLens.focus("visibleOnEyca")}
@@ -164,16 +172,13 @@ const EnrollToEyca = ({ profile, index, formLens }: Props) => {
                 }
               }}
             />
-            <Label
-              check
-              for={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
-              tag="label"
-              className="text-info"
+            <label
+              htmlFor={hasIndex ? `visibleOnEyca${index}` : "visibleOnEyca"}
             >
               Sì, voglio che questa opportunità sia valida anche per il circuito
               EYCA
-            </Label>
-          </FormGroup>
+            </label>
+          </div>
         </FormField>
         <EycaAlertModal isOpen={isModalOpen} onClose={closeModal} />
       </>
@@ -192,7 +197,6 @@ const EnrollToEyca = ({ profile, index, formLens }: Props) => {
           cui potranno accedere esclusivamente i beneficiari di EYCA. Per
           maggiori informazioni, consulta la{" "}
           <a
-            className="fw-semibold"
             href="https://docs.pagopa.it/carta-giovani-nazionale"
             target="_blank"
             rel="noreferrer"
@@ -203,16 +207,15 @@ const EnrollToEyca = ({ profile, index, formLens }: Props) => {
         </>
       }
     >
-      <FormGroup check tag="div" className="mt-4">
+      <div>
         <Field
           id="eycaLandingPageUrl"
           formLens={formLens.focus("eycaLandingPageUrl")}
           placeholder="Inserisci indirizzo (completo di protocollo https, max 500 caratteri)"
-          className="form-control"
           type="text"
         />
         <FormErrorMessage formLens={formLens.focus("eycaLandingPageUrl")} />
-      </FormGroup>
+      </div>
     </FormField>
   );
 };
