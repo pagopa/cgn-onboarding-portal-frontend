@@ -1,5 +1,10 @@
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Button } from "design-react-kit";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from "@mui/material";
 import { ModalProps } from "../../types";
 import AsyncButton from "../AsyncButton/AsyncButton";
 
@@ -10,35 +15,30 @@ function PublishModal({
   isPending
 }: ModalProps) {
   return (
-    <Modal isOpen={isOpen} toggle={onToggle} size="md">
-      <ModalHeader toggle={onToggle}>Pubblica opportunità</ModalHeader>
-      <ModalBody>
+    <Dialog open={isOpen} onClose={onToggle} maxWidth="sm" fullWidth>
+      <DialogTitle>Pubblica opportunita</DialogTitle>
+      <DialogContent>
         Se pubblichi, l’opportunità diventerà visibile su App IO dai beneficiari
         di Carta Giovani Nazionale.
-      </ModalBody>
-      <ModalFooter className="d-flex flex-column">
+      </DialogContent>
+      <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
         <AsyncButton
           color="primary"
+          variant="contained"
           onClick={() => {
             onToggle();
             actionRequest();
           }}
-          isPending={isPending}
-          fullwidth
+          loading={isPending}
+          fullWidth
         >
-          Sì, pubblica
+          Si, pubblica
         </AsyncButton>
-        <Button
-          color="primary"
-          tag="button"
-          outline
-          onClick={onToggle}
-          className="w-100"
-        >
+        <Button color="primary" variant="outlined" onClick={onToggle} fullWidth>
           No, torna indietro
         </Button>
-      </ModalFooter>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 }
 

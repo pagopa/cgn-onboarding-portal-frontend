@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 
 export function TestErrorModal({
   isOpen,
@@ -8,13 +8,11 @@ export function TestErrorModal({
   onClose(): void;
 }) {
   return (
-    <Modal isOpen={isOpen} toggle={onClose} size="md">
-      <ModalHeader toggle={onClose}>
-        Hai terminato tutti i codici sconto della lista
-      </ModalHeader>
-      <ModalBody className="mb-4">
+    <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Hai terminato tutti i codici sconto della lista</DialogTitle>
+      <DialogContent sx={{ mb: 2 }}>
         Per procedere con il test carica una nuova lista di codici
-      </ModalBody>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,5 +1,10 @@
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Button } from "design-react-kit";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from "@mui/material";
 import { ModalProps } from "../../types";
 import AsyncButton from "../AsyncButton/AsyncButton";
 
@@ -10,36 +15,31 @@ function UnpublishModal({
   isPending
 }: ModalProps) {
   return (
-    <Modal isOpen={isOpen} toggle={onToggle} size="md">
-      <ModalHeader toggle={onToggle}>Sospendi opportunità</ModalHeader>
-      <ModalBody>
+    <Dialog open={isOpen} onClose={onToggle} maxWidth="sm" fullWidth>
+      <DialogTitle>Sospendi opportunità</DialogTitle>
+      <DialogContent>
         Sei sicuro di voler riportare in bozza questa opportunità? Se non hai
         altre opportunità pubblicate in questo momento, non sarai più visibile
         nella lista degli operatori aderenti all&lsquo;iniziativa.
-      </ModalBody>
-      <ModalFooter className="d-flex flex-column">
+      </DialogContent>
+      <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
         <AsyncButton
-          color="danger"
+          variant="contained"
+          color="error"
           onClick={() => {
             onToggle();
             actionRequest();
           }}
-          fullwidth
-          isPending={isPending}
+          fullWidth
+          loading={isPending}
         >
           Torna in bozza
         </AsyncButton>
-        <Button
-          color="primary"
-          tag="button"
-          outline
-          onClick={onToggle}
-          className="w-100"
-        >
+        <Button variant="outlined" color="primary" onClick={onToggle} fullWidth>
           Annulla
         </Button>
-      </ModalFooter>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 }
 

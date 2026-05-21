@@ -8,7 +8,10 @@ import {
   createColumnHelper,
   getPaginationRowModel
 } from "@tanstack/react-table";
-import { Icon } from "design-react-kit";
+import { Box } from "@mui/material";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Link } from "react-router-dom";
 import { compareAsc, format } from "date-fns";
 import { remoteData } from "../../api/common";
@@ -265,7 +268,7 @@ const Discounts = () => {
     MAX_PUBLISHED_DISCOUNTS;
 
   return (
-    <div>
+    <Box sx={{ mt: 1, px: 4, py: 5, backgroundColor: "white" }}>
       <div>
         <PublishModal
           isOpen={publishModal}
@@ -327,8 +330,8 @@ const Discounts = () => {
             pageArray={pageArray}
             total={discounts.length}
           />
-          <div className="table-responsive mb-0 mt-2 bg-white table">
-            <table style={{ width: "100%" }} className="table mb-0">
+          <div>
+            <table style={{ width: "100%" }}>
               <TableHeader headerGroups={headerGroups} />
               <tbody>
                 {maxPublishedDiscountsReached && (
@@ -336,7 +339,6 @@ const Discounts = () => {
                     <td
                       colSpan={tableInstance.getVisibleLeafColumns().length}
                       style={{ padding: "24px 32px" }}
-                      className="border-bottom align-middle"
                     >
                       <div
                         style={{
@@ -347,12 +349,8 @@ const Discounts = () => {
                           boxShadow:
                             "0px 1px 10px 0px #002B551A, 0px 4px 5px 0px #002B550D, 0px 2px 4px -1px #002B551A"
                         }}
-                        className="d-flex flex-row align-items-center"
                       >
-                        <Icon
-                          icon="it-warning-circle"
-                          style={{ fill: "#FFCB46" }}
-                        />
+                        <WarningAmberIcon sx={{ fill: "#FFCB46" }} />
                         <div style={{ fontSize: "16px", fontWeight: 600 }}>
                           Hai raggiunto il numero massimo di opportunità
                           pubblicate nello stesso momento
@@ -364,23 +362,26 @@ const Discounts = () => {
 
                 {tableInstance.getRowModel().rows.map(row => (
                   <Fragment key={row.id}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => row.toggleExpanded()}
-                    >
+                    <tr onClick={() => row.toggleExpanded()}>
                       {row.getVisibleCells().map((cell, i) => (
                         <td
                           key={cell.id}
-                          className={`
-                ${i === 0 ? "ps-6" : ""}
-                ${i === headerGroups[0].headers.length - 1 ? "pe-6" : ""}
-                px-3 py-2 border-bottom text-sm align-middle
-              `}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : {}
-                          }
+                          style={{
+                            width:
+                              cell.column.id === "expander"
+                                ? "calc(32px + 0.75rem * 2)"
+                                : undefined,
+                            paddingTop: "0.5rem",
+                            paddingBottom: "0.5rem",
+                            paddingLeft: i === 0 ? "1.5rem" : "0.75rem",
+                            paddingRight:
+                              i === headerGroups[0].headers.length - 1
+                                ? "1.5rem"
+                                : "0.75rem",
+                            borderBottom: "1px solid #D9E0E6",
+                            fontSize: "0.875rem",
+                            verticalAlign: "middle"
+                          }}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -391,7 +392,7 @@ const Discounts = () => {
                     </tr>
 
                     {row.getIsExpanded() && (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                      <tr>
                         <td
                           colSpan={tableInstance.getVisibleLeafColumns().length}
                         >
@@ -444,16 +445,12 @@ const Discounts = () => {
         </>
       )}
       {agreement.state === AgreementState.ApprovedAgreement ? (
-        <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
+        <div>
           {discounts.length === 0 && (
-            <div className="text-center text-gray pb-10">
-              Non è presente nessuna opportunità.
-            </div>
+            <div>Non è presente nessuna opportunità.</div>
           )}
-          <div className="text-center">
-            <Link to={CREATE_DISCOUNT} className="btn btn-outline-primary">
-              Nuova opportunità
-            </Link>
+          <div>
+            <Link to={CREATE_DISCOUNT}>Nuova opportunità</Link>
           </div>
         </div>
       ) : (
@@ -461,8 +458,8 @@ const Discounts = () => {
           switch (entityType) {
             case EntityType.PublicAdministration:
               return (
-                <div className="bg-white px-8 pt-10 pb-10 flex d-flex justify-content-center flex-column align-items-center">
-                  <p className="text-center m-10">
+                <div>
+                  <p>
                     Non è presente nessuna opportunità.
                     <br />
                     Potrai creare nuove opportunità quando la convezione sarà
@@ -470,7 +467,6 @@ const Discounts = () => {
                   </p>
                   <a
                     href="https://docs.pagopa.it/carta-giovani-nazionale/richiesta-di-convenzione/dati-delle-agevolazioni"
-                    className="btn btn-outline-primary m-8"
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -481,7 +477,7 @@ const Discounts = () => {
           }
         })()
       )}
-    </div>
+    </Box>
   );
 };
 
@@ -497,16 +493,16 @@ function IsVisible({ discount }: { discount: Discount }) {
       compareAsc(new Date(discount.endDate), today) === 0);
   if (isVisible) {
     return (
-      <span className="d-flex flex-row align-items-center">
-        <Icon icon="it-password-visible" size="sm" className="me-1" />
-        <span className="text-base fw-normal text-gray">SI</span>
+      <span>
+        <VisibilityIcon fontSize="small" />
+        <span>SI</span>
       </span>
     );
   } else {
     return (
-      <span className="d-flex flex-row align-items-center">
-        <Icon icon="it-password-invisible" size="sm" className="me-1" />
-        <span className="text-base fw-normal text-gray">NO</span>
+      <span>
+        <VisibilityOffIcon fontSize="small" />
+        <span>NO</span>
       </span>
     );
   }

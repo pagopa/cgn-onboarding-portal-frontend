@@ -1,6 +1,7 @@
 import { CSSProperties, useCallback, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Icon, Progress } from "design-react-kit";
+import { LinearProgress } from "@mui/material";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { BucketCodeLoadStatus } from "../../api/generated";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
@@ -21,6 +22,9 @@ const styles: Record<string, CSSProperties> = {
     filter: "drop-shadow(0px 3px 15px rgba(0, 0, 0, 0.1))",
     position: "relative",
     borderRadius: "4px",
+    display: "flex",
+    gap: "1rem",
+    alignItems: "flex-start",
     border: "1px solid #FFFF",
     borderLeftWidth: "4px",
     borderLeftColor: "#EA7614",
@@ -41,9 +45,7 @@ const getRenderAttributesByState = (
           <>
             Abbiamo riscontrato un problema nell’importazione dei codici sui
             nostri sistemi.{" "}
-            <Link to={getEditDiscountRoute(discountId)} className="fw-semibold">
-              Aggiungi codici
-            </Link>
+            <Link to={getEditDiscountRoute(discountId)}>Aggiungi codici</Link>
           </>
         )
       };
@@ -66,9 +68,7 @@ const getRenderAttributesByState = (
             E’ stata raggiunta la soglia minima di codici sconti per questa
             opportunità. Ad esaurimento dei codici sconto l’opportunità non sarà
             più visibile in app.{" "}
-            <Link to={getEditDiscountRoute(discountId)} className="fw-semibold">
-              Riprova
-            </Link>
+            <Link to={getEditDiscountRoute(discountId)}>Riprova</Link>
           </>
         )
       };
@@ -138,23 +138,22 @@ const ImportationStatus = ({
   }
 
   return (
-    <div style={styles.container} className="row bg-white">
-      <div className="col-1">
-        <Icon icon="it-warning-circle" style={{ fill: "#EA7614" }} />
+    <div style={styles.container}>
+      <div>
+        <WarningAmberIcon style={{ fill: "#EA7614" }} />
       </div>
-      <div className="col">
+      <div style={{ flex: 1 }}>
         <h6>{title}</h6>
         <p style={{ color: "#5C6F82" }}>{body}</p>
       </div>
       {(status === BucketCodeLoadStatus.Pending ||
         status === BucketCodeLoadStatus.Running) && (
-        <div className="col-12">
-          <div className="pt-3">
-            <Progress
+        <div>
+          <div>
+            <LinearProgress
+              variant="determinate"
               value={progress}
-              label="progresso"
-              role="progressbar"
-              tag="div"
+              aria-label="progresso"
             />
           </div>
         </div>

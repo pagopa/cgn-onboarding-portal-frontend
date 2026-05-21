@@ -1,4 +1,4 @@
-import { Badge } from "design-react-kit";
+import { Chip } from "@mui/material";
 import { DiscountState } from "../../api/generated";
 
 export const DiscountComponent = ({
@@ -9,99 +9,83 @@ export const DiscountComponent = ({
   switch (discountState) {
     case "draft":
       return (
-        <Badge
-          className="fw-normal"
-          pill
-          tag="span"
-          color="white"
-          style={{
+        <Chip
+          label="Bozza"
+          size="small"
+          sx={{
             color: "#5C6F82",
-            border: "1px solid #5C6F82"
+            border: "1px solid #5C6F82",
+            backgroundColor: "white"
           }}
-        >
-          Bozza
-        </Badge>
+          variant="outlined"
+        />
       );
     case "published":
-      return (
-        <Badge className="fw-normal" color="primary" pill tag="span">
-          Pubblicata
-        </Badge>
-      );
+      return <Chip label="Pubblicata" color="primary" size="small" />;
     case "suspended":
       return (
-        <Badge
-          className="fw-normal"
-          pill
-          tag="span"
-          color="#EA7614"
-          style={{
+        <Chip
+          label="Sospesa"
+          size="small"
+          sx={{
             border: "1px solid #EA7614",
-            color: "#EA7614"
+            color: "#EA7614",
+            backgroundColor: "white"
           }}
-        >
-          Sospesa
-        </Badge>
+          variant="outlined"
+        />
       );
     case "expired":
       return (
-        <Badge
-          className="fw-normal"
-          pill
-          tag="span"
-          color="white"
-          style={{
+        <Chip
+          label="Scaduta"
+          size="small"
+          sx={{
             border: "1px solid #C02927",
-            color: "#C02927"
+            color: "#C02927",
+            backgroundColor: "white"
           }}
-        >
-          Scaduta
-        </Badge>
+          variant="outlined"
+        />
       );
     case "test_pending":
       return (
-        <Badge
-          className="fw-normal"
-          pill
-          tag="span"
-          color="white"
-          style={{
+        <Chip
+          label="In test"
+          size="small"
+          sx={{
             border: "1px solid #EA7614",
-            color: "#EA7614"
+            color: "#EA7614",
+            backgroundColor: "white"
           }}
-        >
-          In test
-        </Badge>
+          variant="outlined"
+        />
       );
     case "test_failed":
       return (
-        <Badge
-          className="fw-normal"
-          pill
-          tag="span"
-          color="white"
-          style={{
+        <Chip
+          label="Test fallito"
+          size="small"
+          sx={{
             border: "1px solid #C02927",
-            color: "#C02927"
+            color: "#C02927",
+            backgroundColor: "white"
           }}
-        >
-          Test fallito
-        </Badge>
+          variant="outlined"
+        />
       );
     case "test_passed":
       return (
-        <Badge
-          className="fw-normal"
-          pill
-          tag="span"
-          color="white"
-          style={{
+        <Chip
+          label="Test superato"
+          size="small"
+          sx={{
             border: "1px solid #008255",
-            color: "#008255"
+            color: "#008255",
+            backgroundColor: "white"
           }}
-        >
-          Test superato
-        </Badge>
+          variant="outlined"
+        />
       );
   }
 };
