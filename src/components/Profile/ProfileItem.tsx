@@ -1,24 +1,27 @@
 type Props = {
-  className?: string;
   label: string;
   value: string | React.ReactNode;
 };
 
-const ProfileItem = ({ className = "", label, value }: Props) => (
+const ProfileItem = ({ label, value }: Props) => (
   <tr>
     <td
-      className={`${className} px-0 text-gray border-bottom-0`}
-      style={{ width: "400px" }}
+      style={{
+        width: "400px",
+        paddingLeft: 0,
+        color: "#5C6F82",
+        borderBottom: "none"
+      }}
     >
       {label}
     </td>
     <td
-      className={`${className} border-bottom-0`}
       style={{
         maxWidth: "250px",
         whiteSpace: "nowrap",
         overflow: "hidden",
-        textOverflow: "ellipsis"
+        textOverflow: "ellipsis",
+        borderBottom: "none"
       }}
     >
       {value}

@@ -1,5 +1,12 @@
-import { Icon, LinkList, LinkListItem } from "design-react-kit";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Divider
+} from "@mui/material";
 import { Fragment } from "react";
+import FileIcon from "@mui/icons-material/Description";
 import { remoteData } from "../../api/common";
 import { formatDate } from "../../utils/dates";
 import { EntityType } from "../../api/generated";
@@ -28,72 +35,72 @@ const ProfileDocuments = () => {
   return (
     <>
       {agreementDocument && manifestationDocument && (
-        <section className="mt-4 px-8 py-10 bg-white">
-          <h2 className="h5 fw-bold text-dark-blue">Documenti</h2>
-          <LinkList tag="div">
-            <LinkListItem
-              active
-              className="d-flex flex-row align-items-center"
-              tag="div"
-            >
-              <Icon icon="it-file" color="primary" className="me-4" />
-              <div>
-                <a
-                  className="text-sm fw-semibold text-blue"
-                  href={agreementDocument.documentUrl}
-                  style={{ padding: 0 }}
-                  rel="noreferrer"
-                >
-                  Convenzione
-                </a>
-                <p className="text-sm fw-light text-dark-blue">
-                  Caricato il {formatDate(agreementDocument.documentTimestamp)}
-                </p>
-              </div>
-            </LinkListItem>
-            <LinkListItem divider tag="a" />
+        <section
+          style={{
+            backgroundColor: "white",
+            padding: "2rem",
+            marginTop: "1rem"
+          }}
+        >
+          <h2>Documenti</h2>
+          <List>
+            <ListItem>
+              <ListItemIcon>
+                <FileIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <a
+                    href={agreementDocument.documentUrl}
+                    style={{ padding: 0, textDecoration: "none" }}
+                    rel="noreferrer"
+                  >
+                    Convenzione
+                  </a>
+                }
+                secondary={`Caricato il ${formatDate(agreementDocument.documentTimestamp)}`}
+              />
+            </ListItem>
+            <Divider />
             {entityType === EntityType.Private && (
               <Fragment>
-                <LinkListItem
-                  tag="div"
-                  className="d-flex flex-row align-items-center"
-                >
-                  <Icon icon="it-file" color="primary" className="me-4" />
-                  <div className="flex flex-row justify-items-start">
-                    <a
-                      className="text-sm fw-semibold text-blue"
-                      href={manifestationDocument.documentUrl}
-                      style={{ padding: 0 }}
-                    >
-                      Allegato 1 - Domanda di adesione alla CGN
-                    </a>
-                    <p className="text-sm fw-light text-dark-blue">
-                      Caricato il{" "}
-                      {formatDate(manifestationDocument.documentTimestamp)}
-                    </p>
-                  </div>
-                </LinkListItem>
-                <LinkListItem divider tag="a" />
+                <ListItem>
+                  <ListItemIcon>
+                    <FileIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <a
+                        href={manifestationDocument.documentUrl}
+                        style={{ padding: 0, textDecoration: "none" }}
+                      >
+                        Allegato 1 - Domanda di adesione alla CGN
+                      </a>
+                    }
+                    secondary={`Caricato il ${formatDate(manifestationDocument.documentTimestamp)}`}
+                  />
+                </ListItem>
+                <Divider />
               </Fragment>
             )}
-            <LinkListItem
-              tag="div"
-              className="d-flex flex-row align-items-center"
-            >
-              <Icon icon="it-file" color="primary" className="me-4" />
-              <div>
-                <a
-                  href="https://docs.pagopa.it/carta-giovani-nazionale"
-                  target="_blank"
-                  className="text-sm fw-semibold text-blue"
-                  rel="noreferrer"
-                  style={{ padding: 0 }}
-                >
-                  Documentazione tecnica
-                </a>
-              </div>
-            </LinkListItem>
-          </LinkList>
+            <ListItem>
+              <ListItemIcon>
+                <FileIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <a
+                    href="https://docs.pagopa.it/carta-giovani-nazionale"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ padding: 0, textDecoration: "none" }}
+                  >
+                    Documentazione tecnica
+                  </a>
+                }
+              />
+            </ListItem>
+          </List>
         </section>
       )}
     </>

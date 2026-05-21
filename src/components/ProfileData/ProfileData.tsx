@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Box } from "@mui/material";
 import { remoteData } from "../../api/common";
 import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
@@ -22,10 +23,10 @@ const ProfileData = () => {
   return (
     <>
       {profile && (
-        <section className="mt-2 px-8 py-10 bg-white">
-          <section>
-            <h2 className="h5 fw-bold text-dark-blue">Descrizione operatore</h2>
-            <table className="table">
+        <Box component="section" sx={{ backgroundColor: "white", p: 4, mt: 2 }}>
+          <Box component="section">
+            <h2>Descrizione operatore</h2>
+            <table>
               <tbody>
                 {profile.name && (
                   <ProfileDataItem
@@ -55,8 +56,8 @@ const ProfileData = () => {
                   value={profile.legalOffice}
                 />
                 <tr>
-                  <td className="px-0 border-bottom-0">Immagine operatore</td>
-                  <td className="text-gray border-bottom-0">
+                  <td>Immagine operatore</td>
+                  <td>
                     <img
                       src={`${getImage()}?${Date.now()}`}
                       style={{
@@ -70,15 +71,10 @@ const ProfileData = () => {
               </tbody>
             </table>
             {agreement.state === "ApprovedAgreement" && (
-              <Link
-                className="mt-8 btn btn-outline-primary"
-                to={EDIT_OPERATOR_DATA}
-              >
-                Modifica dati
-              </Link>
+              <Link to={EDIT_OPERATOR_DATA}>Modifica dati</Link>
             )}
-          </section>
-        </section>
+          </Box>
+        </Box>
       )}
     </>
   );

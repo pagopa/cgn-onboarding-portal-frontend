@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Box } from "@mui/material";
 import { remoteData } from "../../api/common";
 import { EDIT_PROFILE } from "../../navigation/routes";
 import {
@@ -35,12 +36,10 @@ const Profile = () => {
   return (
     <>
       {profile && (
-        <section className="mt-2 px-8 py-10 bg-white">
-          <section>
-            <h2 className="h5 fw-bold text-dark-blue">
-              Dati relativi all&apos;operatore
-            </h2>
-            <table className="table border-bottom mb-4">
+        <Box component="section" sx={{ backgroundColor: "white", p: 4, mt: 2 }}>
+          <Box component="section">
+            <h2>Dati relativi all&apos;operatore</h2>
+            <table>
               <tbody>
                 <ProfileItem
                   label="Ragione sociale operatore"
@@ -62,13 +61,12 @@ const Profile = () => {
                   value={profile.legalRepresentativeFullName}
                 />
                 <ProfileItem
-                  className="pb-8"
                   label="Codice fiscale del Legale rappresentante"
                   value={profile.legalRepresentativeTaxCode}
                 />
               </tbody>
             </table>
-          </section>
+          </Box>
           {[profile.referent, ...(profile.secondaryReferents ?? [])].map(
             (referent: Referent, index, array) => {
               const title =
@@ -76,9 +74,9 @@ const Profile = () => {
                   ? "Dati del referente incaricato"
                   : `Referente ${index + 1}`;
               return (
-                <section key={index}>
-                  <h2 className="h5 pt-8 fw-bold text-dark-blue">{title}</h2>
-                  <table className="table">
+                <Box component="section" key={index} sx={{ mt: 3 }}>
+                  <h2>{title}</h2>
+                  <table>
                     <tbody>
                       <ProfileItem label="Nome" value={referent.firstName} />
                       <ProfileItem label="Cognome" value={referent.lastName} />
@@ -98,18 +96,13 @@ const Profile = () => {
                   </table>
                   {index === array.length - 1 &&
                     agreement.state === "ApprovedAgreement" && (
-                      <Link
-                        className="mt-4 btn btn-outline-primary"
-                        to={EDIT_PROFILE}
-                      >
-                        Modifica dati
-                      </Link>
+                      <Link to={EDIT_PROFILE}>Modifica dati</Link>
                     )}
-                </section>
+                </Box>
               );
             }
           )}
-        </section>
+        </Box>
       )}
       {profile && hasProfileApiToken && <ProfileApiToken />}
       <ProfileDocuments />
