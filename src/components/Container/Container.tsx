@@ -1,23 +1,14 @@
 import { ReactNode } from "react";
+import { Box, Container as MuiContainer } from "@mui/material";
 
 type Props = {
-  className?: string;
   children: ReactNode;
-  maxWidth?: string;
 };
 
-const Container = ({ className = "", children }: Props) => (
-  <div className="container">
-    <div className={`${className} row variable-gutters`}>{children}</div>
-  </div>
+const Container = ({ children }: Props) => (
+  <MuiContainer maxWidth={false} disableGutters sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", mx: "auto" }}>{children}</Box>
+  </MuiContainer>
 );
-
-export function ContainerFluid({ className = "", maxWidth, children }: Props) {
-  return (
-    <div className="container-fluid" style={{ maxWidth }}>
-      <div className={`${className} row variable-gutters`}>{children}</div>
-    </div>
-  );
-}
 
 export default Container;

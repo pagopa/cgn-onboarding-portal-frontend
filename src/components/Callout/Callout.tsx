@@ -1,17 +1,7 @@
-import { Icon } from "design-react-kit";
-import { CSSProperties } from "react";
-
-const styles: Record<string, CSSProperties> = {
-  container: {
-    filter: "drop-shadow(0px 3px 15px rgba(0, 0, 0, 0.1))",
-    position: "relative",
-    borderRadius: "4px",
-    border: "1px solid #FFFF",
-    borderLeftWidth: "4px",
-    padding: "16px",
-    marginBottom: "1rem"
-  }
-};
+import InfoIcon from "@mui/icons-material/Info";
+import WarningIcon from "@mui/icons-material/WarningAmber";
+import ErrorIcon from "@mui/icons-material/Error";
+import { Box, Grid, Typography } from "@mui/material";
 
 type CalloutType = "info" | "warning" | "danger";
 
@@ -20,6 +10,18 @@ type Props = {
   title: string;
   children?: React.ReactNode;
   body?: React.ReactNode;
+};
+
+const getIconByType = (type: CalloutType) => {
+  switch (type) {
+    case "danger":
+      return <ErrorIcon sx={{ fill: "#D1344C" }} />;
+    case "warning":
+      return <WarningIcon sx={{ fill: "#EA7614" }} />;
+    case "info":
+    default:
+      return <InfoIcon sx={{ fill: "#0073E6" }} />;
+  }
 };
 
 const getColorByType = (type: CalloutType) => {
@@ -35,21 +37,39 @@ const getColorByType = (type: CalloutType) => {
 };
 
 const Callout = ({ title, body, type, children }: Props) => (
-  <div
-    style={{ ...styles.container, borderLeftColor: getColorByType(type) }}
-    className="bg-white"
+  <Box
+    sx={{
+      filter: "drop-shadow(0px 3px 15px rgba(0, 0, 0, 0.1))",
+      position: "relative",
+      borderRadius: "4px",
+      border: "1px solid #FFFF",
+      borderLeftWidth: "4px",
+      borderLeftColor: getColorByType(type),
+      padding: "16px",
+      marginBottom: "1rem",
+      backgroundColor: "white"
+    }}
   >
-    <div className="row align-items-center">
-      <div className="col-1">
-        <Icon icon="it-warning-circle" style={{ fill: getColorByType(type) }} />
-      </div>
-      <div className="col">
-        <div style={{ fontWeight: 600, fontSize: "16px" }}>{title}</div>
-        {body && <div style={{ color: "#5C6F82" }}>{body}</div>}
-      </div>
-    </div>
+    <Grid container spacing={1} sx={{ alignItems: "flex-start" }}>
+      <Grid item xs="auto">
+        {getIconByType(type)}
+      </Grid>
+      <Grid item xs>
+        <Typography
+          variant="subtitle2"
+          sx={{ fontWeight: 600, fontSize: "16px" }}
+        >
+          {title}
+        </Typography>
+        {body && (
+          <Typography variant="body2" sx={{ color: "#5C6F82", mt: 0.5 }}>
+            {body}
+          </Typography>
+        )}
+      </Grid>
+    </Grid>
     {children}
-  </div>
+  </Box>
 );
 
 export default Callout;
