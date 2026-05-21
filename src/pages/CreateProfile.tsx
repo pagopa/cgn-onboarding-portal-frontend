@@ -1,4 +1,10 @@
 import { useEffect, useState } from "react";
+import {
+  Box,
+  Grid,
+  Typography,
+  Container as MuiContainer
+} from "@mui/material";
 import Layout from "../components/Layout/Layout";
 import Stepper from "../components/Stepper/Stepper";
 import Documentation from "../components/Form/CreateProfileForm/Documentation/Documentation";
@@ -108,25 +114,43 @@ const CreateProfile = () => {
 
   return (
     <Layout hasHeaderBorder>
-      <div className="bg-white">
-        <div className="container p-10">
-          <div className="row">
-            <div className="col-9">
-              <h1 className="h5 text-gray">Carta Giovani Nazionale</h1>
-              <h2 className="h2 text-dark-blue fw-bold">Portale Operatori</h2>
-            </div>
-            <div className="col-3 d-flex justify-content-end">
+      <Box sx={{ backgroundColor: "white" }}>
+        <MuiContainer maxWidth="lg" sx={{ py: 5 }}>
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid item xs={12} sm={9}>
+              <Typography
+                variant="caption"
+                sx={{ color: "#5C6F82", display: "block", mb: 1 }}
+              >
+                Carta Giovani Nazionale
+              </Typography>
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: "bold", color: "#01254C" }}
+              >
+                Portale Operatori
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={3}
+              sx={{
+                display: "flex",
+                justifyContent: { xs: "flex-start", sm: "flex-end" }
+              }}
+            >
               <CgnLogo />
-            </div>
-          </div>
-        </div>
+            </Grid>
+          </Grid>
+        </MuiContainer>
         <Stepper
           activeStep={step}
           completedSteps={completedSteps}
           handleChangeStep={setStep}
           steps={getSteps(entityType)}
         />
-      </div>
+      </Box>
       {selectedTab()}
     </Layout>
   );

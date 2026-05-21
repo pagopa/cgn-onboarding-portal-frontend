@@ -18,10 +18,9 @@ function LandingPage({ formLens, children }: Props) {
         formLens={formLens.focus("landingPageUrl")}
         placeholder="Inserisci indirizzo (completo di protocollo https)"
         type="text"
-        className="form-control"
       />
       <FormErrorMessage formLens={formLens.focus("landingPageUrl")} />
-      <p className="mt-4 text-sm fw-normal text-black">
+      <p>
         Inserisci il valore del parametro referrer da trasmettere alla pagina
         web (max 100 caratteri)
       </p>
@@ -30,7 +29,6 @@ function LandingPage({ formLens, children }: Props) {
         formLens={formLens.focus("landingPageReferrer")}
         placeholder="Inserisci valore referrer"
         type="text"
-        className="form-control"
       />
       <FormErrorMessage formLens={formLens.focus("landingPageReferrer")} />
       {children}

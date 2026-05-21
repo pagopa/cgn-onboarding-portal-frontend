@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { Button, Icon } from "design-react-kit";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  IconButton,
+  Box
+} from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { remoteData } from "../../api/common";
 import { ApiTokens } from "../../api/generated";
 import { selectAgreement } from "../../store/agreement/selectors";
@@ -36,94 +46,94 @@ const ProfileApiToken = () => {
   return (
     <>
       {tokens && (
-        <section className="mt-4 px-8 py-10 bg-white">
-          <h2 className="h5 fw-bold text-dark-blue">
-            Codici di validazione API
-          </h2>
-          <table className="table mb-4">
-            <tbody>
-              <tr>
-                <td className="px-0 text-gray border-bottom-0">
-                  Chiave primaria
-                </td>
-                <td className="d-flex flex-row border-bottom-0">
-                  <div>
-                    <Icon
-                      icon={
-                        isPrimaryTokenShown
-                          ? "it-password-invisible"
-                          : "it-password-visible"
-                      }
-                      color="primary"
-                      size="sm"
-                      className="me-4"
+        <section
+          style={{
+            backgroundColor: "white",
+            padding: "2rem",
+            marginTop: "1rem"
+          }}
+        >
+          <h2>Codici di validazione API</h2>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell>Chiave primaria</TableCell>
+                <TableCell>
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+                    <IconButton
+                      size="small"
                       onClick={() =>
                         setIsPrimaryTokenShown(!isPrimaryTokenShown)
                       }
-                    />
-                  </div>
-                  <div className="d-flex flex-column justify-items-start">
-                    <span>
-                      {isPrimaryTokenShown
-                        ? tokens.primaryToken
-                        : getHiddenToken(tokens.primaryToken)}
-                    </span>
-                    <Button
-                      size="xs"
-                      className="mt-4 me-4"
-                      color="primary"
-                      outline
-                      tag="button"
-                      style={{ width: "6em" }}
-                      onClick={() => regenerateToken(agreement.id, "primary")}
+                      sx={{ p: 0 }}
                     >
-                      Rigenera
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-0 text-gray border-bottom-0">
-                  Chiave secondaria
-                </td>
-                <td className="d-flex flex-row border-bottom-0">
-                  <div>
-                    <Icon
-                      icon={
-                        isSecondaryTokenShown
-                          ? "it-password-invisible"
-                          : "it-password-visible"
-                      }
-                      color="primary"
-                      size="sm"
-                      className="me-4"
+                      {isPrimaryTokenShown ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      <span>
+                        {isPrimaryTokenShown
+                          ? tokens.primaryToken
+                          : getHiddenToken(tokens.primaryToken)}
+                      </span>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        size="small"
+                        type="button"
+                        sx={{ mt: 1, width: "6em" }}
+                        onClick={() => regenerateToken(agreement.id, "primary")}
+                      >
+                        Rigenera
+                      </Button>
+                    </Box>
+                  </Box>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Chiave secondaria</TableCell>
+                <TableCell>
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+                    <IconButton
+                      size="small"
                       onClick={() =>
                         setIsSecondaryTokenShown(!isSecondaryTokenShown)
                       }
-                    />
-                  </div>
-                  <div className="d-flex flex-column justify-items-start">
-                    <span>
-                      {isSecondaryTokenShown
-                        ? tokens.secondaryToken
-                        : getHiddenToken(tokens.secondaryToken)}
-                    </span>
-                    <Button
-                      size="xs"
-                      className="mt-4 me-4"
-                      color="primary"
-                      outline
-                      tag="button"
-                      style={{ width: "6em" }}
-                      onClick={() => regenerateToken(agreement.id, "secondary")}
+                      sx={{ p: 0 }}
                     >
-                      Rigenera
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                      {isSecondaryTokenShown ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      <span>
+                        {isSecondaryTokenShown
+                          ? tokens.secondaryToken
+                          : getHiddenToken(tokens.secondaryToken)}
+                      </span>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        size="small"
+                        type="button"
+                        sx={{ mt: 1, width: "6em" }}
+                        onClick={() =>
+                          regenerateToken(agreement.id, "secondary")
+                        }
+                      >
+                        Rigenera
+                      </Button>
+                    </Box>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </section>
       )}
     </>

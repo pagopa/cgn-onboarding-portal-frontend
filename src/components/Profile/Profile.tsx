@@ -1,11 +1,8 @@
 import { Link } from "react-router-dom";
+import { Box, Table, TableBody } from "@mui/material";
 import { remoteData } from "../../api/common";
 import { EDIT_PROFILE } from "../../navigation/routes";
-import {
-  SalesChannelType,
-  type Profile,
-  type Referent
-} from "../../api/generated";
+import { SalesChannelType, type Referent } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { NormalizedSalesChannel } from "../../api/dtoTypeFixes";
 import { selectAgreement } from "../../store/agreement/selectors";
@@ -35,13 +32,11 @@ const Profile = () => {
   return (
     <>
       {profile && (
-        <section className="mt-2 px-8 py-10 bg-white">
-          <section>
-            <h2 className="h5 fw-bold text-dark-blue">
-              Dati relativi all&apos;operatore
-            </h2>
-            <table className="table border-bottom mb-4">
-              <tbody>
+        <Box component="section" sx={{ backgroundColor: "white", p: 4, mt: 2 }}>
+          <Box component="section">
+            <h2>Dati relativi all&apos;operatore</h2>
+            <Table>
+              <TableBody>
                 <ProfileItem
                   label="Ragione sociale operatore"
                   value={profile.fullName}
@@ -62,13 +57,12 @@ const Profile = () => {
                   value={profile.legalRepresentativeFullName}
                 />
                 <ProfileItem
-                  className="pb-8"
                   label="Codice fiscale del Legale rappresentante"
                   value={profile.legalRepresentativeTaxCode}
                 />
-              </tbody>
-            </table>
-          </section>
+              </TableBody>
+            </Table>
+          </Box>
           {[profile.referent, ...(profile.secondaryReferents ?? [])].map(
             (referent: Referent, index, array) => {
               const title =
@@ -76,10 +70,10 @@ const Profile = () => {
                   ? "Dati del referente incaricato"
                   : `Referente ${index + 1}`;
               return (
-                <section key={index}>
-                  <h2 className="h5 pt-8 fw-bold text-dark-blue">{title}</h2>
-                  <table className="table">
-                    <tbody>
+                <Box component="section" key={index} sx={{ mt: 3 }}>
+                  <h2>{title}</h2>
+                  <Table>
+                    <TableBody>
                       <ProfileItem label="Nome" value={referent.firstName} />
                       <ProfileItem label="Cognome" value={referent.lastName} />
                       <ProfileItem
@@ -94,22 +88,17 @@ const Profile = () => {
                         label="Numero di telefono diretto"
                         value={referent.telephoneNumber}
                       />
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                   {index === array.length - 1 &&
                     agreement.state === "ApprovedAgreement" && (
-                      <Link
-                        className="mt-4 btn btn-outline-primary"
-                        to={EDIT_PROFILE}
-                      >
-                        Modifica dati
-                      </Link>
+                      <Link to={EDIT_PROFILE}>Modifica dati</Link>
                     )}
-                </section>
+                </Box>
               );
             }
           )}
-        </section>
+        </Box>
       )}
       {profile && hasProfileApiToken && <ProfileApiToken />}
       <ProfileDocuments />

@@ -1,29 +1,34 @@
+import { TableCell, TableRow } from "@mui/material";
+
 type Props = {
-  className?: string;
   label: string;
   value: string | React.ReactNode;
 };
 
-const ProfileItem = ({ className = "", label, value }: Props) => (
-  <tr>
-    <td
-      className={`${className} px-0 text-gray border-bottom-0`}
-      style={{ width: "400px" }}
+const ProfileItem = ({ label, value }: Props) => (
+  <TableRow>
+    <TableCell
+      sx={{
+        width: "400px",
+        paddingLeft: 0,
+        color: "#5C6F82",
+        borderBottom: "none"
+      }}
     >
       {label}
-    </td>
-    <td
-      className={`${className} border-bottom-0`}
-      style={{
+    </TableCell>
+    <TableCell
+      sx={{
         maxWidth: "250px",
         whiteSpace: "nowrap",
         overflow: "hidden",
-        textOverflow: "ellipsis"
+        textOverflow: "ellipsis",
+        borderBottom: "none"
       }}
     >
       {value}
-    </td>
-  </tr>
+    </TableCell>
+  </TableRow>
 );
 
 export default ProfileItem;

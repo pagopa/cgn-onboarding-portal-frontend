@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { Button } from "design-react-kit";
+import { Button } from "@mui/material";
 import { remoteData } from "../../api/common";
 import { useTooltip, Severity } from "../../context/tooltip";
 import { AgreementState, EntityType } from "../../api/generated_backoffice";
@@ -43,14 +43,14 @@ function RejectButtons({
   isPending
 }: RejectButtonsProps) {
   return (
-    <div className="mt-10">
-      <h6 className="text-gray">Aggiungi una nota</h6>
+    <div>
+      <h6>Aggiungi una nota</h6>
       <p>
         Inserisci una nota di spiegazione riguardo al motivo per cui l’esercente
         non può essere convenzionato in questo momento. La nota sarà visibile
         all’operatore.
       </p>
-      <div className="mb-12">
+      <div>
         <textarea
           id="rejectMessage"
           value={rejectMessage}
@@ -58,14 +58,11 @@ function RejectButtons({
           rows={5}
           maxLength={250}
           placeholder="Inserisci una descrizione"
-          className="form-control"
         />
       </div>
       <Button
+        variant="outlined"
         color="primary"
-        outline
-        tag="button"
-        className="ms-4"
         onClick={() => {
           setRejectMode(false);
           setRejectMessage("");
@@ -75,10 +72,9 @@ function RejectButtons({
       </Button>
       <AsyncButton
         color="primary"
-        className="ms-4"
         onClick={rejectAgreement}
         disabled={!rejectMessage.length}
-        isPending={isPending}
+        loading={isPending}
       >
         Invia rifiuto
       </AsyncButton>
@@ -97,27 +93,24 @@ function ActionButtons({
   setRejectMode
 }: ActionButtonsProps) {
   return (
-    <div className="mt-10">
+    <div>
       <Button
+        variant="outlined"
         color="primary"
-        outline
-        tag="button"
-        className="ms-4"
         onClick={() => setRejectMode(true)}
         disabled={!assignedToMe}
       >
-        <div className="d-flex align-items-center">Rifiuta</div>
+        <div>Rifiuta</div>
       </Button>
       <AsyncButton
         color="primary"
-        className="ms-4"
         onClick={approveAgreement}
         disabled={
           !assignedToMe ||
           original.state === "PendingAgreement" ||
           !checkAllDocs
         }
-        isPending={approveIsPending}
+        loading={approveIsPending}
       >
         Approva
       </AsyncButton>
@@ -205,9 +198,9 @@ const RequestsDetails = ({ original, updateList }: Props) => {
     assignAgreementsMutation.isPending;
 
   return (
-    <section className="px-6 py-4 bg-white">
-      <h1 className="h5 fw-bold text-dark-blue mb-5">Dettagli</h1>
-      <div className="container">
+    <section style={{ backgroundColor: "white", padding: "1.5rem" }}>
+      <h1>Dettagli</h1>
+      <div>
         <RequestItem
           label="Ragione sociale operatore"
           value={original.profile?.fullName}
@@ -222,7 +215,7 @@ const RequestsDetails = ({ original, updateList }: Props) => {
               label="Numero opportunità proposte"
               value={original.discounts?.length}
             />
-            <div className="ms-3">
+            <div>
               {original.discounts?.map((doc, i: number) => (
                 <RequestItem
                   key={i}
@@ -234,10 +227,8 @@ const RequestsDetails = ({ original, updateList }: Props) => {
           </Fragment>
         )}
       </div>
-      <h1 className="h5 fw-bold text-dark-blue mb-5">
-        Dati del referente incaricato
-      </h1>
-      <div className="container">
+      <h1>Dati del referente incaricato</h1>
+      <div>
         <RequestItem
           label="Nome e cognome"
           value={`${original.profile?.referent.firstName} ${original.profile?.referent.lastName}`}

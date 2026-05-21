@@ -1,4 +1,4 @@
-import { Badge } from "design-react-kit";
+import { Chip, Box, Typography } from "@mui/material";
 import { format } from "date-fns";
 import Hourglass from "../../assets/icons/hourglass.svg?react";
 import { AgreementState as AgreementStateType } from "../../api/generated";
@@ -10,65 +10,89 @@ type Props = {
 };
 
 const DateLabel = ({
-  className = "",
   title,
   date
 }: {
-  className?: string;
   title: string;
   date: string | undefined;
 }) => {
   const newDate = format(new Date(date ?? ""), "dd/MM/yyyy");
   return (
-    <div className={`${className} d-flex flex-column text-center`}>
-      <span className="text-sm fw-light text-gray">{title}</span>
-      <span className="text-sm fw-bold text-black">{newDate}</span>
-    </div>
+    <Box sx={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
+      <Typography variant="caption" sx={{ color: "#5C6F82", fontWeight: 300 }}>
+        {title}
+      </Typography>
+      <Typography variant="caption" sx={{ fontWeight: "bold", color: "black" }}>
+        {newDate}
+      </Typography>
+    </Box>
   );
 };
 
 const AgreementState = ({ state, startDate }: Props) => (
-  <section className="bg-white d-flex flex-column align-items-center px-4">
-    <h1 className="pt-7 text-base fw-semibold text-dark-blue text-uppercase tracking">
+  <Box
+    sx={{
+      backgroundColor: "white",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      px: 2
+    }}
+  >
+    <Typography
+      variant="subtitle2"
+      sx={{
+        pt: 3.5,
+        fontSize: "1rem",
+        fontWeight: 600,
+        color: "#01254C",
+        textTransform: "uppercase",
+        letterSpacing: "0.1em"
+      }}
+    >
       PagoPA
-    </h1>
-    <div>
+    </Typography>
+    <Box sx={{ my: 2 }}>
       {state === AgreementStateType.ApprovedAgreement && (
-        <Badge className="fw-normal" color="primary" pill tag="span">
-          Convenzione attiva
-        </Badge>
+        <Chip label="Convenzione attiva" color="primary" size="small" />
       )}
       {state === AgreementStateType.PendingAgreement && (
-        <Badge
-          className="fw-normal"
-          pill
-          tag="span"
-          style={{ backgroundColor: "#EA7614" }}
-        >
-          Richiesta di convenzione inviata
-        </Badge>
+        <Chip
+          label="Richiesta di convenzione inviata"
+          size="small"
+          sx={{ backgroundColor: "#EA7614", color: "white" }}
+        />
       )}
-    </div>
-    <div className="p-3">
+    </Box>
+    <Box sx={{ p: 1.5 }}>
       {state === AgreementStateType.ApprovedAgreement && <Check />}
       {state === AgreementStateType.PendingAgreement && <Hourglass />}
-    </div>
+    </Box>
     {state === AgreementStateType.ApprovedAgreement && (
-      <div
-        className="d-flex flex-row justify-content-around pb-10 flex-wrap"
-        style={{ width: "100%" }}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-around",
+          pb: 5,
+          flexWrap: "wrap",
+          width: "100%"
+        }}
       >
         <DateLabel title="Data di inizio" date={startDate} />
-      </div>
+      </Box>
     )}
     {state === AgreementStateType.PendingAgreement && (
-      <p className="text-sm text-center text-gray">
+      <Typography
+        variant="body2"
+        sx={{ textAlign: "center", color: "#5C6F82" }}
+      >
         La tua richiesta è in attesa di approvazione.
         <br />
         Il referente riceverà una e-mail appena sarà approvata.
-      </p>
+      </Typography>
     )}
-  </section>
+  </Box>
 );
 
 export default AgreementState;

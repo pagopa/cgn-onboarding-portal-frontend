@@ -1,5 +1,10 @@
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Button } from "design-react-kit";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from "@mui/material";
 import { ModalProps } from "../../types";
 import AsyncButton from "../AsyncButton/AsyncButton";
 
@@ -10,37 +15,32 @@ function DeleteModal({
   isPending
 }: ModalProps) {
   return (
-    <Modal isOpen={isOpen} toggle={onToggle} size="md">
-      <ModalHeader toggle={onToggle}>Rimuovi operatore</ModalHeader>
-      <ModalBody>
+    <Dialog open={isOpen} onClose={onToggle} maxWidth="sm" fullWidth>
+      <DialogTitle>Rimuovi operatore</DialogTitle>
+      <DialogContent>
         Sei sicuro di voler rimuovere questo operatore? In questo modo
-        l&lsquo;operatore non potrà più accedere al portale operatori e se ha
-        opportunità pubblicate in questo momento non sarà più in grado di
+        l&lsquo;operatore non potra piu accedere al portale operatori e se ha
+        opportunita pubblicate in questo momento non sara piu in grado di
         modificarle.
-      </ModalBody>
-      <ModalFooter className="d-flex flex-column">
+      </DialogContent>
+      <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
         <AsyncButton
-          color="danger"
+          color="error"
           onClick={() => {
             onToggle();
             actionRequest();
           }}
-          fullwidth
-          isPending={isPending}
+          fullWidth
+          loading={isPending}
+          variant="contained"
         >
           Rimuovi
         </AsyncButton>
-        <Button
-          tag="button"
-          color="primary"
-          outline
-          onClick={onToggle}
-          className="w-100"
-        >
+        <Button color="primary" variant="outlined" onClick={onToggle} fullWidth>
           Annulla
         </Button>
-      </ModalFooter>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 }
 

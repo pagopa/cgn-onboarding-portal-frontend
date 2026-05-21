@@ -1,8 +1,8 @@
-import { Spinner } from "design-react-kit";
+import { CircularProgress } from "@mui/material";
 
 const CenteredLoading = () => (
-  <div className="d-flex justify-content-center align-items-center h-100">
-    <Spinner active />
+  <div>
+    <CircularProgress />
   </div>
 );
 

@@ -23,8 +23,8 @@ export function DiscountDates({
   const setEndDate = (date: Date | undefined) =>
     endDateController.field.onChange({ target: { value: date } });
   return (
-    <div className="row">
-      <div className="col-6">
+    <div>
+      <div>
         <FormField
           htmlFor="startDate"
           title="Data d'inizio opportunità"
@@ -56,7 +56,7 @@ export function DiscountDates({
           </div>
         </FormField>
       </div>
-      <div className="col-6">
+      <div>
         <FormField
           htmlFor="endDate"
           title="Data di fine opportunità"
@@ -100,14 +100,13 @@ const DateInputComponent = forwardRef<
   }
 >((props, ref) => (
   <div>
-    <div className="input-group">
-      <div className="input-group-text">
+    <div>
+      <div>
         <CalendarIcon />
       </div>
       <input
         aria-describedby="date-input-description"
         type="text"
-        className="form-control"
         id="input-group-2"
         name="input-group-2"
         placeholder="gg/mm/aaaa"
@@ -121,8 +120,6 @@ const DateInputComponent = forwardRef<
         }}
       />
     </div>
-    <small id="date-input-description" className="form-text text-muted">
-      gg/mm/aaaa
-    </small>
+    <small id="date-input-description">gg/mm/aaaa</small>
   </div>
 ));

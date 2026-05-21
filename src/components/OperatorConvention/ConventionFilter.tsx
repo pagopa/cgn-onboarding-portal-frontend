@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "design-react-kit";
+import { Button } from "@mui/material";
 import { saveAs } from "file-saver";
 import { remoteData } from "../../api/common";
 import { Severity, useTooltip } from "../../context/tooltip";
@@ -78,25 +78,17 @@ const ConventionFilter = ({
 
   return (
     <form>
-      <div className="d-flex justify-content-between">
+      <div>
         {hasActiveFitlers ? (
-          <h2 className="h4 fw-bold text-dark-blue">
+          <h2>
             Risultati della ricerca
-            <span
-              className="primary-color ms-2 text-sm fw-regular cursor-pointer"
-              onClick={onReset}
-            >
-              Esci
-            </span>
+            <span onClick={onReset}>Esci</span>
           </h2>
         ) : (
-          <h2 className="h4 fw-bold text-dark-blue">Operatori convenzionati</h2>
+          <h2>Operatori convenzionati</h2>
         )}
 
-        <div
-          className="d-flex justify-content-end flex-grow-1 flex-wrap align-items-center"
-          style={{ rowGap: "0.75rem" }}
-        >
+        <div style={{ rowGap: "0.75rem" }}>
           <DateModal
             label="Data ultima modifica"
             title="Filtra per data di ultima modifica"
@@ -125,18 +117,16 @@ const ConventionFilter = ({
           />
           <div>
             <Button
-              className="ms-5 btn-sm"
               color="primary"
-              tag="button"
+              type="button"
               onClick={getExport}
               disabled={downloadingAgreements}
             >
               <span>Export convenzioni</span>
             </Button>
             <Button
-              className="ms-5 btn-sm"
               color="primary"
-              tag="button"
+              type="button"
               onClick={getExportEyca}
               disabled={downloadingEyca}
             >

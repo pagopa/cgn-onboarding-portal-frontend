@@ -1,5 +1,4 @@
-import { Nav } from "design-react-kit";
-import NavItem from "../NavItem";
+import { Tabs, Tab, Box, Grid, Typography } from "@mui/material";
 import {
   ADMIN_PANEL_ACCESSI,
   ADMIN_PANEL_CONVENZIONATI,
@@ -14,40 +13,64 @@ type Props = {
 };
 
 const IntroductionAdmin = ({ name, activeTab, handleClick }: Props) => (
-  <section className="bg-white text-start">
-    <div className="px-8 pt-10">
-      <div className="row">
-        <div className="col-9">
-          <h1 className="h5">Carta Giovani Nazionale</h1>
-          <h2 className="h2 text-dark-blue fw-bold">Portale Amministratori</h2>
-          <p className="dark-blue text-capitalize">{name}</p>
-        </div>
-        <div className="col-3 d-flex justify-content-end">
+  <Box sx={{ backgroundColor: "white", textAlign: "start" }}>
+    <Box sx={{ px: 4, pt: 5 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={9}>
+          <Typography
+            variant="caption"
+            sx={{ color: "#5C6F82", display: "block" }}
+          >
+            Carta Giovani Nazionale
+          </Typography>
+          <Typography
+            variant="h4"
+            sx={{ color: "#01254C", fontWeight: "bold" }}
+          >
+            Portale Amministratori
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{ color: "#01254C", textTransform: "capitalize", mt: 1 }}
+          >
+            {name}
+          </Typography>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={3}
+          sx={{
+            display: "flex",
+            justifyContent: { xs: "flex-start", sm: "flex-end" }
+          }}
+        >
           <CgnLogo />
-        </div>
-      </div>
-    </div>
-    <Nav className="auto mt-11" tabs tag="ul" vertical={false}>
-      <NavItem
-        active={activeTab === ADMIN_PANEL_RICHIESTE}
-        onClick={() => handleClick(ADMIN_PANEL_RICHIESTE)}
-      >
-        Richieste
-      </NavItem>
-      <NavItem
-        active={activeTab === ADMIN_PANEL_CONVENZIONATI}
-        onClick={() => handleClick(ADMIN_PANEL_CONVENZIONATI)}
-      >
-        Operatori Convenzionati
-      </NavItem>
-      <NavItem
-        active={activeTab === ADMIN_PANEL_ACCESSI}
-        onClick={() => handleClick(ADMIN_PANEL_ACCESSI)}
-      >
-        Impostazioni di accesso
-      </NavItem>
-    </Nav>
-  </section>
+        </Grid>
+      </Grid>
+    </Box>
+    <Tabs
+      value={[
+        ADMIN_PANEL_RICHIESTE,
+        ADMIN_PANEL_CONVENZIONATI,
+        ADMIN_PANEL_ACCESSI
+      ].indexOf(activeTab)}
+      onChange={(_e, newIndex) =>
+        handleClick(
+          [
+            ADMIN_PANEL_RICHIESTE,
+            ADMIN_PANEL_CONVENZIONATI,
+            ADMIN_PANEL_ACCESSI
+          ][newIndex]
+        )
+      }
+      sx={{ mt: 2 }}
+    >
+      <Tab label="Richieste" />
+      <Tab label="Operatori Convenzionati" />
+      <Tab label="Impostazioni di accesso" />
+    </Tabs>
+  </Box>
 );
 
 export default IntroductionAdmin;

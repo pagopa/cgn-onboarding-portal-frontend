@@ -1,5 +1,10 @@
-import { Button } from "design-react-kit";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from "@mui/material";
 
 type Props = {
   isOpen: boolean;
@@ -8,27 +13,22 @@ type Props = {
 };
 
 const LogoutModal = ({ isOpen, toggle, logout }: Props) => (
-  <Modal isOpen={isOpen} toggle={toggle} size="md">
-    <ModalHeader toggle={toggle}>Sei sicuro di voler uscire?</ModalHeader>
-    <ModalBody>
+  <Dialog open={isOpen} onClose={toggle} maxWidth="sm" fullWidth>
+    <DialogTitle>Sei sicuro di voler uscire?</DialogTitle>
+    <DialogContent>
       Salviamo i dati a ogni cambio di pagina. Per non perdere i dati inseriti
       in questa pagina, completa la compilazione e premi continua. Al tuo
       prossimo accesso atterrerai nel primo passaggio ancora da compilare.
-    </ModalBody>
-    <ModalFooter className="d-flex flex-column">
-      <Button color="primary" onClick={logout} style={{ width: "100%" }}>
+    </DialogContent>
+    <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
+      <Button variant="contained" color="primary" onClick={logout} fullWidth>
         Esci
-      </Button>{" "}
-      <Button
-        color="primary"
-        outline
-        onClick={toggle}
-        style={{ width: "100%" }}
-      >
+      </Button>
+      <Button variant="outlined" color="primary" onClick={toggle} fullWidth>
         Annulla
       </Button>
-    </ModalFooter>
-  </Modal>
+    </DialogActions>
+  </Dialog>
 );
 
 export default LogoutModal;

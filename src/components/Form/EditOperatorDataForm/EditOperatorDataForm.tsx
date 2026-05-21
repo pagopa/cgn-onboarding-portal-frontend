@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "design-react-kit";
+import { Button } from "@mui/material";
 import { remoteData } from "../../../api/common";
 import { DASHBOARD } from "../../../navigation/routes";
 import CenteredLoading from "../../CenteredLoading/CenteredLoading";
@@ -31,22 +31,11 @@ type Props = {
 
 function OperatorDataButtons({ isPending, onBack }: OperatorDataButtonsProps) {
   return (
-    <div className="d-flex mt-10 gap-4 flex-wrap">
-      <Button
-        tag="button"
-        className="px-14"
-        outline
-        color="primary"
-        onClick={onBack}
-      >
+    <div>
+      <Button type="button" variant="outlined" color="primary" onClick={onBack}>
         Indietro
       </Button>
-      <AsyncButton
-        type="submit"
-        className="px-14"
-        color="primary"
-        isPending={isPending}
-      >
+      <AsyncButton type="submit" color="primary" loading={isPending}>
         Salva
       </AsyncButton>
     </div>

@@ -40,11 +40,10 @@ const ProfileInfo = ({
           value={fullName}
           type="text"
           disabled
-          className="form-control"
         />
       </InputField>
       {entityType === EntityType.Private && (
-        <div className="mt-6">
+        <div>
           <ToggleField
             htmlFor="hasDifferentName"
             text="Vuoi visualizzare un nome diverso dentro l’app?"
@@ -53,7 +52,6 @@ const ProfileInfo = ({
               id="hasDifferentName"
               formLens={formLens.focus("hasDifferentName")}
               type="checkbox"
-              className="mb-0"
             />
           </ToggleField>
         </div>
@@ -73,24 +71,18 @@ const ProfileInfo = ({
           isVisible
           required
         >
-          <div className="row">
-            <div className="col-6">
-              <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
-              <Field
-                id="name"
-                formLens={formLens.focus("name")}
-                type="text"
-                className="form-control"
-              />
+          <div>
+            <div>
+              <p>Italiano 🇮🇹</p>
+              <Field id="name" formLens={formLens.focus("name")} type="text" />
               <FormErrorMessage formLens={formLens.focus("name")} />
             </div>
-            <div className="col-6">
-              <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
+            <div>
+              <p>Inglese 🇬🇧</p>
               <Field
                 id="name_en"
                 formLens={formLens.focus("name_en")}
                 type="text"
-                className="form-control"
               />
               <FormErrorMessage formLens={formLens.focus("name_en")} />
             </div>
@@ -104,7 +96,6 @@ const ProfileInfo = ({
           value={taxCodeOrVat}
           type="text"
           disabled
-          className="form-control"
         />
       </InputField>
       <InputField htmlFor="pecAddress" title="Indirizzo PEC" required>
@@ -113,7 +104,6 @@ const ProfileInfo = ({
           formLens={formLens.focus("pecAddress")}
           type="email"
           placeholder="Inserisci l'indirizzo PEC dell'ente"
-          className="form-control"
         />
         <FormErrorMessage formLens={formLens.focus("pecAddress")} />
       </InputField>
@@ -123,7 +113,6 @@ const ProfileInfo = ({
           formLens={formLens.focus("legalOffice")}
           type="text"
           placeholder="Inserisci la sede legale dell'ente"
-          className="form-control"
         />
         <FormErrorMessage formLens={formLens.focus("legalOffice")} />
       </InputField>
@@ -138,7 +127,6 @@ const ProfileInfo = ({
           formLens={formLens.focus("telephoneNumber")}
           type="text"
           placeholder="Inserisci il numero di telefono dell'ente"
-          className="form-control"
         />
         <FormErrorMessage formLens={formLens.focus("telephoneNumber")} />
       </InputField>
@@ -152,7 +140,6 @@ const ProfileInfo = ({
           formLens={formLens.focus("legalRepresentativeFullName")}
           type="text"
           placeholder="Inserisci il nome e cognome del Legale rappresentante dell'ente"
-          className="form-control"
         />
         <FormErrorMessage
           formLens={formLens.focus("legalRepresentativeFullName")}
@@ -170,7 +157,6 @@ const ProfileInfo = ({
           formLens={formLens.focus("legalRepresentativeTaxCode")}
           type="text"
           placeholder="Inserisci il Codice fiscale del Legale rappresentante dell'ente"
-          className="form-control"
         />
         <FormErrorMessage
           formLens={formLens.focus("legalRepresentativeTaxCode")}

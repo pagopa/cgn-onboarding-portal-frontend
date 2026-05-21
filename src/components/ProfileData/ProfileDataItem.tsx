@@ -1,10 +1,11 @@
+import { TableCell, TableRow } from "@mui/material";
 import { ValueLabel } from "../../utils/ValueLabel";
 
 const ProfileDataItem = ({ label, value }: ValueLabel) => (
-  <tr>
-    <td className="px-0 border-bottom-0">{label}</td>
-    <td className="text-gray border-bottom-0">{value}</td>
-  </tr>
+  <TableRow>
+    <TableCell>{label}</TableCell>
+    <TableCell>{value}</TableCell>
+  </TableRow>
 );
 
 export default ProfileDataItem;

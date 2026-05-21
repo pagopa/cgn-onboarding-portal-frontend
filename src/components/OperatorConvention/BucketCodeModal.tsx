@@ -1,5 +1,10 @@
-import { Button } from "design-react-kit";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from "@mui/material";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 
@@ -42,13 +47,13 @@ const BucketCodeModal = ({
     return "Non è stato possibile caricare il codice";
   };
   return (
-    <Modal isOpen={isOpen} toggle={toggle} size="md">
-      <ModalHeader toggle={toggle}>Codice Sconto dalla lista</ModalHeader>
-      <ModalBody>{renderContent()}</ModalBody>
-      <ModalFooter className="d-flex flex-column">
+    <Dialog open={isOpen} onClose={toggle} maxWidth="sm" fullWidth>
+      <DialogTitle>Codice Sconto dalla lista</DialogTitle>
+      <DialogContent>{renderContent()}</DialogContent>
+      <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
         <Button
           color="primary"
-          outline
+          variant="outlined"
           onClick={toggle}
           style={{
             width: "100%"
@@ -56,8 +61,8 @@ const BucketCodeModal = ({
         >
           Chiudi
         </Button>
-      </ModalFooter>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 

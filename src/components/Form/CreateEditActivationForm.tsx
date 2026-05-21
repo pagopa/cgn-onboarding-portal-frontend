@@ -1,9 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import z from "zod/v4";
 import { useMemo } from "react";
-import { Icon } from "design-react-kit";
 import { useFieldArray } from "@hookform/lenses/rhf";
-import { Button } from "design-react-kit";
+import { Button, Box, Typography } from "@mui/material";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { remoteData } from "../../api/common";
 import { ADMIN_PANEL_ACCESSI } from "../../navigation/routes";
@@ -137,7 +136,6 @@ const CreateEditActivationForm = () => {
             id="organizationName"
             formLens={form.lens.focus("organizationName")}
             type="text"
-            className="form-control"
           />
           <FormErrorMessage formLens={form.lens.focus("organizationName")} />
         </FormField>
@@ -147,7 +145,9 @@ const CreateEditActivationForm = () => {
           required
           description="La scelta non potrà essere modificata in seguito"
         >
-          <div className="form-check">
+          <Box
+            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+          >
             <Field
               id="entityTypePrivato"
               formLens={form.lens.focus("entityType")}
@@ -157,13 +157,15 @@ const CreateEditActivationForm = () => {
               disabled={!canChangeEntityType}
             />
             <label
-              className="text-sm fw-normal text-black form-label"
               htmlFor="entityTypePrivato"
+              style={{ marginLeft: 8, fontSize: "0.875rem" }}
             >
-              <span className="text-sm">Privato</span>
+              Privato
             </label>
-          </div>
-          <div className="form-check">
+          </Box>
+          <Box
+            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+          >
             <Field
               id="entityTypePubblico"
               formLens={form.lens.focus("entityType")}
@@ -173,12 +175,12 @@ const CreateEditActivationForm = () => {
               disabled={!canChangeEntityType}
             />
             <label
-              className="text-sm fw-normal text-black form-label"
               htmlFor="entityTypePubblico"
+              style={{ marginLeft: 8, fontSize: "0.875rem" }}
             >
-              <span className="text-sm">Pubblico</span>
+              Pubblico
             </label>
-          </div>
+          </Box>
           <FormErrorMessage formLens={form.lens.focus("entityType")} />
         </FormField>
         <FormField
@@ -192,19 +194,13 @@ const CreateEditActivationForm = () => {
             id="organizationFiscalCode"
             formLens={form.lens.focus("organizationFiscalCode")}
             type="text"
-            className="form-control"
           />
           <FormErrorMessage
             formLens={form.lens.focus("organizationFiscalCode")}
           />
         </FormField>
         <FormField htmlFor="pec" title="Indirizzo PEC" required>
-          <Field
-            id="pec"
-            formLens={form.lens.focus("pec")}
-            type="text"
-            className="form-control"
-          />
+          <Field id="pec" formLens={form.lens.focus("pec")} type="text" />
           <FormErrorMessage formLens={form.lens.focus("pec")} />
         </FormField>
       </FormSection>
@@ -224,56 +220,62 @@ const CreateEditActivationForm = () => {
                 title={`Codice fiscale utente ${i + 1}`}
                 required
               >
-                <div className="d-flex flex-row">
-                  <div className="col-10">
+                <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                  <Box sx={{ flexGrow: 1, maxWidth: "83.33%" }}>
                     <Field
                       id={`referents[${i}]`}
                       formLens={itemLens.focus("fiscalCode")}
                       type="text"
-                      className="form-control"
                     />
-                  </div>
+                  </Box>
                   {i !== 0 && (
                     <Button
-                      className="me-4"
-                      color="link"
-                      tag="button"
+                      sx={{ mr: 2 }}
+                      color="primary"
+                      variant="text"
+                      type="button"
                       onClick={() => referentsArray.remove(i)}
-                    >
-                      <Icon icon="it-delete" size="sm" color="danger" />
-                    </Button>
+                    ></Button>
                   )}
-                </div>
+                </Box>
                 <FormErrorMessage formLens={itemLens.focus("fiscalCode")} />
               </FormField>
             </div>
           ))}
-        <div
-          className="mt-8 cursor-pointer"
+        <Box
+          sx={{
+            mt: 4,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center"
+          }}
           onClick={() => referentsArray.append({ fiscalCode: "" })}
         >
-          <PlusCircleIcon className="me-2" />
-          <span className="text-base fw-semibold text-blue">Aggiungi</span>
-        </div>
-        <div className="d-flex mt-10 gap-4 flex-wrap">
+          <PlusCircleIcon style={{ marginRight: 8 }} />
+          <Typography
+            variant="body1"
+            sx={{ fontWeight: 600, color: "#0073E6" }}
+          >
+            Aggiungi
+          </Typography>
+        </Box>
+        <Box sx={{ display: "flex", mt: 5, gap: 2, flexWrap: "wrap" }}>
           <Button
-            className="px-14"
-            outline
-            color="primary"
-            tag="button"
+            variant="outlined"
+            sx={{ fontSize: "inherit", px: 7 }}
+            type="button"
             onClick={() => navigate(ADMIN_PANEL_ACCESSI)}
           >
             Indietro
           </Button>
           <AsyncButton
             type="submit"
-            className="px-14"
-            color="primary"
-            isPending={isMutating}
+            sx={{ fontSize: "inherit", px: 7 }}
+            loading={isMutating}
           >
             Salva
           </AsyncButton>
-        </div>
+        </Box>
       </FormSection>
     </form>
   );

@@ -1,5 +1,12 @@
 import { useState, useMemo, useCallback, Fragment } from "react";
-import { Button } from "design-react-kit";
+import {
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
+} from "@mui/material";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import { keepPreviousData } from "@tanstack/react-query";
@@ -226,7 +233,10 @@ const Requests = () => {
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
-    <section className="mt-2 px-8 py-10 bg-white">
+    <Box
+      component="section"
+      sx={{ mt: 1, px: 4, py: 5, backgroundColor: "white" }}
+    >
       <RequestFilter
         values={values}
         onChange={setValues}
@@ -251,63 +261,66 @@ const Requests = () => {
             pageArray={pageArray}
             total={agreements?.total}
           />
-          <div className="overflow-auto">
-            <table style={{ width: "100%" }} className="mt-2 bg-white">
+          <Box sx={{ overflowX: "auto" }}>
+            <Table sx={{ width: "100%" }}>
               <TableHeader headerGroups={table.getHeaderGroups()} />
-              <tbody>
+              <TableBody>
                 {table.getRowModel().rows.map(row => (
                   <Fragment key={row.id}>
-                    <tr
-                      className="cursor-pointer"
+                    <TableRow
                       onClick={() => row.toggleExpanded()}
+                      sx={{ cursor: "pointer" }}
                     >
                       {row.getVisibleCells().map((cell, i) => (
-                        <td
+                        <TableCell
                           key={cell.id}
-                          className={`
-                ${i === 0 ? "ps-6" : ""}
-                ${
-                  i === table.getHeaderGroups()[0].headers.length - 1
-                    ? "pe-6"
-                    : ""
-                }
-                px-3 py-2 border-bottom text-sm
-              `}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : {}
-                          }
+                          sx={{
+                            width:
+                              cell.column.id === "expander"
+                                ? "calc(32px + 0.75rem * 2)"
+                                : undefined,
+                            paddingTop: "0.5rem",
+                            paddingBottom: "0.5rem",
+                            paddingLeft: i === 0 ? "1.5rem" : "0.75rem",
+                            paddingRight:
+                              i ===
+                              table.getHeaderGroups()[0].headers.length - 1
+                                ? "1.5rem"
+                                : "0.75rem",
+                            borderBottom: "1px solid #D9E0E6",
+                            fontSize: "0.875rem"
+                          }}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
                           )}
-                        </td>
+                        </TableCell>
                       ))}
-                    </tr>
+                    </TableRow>
 
                     {row.getIsExpanded() && (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                        <td colSpan={table.getVisibleLeafColumns().length}>
+                      <TableRow>
+                        <TableCell
+                          colSpan={table.getVisibleLeafColumns().length}
+                        >
                           {renderRowSubComponent({ row })}
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     )}
                   </Fragment>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
+          </Box>
           {!agreements?.items.length &&
             (hasActiveFitlers ? (
-              <div className="m-8 d-flex flex-column align-items-center">
+              <div>
                 <p>Nessun risultato corrisponde alla tua ricerca</p>
                 <Button
                   color="primary"
-                  outline
-                  tag="button"
-                  className="mt-3"
+                  variant="outlined"
+                  type="button"
                   onClick={() => {
                     setValues(requestFilterFormInitialValues);
                   }}
@@ -316,13 +329,13 @@ const Requests = () => {
                 </Button>
               </div>
             ) : (
-              <div className="m-8 d-flex flex-column align-items-center">
+              <div>
                 <p>Nessuna richiesta da elaborare</p>
               </div>
             ))}
         </>
       )}
-    </section>
+    </Box>
   );
 };
 

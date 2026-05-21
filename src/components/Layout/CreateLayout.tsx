@@ -1,5 +1,10 @@
 import { ReactNode } from "react";
-import Container from "../Container/Container";
+import {
+  Box,
+  Grid,
+  Typography,
+  Container as MuiContainer
+} from "@mui/material";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import CgnLogo from "../Logo/CgnLogo";
 import Layout from "./Layout";
@@ -18,23 +23,36 @@ const CreateLayout = ({
   breadcrumbLink
 }: Props) => (
   <Layout>
-    <Container className="mt-20 mb-64">
-      <div className="col-10 offset-1">
+    <MuiContainer maxWidth="lg" sx={{ mt: 10, mb: 32 }}>
+      <Box sx={{ maxWidth: "83.33%", mx: "auto" }}>
         <Breadcrumb breadcrumbLink={breadcrumbLink}>
           {breadcrumbLabel}
         </Breadcrumb>
 
-        <div className="row">
-          <div className="col-9">
-            <h1 className="mt-4 h3 fw-bold text-dark-blue">{title}</h1>
-          </div>
-          <div className="col-3 d-flex justify-content-end">
+        <Grid container spacing={2} sx={{ mt: 2 }}>
+          <Grid item xs={12} sm={9}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", color: "#01254C", mt: 2 }}
+            >
+              {title}
+            </Typography>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={3}
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "flex-start", sm: "flex-end" }
+            }}
+          >
             <CgnLogo />
-          </div>
-        </div>
+          </Grid>
+        </Grid>
         {children}
-      </div>
-    </Container>
+      </Box>
+    </MuiContainer>
   </Layout>
 );
 

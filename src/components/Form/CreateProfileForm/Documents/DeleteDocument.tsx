@@ -1,6 +1,12 @@
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle
+} from "@mui/material";
 import { useState } from "react";
-import { Button, Icon } from "design-react-kit";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import AsyncButton from "../../../AsyncButton/AsyncButton";
 
 type Props = {
@@ -13,39 +19,41 @@ const DeleteDocument = ({ onDelete, isPending }: Props) => {
   return (
     <>
       <span
-        className="d-flex flex-row align-items-center cursor-pointer"
         onClick={() => toggle(true)}
+        style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
       >
-        <Icon icon="it-delete" size="sm" color="danger" />
-        <span className="text-sm text-danger">Elimina</span>
+        <DeleteIcon
+          sx={{ fontSize: "18px", color: "#d32f2f", marginRight: "4px" }}
+        />
+        <span>Elimina</span>
       </span>
-      <Modal isOpen={isOpen} toggle={() => toggle(false)} size="md">
-        <ModalHeader toggle={() => toggle(false)}>
-          Elimina documento
-        </ModalHeader>
-        <ModalBody>Sei sicuro di voler eliminare questo documento?</ModalBody>
-        <ModalFooter className="d-flex flex-column">
+      <Dialog open={isOpen} onClose={() => toggle(false)}>
+        <DialogTitle>Elimina documento</DialogTitle>
+        <DialogContent>
+          Sei sicuro di voler eliminare questo documento?
+        </DialogContent>
+        <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
           <AsyncButton
-            color="primary"
+            sx={{ fontSize: "inherit" }}
             onClick={() => {
               onDelete();
               toggle(false);
             }}
-            isPending={isPending}
-            fullwidth
+            loading={isPending}
+            fullWidth
           >
             Elimina
           </AsyncButton>
           <Button
-            color="primary"
-            outline
+            sx={{ fontSize: "inherit" }}
+            variant="outlined"
             onClick={() => toggle(false)}
-            style={{ width: "100%" }}
+            fullWidth
           >
             Annulla
           </Button>
-        </ModalFooter>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

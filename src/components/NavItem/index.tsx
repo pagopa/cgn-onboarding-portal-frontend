@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Button } from "@mui/material";
 
 const NavItem = ({
   children,
@@ -9,14 +10,16 @@ const NavItem = ({
   active: boolean;
   onClick: () => void;
 }) => (
-  <li className="nav-item">
-    <a
-      className={`nav-link ${active ? "active" : ""}`}
-      style={{ cursor: "pointer" }}
+  <li>
+    <Button
+      variant="text"
+      color={active ? "primary" : "inherit"}
+      sx={{ cursor: "pointer", fontWeight: active ? 700 : 400, minWidth: 0 }}
       onClick={onClick}
+      type="button"
     >
       {children}
-    </a>
+    </Button>
   </li>
 );
 export default NavItem;

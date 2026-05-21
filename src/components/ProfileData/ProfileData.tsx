@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Box, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { remoteData } from "../../api/common";
 import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
@@ -22,11 +23,11 @@ const ProfileData = () => {
   return (
     <>
       {profile && (
-        <section className="mt-2 px-8 py-10 bg-white">
-          <section>
-            <h2 className="h5 fw-bold text-dark-blue">Descrizione operatore</h2>
-            <table className="table">
-              <tbody>
+        <Box component="section" sx={{ backgroundColor: "white", p: 4, mt: 2 }}>
+          <Box component="section">
+            <h2>Descrizione operatore</h2>
+            <Table>
+              <TableBody>
                 {profile.name && (
                   <ProfileDataItem
                     label="Nome operatore visualizzato"
@@ -54,31 +55,27 @@ const ProfileData = () => {
                   label="Indirizzo"
                   value={profile.legalOffice}
                 />
-                <tr>
-                  <td className="px-0 border-bottom-0">Immagine operatore</td>
-                  <td className="text-gray border-bottom-0">
+                <TableRow>
+                  <TableCell>Immagine operatore</TableCell>
+                  <TableCell>
                     <img
                       src={`${getImage()}?${Date.now()}`}
+                      alt="Immagine operatore"
                       style={{
                         width: "170px",
                         height: "130px",
                         objectFit: "cover"
                       }}
                     />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
             {agreement.state === "ApprovedAgreement" && (
-              <Link
-                className="mt-8 btn btn-outline-primary"
-                to={EDIT_OPERATOR_DATA}
-              >
-                Modifica dati
-              </Link>
+              <Link to={EDIT_OPERATOR_DATA}>Modifica dati</Link>
             )}
-          </section>
-        </section>
+          </Box>
+        </Box>
       )}
     </>
   );

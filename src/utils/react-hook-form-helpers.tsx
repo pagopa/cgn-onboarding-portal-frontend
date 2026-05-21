@@ -6,6 +6,7 @@ import {
 } from "react";
 import { ControllerRenderProps, useController } from "react-hook-form";
 import { HookFormControlShim, Lens } from "@hookform/lenses";
+import { Typography } from "@mui/material";
 
 type RemovedProps = "name" | "value" | "required" | "onChange" | "onBlur";
 
@@ -134,6 +135,8 @@ export function FormErrorMessage<T>({ formLens }: { formLens: Lens<T> }) {
     (formLens as unknown as Lens<void>).interop()
   );
   return controller.fieldState.error ? (
-    <span className="text-red">{controller.fieldState.error.message}</span>
+    <Typography variant="caption" color="error">
+      {controller.fieldState.error.message}
+    </Typography>
   ) : null;
 }

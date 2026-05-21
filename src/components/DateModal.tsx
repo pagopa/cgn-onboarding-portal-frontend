@@ -1,8 +1,20 @@
-import { useState, forwardRef } from "react";
-import { Button, Icon } from "design-react-kit";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton
+} from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { format } from "date-fns";
-import DatePicker from "react-datepicker";
+import dayjs from "dayjs";
+import "dayjs/locale/it";
+import { useState } from "react";
 
 const DateModal = ({
   from: propDateFrom,
@@ -42,100 +54,76 @@ const DateModal = ({
     return label;
   };
 
-  const DatePickerInput = forwardRef(
-    (
-      fieldProps: { name: string; label: string },
-      ref: React.Ref<HTMLInputElement>
-    ) => (
-      <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
-        <input
-          {...fieldProps}
-          ref={ref}
-          className="form-control it-date-datepicker"
-          id={fieldProps.name}
-          type="text"
-          placeholder="gg/mm/aaaa"
-        />
-        <label htmlFor={fieldProps.name} className="form-label">
-          {fieldProps.label}
-        </label>
-      </div>
-    )
-  );
-
   return (
     <>
-      <div
-        className="chip chip-lg pe-3 m-1 cursor-pointer"
+      <Box
+        sx={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 1,
+          padding: "8px 12px",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          cursor: "pointer",
+          margin: "8px"
+        }}
         onClick={toggleDateModal}
       >
-        <span className="chip-label">
-          {getDateLabel(propDateFrom, propDateTo)}
-        </span>
+        <span>{getDateLabel(propDateFrom, propDateTo)}</span>
         {(propDateFrom || propDateTo) && (
-          <button
+          <IconButton
             onClick={e => {
               e.stopPropagation();
               onSubmit(undefined, undefined);
             }}
+            size="small"
           >
-            <Icon color="" icon="it-close" size="" />
-          </button>
+            <CloseIcon fontSize="small" />
+          </IconButton>
         )}
-      </div>
-
-      <Modal isOpen={showOpenDateModal} toggle={toggleDateModal}>
-        <ModalHeader toggle={toggleDateModal}>{title}</ModalHeader>
-        <ModalBody>
-          <div className="d-flex flex-column mt-4">
-            <div className="form-check">
-              <DatePicker
-                name="propDateFrom"
-                dateFormat="dd/MM/yyyy"
-                showYearDropdown
-                showMonthDropdown
-                selected={dateFrom}
-                onChange={val =>
-                  setDateFrom(
-                    val ? new Date(format(val, "yyyy-MM-dd")) : undefined
-                  )
+      </Box>
+      <Dialog
+        open={showOpenDateModal}
+        onClose={toggleDateModal}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent
+          sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}
+        >
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale="it-IT"
+          >
+            <DatePicker
+              label="A partire dal giorno"
+              value={dateFrom ? dayjs(dateFrom) : null}
+              onChange={value => setDateFrom(value?.toDate())}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  size: "small"
                 }
-                selectsStart
-                startDate={dateFrom}
-                endDate={dateTo}
-                customInput={
-                  <DatePickerInput
-                    name="propDateFrom"
-                    label="A partire dal giorno"
-                  />
+              }}
+            />
+            <DatePicker
+              label="Fino al giorno"
+              value={dateTo ? dayjs(dateTo) : null}
+              onChange={value => setDateTo(value?.toDate())}
+              minDate={dateFrom ? dayjs(dateFrom) : undefined}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  size: "small"
                 }
-              />
-            </div>
-            <div className="form-check">
-              <DatePicker
-                name="propDateTo"
-                dateFormat="dd/MM/yyyy"
-                showYearDropdown
-                showMonthDropdown
-                selected={dateTo}
-                onChange={val =>
-                  setDateTo(
-                    val ? new Date(format(val, "yyyy-MM-dd")) : undefined
-                  )
-                }
-                selectsEnd
-                startDate={dateFrom}
-                endDate={dateTo}
-                minDate={dateFrom}
-                customInput={
-                  <DatePickerInput name="propDateTo" label="Fino al giorno" />
-                }
-              />
-            </div>
-          </div>
-        </ModalBody>
-        <ModalFooter>
+              }}
+            />
+          </LocalizationProvider>
+        </DialogContent>
+        <DialogActions>
           <Button
+            variant="contained"
             color="primary"
             onClick={() => {
               onSubmit(dateFrom, dateTo);
@@ -144,8 +132,8 @@ const DateModal = ({
           >
             Ok
           </Button>
-        </ModalFooter>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

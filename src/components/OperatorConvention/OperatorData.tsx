@@ -9,7 +9,7 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
   const salesChannel = profile.salesChannel as BothChannels;
   return (
     <div>
-      <h5 className="mb-7 fw-bold">Profilo</h5>
+      <h5>Profilo</h5>
       {profile.name && (
         <Item label="Nome operatore visualizzato" value={profile.name} />
       )}
@@ -25,9 +25,9 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
           />
         );
       })}
-      <div className="row mb-5">
-        <div className="col-4 text-gray">Immagine operatore</div>
-        <div className="col-8">
+      <div>
+        <div>Immagine operatore</div>
+        <div>
           {profile.imageUrl ? (
             <img
               width="300"

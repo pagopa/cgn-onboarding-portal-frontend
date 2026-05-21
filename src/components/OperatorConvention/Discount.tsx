@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { useState } from "react";
-import { Button } from "design-react-kit";
+import { Button, Box, Grid, Typography } from "@mui/material";
 import { remoteData } from "../../api/common";
 import {
   ApprovedAgreementDiscount,
@@ -48,13 +48,18 @@ function Reject({
   isPending
 }: RejectProps) {
   return (
-    <div className="mt-10">
-      <h6 className="text-gray">Aggiungi commento</h6>
+    <Box sx={{ mt: 5 }}>
+      <Typography
+        variant="caption"
+        sx={{ color: "#5C6F82", display: "block", mb: 0.5 }}
+      >
+        Aggiungi commento
+      </Typography>
       <p>
         Inserisci il motivo per cui il test è da considerarsi fallito. Il
         commento sarà inviato all’operatore insieme all’esito.
       </p>
-      <div className="mb-12">
+      <Box sx={{ mb: 6 }}>
         <textarea
           id="rejectMessage"
           value={rejectMessage}
@@ -62,14 +67,13 @@ function Reject({
           rows={5}
           maxLength={250}
           placeholder="Inserisci commento"
-          className="form-control"
         />
-      </div>
+      </Box>
       <Button
         color="primary"
-        outline
-        className="ms-4"
-        tag="button"
+        variant="outlined"
+        sx={{ ml: 2 }}
+        type="button"
         onClick={() => {
           setRejectMode(false);
           setRejectMessage("");
@@ -79,14 +83,14 @@ function Reject({
       </Button>
       <AsyncButton
         color="primary"
-        className="ms-4"
+        sx={{ ml: 2 }}
         onClick={rejectTest}
         disabled={!rejectMessage.length}
-        isPending={isPending}
+        loading={isPending}
       >
         Invia esito
       </AsyncButton>
-    </div>
+    </Box>
   );
 }
 
@@ -99,26 +103,26 @@ function DiscountResultButtons({
 }: DiscountResultButtonsProps) {
   return (
     discount.state === "test_pending" && (
-      <div className="mt-5 d-flex">
+      <Box sx={{ mt: 2.5, display: "flex", gap: 1 }}>
         <Button
-          color="danger"
-          className="me-2"
-          outline
-          tag="button"
+          color="error"
+          sx={{ mr: 1 }}
+          variant="outlined"
+          type="button"
           onClick={() => setRejectMode(true)}
         >
           Test fallito
         </Button>
         <AsyncButton
           color="primary"
-          outline
+          variant="outlined"
           onClick={approveTest}
           disabled={rejectMode}
-          isPending={approveDiscountIsPending}
+          loading={approveDiscountIsPending}
         >
           Test riuscito
         </AsyncButton>
-      </div>
+      </Box>
     )
   );
 }
@@ -205,8 +209,18 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
   const { checkLanding } = getDiscountTypeChecks(profile);
 
   return (
-    <div>
-      <h5 className="mb-7 d-flex align-items-center fw-bold">Opportunità</h5>
+    <Box>
+      <Typography
+        variant="h6"
+        sx={{
+          mb: 3.5,
+          display: "flex",
+          alignItems: "center",
+          fontWeight: "bold"
+        }}
+      >
+        Opportunità
+      </Typography>
       <Item label="Nome opportunità" value={discount.name} />
       <Item label="Descrizione opportunità" value={discount.description} />
       <Item
@@ -225,15 +239,19 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
         label="Entità dello sconto"
         value={formatPercentage(discount.discount)}
       />
-      <div className="row mb-5">
-        <div className="col-4 text-gray">Categorie merceologiche</div>
-        <div className="col-8">
+      <Grid container spacing={2} sx={{ mb: 2.5 }}>
+        <Grid item xs={4}>
+          <Typography variant="body2" sx={{ color: "#5C6F82" }}>
+            Categorie merceologiche
+          </Typography>
+        </Grid>
+        <Grid item xs={8}>
           {makeProductCategoriesString(discount.productCategories).map(
             (productCategory, index) =>
               productCategory ? <p key={index}>{productCategory}</p> : null
           )}
-        </div>
-      </div>
+        </Grid>
+      </Grid>
       <Item label="Condizioni dell'opportunità" value={discount.condition} />
       {discount.discountUrl && !checkLanding && (
         <Item
@@ -249,23 +267,27 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         profile.salesChannel?.discountCodeType === "API" && (
-          <div className="row mb-5">
-            <div className="col-4 text-gray">
-              Per testare questa opportunità, contatta PagoPA
-            </div>
-          </div>
+          <Grid container spacing={2} sx={{ mb: 2.5 }}>
+            <Grid item xs={4}>
+              <Typography variant="body2" sx={{ color: "#5C6F82" }}>
+                Per testare questa opportunità, contatta PagoPA
+              </Typography>
+            </Grid>
+          </Grid>
         )
       }
       {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         profile.salesChannel?.discountCodeType === "LandingPage" && (
-          <div className="row mb-5">
-            <div className="text-gray">
-              Per testare questa opportunità, usa il Playground CGN presente in
-              app IO
-            </div>
-          </div>
+          <Grid container spacing={2} sx={{ mb: 2.5 }}>
+            <Grid item xs={12}>
+              <Typography variant="body2" sx={{ color: "#5C6F82" }}>
+                Per testare questa opportunità, usa il Playground CGN presente
+                in app IO
+              </Typography>
+            </Grid>
+          </Grid>
         )
       }
       {discount.staticCode && (
@@ -286,9 +308,9 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
             label="Lista di codici statici"
             value={
               <Button
-                tag="button"
+                type="button"
                 color="primary"
-                size="xs"
+                size="small"
                 onClick={toggleBucketModal}
               >
                 Mostra Codice
@@ -323,13 +345,18 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
         />
       )}
       {suspendMode ? (
-        <div className="mt-10">
-          <h6 className="text-gray">Aggiungi una nota</h6>
+        <Box sx={{ mt: 5 }}>
+          <Typography
+            variant="caption"
+            sx={{ color: "#5C6F82", display: "block", mb: 0.5 }}
+          >
+            Aggiungi una nota
+          </Typography>
           <p>
             Inserisci una nota di spiegazione riguardo al motivo per cui questa
             opportunità sarà sospesa. La nota sarà visibile all’operatore
           </p>
-          <div className="mb-12">
+          <Box sx={{ mb: 6 }}>
             <textarea
               id="rejectMessage"
               value={suspendMessage}
@@ -337,14 +364,13 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
               rows={5}
               maxLength={250}
               placeholder="Inserisci una descrizione"
-              className="form-control"
             />
-          </div>
+          </Box>
           <Button
             color="primary"
-            outline
-            className="ms-4"
-            tag="button"
+            variant="outlined"
+            sx={{ ml: 2 }}
+            type="button"
             onClick={() => {
               setSuspendMode(false);
               setSuspendMessage("");
@@ -354,26 +380,26 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
           </Button>
           <AsyncButton
             color="primary"
-            className="ms-4"
+            sx={{ ml: 2 }}
             onClick={suspendDiscount}
-            isPending={suspendDiscountMutation.isPending}
+            loading={suspendDiscountMutation.isPending}
             disabled={!suspendMessage.length}
           >
             Invia sospensione
           </AsyncButton>
-        </div>
+        </Box>
       ) : (
         !isSuspended &&
         discount.state === "published" && (
-          <div className="mt-5">
+          <Box sx={{ mt: 2.5 }}>
             <Button
-              tag="button"
+              type="button"
               color="primary"
               onClick={() => setSuspendMode(true)}
             >
               Sospendi opportunità
             </Button>
-          </div>
+          </Box>
         )
       )}
       <DiscountResultButtons
@@ -392,7 +418,7 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
           isPending={rejectDiscountMutation.isPending}
         />
       )}
-    </div>
+    </Box>
   );
 };
 

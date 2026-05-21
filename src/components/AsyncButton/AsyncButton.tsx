@@ -1,34 +1,44 @@
-import { Button as ButtonDesignKit, ButtonProps } from "design-react-kit";
+import {
+  Button as MuiButton,
+  ButtonProps,
+  Box,
+  CircularProgress
+} from "@mui/material";
 import { PropsWithChildren } from "react";
-import SmallSpinner from "../SmallSpinner/SmallSpinner";
 
 type Props = PropsWithChildren & {
-  isPending: boolean;
-  fullwidth?: boolean;
-} & ButtonProps;
+  loading?: boolean;
+  fullWidth?: boolean;
+} & Omit<ButtonProps, "fontSize">;
 
 const AsyncButton = ({
   children,
-  isPending,
-  fullwidth,
-  className,
+  loading = false,
+  fullWidth = false,
   disabled,
   ...rest
 }: Props) => {
-  const classNames = `${className} ${fullwidth ? "w-100" : ""}`.trim();
+  const isLoading = loading;
   return (
-    <ButtonDesignKit
+    <MuiButton
       type="submit"
-      className={classNames}
-      tag="button"
-      disabled={disabled || isPending}
+      variant="contained"
+      fullWidth={fullWidth}
+      disabled={disabled || isLoading}
       {...rest}
     >
-      <div className="d-flex align-items-center justify-content-center">
-        {isPending && <SmallSpinner />}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 1
+        }}
+      >
+        {isLoading && <CircularProgress size={20} color="inherit" />}
         {children}
-      </div>
-    </ButtonDesignKit>
+      </Box>
+    </MuiButton>
   );
 };
 

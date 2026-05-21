@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
-import { Button, Icon } from "design-react-kit";
+import { Button } from "@mui/material";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import DocumentIcon from "../../assets/icons/document.svg?react";
 import DocumentSuccess from "../../assets/icons/document-success.svg?react";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
@@ -28,12 +30,12 @@ const CheckedDocument = ({
       ? "Convenzione"
       : "Domanda di adesione alla CGN";
   return (
-    <div key={i} className="border-bottom py-5">
-      <div className="d-flex flex-row justify-content-between align-items-center">
+    <div key={i}>
+      <div>
         <div>
-          <div className="mb-3 text-gray">{label}</div>
-          <div className="d-flex flex-row align-items-center">
-            <DocumentSuccess className="me-4" />
+          <div>{label}</div>
+          <div>
+            <DocumentSuccess />
             <a href={doc.documentUrl} target="_blank" rel="noreferrer">
               {label.replace(" ", "_")}.pdf
             </a>
@@ -41,12 +43,9 @@ const CheckedDocument = ({
         </div>
 
         {assignedToMe && canBeDeleted && (
-          <span
-            className="d-flex flex-row align-items-center cursor-pointer"
-            onClick={() => deleteDocument(doc.documentType)}
-          >
-            <Icon icon="it-delete" size="sm" color="danger" />
-            <span className="text-sm text-danger">Elimina</span>
+          <span onClick={() => deleteDocument(doc.documentType)}>
+            <DeleteOutlineIcon fontSize="small" color="error" />
+            <span>Elimina</span>
           </span>
         )}
       </div>
@@ -73,12 +72,12 @@ const UncheckedDocument = ({
       ? "Convenzione"
       : "Domanda di adesione alla CGN";
   return (
-    <div key={i} className="border-bottom py-5">
-      <div className="d-flex flex-row justify-content-between align-items-center">
+    <div key={i}>
+      <div>
         <div>
-          <div className="mb-3 text-gray">{label}</div>
-          <div className="d-flex flex-row align-items-center">
-            <DocumentIcon className="me-4" />
+          <div>{label}</div>
+          <div>
+            <DocumentIcon />
             <a href={doc.documentUrl} target="_blank" rel="noreferrer">
               {label.replace(" ", "_")}.pdf
             </a>
@@ -86,20 +85,13 @@ const UncheckedDocument = ({
         </div>
         {assignedToMe && (
           <Button
+            variant="contained"
             color="primary"
-            icon
-            size="sm"
-            tag="button"
+            size="small"
             disabled={original.state === "PendingAgreement"}
             onClick={() => uploadInputRef.current?.click()}
+            startIcon={<FileUploadIcon />}
           >
-            <Icon
-              color="white"
-              icon="it-upload"
-              padding={false}
-              size="xs"
-              className="me-2"
-            />
             Carica controfirmato
           </Button>
         )}
@@ -172,7 +164,7 @@ const RequestDocuments = ({
 
   return (
     <>
-      <h1 className="h5 fw-bold text-dark-blue mb-5">Documenti</h1>
+      <h1>Documenti</h1>
       {isPending ? (
         <CenteredLoading />
       ) : (

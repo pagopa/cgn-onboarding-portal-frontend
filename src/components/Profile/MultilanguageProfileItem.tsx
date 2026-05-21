@@ -1,25 +1,23 @@
+import { TableCell, TableRow } from "@mui/material";
+
 type Props = {
-  className?: string;
   label: string;
   value: string | React.ReactNode;
   value_en: string | React.ReactNode;
 };
 
-const MultilanguageProfileItem = ({
-  className = "",
-  label,
-  value,
-  value_en
-}: Props) => (
-  <tr>
-    <td className={`${className} px-0 text-gray border-bottom-0`}>{label}</td>
-    <td className={`${className} border-bottom-0 text-base`}>
-      <p className="text-sm fw-normal text-gray mb-0">Italiano 🇮🇹</p>
+const MultilanguageProfileItem = ({ label, value, value_en }: Props) => (
+  <TableRow>
+    <TableCell sx={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}>
+      {label}
+    </TableCell>
+    <TableCell sx={{ borderBottom: "none", fontSize: "1rem" }}>
+      <p>Italiano 🇮🇹</p>
       {value}
-      <p className="text-sm fw-normal text-gray mb-0 mt-3">Inglese 🇬🇧</p>
+      <p>Inglese 🇬🇧</p>
       {value_en}
-    </td>
-  </tr>
+    </TableCell>
+  </TableRow>
 );
 
 export default MultilanguageProfileItem;

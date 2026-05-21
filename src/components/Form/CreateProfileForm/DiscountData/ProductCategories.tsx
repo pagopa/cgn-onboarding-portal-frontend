@@ -1,5 +1,4 @@
-import { FormGroup } from "design-react-kit";
-import { Label } from "reactstrap";
+import { FormControlLabel } from "@mui/material";
 import { Lens } from "@hookform/lenses";
 import { useWatch } from "react-hook-form";
 import { categoriesMap } from "../../../../utils/strings";
@@ -33,29 +32,35 @@ const ProductCategories = ({ index, formLens }: Props) => {
     <>
       {(Object.keys(categoriesMap) as Array<ProductCategory>).map(
         (categoryKey, i) => (
-          <FormGroup check tag="div" className="mt-4" key={i}>
-            <Field
-              id={`${name}.${categoryKey}`}
-              type="checkbox"
-              formLens={
-                formLens
-                  .focus("productCategories")
-                  .focus(categoryKey) as Lens<boolean>
-              }
-              disabled={
-                selectedCategoryCount >= MAX_SELECTABLE_CATEGORIES &&
-                !selectedCategories[categoryKey]
-              }
-            />
-            <Label check for={`${name}.${categoryKey}`} tag="label">
-              <span className="fw-bold">
-                {categoriesMap[categoryKey as ProductCategory].name}{" "}
-              </span>{" "}
-              <span className="fw-light text-secondary">
-                {categoriesMap[categoryKey as ProductCategory].description}
+          <FormControlLabel
+            key={i}
+            sx={{ mt: 0.5, alignItems: "flex-start" }}
+            control={
+              <Field
+                id={`${name}.${categoryKey}`}
+                type="checkbox"
+                formLens={
+                  formLens
+                    .focus("productCategories")
+                    .focus(categoryKey) as Lens<boolean>
+                }
+                disabled={
+                  selectedCategoryCount >= MAX_SELECTABLE_CATEGORIES &&
+                  !selectedCategories[categoryKey]
+                }
+              />
+            }
+            label={
+              <span>
+                <span>
+                  {categoriesMap[categoryKey as ProductCategory].name}{" "}
+                </span>
+                <span>
+                  {categoriesMap[categoryKey as ProductCategory].description}
+                </span>
               </span>
-            </Label>
-          </FormGroup>
+            }
+          />
         )
       )}
       <FormErrorMessage formLens={formLens.focus("productCategories")} />

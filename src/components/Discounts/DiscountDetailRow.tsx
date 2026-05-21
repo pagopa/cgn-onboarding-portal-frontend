@@ -1,8 +1,16 @@
 import { format } from "date-fns";
-import { Button, Icon } from "design-react-kit";
+import {
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
+} from "@mui/material";
 import { Fragment, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Row } from "@tanstack/react-table";
+import RestoreIcon from "@mui/icons-material/Restore";
 import {
   Agreement,
   BucketCodeLoadStatus,
@@ -70,34 +78,35 @@ const DiscountDetailRow = ({
   );
 
   const getDiscountButtons = (row: Row<Discount>) => (
-    <div className={"mt-10 d-flex flex-row justify-content-end"}>
+    <Box
+      sx={{
+        mt: 5,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-end"
+      }}
+    >
       <AsyncButton
-        color="danger"
-        className="me-2 d-flex align-items-center"
-        outline
-        icon
-        isPending={isPendingDelete}
+        color="error"
+        sx={{ mr: 1, display: "flex", alignItems: "center" }}
+        variant="outlined"
+        loading={isPendingDelete}
         onClick={onDelete}
       >
         <TrashIcon fill={"#CC334D"} />
         Elimina
       </AsyncButton>
       <Button
-        className="me-2 d-flex align-items-center"
+        sx={{ mr: 1, display: "flex", alignItems: "center" }}
         color={"primary"}
-        outline
-        tag="button"
+        variant="outlined"
+        type="button"
         onClick={() => navigate(getEditDiscountRoute(row.original.id))}
       >
         {row.original.state !== "expired" ? (
           <EditIcon fill={"#0273E6"} />
         ) : (
-          <Icon
-            icon={"it-restore"}
-            padding={false}
-            size="sm"
-            color={"primary"}
-          />
+          <RestoreIcon sx={{ color: "#0273E6" }} />
         )}
         <span>
           {row.original.state !== "expired" ? "Modifica" : "Riattiva"}
@@ -108,12 +117,11 @@ const DiscountDetailRow = ({
           row.original.state === "test_failed" ||
           row.original.state === "draft") && (
           <AsyncButton
-            className="me-2 d-flex align-items-center"
-            color="primary"
-            outline
+            sx={{ mr: 1, display: "flex", alignItems: "center" }}
+            variant="outlined"
             disabled={row.original.state === "test_pending"}
             onClick={onTest}
-            isPending={isPendingTest}
+            loading={isPendingTest}
           >
             <TestIcon fill="#0273E6" />
             <span>Richiedi test</span>
@@ -123,32 +131,30 @@ const DiscountDetailRow = ({
         row.original.state !== "suspended" &&
         row.original.state !== "expired" && (
           <AsyncButton
-            className="me-2"
-            color="primary"
+            sx={{ mr: 1 }}
             onClick={onPublish}
             disabled={!canPublishAfterTest || maxPublishedDiscountsReached}
-            isPending={isPendingPublish}
+            loading={isPendingPublish}
           >
             <span>Pubblica</span>
           </AsyncButton>
         )}
       {row.original.state === "published" && (
         <AsyncButton
-          className="me-2"
-          color="primary"
+          sx={{ mr: 1 }}
           onClick={onUnpublish}
-          isPending={isPendingUnpublish}
+          loading={isPendingUnpublish}
         >
           <span>Torna in bozza</span>
         </AsyncButton>
       )}
-    </div>
+    </Box>
   );
 
   const { checkLanding } = getDiscountTypeChecks(profile);
 
   return (
-    <section className="px-6 py-4 bg-white">
+    <section style={{ backgroundColor: "white", padding: "1.5rem" }}>
       {row.original.state === "test_failed" && (
         <Callout
           type={"danger"}
@@ -165,7 +171,6 @@ const DiscountDetailRow = ({
               <div>{row.original.suspendedReasonMessage}</div>
               <div>
                 <button
-                  className="btn btn-link fw-bold p-0 my-2"
                   onClick={() => {
                     navigate(getEditDiscountRoute(row.original.id));
                   }}
@@ -187,9 +192,9 @@ const DiscountDetailRow = ({
             onPollingComplete={() => setCanBePublished(true)}
           />
         )}
-      <h1 className="h5 fw-bold text-dark-blue">Dettagli</h1>
-      <table className="table">
-        <tbody>
+      <h1>Dettagli</h1>
+      <Table>
+        <TableBody>
           <MultilanguageProfileItem
             label="Nome opportunità"
             value={row.original.name}
@@ -202,14 +207,16 @@ const DiscountDetailRow = ({
               value_en={row.original.description_en}
             />
           )}
-          <tr>
-            <td className={`px-0 text-gray border-bottom-0`}>
+          <TableRow>
+            <TableCell
+              sx={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}
+            >
               Stato opportunità
-            </td>
-            <td className={`border-bottom-0`}>
+            </TableCell>
+            <TableCell sx={{ borderBottom: "none" }}>
               <DiscountComponent discountState={row.original.state} />
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
           <ProfileItem
             label="Data d'inizio opportunità"
             value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
@@ -222,17 +229,19 @@ const DiscountDetailRow = ({
             label="Entità dello sconto"
             value={formatPercentage(row.original.discount)}
           />
-          <tr>
-            <td className={`px-0 text-gray border-bottom-0`}>
+          <TableRow>
+            <TableCell
+              sx={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}
+            >
               Categorie merceologiche
-            </td>
-            <td className={`border-bottom-0`}>
+            </TableCell>
+            <TableCell sx={{ borderBottom: "none" }}>
               {makeProductCategoriesString(row.original.productCategories).map(
                 (productCategory, index) =>
                   productCategory ? <p key={index}>{productCategory}</p> : null
               )}
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
           {row.original.condition && row.original.condition_en && (
             <MultilanguageProfileItem
               label="Condizioni dell'opportunità"
@@ -290,8 +299,8 @@ const DiscountDetailRow = ({
               }
             />
           )}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
     </section>
   );

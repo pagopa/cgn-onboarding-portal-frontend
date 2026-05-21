@@ -9,17 +9,17 @@ type Props = {
 };
 
 const ToggleField = ({ htmlFor, text, children }: Props) => (
-  <div className="d-flex justify-content-between align-items-center gap-2">
-    <div className="form-check mb-0">
-      <label htmlFor={htmlFor} className="form-label mb-0">
-        <span className="text-base fw-normal text-black">{text}</span>
+  <div>
+    <div>
+      <label htmlFor={htmlFor}>
+        <span>{text}</span>
       </label>
     </div>
-    <div className="form-check my-0">
-      <div className="toggles">
-        <label className="form-label mb-0" style={{ height: "min-content" }}>
+    <div>
+      <div>
+        <label style={{ height: "min-content" }}>
           {children}
-          <span className="lever mx-0 mt-2"></span>
+          <span></span>
         </label>
       </div>
     </div>

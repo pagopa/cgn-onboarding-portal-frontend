@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Button } from "design-react-kit";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from "@mui/material";
 import { Agreement } from "../../api/generated_backoffice";
 import AsyncButton from "../AsyncButton/AsyncButton";
 
@@ -29,44 +34,46 @@ const AssignRequest = ({
       {!assignedToMe && (
         <AsyncButton
           color="primary"
-          className="ms-4"
           onClick={checkAssign()}
-          isPending={isPending}
+          loading={isPending}
         >
           Prendi in carico
         </AsyncButton>
       )}
-      <Modal isOpen={isOpen} toggle={() => toggleAssign(false)} size="md">
-        <ModalHeader toggle={() => toggleAssign(false)}>
-          Prendi in carico
-        </ModalHeader>
-        <ModalBody>
+      <Dialog
+        open={isOpen}
+        onClose={() => toggleAssign(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Prendi in carico</DialogTitle>
+        <DialogContent>
           Qualcun altro ha già preso in carico questa richiesta. Vuoi
           continuare?
-        </ModalBody>
-        <ModalFooter className="d-flex flex-column">
+        </DialogContent>
+        <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
           <AsyncButton
             color="primary"
             onClick={() => {
               assignAgreements();
               toggleAssign(false);
             }}
-            isPending={isPending}
-            fullwidth
+            loading={isPending}
+            fullWidth
           >
             Conferma
           </AsyncButton>
           <Button
             color="primary"
-            outline
-            tag="button"
+            variant="outlined"
+            type="button"
             onClick={() => toggleAssign(false)}
-            className="w-100"
+            fullWidth
           >
             Annulla
           </Button>
-        </ModalFooter>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

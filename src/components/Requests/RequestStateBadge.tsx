@@ -1,38 +1,28 @@
-import { Badge } from "design-react-kit";
+import { Chip } from "@mui/material";
 import { AgreementState } from "../../api/generated_backoffice";
 
 const RequestStateBadge = (state: AgreementState) => {
   switch (state) {
     case "PendingAgreement":
       return (
-        <Badge
-          className="fw-normal"
-          color="#FFFFFF"
-          style={{
-            backgroundColor: "#FFFFFF",
+        <Chip
+          label="Da valutare"
+          size="small"
+          variant="outlined"
+          sx={{
             color: "#0073E6",
-            border: "1px solid #0073E6"
+            borderColor: "#0073E6",
+            backgroundColor: "white"
           }}
-          pill
-          tag="span"
-        >
-          Da valutare
-        </Badge>
+        />
       );
     case "AssignedAgreement":
       return (
-        <Badge
-          className="fw-normal"
-          pill
-          tag="span"
-          color="#EA7614"
-          style={{
-            backgroundColor: "#EA7614",
-            color: "white"
-          }}
-        >
-          In valutazione
-        </Badge>
+        <Chip
+          label="In valutazione"
+          size="small"
+          sx={{ backgroundColor: "#EA7614", color: "white" }}
+        />
       );
   }
 };

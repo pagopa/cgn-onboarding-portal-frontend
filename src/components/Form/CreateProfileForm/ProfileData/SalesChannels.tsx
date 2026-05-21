@@ -91,27 +91,25 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
             <div>
               {allNationalAddresses === false && (
                 <>
-                  <div className="mt-6 row">
-                    <div className="col-6">
+                  <div>
+                    <div>
                       <InputFieldMultiple htmlFor="street" title="Indirizzo">
                         <Field
                           id="street"
                           formLens={itemLens.focus("street")}
                           type="text"
                           placeholder="Inserisci l'indirizzo"
-                          className="form-control"
                         />
                         <FormErrorMessage formLens={itemLens.focus("street")} />
                       </InputFieldMultiple>
                     </div>
-                    <div className="col-6">
+                    <div>
                       <InputFieldMultiple htmlFor="zipCode" title="CAP">
                         <Field
                           id="zipCode"
                           formLens={itemLens.focus("zipCode")}
                           type="text"
                           placeholder="Inserisci il CAP"
-                          className="form-control"
                         />
                         <FormErrorMessage
                           formLens={itemLens.focus("zipCode")}
@@ -119,20 +117,19 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
                       </InputFieldMultiple>
                     </div>
                   </div>
-                  <div className="mt-6 row">
-                    <div className="col-6">
+                  <div>
+                    <div>
                       <InputFieldMultiple htmlFor="city" title="Città">
                         <Field
                           id="city"
                           formLens={itemLens.focus("city")}
                           type="text"
                           placeholder="Inserisci la città"
-                          className="form-control"
                         />
                         <FormErrorMessage formLens={itemLens.focus("city")} />
                       </InputFieldMultiple>
                     </div>
-                    <div className="col-6">
+                    <div>
                       <InputFieldMultiple htmlFor="district" title="Provincia">
                         <Field
                           maxLength={2}
@@ -140,7 +137,6 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
                           formLens={itemLens.focus("district")}
                           type="text"
                           placeholder="Inserisci la provincia"
-                          className="form-control"
                         />
                         <FormErrorMessage
                           formLens={itemLens.focus("district")}
@@ -154,7 +150,6 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
                 <>
                   {allNationalAddresses === false && (
                     <div
-                      className="mt-8 cursor-pointer"
                       onClick={() =>
                         addressesArray.append({
                           street: "",
@@ -164,10 +159,8 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
                         })
                       }
                     >
-                      <PlusCircleIcon className="me-2" />
-                      <span className="text-base fw-semibold text-blue">
-                        Aggiungi un indirizzo
-                      </span>
+                      <PlusCircleIcon />
+                      <span>Aggiungi un indirizzo</span>
                     </div>
                   )}
                 </>
@@ -194,7 +187,6 @@ const SalesChannels = ({ formLens, entityType, children }: Props) => {
           formLens={formLens.focus("websiteUrl")}
           type="text"
           placeholder="Inserisci un sito web (completo di protocollo https)"
-          className="form-control"
         />
         <FormErrorMessage formLens={formLens.focus("websiteUrl")} />
         {children}

@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Box, Typography } from "@mui/material";
 import VisibleIcon from "../../assets/icons/visible.svg?react";
 
 type Props = {
@@ -20,34 +21,37 @@ const FormField = ({
   required = false,
   isVisible = false
 }: Props) => (
-  <div className={isTitleHeading ? "mt-10" : "mt-6"}>
-    <div>
-      <label htmlFor={htmlFor} className="form-label">
-        <span className="d-flex flex-row align-items-center">
-          <span
-            className={
-              isTitleHeading
-                ? "h4 fw-bold text-dark-blue me-4"
-                : "text-base fw-bold me-4"
-            }
+  <Box sx={{ mt: isTitleHeading ? 5 : 3 }}>
+    <Box>
+      <label htmlFor={htmlFor}>
+        <Box
+          component="span"
+          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+        >
+          <Typography
+            component="span"
+            variant={isTitleHeading ? "h5" : "body1"}
+            sx={{ fontWeight: 700, color: "#01254C" }}
           >
             {title}
             {required && "*"}
-          </span>
+          </Typography>
           {isVisible && (
-            <div>
+            <Box component="span" sx={{ display: "inline-flex" }}>
               <VisibleIcon />
-            </div>
+            </Box>
           )}
-        </span>
+        </Box>
 
         {description && (
-          <p className="mt-2 text-sm fw-normal text-black">{description}</p>
+          <Typography variant="body2" sx={{ mt: 1, color: "#5C6F82" }}>
+            {description}
+          </Typography>
         )}
       </label>
       {children}
-    </div>
-  </div>
+    </Box>
+  </Box>
 );
 
 export default FormField;

@@ -40,25 +40,15 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
         isVisible
         required
       >
-        <div className="row">
-          <div className="col-6">
-            <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
-            <Field
-              id="name"
-              formLens={formLens.focus("name")}
-              type="text"
-              className="form-control"
-            />
+        <div>
+          <div>
+            <p>Italiano 🇮🇹</p>
+            <Field id="name" formLens={formLens.focus("name")} type="text" />
             <FormErrorMessage formLens={formLens.focus("name")} />
           </div>
-          <div className="col-6">
-            <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
-            <Field
-              id="name"
-              formLens={formLens.focus("name_en")}
-              type="text"
-              className="form-control"
-            />
+          <div>
+            <p>Inglese 🇬🇧</p>
+            <Field id="name" formLens={formLens.focus("name_en")} type="text" />
             <FormErrorMessage formLens={formLens.focus("name_en")} />
           </div>
         </div>
@@ -69,28 +59,26 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
         description="Se necessario, inserisci una descrizione più approfondita dell’opportunità - Max 250 caratteri"
         isVisible
       >
-        <div className="row">
-          <div className="col-6">
-            <p className="text-sm fw-normal text-black mb-0">Italiano 🇮🇹</p>
+        <div>
+          <div>
+            <p>Italiano 🇮🇹</p>
             <Field
               element="textarea"
               id="description"
               formLens={formLens.focus("description")}
               placeholder="Es. Sconto valido per l’acquisto di due ingressi per la stagione di prosa 2021/2022 presso il Teatro Comunale"
               rows={4}
-              className="form-control"
             />
             <FormErrorMessage formLens={formLens.focus("description")} />
           </div>
-          <div className="col-6">
-            <p className="text-sm fw-normal text-black mb-0">Inglese 🇬🇧</p>
+          <div>
+            <p>Inglese 🇬🇧</p>
             <Field
               element="textarea"
               id="description_en"
               formLens={formLens.focus("description_en")}
               placeholder="Ex. Discount valid for the purchase of two tickets for the 2021/2022 prose season at the Municipal Theatre"
               rows={4}
-              className="form-control"
             />
             <FormErrorMessage formLens={formLens.focus("description_en")} />
           </div>
@@ -103,13 +91,12 @@ const DiscountInfo = ({ profile, formLens, index }: Props) => {
         description="Se l’opportunità lo prevede, inserire la percentuale (%) di sconto erogata"
         isVisible
       >
-        <div className="input-group col-4 p-0">
-          <div className="input-group-text">%</div>
+        <div>
+          <div>%</div>
           <Field
             type="text"
             id="discount"
             formLens={formLens.focus("discount")}
-            className="form-control"
           />
         </div>
         <FormErrorMessage formLens={formLens.focus("discount")} />

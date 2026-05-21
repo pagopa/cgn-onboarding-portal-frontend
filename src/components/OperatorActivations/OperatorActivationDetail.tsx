@@ -1,7 +1,14 @@
 import { format } from "date-fns";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "design-react-kit";
+import {
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
+} from "@mui/material";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
 import { remoteData } from "../../api/common";
@@ -42,9 +49,9 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
   };
 
   return (
-    <section className="px-6 py-4 bg-white">
-      <table className="table">
-        <tbody>
+    <section style={{ backgroundColor: "white", padding: "1.5rem" }}>
+      <Table>
+        <TableBody>
           <ProfileItem
             label="Ragione sociale operatore"
             value={operator.organizationName}
@@ -65,42 +72,42 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
               value={format(new Date(operator.insertedAt), "dd/MM/yyyy")}
             />
           )}
-          <tr>
-            <td className={`px-0 text-gray border-bottom-0`}>
+          <TableRow>
+            <TableCell
+              sx={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}
+            >
               Utenti Abilitati
-            </td>
-            <td className={`border-bottom-0`}>
-              {operator.referents.map((referent, index) => (
-                <div className="d-flex flex-row mb-3" key={index}>
-                  <p className="m-0 me-4">{referent}</p>
+            </TableCell>
+            <TableCell sx={{ borderBottom: "none" }}>
+              {operator.referents.map(referent => (
+                <div key={referent}>
+                  <p>{referent}</p>
                 </div>
               ))}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div className="mt-10 d-flex flex-row">
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <Box sx={{ display: "flex", gap: 1 }}>
         <AsyncButton
-          className="me-4 btn-sm"
-          color="danger"
-          outline
+          color="error"
+          variant="outlined"
           onClick={toggleModal}
-          isPending={deleteActivationMutation.isPending}
+          loading={deleteActivationMutation.isPending}
         >
           Rimuovi
         </AsyncButton>
         <Button
-          className="me-4 btn-sm"
           color="primary"
-          outline
-          tag="button"
+          variant="outlined"
+          type="button"
           onClick={() =>
             navigate(getEditOperatorRoute(operator.keyOrganizationFiscalCode))
           }
         >
           <span>Modifica</span>
         </Button>
-      </div>
+      </Box>
       <DeleteModal
         isOpen={isModalOpen}
         isPending={deleteActivationMutation.isPending}

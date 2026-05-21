@@ -1,6 +1,7 @@
 import React from "react";
-import { Icon } from "design-react-kit";
 import { Row } from "@tanstack/react-table";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 interface ExpanderCellProps<TData> {
   row: Row<TData>;
@@ -14,10 +15,11 @@ export function ExpanderCell<TData>({ row }: ExpanderCellProps<TData>) {
 
   return (
     <span role="button" style={{ cursor: "pointer" }} onClick={handleClick}>
-      <Icon
-        icon={row.getIsExpanded() ? "it-expand" : "it-collapse"}
-        color="primary"
-      />
+      {row.getIsExpanded() ? (
+        <ExpandLessIcon sx={{ fontSize: "inherit" }} />
+      ) : (
+        <ExpandMoreIcon sx={{ fontSize: "inherit" }} />
+      )}
     </span>
   );
 }

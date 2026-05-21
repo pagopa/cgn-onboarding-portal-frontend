@@ -1,4 +1,4 @@
-import { Button } from "design-react-kit";
+import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ADMIN_PANEL_ACCESSI_CREA } from "../../navigation/routes";
 import { ActivationsFilterFormValues } from "./OperatorActivations";
@@ -22,25 +22,17 @@ function ActivationsFilter({
 
   return (
     <form>
-      <div className="d-flex justify-content-between">
+      <div>
         {hasActiveFitlers ? (
-          <h2 className="h4 fw-bold text-dark-blue">
+          <h2>
             Risultati della ricerca
-            <span
-              className="primary-color ms-2 text-sm fw-regular cursor-pointer"
-              onClick={onReset}
-            >
-              Esci
-            </span>
+            <span onClick={onReset}>Esci</span>
           </h2>
         ) : (
-          <h2 className="h4 fw-bold text-dark-blue">Impostazioni di accesso</h2>
+          <h2>Impostazioni di accesso</h2>
         )}
 
-        <div
-          className="d-flex justify-content-end flex-grow-1 flex-wrap"
-          style={{ gap: "12px" }}
-        >
+        <div style={{ gap: "12px" }}>
           <input
             id="searchQuery"
             name="searchQuery"
@@ -57,9 +49,10 @@ function ActivationsFilter({
             style={{ maxWidth: "275px" }}
           />
           <Button
-            className="ms-5 btn-sm"
+            sx={{ ml: 2.5 }}
             color="primary"
-            tag="button"
+            size="small"
+            type="button"
             onClick={() => navigate(ADMIN_PANEL_ACCESSI_CREA)}
           >
             <span>Aggiungi operatore</span>

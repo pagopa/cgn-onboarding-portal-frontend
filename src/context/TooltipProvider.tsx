@@ -1,4 +1,5 @@
 import { ReactElement, useState, useRef, useCallback, useMemo } from "react";
+import { Alert, Box, Typography } from "@mui/material";
 import {
   ProviderProps,
   TooltipProviderState,
@@ -6,29 +7,31 @@ import {
   TooltipContext
 } from "./tooltip";
 
-export function TooltipProvider({ children }: ProviderProps): ReactElement {
-  const [open, openTooltip] = useState(false);
+export function TooltipProvider({
+  children
+}: Readonly<ProviderProps>): ReactElement {
+  const [open, setOpen] = useState(false);
   const [{ severity, text, title }, setTooltip] =
     useState<TooltipProviderState>(initialState);
 
   const timeoutRef = useRef<number>(null);
 
   const closeTooltip = (): void => {
-    openTooltip(false);
+    setOpen(false);
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
   };
 
   const triggerTooltip = useCallback((tooltip: TooltipProviderState): void => {
-    openTooltip(true);
+    setOpen(true);
     setTooltip(tooltip);
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
     timeoutRef.current = window.setTimeout(() => {
-      openTooltip(false);
+      setOpen(false);
     }, 5000);
   }, []);
 
@@ -38,23 +41,20 @@ export function TooltipProvider({ children }: ProviderProps): ReactElement {
     <TooltipContext.Provider value={contextValue}>
       {children}
       {open && (
-        <div className="fixed-bottom me-6" style={{ left: "auto" }}>
-          <div
-            className={`alert bg-white alert-dismissible alert-${severity} fade show`}
-            role="alert"
+        <Box sx={{ position: "fixed", bottom: 0, right: 24 }}>
+          <Alert
+            severity={severity as "success" | "error" | "warning" | "info"}
+            onClose={closeTooltip}
+            sx={{ backgroundColor: "white" }}
           >
-            {title && <h4 className="alert-heading">{title}</h4>}
-            <p>{text}</p>
-            <button
-              type="button"
-              className="close"
-              data-bs-dismiss="alert"
-              onClick={closeTooltip}
-            >
-              <span>&times;</span>
-            </button>
-          </div>
-        </div>
+            {title && (
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {title}
+              </Typography>
+            )}
+            <Typography variant="body2">{text}</Typography>
+          </Alert>
+        </Box>
       )}
     </TooltipContext.Provider>
   );
