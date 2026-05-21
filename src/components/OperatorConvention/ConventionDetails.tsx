@@ -1,6 +1,15 @@
 import { ReactNode, useState } from "react";
-import { Icon } from "design-react-kit";
+import CloseIcon from "@mui/icons-material/Close";
 import { format } from "date-fns";
+import {
+  Box,
+  Grid,
+  Typography,
+  List,
+  ListItemButton,
+  ListItemText,
+  IconButton
+} from "@mui/material";
 import { remoteData } from "../../api/common";
 import CenteredLoading from "../CenteredLoading/CenteredLoading";
 import {
@@ -21,15 +30,16 @@ const menuLink = (
   label: string,
   child?: ReactNode
 ) => (
-  <li className={`nav-item ${view.includes(viewKey) ? "active" : ""}`}>
-    <a
-      className={`nav-link ${view.includes(viewKey) ? "active" : ""} ${!child ? "cursor-pointer" : ""}`}
+  <Box>
+    <ListItemButton
+      selected={view.includes(viewKey)}
       onClick={() => !child && setView(viewKey)}
+      sx={{ cursor: child ? "default" : "pointer" }}
     >
-      <span>{label}</span>
-    </a>
+      <ListItemText primary={label} />
+    </ListItemButton>
     {child}
-  </li>
+  </Box>
 );
 
 const getView = (
@@ -53,12 +63,17 @@ const getView = (
         );
       } else {
         return (
-          <div>
-            <h5 className="mb-5 fw-bold">Opportunità</h5>
-            <p className="text-center text-gray">
+          <Box>
+            <Typography variant="h6" sx={{ mb: 2.5, fontWeight: "bold" }}>
+              Opportunità
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ textAlign: "center", color: "#5C6F82" }}
+            >
               Non è presente nessuna opportunità.
-            </p>
-          </div>
+            </Typography>
+          </Box>
         );
       }
     }
@@ -93,82 +108,98 @@ const ConventionDetails = ({
   });
 
   return isPending ? (
-    <div className="mt-2 px-8 py-10 bg-white">
+    <Box sx={{ mt: 1, px: 4, py: 5, backgroundColor: "white" }}>
       <CenteredLoading />
-    </div>
+    </Box>
   ) : (
-    <section>
-      <div className="d-flex align-items-center justify-content-between mt-2 px-8 py-10 bg-white">
-        <h4>{agreement.fullName}</h4>
-        <div>
-          <div className="mb-3 text-gray">Data convenzionamento</div>
-          <div>
+    <Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mt: 1,
+          px: 4,
+          py: 5,
+          backgroundColor: "white"
+        }}
+      >
+        <Typography variant="h6">{agreement.fullName}</Typography>
+        <Box>
+          <Typography
+            variant="caption"
+            sx={{ display: "block", color: "#5C6F82", mb: 0.5 }}
+          >
+            Data convenzionamento
+          </Typography>
+          <Typography variant="body2">
             {format(new Date(agreement.agreementStartDate), "dd/MM/yyyy")}
-          </div>
-        </div>
-        <div>
-          <div className="mb-3 text-gray">Data ultima modifica</div>
-          <div>
+          </Typography>
+        </Box>
+        <Box>
+          <Typography
+            variant="caption"
+            sx={{ display: "block", color: "#5C6F82", mb: 0.5 }}
+          >
+            Data ultima modifica
+          </Typography>
+          <Typography variant="body2">
             {format(new Date(agreement.agreementLastUpdateDate), "dd/MM/yyyy")}
-          </div>
-        </div>
-        <div onClick={onClose} className="cursor-pointer">
-          <Icon color="primary" icon="it-close" size="" />
-        </div>
-      </div>
-      <div className="d-flex mt-2">
-        <div className="col-4 p-0">
-          <div className="me-1 px-8 py-10 bg-white">
-            <nav className="navbar it-navscroll-wrapper navbar-expand-lg it-left-side">
-              <div className="menu-wrapper">
-                <div className="link-list-wrapper">
-                  <ul className="link-list">
-                    {menuLink(view, setView, "dati_operatore", "Profilo")}
-                    {menuLink(
-                      view,
-                      setView,
-                      "agevolazione",
-                      "Opportunità",
-                      details?.discounts?.length ? (
-                        <ul className="link-list">
-                          {details?.discounts?.map((d, i: number) => (
-                            <li
-                              className="nav-link d-flex flex-row align-items-center flex-nowrap ps-3"
-                              key={i}
-                            >
-                              <a
-                                className={`
-                                  nav-link primary-color cursor-pointer ${
-                                    view.includes(`agevolazione${i + 1}`)
-                                      ? "fw-bold"
-                                      : ""
-                                  }`}
-                                onClick={() => setView(`agevolazione${i + 1}`)}
-                              >
-                                {d.name}
-                              </a>
-                              <BadgeStatus discountState={d.state} />
-                            </li>
-                          ))}
-                        </ul>
-                      ) : null
-                    )}
-                    {menuLink(view, setView, "profilo", "Dati dell'ente")}
-                    {menuLink(view, setView, "referente", "Dati del referente")}
-                    {menuLink(view, setView, "documenti", "Documenti")}
-                  </ul>
-                </div>
-              </div>
-            </nav>
-          </div>
-        </div>
-        <div className="col-8 p-0">
-          <div className="ms-1 px-8 py-10 bg-white">
+          </Typography>
+        </Box>
+        <IconButton onClick={onClose} size="small">
+          <CloseIcon />
+        </IconButton>
+      </Box>
+      <Grid container spacing={1} sx={{ mt: 1 }}>
+        <Grid item xs={12} sm={4}>
+          <Box sx={{ mr: 0.5, px: 4, py: 5, backgroundColor: "white" }}>
+            <List>
+              {menuLink(view, setView, "dati_operatore", "Profilo")}
+              {menuLink(
+                view,
+                setView,
+                "agevolazione",
+                "Opportunità",
+                details?.discounts?.length ? (
+                  <List dense sx={{ pl: 2 }}>
+                    {details?.discounts?.map((d, i: number) => (
+                      <ListItemButton
+                        key={i}
+                        selected={view.includes(`agevolazione${i + 1}`)}
+                        onClick={() => setView(`agevolazione${i + 1}`)}
+                        sx={{ display: "flex", gap: 1, alignItems: "center" }}
+                      >
+                        <ListItemText
+                          primary={d.name}
+                          primaryTypographyProps={{
+                            sx: {
+                              color: "#0073E6",
+                              fontWeight: view.includes(`agevolazione${i + 1}`)
+                                ? "bold"
+                                : "normal"
+                            }
+                          }}
+                        />
+                        <BadgeStatus discountState={d.state} />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                ) : null
+              )}
+              {menuLink(view, setView, "profilo", "Dati dell'ente")}
+              {menuLink(view, setView, "referente", "Dati del referente")}
+              {menuLink(view, setView, "documenti", "Documenti")}
+            </List>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <Box sx={{ ml: 0.5, px: 4, py: 5, backgroundColor: "white" }}>
             {getView(details, view, () => refetch(), agreement)}
-          </div>
-        </div>
-      </div>
-    </section>
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

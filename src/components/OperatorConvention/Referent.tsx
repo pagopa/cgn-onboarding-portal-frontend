@@ -3,7 +3,7 @@ import Item from "./Item";
 
 const Referent = ({ referent }: { referent: ApprovedAgreementReferent }) => (
   <div>
-    <h5 className="mb-7 fw-bold">Dati del referente incaricato</h5>
+    <h5>Dati del referente incaricato</h5>
     <Item label="Nome" value={referent.firstName} />
     <Item label="Cognome" value={referent.lastName} />
     <Item label="Ruolo all’interno dell’ente" value={referent.role} />

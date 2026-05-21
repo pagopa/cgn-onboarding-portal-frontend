@@ -1,5 +1,5 @@
 import { useState, useMemo, Fragment } from "react";
-import { Badge, Button } from "design-react-kit";
+import { Button, Chip, Box, Typography } from "@mui/material";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
@@ -145,14 +145,12 @@ const OperatorActivations = () => {
       header: "STATO",
       enableSorting: false,
       cell: ({ getValue }) => (
-        <Badge
-          className="fw-semibold border border-primary text-bg-light text-primary"
-          pill
-          tag="span"
-          color="white"
-        >
-          {makeOrganizationStatusReadable(getValue())}
-        </Badge>
+        <Chip
+          label={makeOrganizationStatusReadable(getValue())}
+          size="small"
+          variant="outlined"
+          color="primary"
+        />
       )
     }),
 
@@ -207,7 +205,7 @@ const OperatorActivations = () => {
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
-    <section className="mt-2 px-8 py-10 bg-white">
+    <Box sx={{ mt: 1, px: 4, py: 5, backgroundColor: "white" }}>
       <ActivationsFilter
         values={values}
         onChange={setValues}
@@ -232,28 +230,38 @@ const OperatorActivations = () => {
             pageArray={pageArray}
             total={operators?.count}
           />
-          <div className="overflow-auto">
-            <table style={{ width: "100%" }} className="mt-2 bg-white">
+          <Box sx={{ overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                marginTop: "8px",
+                backgroundColor: "white"
+              }}
+            >
               <TableHeader headerGroups={table.getHeaderGroups()} />
 
               <tbody>
                 {table.getRowModel().rows.map(row => (
                   <Fragment key={row.id}>
                     <tr
-                      className="cursor-pointer"
+                      style={{ cursor: "pointer" }}
                       onClick={() => row.toggleExpanded()}
                     >
                       {row.getVisibleCells().map((cell, i, arr) => (
                         <td
                           key={cell.id}
-                          className={`${i === 0 ? "ps-6" : ""} ${
-                            i === arr.length - 1 ? "pe-6" : ""
-                          } px-3 py-2 border-bottom text-sm`}
-                          style={
-                            cell.column.id === "expander"
+                          style={{
+                            paddingLeft: i === 0 ? "24px" : "12px",
+                            paddingRight:
+                              i === arr.length - 1 ? "24px" : "12px",
+                            paddingTop: "8px",
+                            paddingBottom: "8px",
+                            borderBottom: "1px solid rgba(224, 224, 224, 1)",
+                            fontSize: "0.875rem",
+                            ...(cell.column.id === "expander"
                               ? { width: "calc(32px + 0.75rem * 2)" }
-                              : undefined
-                          }
+                              : {})
+                          }}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -264,7 +272,13 @@ const OperatorActivations = () => {
                     </tr>
 
                     {row.getIsExpanded() && (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                      <tr
+                        style={{
+                          fontSize: "0.875rem",
+                          fontWeight: "normal",
+                          color: "black"
+                        }}
+                      >
                         <td colSpan={table.getVisibleLeafColumns().length}>
                           <OperatorActivationDetail
                             operator={row.original}
@@ -277,31 +291,49 @@ const OperatorActivations = () => {
                 ))}
               </tbody>
             </table>
-          </div>
+          </Box>
           {!operators?.items?.length &&
             (hasActiveFitlers ? (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessun risultato corrisponde alla tua ricerca</p>
+              <Box
+                sx={{
+                  m: 4,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center"
+                }}
+              >
+                <Typography variant="body2">
+                  Nessun risultato corrisponde alla tua ricerca
+                </Typography>
                 <Button
                   color="primary"
-                  outline
-                  tag="button"
-                  className="mt-3"
+                  variant="outlined"
+                  type="button"
+                  sx={{ mt: 1.5 }}
                   onClick={() => {
                     setValues(activationsFilterFormInitialValues);
                   }}
                 >
                   Reimposta Tutto
                 </Button>
-              </div>
+              </Box>
             ) : (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessun operatore trovato</p>
-              </div>
+              <Box
+                sx={{
+                  m: 4,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center"
+                }}
+              >
+                <Typography variant="body2">
+                  Nessun operatore trovato
+                </Typography>
+              </Box>
             ))}
         </>
       )}
-    </section>
+    </Box>
   );
 };
 
