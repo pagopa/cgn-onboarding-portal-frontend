@@ -1,3 +1,4 @@
+import { Box, Typography, TextField } from "@mui/material";
 import DateModal from "../DateModal";
 import StateModal from "./StateModal";
 import { RequestsFilterFormValues } from "./Requests";
@@ -18,27 +19,52 @@ function RequestsFilter({
   hasActiveFitlers: boolean;
 }) {
   return (
-    <form>
-      <div className="d-flex justify-content-between">
-        {hasActiveFitlers ? (
-          <h2 className="h4 fw-bold text-dark-blue">
-            Risultati della ricerca
-            <span
-              className="primary-color ms-2 text-sm fw-regular cursor-pointer"
+    <Box component="form">
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 2
+        }}
+      >
+        <Box>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", color: "#01254C" }}
+          >
+            {hasActiveFitlers
+              ? "Risultati della ricerca"
+              : "Richieste di convenzione"}
+          </Typography>
+          {hasActiveFitlers && (
+            <Typography
+              variant="caption"
+              sx={{
+                color: "#0073E6",
+                fontWeight: 500,
+                cursor: "pointer",
+                ml: 1
+              }}
               onClick={() => {
                 onReset();
               }}
             >
               Esci
-            </span>
-          </h2>
-        ) : (
-          <h2 className="h4 fw-bold text-dark-blue">
-            Richieste di convenzione
-          </h2>
-        )}
+            </Typography>
+          )}
+        </Box>
 
-        <div className="d-flex justify-content-end flex-grow-1 flex-wrap">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: 2,
+            flexGrow: 1,
+            flexWrap: "wrap"
+          }}
+        >
           <DateModal
             label="Data"
             title="Filtra per data"
@@ -63,7 +89,7 @@ function RequestsFilter({
             }}
           />
 
-          <input
+          <TextField
             id="profileFullName"
             name="profileFullName"
             type="text"
@@ -76,11 +102,12 @@ function RequestsFilter({
                 profileFullName
               }));
             }}
-            style={{ maxWidth: "275px" }}
+            size="small"
+            sx={{ maxWidth: "275px" }}
           />
-        </div>
-      </div>
-    </form>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
