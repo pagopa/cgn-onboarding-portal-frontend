@@ -1,12 +1,14 @@
+import { TableCell, TableRow } from "@mui/material";
+
 type Props = {
   label: string;
   value: string | React.ReactNode;
 };
 
 const ProfileItem = ({ label, value }: Props) => (
-  <tr>
-    <td
-      style={{
+  <TableRow>
+    <TableCell
+      sx={{
         width: "400px",
         paddingLeft: 0,
         color: "#5C6F82",
@@ -14,9 +16,9 @@ const ProfileItem = ({ label, value }: Props) => (
       }}
     >
       {label}
-    </td>
-    <td
-      style={{
+    </TableCell>
+    <TableCell
+      sx={{
         maxWidth: "250px",
         whiteSpace: "nowrap",
         overflow: "hidden",
@@ -25,8 +27,8 @@ const ProfileItem = ({ label, value }: Props) => (
       }}
     >
       {value}
-    </td>
-  </tr>
+    </TableCell>
+  </TableRow>
 );
 
 export default ProfileItem;

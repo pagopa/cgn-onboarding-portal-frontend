@@ -1,81 +1,75 @@
 import { JSX } from "react";
 import { flexRender, HeaderGroup } from "@tanstack/react-table";
-import { Icon } from "design-react-kit";
+import { Box, TableCell, TableHead, TableRow } from "@mui/material";
+import ArrowUpIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownIcon from "@mui/icons-material/ArrowDownward";
 
 type SortState = "asc" | "desc" | false;
 
 function TableHeader<D extends object>({
   headerGroups
-}: {
+}: Readonly<{
   headerGroups: Array<HeaderGroup<D>>;
-}) {
-  const getSortIcon = (sortState: SortState): JSX.Element => {
-    if (!sortState) {
-      return (
-        <div
-          style={{
-            display: "inline-flex",
-            flexDirection: "column",
-            lineHeight: 0.6,
-            position: "relative"
-          }}
-        >
-          <Icon
-            icon="it-arrow-up-triangle"
-            style={{
-              opacity: 0.3,
-              color: "#5C6F82",
-              position: "absolute",
-              bottom: "-18px"
-            }}
-          />
-          <Icon
-            icon="it-arrow-down-triangle"
-            style={{
-              opacity: 0.3,
-              color: "#5C6F82",
-              position: "absolute",
-              bottom: "-20px"
-            }}
-          />
-        </div>
-      );
-    }
-    return (
-      <Icon
-        icon={
-          sortState === "desc"
-            ? "it-arrow-down-triangle"
-            : "it-arrow-up-triangle"
-        }
-        style={{ color: "#5C6F82" }}
+}>) {
+  const getSortIcon = (sortState: SortState): JSX.Element => (
+    <Box
+      sx={{
+        display: "inline-flex",
+        flexDirection: "column",
+        lineHeight: 0.6,
+        position: "relative"
+      }}
+    >
+      <ArrowUpIcon
+        sx={{
+          opacity: sortState ? 1 : 0.3,
+          color: "#5C6F82",
+          position: "absolute",
+          bottom: "-18px",
+          fontSize: "16px"
+        }}
       />
-    );
-  };
+      <ArrowDownIcon
+        sx={{
+          opacity: sortState ? 1 : 0.3,
+          color: "#5C6F82",
+          position: "absolute",
+          bottom: "-20px",
+          fontSize: "16px"
+        }}
+      />
+    </Box>
+  );
 
   return (
-    <thead>
+    <TableHead>
       {headerGroups.map(headerGroup => (
-        <tr
+        <TableRow
           key={headerGroup.id}
-          style={{
+          sx={{
             backgroundColor: "#F8F9F9",
             borderBottom: "1px solid #5A6772"
           }}
         >
           {headerGroup.headers.map((header, j) => (
-            <th
+            <TableCell
               key={header.id}
               onClick={header.column.getToggleSortingHandler()}
-              className={`
-                ${j === 0 ? "ps-6" : ""}
-                ${j === headerGroup.headers.length - 1 ? "pe-6" : ""}
-                px-3 py-2 fw-bold text-gray
-                text-uppercase text-nowrap
-                align-middle
-                ${header.column.getCanSort() ? "cursor-pointer" : ""}
-              `}
-              style={{ fontSize: "0.75rem" }}
+              sx={{
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                color: "#5C6F82",
+                textTransform: "uppercase",
+                whiteSpace: "nowrap",
+                verticalAlign: "middle",
+                cursor: header.column.getCanSort() ? "pointer" : "default",
+                paddingTop: "0.5rem",
+                paddingBottom: "0.5rem",
+                paddingLeft: j === 0 ? "1.5rem" : "0.75rem",
+                paddingRight:
+                  j === headerGroup.headers.length - 1 ? "1.5rem" : "0.75rem",
+                borderBottom: "none"
+              }}
             >
               {flexRender(header.column.columnDef.header, header.getContext())}
 
@@ -92,11 +86,11 @@ function TableHeader<D extends object>({
                   </div>
                 </span>
               )}
-            </th>
+            </TableCell>
           ))}
-        </tr>
+        </TableRow>
       ))}
-    </thead>
+    </TableHead>
   );
 }
 

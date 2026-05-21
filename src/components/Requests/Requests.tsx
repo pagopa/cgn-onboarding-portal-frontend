@@ -1,5 +1,12 @@
 import { useState, useMemo, useCallback, Fragment } from "react";
-import { Box, Button } from "@mui/material";
+import {
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
+} from "@mui/material";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import { keepPreviousData } from "@tanstack/react-query";
@@ -254,17 +261,20 @@ const Requests = () => {
             pageArray={pageArray}
             total={agreements?.total}
           />
-          <div>
-            <table style={{ width: "100%" }}>
+          <Box sx={{ overflowX: "auto" }}>
+            <Table sx={{ width: "100%" }}>
               <TableHeader headerGroups={table.getHeaderGroups()} />
-              <tbody>
+              <TableBody>
                 {table.getRowModel().rows.map(row => (
                   <Fragment key={row.id}>
-                    <tr onClick={() => row.toggleExpanded()}>
+                    <TableRow
+                      onClick={() => row.toggleExpanded()}
+                      sx={{ cursor: "pointer" }}
+                    >
                       {row.getVisibleCells().map((cell, i) => (
-                        <td
+                        <TableCell
                           key={cell.id}
-                          style={{
+                          sx={{
                             width:
                               cell.column.id === "expander"
                                 ? "calc(32px + 0.75rem * 2)"
@@ -285,22 +295,24 @@ const Requests = () => {
                             cell.column.columnDef.cell,
                             cell.getContext()
                           )}
-                        </td>
+                        </TableCell>
                       ))}
-                    </tr>
+                    </TableRow>
 
                     {row.getIsExpanded() && (
-                      <tr>
-                        <td colSpan={table.getVisibleLeafColumns().length}>
+                      <TableRow>
+                        <TableCell
+                          colSpan={table.getVisibleLeafColumns().length}
+                        >
                           {renderRowSubComponent({ row })}
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     )}
                   </Fragment>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
+          </Box>
           {!agreements?.items.length &&
             (hasActiveFitlers ? (
               <div>

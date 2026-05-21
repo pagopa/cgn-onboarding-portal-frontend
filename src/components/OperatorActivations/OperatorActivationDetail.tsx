@@ -1,7 +1,14 @@
 import { format } from "date-fns";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button } from "@mui/material";
+import {
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
+} from "@mui/material";
 import { OrganizationWithReferents } from "../../api/generated_backoffice";
 import ProfileItem from "../Profile/ProfileItem";
 import { remoteData } from "../../api/common";
@@ -43,8 +50,8 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
 
   return (
     <section style={{ backgroundColor: "white", padding: "1.5rem" }}>
-      <table>
-        <tbody>
+      <Table>
+        <TableBody>
           <ProfileItem
             label="Ragione sociale operatore"
             value={operator.organizationName}
@@ -65,22 +72,22 @@ const OperatorActivationDetail = ({ operator, getActivations }: Props) => {
               value={format(new Date(operator.insertedAt), "dd/MM/yyyy")}
             />
           )}
-          <tr>
-            <td
-              style={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}
+          <TableRow>
+            <TableCell
+              sx={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}
             >
               Utenti Abilitati
-            </td>
-            <td style={{ borderBottom: "none" }}>
-              {operator.referents.map((referent, index) => (
-                <div key={index}>
+            </TableCell>
+            <TableCell sx={{ borderBottom: "none" }}>
+              {operator.referents.map(referent => (
+                <div key={referent}>
                   <p>{referent}</p>
                 </div>
               ))}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
       <Box sx={{ display: "flex", gap: 1 }}>
         <AsyncButton
           color="error"

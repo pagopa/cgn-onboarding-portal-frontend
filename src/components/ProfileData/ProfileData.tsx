@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { remoteData } from "../../api/common";
 import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
@@ -26,8 +26,8 @@ const ProfileData = () => {
         <Box component="section" sx={{ backgroundColor: "white", p: 4, mt: 2 }}>
           <Box component="section">
             <h2>Descrizione operatore</h2>
-            <table>
-              <tbody>
+            <Table>
+              <TableBody>
                 {profile.name && (
                   <ProfileDataItem
                     label="Nome operatore visualizzato"
@@ -55,21 +55,22 @@ const ProfileData = () => {
                   label="Indirizzo"
                   value={profile.legalOffice}
                 />
-                <tr>
-                  <td>Immagine operatore</td>
-                  <td>
+                <TableRow>
+                  <TableCell>Immagine operatore</TableCell>
+                  <TableCell>
                     <img
                       src={`${getImage()}?${Date.now()}`}
+                      alt="Immagine operatore"
                       style={{
                         width: "170px",
                         height: "130px",
                         objectFit: "cover"
                       }}
                     />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
             {agreement.state === "ApprovedAgreement" && (
               <Link to={EDIT_OPERATOR_DATA}>Modifica dati</Link>
             )}

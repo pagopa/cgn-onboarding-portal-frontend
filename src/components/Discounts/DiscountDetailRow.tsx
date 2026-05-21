@@ -1,5 +1,12 @@
 import { format } from "date-fns";
-import { Box, Button } from "@mui/material";
+import {
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
+} from "@mui/material";
 import { Fragment, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Row } from "@tanstack/react-table";
@@ -186,8 +193,8 @@ const DiscountDetailRow = ({
           />
         )}
       <h1>Dettagli</h1>
-      <table>
-        <tbody>
+      <Table>
+        <TableBody>
           <MultilanguageProfileItem
             label="Nome opportunità"
             value={row.original.name}
@@ -200,16 +207,16 @@ const DiscountDetailRow = ({
               value_en={row.original.description_en}
             />
           )}
-          <tr>
-            <td
-              style={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}
+          <TableRow>
+            <TableCell
+              sx={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}
             >
               Stato opportunità
-            </td>
-            <td style={{ borderBottom: "none" }}>
+            </TableCell>
+            <TableCell sx={{ borderBottom: "none" }}>
               <DiscountComponent discountState={row.original.state} />
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
           <ProfileItem
             label="Data d'inizio opportunità"
             value={format(new Date(row.original.startDate), "dd/MM/yyyy")}
@@ -222,19 +229,19 @@ const DiscountDetailRow = ({
             label="Entità dello sconto"
             value={formatPercentage(row.original.discount)}
           />
-          <tr>
-            <td
-              style={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}
+          <TableRow>
+            <TableCell
+              sx={{ paddingLeft: 0, color: "#5C6F82", borderBottom: "none" }}
             >
               Categorie merceologiche
-            </td>
-            <td style={{ borderBottom: "none" }}>
+            </TableCell>
+            <TableCell sx={{ borderBottom: "none" }}>
               {makeProductCategoriesString(row.original.productCategories).map(
                 (productCategory, index) =>
                   productCategory ? <p key={index}>{productCategory}</p> : null
               )}
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
           {row.original.condition && row.original.condition_en && (
             <MultilanguageProfileItem
               label="Condizioni dell'opportunità"
@@ -292,8 +299,8 @@ const DiscountDetailRow = ({
               }
             />
           )}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
     </section>
   );

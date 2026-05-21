@@ -1,5 +1,14 @@
 import { useState, useMemo, Fragment } from "react";
-import { Button, Chip, Box, Typography } from "@mui/material";
+import {
+  Button,
+  Chip,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography
+} from "@mui/material";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
@@ -231,8 +240,8 @@ const OperatorActivations = () => {
             total={operators?.count}
           />
           <Box sx={{ overflowX: "auto" }}>
-            <table
-              style={{
+            <Table
+              sx={{
                 width: "100%",
                 marginTop: "8px",
                 backgroundColor: "white"
@@ -240,17 +249,17 @@ const OperatorActivations = () => {
             >
               <TableHeader headerGroups={table.getHeaderGroups()} />
 
-              <tbody>
+              <TableBody>
                 {table.getRowModel().rows.map(row => (
                   <Fragment key={row.id}>
-                    <tr
-                      style={{ cursor: "pointer" }}
+                    <TableRow
+                      sx={{ cursor: "pointer" }}
                       onClick={() => row.toggleExpanded()}
                     >
                       {row.getVisibleCells().map((cell, i, arr) => (
-                        <td
+                        <TableCell
                           key={cell.id}
-                          style={{
+                          sx={{
                             paddingLeft: i === 0 ? "24px" : "12px",
                             paddingRight:
                               i === arr.length - 1 ? "24px" : "12px",
@@ -267,30 +276,32 @@ const OperatorActivations = () => {
                             cell.column.columnDef.cell,
                             cell.getContext()
                           )}
-                        </td>
+                        </TableCell>
                       ))}
-                    </tr>
+                    </TableRow>
 
                     {row.getIsExpanded() && (
-                      <tr
-                        style={{
+                      <TableRow
+                        sx={{
                           fontSize: "0.875rem",
                           fontWeight: "normal",
                           color: "black"
                         }}
                       >
-                        <td colSpan={table.getVisibleLeafColumns().length}>
+                        <TableCell
+                          colSpan={table.getVisibleLeafColumns().length}
+                        >
                           <OperatorActivationDetail
                             operator={row.original}
                             getActivations={() => refetch()}
                           />
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     )}
                   </Fragment>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </Box>
           {!operators?.items?.length &&
             (hasActiveFitlers ? (

@@ -1,5 +1,13 @@
 import { useMemo, useState } from "react";
-import { Button, Box, Typography } from "@mui/material";
+import {
+  Button,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography
+} from "@mui/material";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
@@ -231,8 +239,8 @@ const OperatorConvention = () => {
             total={conventions?.total}
           />
           <Box sx={{ overflowX: "auto" }}>
-            <table
-              style={{
+            <Table
+              sx={{
                 width: "100%",
                 marginTop: "8px",
                 backgroundColor: "white"
@@ -240,20 +248,20 @@ const OperatorConvention = () => {
             >
               <TableHeader headerGroups={table.getHeaderGroups()} />
 
-              <tbody>
+              <TableBody>
                 {table.getRowModel().rows.map(row => (
-                  <tr
+                  <TableRow
                     key={row.id}
-                    style={{ cursor: "pointer" }}
+                    sx={{ cursor: "pointer" }}
                     onClick={() => {
                       setShowDetails(true);
                       setSelectedConvention(row.original);
                     }}
                   >
                     {row.getVisibleCells().map((cell, i, arr) => (
-                      <td
+                      <TableCell
                         key={cell.id}
-                        style={{
+                        sx={{
                           paddingLeft: i === 0 ? "24px" : "12px",
                           paddingRight: i === arr.length - 1 ? "24px" : "12px",
                           paddingTop: "8px",
@@ -266,12 +274,12 @@ const OperatorConvention = () => {
                           cell.column.columnDef.cell,
                           cell.getContext()
                         )}
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </Box>
           {!conventions?.items.length &&
             (hasActiveFitlers ? (

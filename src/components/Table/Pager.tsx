@@ -1,4 +1,6 @@
-import { Icon } from "design-react-kit";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Box } from "@mui/material";
 
 type Props = {
   canPreviousPage: boolean;
@@ -14,28 +16,36 @@ type Props = {
 };
 
 const Pager = (props: Props) => (
-  <div className="mb-2 mt-4 d-flex justify-content-between">
+  <Box
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      py: 2
+    }}
+  >
     {!!props.total && (
-      <strong>
+      <strong style={{ fontSize: "0.95rem" }}>
         {props.startRowIndex}-{props.endRowIndex} di {props.total}
       </strong>
     )}
-    <div className="d-flex align-items-center">
+    <Box sx={{ display: "flex", alignItems: "center" }}>
       {props.canPreviousPage && (
-        <Icon
-          icon="it-arrow-left"
-          size="sm"
-          color="primary"
-          className="cursor-pointer mx-1"
+        <ArrowBackIcon
           onClick={() => props.onPreviousPage()}
+          sx={{ cursor: "pointer", mx: 1 }}
         />
       )}
       {props.pageArray.map(page => (
-        <div
-          className={`fw-bold mx-1 ${
-            page !== props.pageIndex ? "cursor-pointer primary-color" : ""
-          }`}
+        <Box
+          component="span"
           key={page}
+          sx={{
+            fontWeight: 700,
+            mx: 1,
+            cursor: page !== props.pageIndex ? "pointer" : "default",
+            color: page !== props.pageIndex ? "#0273E6" : "#17324D"
+          }}
           onClick={() => {
             if (page !== props.pageIndex) {
               props.onGotoPage(page);
@@ -43,19 +53,16 @@ const Pager = (props: Props) => (
           }}
         >
           {page + 1}
-        </div>
+        </Box>
       ))}
       {props.canNextPage && (
-        <Icon
-          icon="it-arrow-right"
-          size="sm"
-          color="primary"
-          className="cursor-pointer mx-1"
+        <ArrowForwardIcon
           onClick={() => props.onNextPage()}
+          sx={{ cursor: "pointer", mx: 1 }}
         />
       )}
-    </div>
-  </div>
+    </Box>
+  </Box>
 );
 
 export default Pager;

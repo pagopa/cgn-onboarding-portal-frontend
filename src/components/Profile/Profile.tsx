@@ -1,12 +1,8 @@
 import { Link } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, Table, TableBody } from "@mui/material";
 import { remoteData } from "../../api/common";
 import { EDIT_PROFILE } from "../../navigation/routes";
-import {
-  SalesChannelType,
-  type Profile,
-  type Referent
-} from "../../api/generated";
+import { SalesChannelType, type Referent } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { NormalizedSalesChannel } from "../../api/dtoTypeFixes";
 import { selectAgreement } from "../../store/agreement/selectors";
@@ -39,8 +35,8 @@ const Profile = () => {
         <Box component="section" sx={{ backgroundColor: "white", p: 4, mt: 2 }}>
           <Box component="section">
             <h2>Dati relativi all&apos;operatore</h2>
-            <table>
-              <tbody>
+            <Table>
+              <TableBody>
                 <ProfileItem
                   label="Ragione sociale operatore"
                   value={profile.fullName}
@@ -64,8 +60,8 @@ const Profile = () => {
                   label="Codice fiscale del Legale rappresentante"
                   value={profile.legalRepresentativeTaxCode}
                 />
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </Box>
           {[profile.referent, ...(profile.secondaryReferents ?? [])].map(
             (referent: Referent, index, array) => {
@@ -76,8 +72,8 @@ const Profile = () => {
               return (
                 <Box component="section" key={index} sx={{ mt: 3 }}>
                   <h2>{title}</h2>
-                  <table>
-                    <tbody>
+                  <Table>
+                    <TableBody>
                       <ProfileItem label="Nome" value={referent.firstName} />
                       <ProfileItem label="Cognome" value={referent.lastName} />
                       <ProfileItem
@@ -92,8 +88,8 @@ const Profile = () => {
                         label="Numero di telefono diretto"
                         value={referent.telephoneNumber}
                       />
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                   {index === array.length - 1 &&
                     agreement.state === "ApprovedAgreement" && (
                       <Link to={EDIT_PROFILE}>Modifica dati</Link>
