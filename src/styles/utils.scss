@@ -38,3 +38,28 @@
 .tracking {
   letter-spacing: 0.5px;
 }
+
+/* Custom base overrides */
+input {
+  color: #01254C;
+}
+
+::-webkit-input-placeholder {
+  font-style: italic;
+}
+
+::-moz-placeholder {
+  font-style: italic;
+}
+
+:-ms-input-placeholder {
+  font-style: italic;
+}
+
+:-moz-placeholder {
+  font-style: italic;
+}
+
+textarea {
+  resize: none !important;
+}
