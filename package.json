@@ -45,6 +45,7 @@
     "@types/lodash": "^4.17.17",
     "axios": "^1.8.4",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.20",
     "file-saver": "^2.0.5",
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
