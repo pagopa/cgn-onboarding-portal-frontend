@@ -1,4 +1,12 @@
-import { Button } from "design-react-kit";
+import {
+  Button,
+  Typography,
+  Box,
+  Stack,
+  Paper,
+  FormControlLabel,
+  Radio
+} from "@mui/material";
 import { useState } from "react";
 import Layout from "../components/Layout/Layout";
 import Container from "../components/Container/Container";
@@ -21,82 +29,111 @@ const SelectCompany = () => {
   return (
     <Layout>
       <Container>
-        <Container className="mt-20 mb-20">
-          <div className="col-10 offset-1">
-            <section className="p-20 bg-white">
-              <div className="row" style={{ marginBottom: "40px" }}>
-                <div className="col-9">
-                  <h1 className="h2 fw-bold text-dark-blue">
-                    Società Operante
-                  </h1>
-                  <p style={{ marginTop: "20px" }}>
-                    Per completare l’accesso, seleziona la società per la quale
-                    intendi operare
-                  </p>
-                </div>
-                <div className="col-3 d-flex justify-content-end">
-                  <CgnLogo />
-                </div>
-              </div>
+        <Box sx={{ mt: 5, mb: 5, display: "flex", justifyContent: "center" }}>
+          <Paper
+            sx={{
+              p: 10,
+              backgroundColor: "white",
+              minWidth: "60%"
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                mb: 5
+              }}
+            >
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  variant="h4"
+                  sx={{ fontWeight: "bold", color: "#01254C", mb: 2.5 }}
+                >
+                  Società Operante
+                </Typography>
+                <Typography variant="body1">
+                  Per completare l&apos;accesso, seleziona la società per la
+                  quale intendi operare
+                </Typography>
+              </Box>
+              <Box sx={{ ml: 4 }}>
+                <CgnLogo />
+              </Box>
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
               {merchants?.map((company, i) => (
-                <div
+                <FormControlLabel
                   key={i}
-                  className="form-check pb-4"
-                  style={{
-                    marginBottom: "16px",
+                  sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    width: "100%",
+                    m: 0,
+                    py: 2,
                     borderBottom:
-                      i < merchants.length - 1 ? "1px solid lightgray" : "none"
+                      i < merchants.length - 1 ? "1px solid #e0e0e0" : "none"
                   }}
-                >
-                  <input
-                    name={`organization_fiscal_code_${i}`}
-                    type="radio"
-                    id={`organization_fiscal_code_${i}`}
-                    onChange={e => setSelectedCompany(e.target.value)}
-                    value={company.organization_fiscal_code}
-                    checked={
-                      selectedCompany === company.organization_fiscal_code
-                    }
-                  />
-                  <label
-                    htmlFor={`organization_fiscal_code_${i}`}
-                    className="form-label"
-                  >
-                    <strong>{company.organization_name}</strong>
-                    <small
-                      id={`organization_fiscal_code_${i}`}
-                      className="form-text d-block"
-                    >
-                      CF/PIVA {company.organization_fiscal_code}
-                    </small>
-                  </label>
-                </div>
+                  value={company.organization_fiscal_code}
+                  control={
+                    <Radio
+                      name={`organization_fiscal_code_${i}`}
+                      checked={
+                        selectedCompany === company.organization_fiscal_code
+                      }
+                      onChange={e => setSelectedCompany(e.target.value)}
+                      size="small"
+                      sx={{ mt: 0.25 }}
+                    />
+                  }
+                  label={
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        {company.organization_name}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ display: "block", color: "#5C6F82" }}
+                      >
+                        CF/PIVA {company.organization_fiscal_code}
+                      </Typography>
+                    </Box>
+                  }
+                />
               ))}
-              <div className="mt-10 d-flex flex-row gap-4 flex-wrap">
-                <Button
-                  className="px-14"
-                  outline
-                  color="primary"
-                  tag="button"
-                  onClick={() => {
-                    authentication.logout(authentication.currentSession);
-                  }}
-                >
-                  Annulla
-                </Button>
-                <Button
-                  disabled={!selectedCompany}
-                  className="px-14"
-                  color="primary"
-                  tag="button"
-                  onClick={onConfirmSelection}
-                >
-                  Continua
-                </Button>
-              </div>
-            </section>
-          </div>
-        </Container>
+            </Box>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ mt: 5, gap: 2, flexWrap: "wrap" }}
+            >
+              <Button
+                sx={{ px: 7 }}
+                variant="outlined"
+                color="primary"
+                type="button"
+                onClick={() => {
+                  authentication.logout(authentication.currentSession);
+                }}
+              >
+                Annulla
+              </Button>
+              <Button
+                disabled={!selectedCompany}
+                sx={{ px: 7 }}
+                color="primary"
+                type="button"
+                onClick={onConfirmSelection}
+                variant="contained"
+              >
+                Continua
+              </Button>
+            </Stack>
+          </Paper>
+        </Box>
       </Container>
     </Layout>
   );

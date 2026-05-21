@@ -1,14 +1,33 @@
+import {
+  Box,
+  Typography,
+  Container as MuiContainer,
+  CircularProgress
+} from "@mui/material";
 import Layout from "../components/Layout/Layout";
-import Container from "../components/Container/Container";
 
 export function LoginRedirect() {
   return (
     <Layout>
-      <Container>
-        <div className="col-12 bg-white my-20 p-10 d-flex flex-column align-items-center">
-          <h1 className="h2 fw-bold text-dark-blue">Login in corso</h1>
-        </div>
-      </Container>
+      <MuiContainer maxWidth="md" sx={{ mt: 10, mb: 10 }}>
+        <Box
+          sx={{
+            backgroundColor: "white",
+            p: 5,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: "bold", color: "#01254C", mb: 3 }}
+          >
+            Login in corso
+          </Typography>
+          <CircularProgress />
+        </Box>
+      </MuiContainer>
     </Layout>
   );
 }

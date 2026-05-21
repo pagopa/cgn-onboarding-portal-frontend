@@ -1,94 +1,25 @@
-import { Button, Icon } from "design-react-kit";
+import {
+  Button,
+  Typography,
+  Box,
+  Grid,
+  Paper,
+  Container as MuiContainer
+} from "@mui/material";
 import Layout from "../components/Layout/Layout";
-import Container from "../components/Container/Container";
 import CgnLogo from "../components/Logo/CgnLogo";
 import {
   goToAdminLoginPage,
   goToUserLoginPage
 } from "../authentication/authentication";
 
-const Login = () => (
-  <Layout>
-    <Container>
-      <Container className="mt-20 mb-20">
-        <div className="col-10 offset-1">
-          <section className="px-20 py-28 bg-white">
-            <div className="row">
-              <div className="col-9">
-                <h1 className="h2 fw-bold text-dark-blue">
-                  Ti diamo il benvenuto sul Portale operatori Carta Giovani
-                  Nazionale
-                </h1>
-                <p className="text-gray">
-                  Il portale è il punto unico di richiesta e gestione delle
-                  convenzioni tra gli operatori che intendono aderire
-                  all’iniziativa e il Dipartimento per le Politiche Giovanili e
-                  il Servizio Civile Universale
-                </p>
-              </div>
-              <div className="col-3 d-flex justify-content-end">
-                <CgnLogo />
-              </div>
-            </div>
-            {MAINTENANCE_BANNER && (
-              <div className="mt-8">
-                {MAINTENANCE_BANNER === "short-downtime" && (
-                  <Alert title="Il portale è in manutenzione, tornerà operativo a breve" />
-                )}
-                {MAINTENANCE_BANNER === "long-downtime" && (
-                  <Alert title="Il portale è in manutenzione. Se riscontri qualche problema, riprova più tardi" />
-                )}
-              </div>
-            )}
-            <div className="mt-14 row variable-gutters">
-              <div className="col">
-                <h2 className="h3 text-dark-blue">Sei un operatore?</h2>
-                <Button
-                  type="button"
-                  color="primary"
-                  className="mt-10"
-                  style={{ width: "100%" }}
-                  onClick={() => {
-                    goToUserLoginPage();
-                  }}
-                >
-                  Entra con SPID/CIE
-                </Button>
-              </div>
-              <div className="col">
-                <h2 className="h3 text-dark-blue">Sei un amministratore?</h2>
-                <span className="text-sm fw-normal text-dark-blue text-uppercase">
-                  Accedi con le tue credenziali
-                </span>
-                <Button
-                  type="button"
-                  color="primary"
-                  className="mt-10"
-                  style={{ width: "100%" }}
-                  onClick={() => {
-                    goToAdminLoginPage();
-                  }}
-                >
-                  Entra come Amministratore
-                </Button>
-              </div>
-            </div>
-          </section>
-        </div>
-      </Container>
-    </Container>
-  </Layout>
-);
-
-export default Login;
-
 const MAINTENANCE_BANNER: undefined | "short-downtime" | "long-downtime" =
   undefined;
 
 function Alert({ title }: { title: string }) {
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         borderLeft: "4px solid #FFCB46",
         backgroundColor: "#fffaec",
         borderRadius: "4px",
@@ -98,16 +29,116 @@ function Alert({ title }: { title: string }) {
         alignItems: "center"
       }}
     >
-      <Icon icon="it-warning-circle" />
-      <div
-        style={{
-          fontSize: "16px",
-          fontWeight: 400,
-          lineHeight: "21px"
-        }}
+      <Typography
+        sx={{ fontSize: "16px", fontWeight: 400, lineHeight: "21px" }}
       >
         {title}
-      </div>
-    </div>
+      </Typography>
+    </Box>
   );
 }
+
+const Login = () => (
+  <Layout>
+    <MuiContainer maxWidth="lg" sx={{ mt: 10, mb: 10 }}>
+      <Paper sx={{ px: 10, py: 14, backgroundColor: "white" }}>
+        <Grid container spacing={2} sx={{ mb: 7 }}>
+          <Grid item xs={12} sm={9}>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: "bold", color: "#01254C", mb: 3 }}
+            >
+              Ti diamo il benvenuto sul Portale operatori Carta Giovani
+              Nazionale
+            </Typography>
+            <Typography variant="body1" sx={{ color: "#5C6F82" }}>
+              Il portale è il punto unico di richiesta e gestione delle
+              convenzioni tra gli operatori che intendono aderire all’iniziativa
+              e il Dipartimento per le Politiche Giovanili e il Servizio Civile
+              Universale
+            </Typography>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={3}
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "flex-start", sm: "flex-end" }
+            }}
+          >
+            <CgnLogo />
+          </Grid>
+        </Grid>
+        {MAINTENANCE_BANNER && (
+          <Box sx={{ mt: 4 }}>
+            {MAINTENANCE_BANNER === "short-downtime" && (
+              <Alert title="Il portale è in manutenzione, tornerà operativo a breve" />
+            )}
+            {MAINTENANCE_BANNER === "long-downtime" && (
+              <Alert title="Il portale è in manutenzione. Se riscontri qualche problema, riprova più tardi" />
+            )}
+          </Box>
+        )}
+        <Grid container spacing={4} sx={{ mt: 7 }}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            sx={{ display: "flex", flexDirection: "column" }}
+          >
+            <Typography variant="h5" sx={{ color: "#01254C", mb: 2 }}>
+              Sei un operatore?
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mt: "auto" }}
+              onClick={() => {
+                goToUserLoginPage();
+              }}
+            >
+              Entra con SPID/CIE
+            </Button>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            sx={{ display: "flex", flexDirection: "column" }}
+          >
+            <Typography variant="h5" sx={{ color: "#01254C", mb: 1 }}>
+              Sei un amministratore?
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                fontWeight: "bold",
+                color: "#01254C",
+                textTransform: "uppercase",
+                display: "block",
+                mb: 2
+              }}
+            >
+              Accedi con le tue credenziali
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mt: "auto" }}
+              onClick={() => {
+                goToAdminLoginPage();
+              }}
+            >
+              Entra come Amministratore
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
+    </MuiContainer>
+  </Layout>
+);
+
+export default Login;

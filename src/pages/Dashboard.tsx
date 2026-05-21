@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { Grid, Container as MuiContainer } from "@mui/material";
 import { AgreementState as AgreementStateType } from "../api/generated";
 import AgreementState from "../components/AgreementState/AgreementState";
 import Layout from "../components/Layout/Layout";
-import { ContainerFluid } from "../components/Container/Container";
 import Introduction from "../components/Introduction/Introduction";
 import Discounts from "../components/Discounts/Discounts";
 import Profile from "../components/Profile/Profile";
@@ -44,24 +44,26 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <ContainerFluid className="mt-10 mb-20" maxWidth="972px">
-        <div className="col-9">
-          <Introduction
-            name={user ? `${user.first_name} ${user.last_name}` : ""}
-            handleClick={handleClick}
-            activeTab={tab}
-          />
-          {selectedTab()}
-        </div>
-        {hasStateSection(AgreementStateType.ApprovedAgreement) && (
-          <div className="col-3 ">
-            <AgreementState
-              state={agreement.state}
-              startDate={agreement.startDate}
+      <MuiContainer maxWidth="lg" sx={{ mt: 5, mb: 10 }}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={9}>
+            <Introduction
+              name={user ? `${user.first_name} ${user.last_name}` : ""}
+              handleClick={handleClick}
+              activeTab={tab}
             />
-          </div>
-        )}
-      </ContainerFluid>
+            {selectedTab()}
+          </Grid>
+          {hasStateSection(AgreementStateType.ApprovedAgreement) && (
+            <Grid item xs={12} sm={3}>
+              <AgreementState
+                state={agreement.state}
+                startDate={agreement.startDate}
+              />
+            </Grid>
+          )}
+        </Grid>
+      </MuiContainer>
     </Layout>
   );
 };

@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { Grid, Container as MuiContainer } from "@mui/material";
 import Layout from "../components/Layout/Layout";
-import { ContainerFluid } from "../components/Container/Container";
 import IntroductionAdmin from "../components/Introduction/IntroductionAdmin";
 import Requests from "../components/Requests/Requests";
 import OperatorConvention from "../components/OperatorConvention/OperatorConvention";
@@ -38,16 +38,18 @@ const AdminPanel = () => {
 
   return (
     <Layout>
-      <ContainerFluid className="mt-10 mb-20" maxWidth="1200px">
-        <div className="col-12">
-          <IntroductionAdmin
-            name={`${user?.first_name ?? ""} ${user?.last_name ?? ""}`}
-            handleClick={handleClick}
-            activeTab={location.pathname}
-          />
-          {selectedTab()}
-        </div>
-      </ContainerFluid>
+      <MuiContainer maxWidth="xl" sx={{ mt: 5, mb: 10 }}>
+        <Grid container>
+          <Grid item xs={12}>
+            <IntroductionAdmin
+              name={`${user?.first_name ?? ""} ${user?.last_name ?? ""}`}
+              handleClick={handleClick}
+              activeTab={location.pathname}
+            />
+            {selectedTab()}
+          </Grid>
+        </Grid>
+      </MuiContainer>
     </Layout>
   );
 };
