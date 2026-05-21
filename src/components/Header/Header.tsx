@@ -1,4 +1,4 @@
-import { Button } from "design-react-kit";
+import { Button, Box, Container, AppBar, Toolbar } from "@mui/material";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuthentication } from "../../authentication/AuthenticationContext";
@@ -19,60 +19,69 @@ const Header = ({ hasBorder = false }: Props) => {
   const toggle = () => setModal(!modal);
 
   return (
-    <header
-      className={
-        hasBorder
-          ? "position-relative p-2 bg-white"
-          : "position-relative p-2 bg-white shadow"
-      }
-      style={hasBorder ? { borderBottom: "1px solid #E6E9F2" } : {}}
-    >
-      <div className="container d-flex justify-content-between align-items-center">
-        <div>
-          <Logo />
-        </div>
-        <div className="d-flex align-items-center">
-          <SessionSwitch />
-          {isLogged && (
-            <>
-              {location.pathname === CREATE_PROFILE && (
-                <Button
-                  className="px-8"
-                  color="primary"
-                  size="xs"
-                  icon={false}
-                  tag="button"
-                  onClick={toggle}
-                >
-                  Esci
-                </Button>
+    <>
+      <AppBar
+        position="static"
+        sx={{
+          backgroundColor: "white",
+          color: "inherit",
+          boxShadow: hasBorder ? "none" : "0 2px 4px rgba(0,0,0,0.1)",
+          borderBottom: hasBorder ? "1px solid #E6E9F2" : "none"
+        }}
+      >
+        <Container maxWidth="lg">
+          <Toolbar
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "8px 0"
+            }}
+          >
+            <Box>
+              <Logo />
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <SessionSwitch />
+              {isLogged && (
+                <>
+                  {location.pathname === CREATE_PROFILE ? (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      sx={{ px: 2 }}
+                      onClick={toggle}
+                    >
+                      Esci
+                    </Button>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      sx={{ px: 2 }}
+                      onClick={() => {
+                        authentication.logout(authentication.currentSession);
+                      }}
+                    >
+                      Esci
+                    </Button>
+                  )}
+                </>
               )}
-              {location.pathname !== CREATE_PROFILE && (
-                <Button
-                  className="px-8"
-                  color="primary"
-                  size="xs"
-                  icon={false}
-                  tag="button"
-                  onClick={() => {
-                    authentication.logout(authentication.currentSession);
-                  }}
-                >
-                  Esci
-                </Button>
-              )}
-            </>
-          )}
-        </div>
-        <LogoutModal
-          isOpen={modal}
-          toggle={toggle}
-          logout={() => {
-            authentication.logout(authentication.currentSession);
-          }}
-        />
-      </div>
-    </header>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+      <LogoutModal
+        isOpen={modal}
+        toggle={toggle}
+        logout={() => {
+          authentication.logout(authentication.currentSession);
+        }}
+      />
+    </>
   );
 };
 
