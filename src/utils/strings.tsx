@@ -57,9 +57,13 @@ export const categoriesMap: Record<ProductCategory, CategoryElement> = {
 
 const organizationStatusMap: Record<OrganizationStatus, string> = {
   [OrganizationStatus.Draft]: "In Bozza",
-  [OrganizationStatus.Enabled]: "Abilitato",
-  [OrganizationStatus.Active]: "Convenzionato",
-  [OrganizationStatus.Pending]: "Da valutare"
+  [OrganizationStatus.Pending]: "Da valutare",
+  [OrganizationStatus.Approved]: "Approvata",
+  [OrganizationStatus.Rejected]: "Rifiutata",
+  [OrganizationStatus.Active]: "Attivo",
+  [OrganizationStatus.Inactive]: "Inattiva",
+  [OrganizationStatus.TerminationInProgress]: "In Recesso",
+  [OrganizationStatus.Terminated]: "Cessata"
 };
 
 export const makeOrganizationStatusReadable = (status: OrganizationStatus) =>

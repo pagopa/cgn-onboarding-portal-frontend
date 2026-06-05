@@ -252,13 +252,14 @@ const Requests = () => {
             total={agreements?.total}
           />
           <div className="overflow-auto">
-            <table style={{ width: "100%" }} className="mt-2 bg-white">
+            <table style={{ width: "100%" }} className="bg-white">
               <TableHeader headerGroups={table.getHeaderGroups()} />
               <tbody>
                 {table.getRowModel().rows.map(row => (
                   <Fragment key={row.id}>
                     <tr
                       className="cursor-pointer"
+                      style={{ height: "72px" }}
                       onClick={() => row.toggleExpanded()}
                     >
                       {row.getVisibleCells().map((cell, i) => (

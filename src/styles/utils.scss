@@ -38,3 +38,18 @@
 .tracking {
   letter-spacing: 0.5px;
 }
+
+.chip.chip-sm {
+  height: 24px;
+  min-width: unset;
+  margin: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+  background-color: #5C6F82;
+  border: none;
+
+  .chip-label {
+    color: #FFFFFF;
+    font-weight: 500;
+  }
+}

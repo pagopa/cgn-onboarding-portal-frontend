@@ -65,10 +65,7 @@ const DateModal = ({
 
   return (
     <>
-      <div
-        className="chip chip-lg pe-3 m-1 cursor-pointer"
-        onClick={toggleDateModal}
-      >
+      <div className="chip chip-sm cursor-pointer" onClick={toggleDateModal}>
         <span className="chip-label">
           {getDateLabel(propDateFrom, propDateTo)}
         </span>

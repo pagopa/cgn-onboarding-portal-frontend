@@ -38,30 +38,32 @@ function RequestsFilter({
           </h2>
         )}
 
-        <div className="d-flex justify-content-end flex-grow-1 flex-wrap">
-          <DateModal
-            label="Data"
-            title="Filtra per data"
-            from={values.requestDateFrom}
-            to={values.requestDateTo}
-            onSubmit={(requestDateFrom, requestDateTo) => {
-              onChange(values => ({
-                ...values,
-                requestDateFrom,
-                requestDateTo
-              }));
-            }}
-          />
+        <div className="d-flex justify-content-end align-items-center flex-grow-1 flex-wrap gap-6">
+          <div className="d-flex align-items-center gap-4">
+            <DateModal
+              label="Data"
+              title="Filtra per data"
+              from={values.requestDateFrom}
+              to={values.requestDateTo}
+              onSubmit={(requestDateFrom, requestDateTo) => {
+                onChange(values => ({
+                  ...values,
+                  requestDateFrom,
+                  requestDateTo
+                }));
+              }}
+            />
 
-          <StateModal
-            states={values.states}
-            onSubmit={states => {
-              onChange(values => ({
-                ...values,
-                states
-              }));
-            }}
-          />
+            <StateModal
+              states={values.states}
+              onSubmit={states => {
+                onChange(values => ({
+                  ...values,
+                  states
+                }));
+              }}
+            />
+          </div>
 
           <input
             id="profileFullName"

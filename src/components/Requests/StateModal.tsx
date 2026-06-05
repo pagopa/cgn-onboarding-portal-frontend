@@ -23,6 +23,10 @@ const StateModal = ({
         return "In valutazione (da te)";
       case "AssignedAgreementOthers":
         return "In valutazione (da altri)";
+      case "ApprovedAgreement":
+        return "Approvata";
+      case "RejectedAgreement":
+        return "Respinta";
       default:
         return "Stato";
     }
@@ -30,10 +34,7 @@ const StateModal = ({
 
   return (
     <>
-      <div
-        className="chip chip-lg m-1 cursor-pointer"
-        onClick={toggleStateModal}
-      >
+      <div className="chip chip-sm cursor-pointer" onClick={toggleStateModal}>
         <span className="chip-label">{getStatesLabel(states)}</span>
         {states && (
           <button
@@ -101,6 +102,24 @@ const StateModal = ({
               >
                 <span className="text-sm">
                   {getStatesLabel("AssignedAgreementOthers")}
+                </span>
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                name="states"
+                type="radio"
+                id="RejectedAgreement"
+                value="RejectedAgreement"
+                onChange={() => setFieldStates("RejectedAgreement")}
+                checked={statesField === "RejectedAgreement"}
+              />
+              <label
+                className="text-sm fw-normal text-black form-label"
+                htmlFor="RejectedAgreement"
+              >
+                <span className="text-sm">
+                  {getStatesLabel("RejectedAgreement")}
                 </span>
               </label>
             </div>

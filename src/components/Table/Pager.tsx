@@ -14,11 +14,11 @@ type Props = {
 };
 
 const Pager = (props: Props) => (
-  <div className="mb-2 mt-4 d-flex justify-content-between">
+  <div className="my-6 d-flex justify-content-between px-3">
     {!!props.total && (
-      <strong>
+      <span className="fw-semibold">
         {props.startRowIndex}-{props.endRowIndex} di {props.total}
-      </strong>
+      </span>
     )}
     <div className="d-flex align-items-center">
       {props.canPreviousPage && (
@@ -32,7 +32,7 @@ const Pager = (props: Props) => (
       )}
       {props.pageArray.map(page => (
         <div
-          className={`fw-bold mx-1 ${
+          className={`fw-semibold mx-1 ${
             page !== props.pageIndex ? "cursor-pointer primary-color" : ""
           }`}
           key={page}
