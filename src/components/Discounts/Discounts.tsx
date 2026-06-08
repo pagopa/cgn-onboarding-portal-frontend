@@ -63,17 +63,21 @@ const Discounts = () => {
   });
   const profile = profileQuery.data;
 
-  const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery({
+  const {
+    isPending,
+    error: discountsError,
+    data: discountsData
+  } = remoteData.Index.Discount.getDiscounts.useQuery({
     agreementId: agreement.id
   });
   useEffect(() => {
-    if (discountsQuery.error) {
+    if (discountsError) {
       throwErrorTooltip("Errore nel caricamento delle opportunità");
     }
-  }, [discountsQuery.error, throwErrorTooltip]);
+  }, [discountsError, throwErrorTooltip]);
   const discounts = useMemo(
-    () => discountsQuery.data?.items ?? [],
-    [discountsQuery.data?.items]
+    () => discountsData?.items ?? [],
+    [discountsData?.items]
   );
   const invalidateDiscountsQuery = (
     _: unknown,
@@ -326,6 +330,7 @@ const Discounts = () => {
             onGotoPage={gotoPage}
             pageArray={pageArray}
             total={discounts.length}
+            isPending={isPending}
           />
           <div className="table-responsive mb-0 mt-2 bg-white table">
             <table style={{ width: "100%" }} className="table mb-0">

@@ -6,12 +6,7 @@ import { Severity, useTooltip } from "../../context/tooltip";
 import DateModal from "../DateModal";
 import { ConventionFilterFormValues } from "./OperatorConvention";
 
-const ConventionFilter = ({
-  values,
-  onChange,
-  hasActiveFitlers,
-  onReset
-}: {
+type ConventionFilterProps = {
   values: ConventionFilterFormValues;
   onChange(
     update:
@@ -20,7 +15,14 @@ const ConventionFilter = ({
   ): void;
   onReset(): void;
   hasActiveFitlers: boolean;
-}) => {
+};
+
+const ConventionFilter = ({
+  values,
+  onChange,
+  hasActiveFitlers,
+  onReset
+}: ConventionFilterProps) => {
   const { triggerTooltip } = useTooltip();
   const [downloadingAgreements, setDownloadingAgreements] = useState(false);
   const [downloadingEyca, setDownloadingEyca] = useState(false);
@@ -93,10 +95,7 @@ const ConventionFilter = ({
           <h2 className="h4 fw-bold text-dark-blue">Operatori convenzionati</h2>
         )}
 
-        <div
-          className="d-flex justify-content-end flex-grow-1 flex-wrap align-items-center"
-          style={{ rowGap: "0.75rem" }}
-        >
+        <div className="d-flex justify-content-end flex-grow-1 flex-wrap align-items-center gap-4">
           <DateModal
             label="Data ultima modifica"
             title="Filtra per data di ultima modifica"
@@ -123,26 +122,24 @@ const ConventionFilter = ({
             }}
             style={{ maxWidth: "275px" }}
           />
-          <div>
-            <Button
-              className="ms-5 btn-sm"
-              color="primary"
-              tag="button"
-              onClick={getExport}
-              disabled={downloadingAgreements}
-            >
-              <span>Export convenzioni</span>
-            </Button>
-            <Button
-              className="ms-5 btn-sm"
-              color="primary"
-              tag="button"
-              onClick={getExportEyca}
-              disabled={downloadingEyca}
-            >
-              <span>Export EYCA</span>
-            </Button>
-          </div>
+          <Button
+            className="btn-sm"
+            color="primary"
+            tag="button"
+            onClick={getExport}
+            disabled={downloadingAgreements}
+          >
+            <span>Export convenzioni</span>
+          </Button>
+          <Button
+            className="btn-sm"
+            color="primary"
+            tag="button"
+            onClick={getExportEyca}
+            disabled={downloadingEyca}
+          >
+            <span>Export EYCA</span>
+          </Button>
         </div>
       </div>
     </form>

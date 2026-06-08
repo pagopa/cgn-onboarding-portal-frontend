@@ -1,56 +1,24 @@
 import { DiscountState } from "../../api/generated";
+import { StateBadge } from "../StateBadge";
 
-export const BadgeStatus = ({
-  discountState
-}: {
+type BadgeStatusProps = {
   discountState: DiscountState;
-}) => {
+};
+
+export const BadgeStatus = ({ discountState }: BadgeStatusProps) => {
   switch (discountState) {
-    case "suspended":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-warning"
-          style={{ fontSize: "12px" }}
-        >
-          Sospesa
-        </span>
-      );
-    case "test_pending":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-warning"
-          style={{ fontSize: "12px" }}
-        >
-          Test
-        </span>
-      );
-    case "test_passed":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-success"
-          style={{ fontSize: "12px" }}
-        >
-          Test superato
-        </span>
-      );
-    case "test_failed":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-danger"
-          style={{ fontSize: "12px" }}
-        >
-          Test fallito
-        </span>
-      );
-    case "published":
-      return (
-        <span
-          className="badge rounded-pill badge-outline-primary"
-          style={{ fontSize: "12px" }}
-        >
-          Pubblicata
-        </span>
-      );
+    case DiscountState.Suspended:
+      return <StateBadge color="warning">Sospesa</StateBadge>;
+    case DiscountState.TestPending:
+      return <StateBadge color="warning">Test</StateBadge>;
+    case DiscountState.TestPassed:
+      return <StateBadge color="success">Test superato</StateBadge>;
+    case DiscountState.TestFailed:
+      return <StateBadge color="danger">Test fallito</StateBadge>;
+    case DiscountState.Published:
+      return <StateBadge color="primary">Pubblicata</StateBadge>;
+    case DiscountState.Expired:
+      return <StateBadge color="secondary">Scaduta</StateBadge>;
     default:
       return null;
   }

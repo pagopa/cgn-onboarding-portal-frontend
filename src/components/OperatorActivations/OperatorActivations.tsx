@@ -1,5 +1,5 @@
 import { useState, useMemo, Fragment } from "react";
-import { Badge, Button } from "design-react-kit";
+import { Badge } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
@@ -14,7 +14,7 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import { remoteData } from "../../api/common";
-import CenteredLoading from "../CenteredLoading/CenteredLoading";
+import TableFooter from "../Table/TableFooter";
 import {
   AttributeauthorityApiGetOrganizationsRequest,
   OrganizationWithReferentsAndStatus
@@ -216,91 +216,72 @@ const OperatorActivations = () => {
           setValues(activationsFilterFormInitialValues);
         }}
       />
-      {isPending ? (
-        <CenteredLoading />
-      ) : (
-        <>
-          <Pager
-            canPreviousPage={canPreviousPage}
-            canNextPage={canNextPage}
-            startRowIndex={startRowIndex}
-            endRowIndex={endRowIndex}
-            pageIndex={pagination.pageIndex}
-            onPreviousPage={previousPage}
-            onNextPage={nextPage}
-            onGotoPage={gotoPage}
-            pageArray={pageArray}
-            total={operators?.count}
-          />
-          <div className="overflow-auto">
-            <table style={{ width: "100%" }} className="mt-2 bg-white">
-              <TableHeader headerGroups={table.getHeaderGroups()} />
+      <Pager
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        startRowIndex={startRowIndex}
+        endRowIndex={endRowIndex}
+        pageIndex={pagination.pageIndex}
+        onPreviousPage={previousPage}
+        onNextPage={nextPage}
+        onGotoPage={gotoPage}
+        pageArray={pageArray}
+        total={operators?.count}
+        isPending={isPending}
+      />
+      <div className="overflow-auto">
+        <table style={{ width: "100%" }} className="mt-2 bg-white">
+          <TableHeader headerGroups={table.getHeaderGroups()} />
 
-              <tbody>
-                {table.getRowModel().rows.map(row => (
-                  <Fragment key={row.id}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => row.toggleExpanded()}
-                    >
-                      {row.getVisibleCells().map((cell, i, arr) => (
-                        <td
-                          key={cell.id}
-                          className={`${i === 0 ? "ps-6" : ""} ${
-                            i === arr.length - 1 ? "pe-6" : ""
-                          } px-3 py-2 border-bottom text-sm`}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : undefined
-                          }
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-
-                    {row.getIsExpanded() && (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                        <td colSpan={table.getVisibleLeafColumns().length}>
-                          <OperatorActivationDetail
-                            operator={row.original}
-                            getActivations={() => refetch()}
-                          />
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {!operators?.items?.length &&
-            (hasActiveFitlers ? (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessun risultato corrisponde alla tua ricerca</p>
-                <Button
-                  color="primary"
-                  outline
-                  tag="button"
-                  className="mt-3"
-                  onClick={() => {
-                    setValues(activationsFilterFormInitialValues);
-                  }}
+          <tbody>
+            {table.getRowModel().rows.map(row => (
+              <Fragment key={row.id}>
+                <tr
+                  className="cursor-pointer"
+                  onClick={() => row.toggleExpanded()}
                 >
-                  Reimposta Tutto
-                </Button>
-              </div>
-            ) : (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessun operatore trovato</p>
-              </div>
+                  {row.getVisibleCells().map((cell, i, arr) => (
+                    <td
+                      key={cell.id}
+                      className={`${i === 0 ? "ps-6" : ""} ${
+                        i === arr.length - 1 ? "pe-6" : ""
+                      } px-3 py-2 border-bottom text-sm`}
+                      style={
+                        cell.column.id === "expander"
+                          ? { width: "calc(32px + 0.75rem * 2)" }
+                          : undefined
+                      }
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+
+                {row.getIsExpanded() && (
+                  <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
+                    <td colSpan={table.getVisibleLeafColumns().length}>
+                      <OperatorActivationDetail
+                        operator={row.original}
+                        getActivations={() => refetch()}
+                      />
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             ))}
-        </>
-      )}
+          </tbody>
+        </table>
+      </div>
+      <TableFooter
+        isPending={isPending}
+        isEmpty={!operators?.items?.length}
+        hasActiveFilters={hasActiveFitlers}
+        emptyMessage="Nessun operatore trovato"
+        onReset={() => setValues(activationsFilterFormInitialValues)}
+      />
     </section>
   );
 };

@@ -1,8 +1,17 @@
 import { useState, forwardRef } from "react";
-import { Button, Icon } from "design-react-kit";
+import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { format } from "date-fns";
 import DatePicker from "react-datepicker";
+import { FilterChip } from "./FilterChip";
+
+type DateModalProps = {
+  from?: Date;
+  to?: Date;
+  onSubmit(from: Date | undefined, to: Date | undefined): void;
+  label: string;
+  title: string;
+};
 
 const DateModal = ({
   from: propDateFrom,
@@ -10,13 +19,7 @@ const DateModal = ({
   onSubmit,
   label,
   title
-}: {
-  from?: Date;
-  to?: Date;
-  onSubmit(propDateFrom: Date | undefined, propDateTo: Date | undefined): void;
-  label: string;
-  title: string;
-}) => {
+}: DateModalProps) => {
   const [dateFrom, setDateFrom] = useState<Date | undefined>(propDateFrom);
   const [dateTo, setDateTo] = useState<Date | undefined>(propDateTo);
   const [showOpenDateModal, setShowOpenDateModal] = useState(false);
@@ -65,21 +68,12 @@ const DateModal = ({
 
   return (
     <>
-      <div className="chip chip-sm cursor-pointer" onClick={toggleDateModal}>
-        <span className="chip-label">
-          {getDateLabel(propDateFrom, propDateTo)}
-        </span>
-        {(propDateFrom || propDateTo) && (
-          <button
-            onClick={e => {
-              e.stopPropagation();
-              onSubmit(undefined, undefined);
-            }}
-          >
-            <Icon color="" icon="it-close" size="" />
-          </button>
-        )}
-      </div>
+      <FilterChip
+        label={getDateLabel(propDateFrom, propDateTo)}
+        active={!!(propDateFrom || propDateTo)}
+        onClick={toggleDateModal}
+        onClear={() => onSubmit(undefined, undefined)}
+      />
 
       <Modal isOpen={showOpenDateModal} toggle={toggleDateModal}>
         <ModalHeader toggle={toggleDateModal}>{title}</ModalHeader>

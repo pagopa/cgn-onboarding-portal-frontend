@@ -1,25 +1,14 @@
 import { AgreementState } from "../../api/generated_backoffice";
-
-const StateChip = ({
-  label,
-  backgroundColor
-}: {
-  label: string;
-  backgroundColor: string;
-}) => (
-  <div className="chip chip-sm" style={{ backgroundColor }}>
-    <span className="chip-label">{label}</span>
-  </div>
-);
+import { StateBadge } from "../StateBadge";
 
 const RequestStateBadge = (state: AgreementState) => {
   switch (state) {
     case "PendingAgreement":
-      return <StateChip label="Da valutare" backgroundColor="#995C00" />;
+      return <StateBadge color="warning">Da valutare</StateBadge>;
     case "AssignedAgreement":
-      return <StateChip label="In valutazione" backgroundColor="#EA7614" />;
+      return <StateBadge color="primary">In valutazione</StateBadge>;
     case "RejectedAgreement":
-      return <StateChip label="Respinta" backgroundColor="#5C6F82" />;
+      return <StateBadge color="secondary">Respinta</StateBadge>;
   }
 };
 
