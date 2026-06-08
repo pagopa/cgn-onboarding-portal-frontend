@@ -13,8 +13,9 @@ import {
 } from "../../utils/strings";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
 import AsyncButton from "../AsyncButton/AsyncButton";
+import { StateBadge } from "../StateBadge";
+import { discountStateBadge } from "../../utils/badges";
 import BucketCodeModal from "./BucketCodeModal";
-import { BadgeStatus } from "./BadgeStatus";
 import Item from "./Item";
 
 type DiscountResultButtonsProps = {
@@ -211,7 +212,7 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
       <Item label="Descrizione opportunità" value={discount.description} />
       <Item
         label="Stato"
-        value={<BadgeStatus discountState={discount.state} />}
+        value={<StateBadge {...discountStateBadge[discount.state]} />}
       />
       <Item
         label="Data d'inizio opportunità"

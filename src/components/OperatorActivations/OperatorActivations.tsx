@@ -1,5 +1,4 @@
 import { useState, useMemo, Fragment } from "react";
-import { Badge } from "design-react-kit";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
@@ -21,10 +20,9 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
-import {
-  getEntityTypeLabel,
-  makeOrganizationStatusReadable
-} from "../../utils/strings";
+import { getEntityTypeLabel } from "../../utils/strings";
+import { organizationStatusBadge } from "../../utils/badges";
+import { StateBadge } from "../StateBadge";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import { useSyncSorting } from "../../utils/useSyncSorting";
@@ -145,14 +143,7 @@ const OperatorActivations = () => {
       header: "STATO",
       enableSorting: false,
       cell: ({ getValue }) => (
-        <Badge
-          className="fw-semibold border border-primary text-bg-light text-primary"
-          pill
-          tag="span"
-          color="white"
-        >
-          {makeOrganizationStatusReadable(getValue())}
-        </Badge>
+        <StateBadge {...organizationStatusBadge[getValue()]} />
       )
     }),
 
@@ -238,6 +229,7 @@ const OperatorActivations = () => {
               <Fragment key={row.id}>
                 <tr
                   className="cursor-pointer"
+                  style={{ height: "72px" }}
                   onClick={() => row.toggleExpanded()}
                 >
                   {row.getVisibleCells().map((cell, i, arr) => (
@@ -245,7 +237,7 @@ const OperatorActivations = () => {
                       key={cell.id}
                       className={`${i === 0 ? "ps-6" : ""} ${
                         i === arr.length - 1 ? "pe-6" : ""
-                      } px-3 py-2 border-bottom text-sm`}
+                      } px-3 border-bottom text-sm`}
                       style={
                         cell.column.id === "expander"
                           ? { width: "calc(32px + 0.75rem * 2)" }

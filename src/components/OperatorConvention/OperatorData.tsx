@@ -1,12 +1,24 @@
 import { format } from "date-fns";
 import {
   ApprovedAgreementProfile,
+  ApprovedAgreementState,
   BothChannels
 } from "../../api/generated_backoffice";
+import { StateBadge } from "../StateBadge";
+import { agreementStateBadge } from "../../utils/badges";
 import Item from "./Item";
 
-const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
+type OperatorDataProps = {
+  profile: ApprovedAgreementProfile;
+  state: ApprovedAgreementState;
+  stateDate: string;
+};
+
+const OperatorData = ({ profile, state, stateDate }: OperatorDataProps) => {
   const salesChannel = profile.salesChannel as BothChannels;
+  const showStateDate =
+    state === ApprovedAgreementState.Inactive ||
+    state === ApprovedAgreementState.TerminationInProgress;
   return (
     <div>
       <h5 className="mb-7 fw-bold">Profilo</h5>
@@ -43,6 +55,17 @@ const OperatorData = ({ profile }: { profile: ApprovedAgreementProfile }) => {
       <Item
         label="Data ultima modifica"
         value={format(new Date(profile.lastUpateDate), "dd/MM/yyyy")}
+      />
+      <Item
+        label="Stato"
+        value={
+          <div className="d-flex align-items-center gap-2">
+            <StateBadge {...agreementStateBadge[state]} />
+            {showStateDate && (
+              <span>dal {format(new Date(stateDate), "dd/MM/yyyy")}</span>
+            )}
+          </div>
+        }
       />
     </div>
   );

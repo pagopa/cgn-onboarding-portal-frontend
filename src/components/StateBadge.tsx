@@ -1,5 +1,4 @@
 import { Badge } from "design-react-kit";
-import { ReactNode } from "react";
 
 const colorMap = {
   warning: "#995C00",
@@ -12,11 +11,11 @@ const colorMap = {
 export type BadgeColor = keyof typeof colorMap;
 
 type StateBadgeProps = {
-  children: ReactNode;
+  label: string;
   color: BadgeColor;
 };
 
-export const StateBadge = ({ children, color }: StateBadgeProps) => (
+export const StateBadge = ({ label, color }: StateBadgeProps) => (
   <Badge
     className="fw-normal badge"
     pill
@@ -27,6 +26,6 @@ export const StateBadge = ({ children, color }: StateBadgeProps) => (
       color: "white"
     }}
   >
-    {children}
+    {label}
   </Badge>
 );

@@ -17,7 +17,6 @@ import TableFooter from "../Table/TableFooter";
 import {
   AgreementApiGetApprovedAgreementsRequest,
   ApprovedAgreement,
-  ApprovedAgreementState,
   GetApprovedAgreementsSortColumnEnum
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
@@ -27,10 +26,10 @@ import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { useSyncSorting } from "../../utils/useSyncSorting";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
-import { BadgeColor, StateBadge } from "../StateBadge";
+import { StateBadge } from "../StateBadge";
+import { agreementStateBadge, discountStateBadge } from "../../utils/badges";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
-import { BadgeStatus } from "./BadgeStatus";
 
 export type ConventionFilterFormValues = {
   fullName: string | undefined;
@@ -58,25 +57,6 @@ const getConventionSortColumn = (id: string) => {
       return "LastModifyDate";
     case "publishedDiscounts":
       return "PublishedDiscounts";
-  }
-};
-
-const agreementStateBadge: Partial<
-  Record<ApprovedAgreementState, { children: string; color: BadgeColor }>
-> = {
-  [ApprovedAgreementState.Approved]: {
-    children: "Approvato",
-    color: "warning"
-  },
-  [ApprovedAgreementState.Active]: { children: "Attivo", color: "success" },
-  [ApprovedAgreementState.Inactive]: { children: "Inattivo", color: "warning" },
-  [ApprovedAgreementState.TerminationInProgress]: {
-    children: "In recesso",
-    color: "danger"
-  },
-  [ApprovedAgreementState.Terminated]: {
-    children: "Cessato",
-    color: "secondary"
   }
 };
 
@@ -171,16 +151,15 @@ const OperatorConvention = () => {
       enableSorting: false,
       cell: ({ getValue }) =>
         getValue() ? (
-          <BadgeStatus discountState={DiscountState.TestPending} />
+          <StateBadge {...discountStateBadge[DiscountState.TestPending]} />
         ) : null
     }),
     columnHelper.accessor("state", {
       header: "Stato",
       enableSorting: false,
-      cell: ({ getValue }) => {
-        const badge = agreementStateBadge[getValue()];
-        return badge ? <StateBadge {...badge} /> : null;
-      }
+      cell: ({ getValue }) => (
+        <StateBadge {...agreementStateBadge[getValue()]} />
+      )
     })
   ];
 

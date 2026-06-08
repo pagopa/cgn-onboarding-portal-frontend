@@ -7,12 +7,13 @@ import {
   ApprovedAgreementDetail,
   ApprovedAgreement
 } from "../../api/generated_backoffice";
+import { StateBadge } from "../StateBadge";
+import { discountStateBadge } from "../../utils/badges";
 import Documents from "./Documents";
 import Profile from "./Profile";
 import Referent from "./Referent";
 import OperatorData from "./OperatorData";
 import Discount from "./Discount";
-import { BadgeStatus } from "./BadgeStatus";
 
 const menuLink = (
   view: string,
@@ -64,7 +65,13 @@ const getView = (
     }
     switch (view) {
       case "dati_operatore":
-        return <OperatorData profile={details.profile} />;
+        return (
+          <OperatorData
+            profile={details.profile}
+            state={agreement.state}
+            stateDate={agreement.agreementLastUpdateDate}
+          />
+        );
       case "profilo":
         return <Profile profile={details.profile} />;
       case "referente":
@@ -147,7 +154,7 @@ const ConventionDetails = ({
                               >
                                 {d.name}
                               </a>
-                              <BadgeStatus discountState={d.state} />
+                              <StateBadge {...discountStateBadge[d.state]} />
                             </li>
                           ))}
                         </ul>
