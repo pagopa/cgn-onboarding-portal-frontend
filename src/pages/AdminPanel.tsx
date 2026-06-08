@@ -38,15 +38,16 @@ const AdminPanel = () => {
 
   return (
     <Layout>
-      <ContainerFluid className="mt-10 mb-20" maxWidth="1200px">
-        <div className="col-12">
-          <IntroductionAdmin
-            name={`${user?.first_name ?? ""} ${user?.last_name ?? ""}`}
-            handleClick={handleClick}
-            activeTab={location.pathname}
-          />
-          {selectedTab()}
-        </div>
+      <ContainerFluid
+        className="d-flex flex-column gap-6 mt-10 mb-20"
+        maxWidth="1200px"
+      >
+        <IntroductionAdmin
+          name={`${user?.first_name ?? ""} ${user?.last_name ?? ""}`}
+          handleClick={handleClick}
+          activeTab={location.pathname}
+        />
+        {selectedTab()}
       </ContainerFluid>
     </Layout>
   );

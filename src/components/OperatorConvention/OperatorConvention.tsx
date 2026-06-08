@@ -120,22 +120,21 @@ const OperatorConvention = () => {
 
   const columns = [
     columnHelper.accessor("fullName", {
-      header: "Operatore"
-    }),
-    columnHelper.accessor("entityType", {
-      header: "Tipologia ente",
-      enableSorting: false,
-      cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
+      header: "Operatore",
+      cell: ({ getValue, row }) =>
+        getValue()
+          ? `[${getEntityTypeLabel(row.original.entityType)}] ${getValue()}`
+          : "-"
     }),
     columnHelper.accessor("agreementStartDate", {
-      header: "Data Convenzionamento",
+      header: "Convenzionato il",
       cell: ({ getValue }) => {
         const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
       }
     }),
     columnHelper.accessor("agreementLastUpdateDate", {
-      header: "Data Ultima Modifica",
+      header: "Ultima modifica",
       cell: ({ getValue }) => {
         const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
@@ -204,7 +203,7 @@ const OperatorConvention = () => {
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
-    <section className="mt-2 px-8 py-10 bg-white">
+    <section className="px-8 py-10 bg-white">
       <ConventionFilter
         values={values}
         onChange={setValues}
@@ -239,6 +238,7 @@ const OperatorConvention = () => {
                   <tr
                     key={row.id}
                     className="cursor-pointer"
+                    style={{ height: "72px" }}
                     onClick={() => {
                       setShowDetails(true);
                       setSelectedConvention(row.original);

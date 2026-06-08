@@ -207,7 +207,7 @@ const OperatorActivations = () => {
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
-    <section className="mt-2 px-8 py-10 bg-white">
+    <section className="px-8 py-10 bg-white">
       <ActivationsFilter
         values={values}
         onChange={setValues}

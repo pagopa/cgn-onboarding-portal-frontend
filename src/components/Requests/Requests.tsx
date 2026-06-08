@@ -24,6 +24,7 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import { useSyncSorting } from "../../utils/useSyncSorting";
@@ -138,7 +139,13 @@ const Requests = () => {
     columnHelper.accessor(row => row.profile?.fullName ?? null, {
       id: "profile.fullName",
       header: "Operatore",
-      cell: ({ getValue }) => getValue() ?? "-"
+      cell: ({ getValue, row }) => {
+        const name = getValue();
+        if (!name) {
+          return "-";
+        }
+        return `[${getEntityTypeLabel(row.original.entityType)}] ${name}`;
+      }
     }),
     columnHelper.accessor(row => row.requestDate ?? null, {
       id: "requestDate",
@@ -226,7 +233,7 @@ const Requests = () => {
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
-    <section className="mt-2 px-8 py-10 bg-white">
+    <section className="px-8 py-10 bg-white">
       <RequestFilter
         values={values}
         onChange={setValues}
