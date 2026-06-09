@@ -39,7 +39,7 @@ const AdminPanel = () => {
   return (
     <Layout>
       <ContainerFluid
-        className="d-flex flex-column gap-6 mt-10 mb-20"
+        className="d-flex flex-column gap-6 mt-10 mb-20 px-2"
         maxWidth="1200px"
       >
         <IntroductionAdmin

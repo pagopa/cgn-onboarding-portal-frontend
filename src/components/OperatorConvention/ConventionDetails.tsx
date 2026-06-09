@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { Icon } from "design-react-kit";
 import { format } from "date-fns";
 import { remoteData } from "../../api/common";
@@ -7,8 +7,8 @@ import {
   ApprovedAgreementDetail,
   ApprovedAgreement
 } from "../../api/generated_backoffice";
-import { StateBadge } from "../StateBadge";
-import { discountStateBadge } from "../../utils/badges";
+import { BadgePill } from "../BadgePill";
+import { discountBadgePill } from "../../utils/badges";
 import Documents from "./Documents";
 import Profile from "./Profile";
 import Referent from "./Referent";
@@ -21,17 +21,22 @@ const menuLink = (
   viewKey: string,
   label: string,
   child?: ReactNode
-) => (
-  <li className={`nav-item ${view.includes(viewKey) ? "active" : ""}`}>
-    <a
-      className={`nav-link ${view.includes(viewKey) ? "active" : ""} ${!child ? "cursor-pointer" : ""}`}
-      onClick={() => !child && setView(viewKey)}
-    >
-      <span>{label}</span>
-    </a>
-    {child}
-  </li>
-);
+) => {
+  const isActive = view.includes(viewKey);
+  const stateClass = isActive
+    ? "nav-link-active"
+    : "border-start border-2 border-white";
+  const className = `nav-link p-4 ${stateClass}${!child ? " cursor-pointer" : ""}`;
+
+  return (
+    <li>
+      <a className={className} onClick={() => !child && setView(viewKey)}>
+        <span>{label}</span>
+      </a>
+      {child}
+    </li>
+  );
+};
 
 const getView = (
   details: ApprovedAgreementDetail | undefined,
@@ -39,46 +44,42 @@ const getView = (
   getConventionDetails: () => void,
   agreement: ApprovedAgreement
 ) => {
-  if (details) {
-    if (view.includes("agevolazione")) {
-      const discount =
-        details?.discounts?.[Number(view.replace(/^\D+/g, "")) - 1];
-      if (discount) {
-        return (
-          <Discount
-            reloadDetails={getConventionDetails}
-            agreementId={agreement?.agreementId ?? ""}
-            discount={discount}
-            profile={details.profile}
-          />
-        );
-      } else {
-        return (
-          <div>
-            <h5 className="mb-5 fw-bold">Opportunità</h5>
-            <p className="text-center text-gray">
-              Non è presente nessuna opportunità.
-            </p>
-          </div>
-        );
-      }
+  if (!details) {
+    return null;
+  }
+
+  if (view.includes("agevolazione")) {
+    const discountIndex = Number(view.replace(/^\D+/g, "")) - 1;
+    const discount = details.discounts?.[discountIndex];
+    if (!discount) {
+      return (
+        <div>
+          <h5 className="mb-5 fw-bold">Opportunità</h5>
+          <p className="text-center text-gray">
+            Non è presente nessuna opportunità.
+          </p>
+        </div>
+      );
     }
-    switch (view) {
-      case "dati_operatore":
-        return (
-          <OperatorData
-            profile={details.profile}
-            state={agreement.state}
-            stateDate={agreement.agreementLastUpdateDate}
-          />
-        );
-      case "profilo":
-        return <Profile profile={details.profile} />;
-      case "referente":
-        return <Referent referent={details.profile.referent} />;
-      case "documenti":
-        return <Documents documents={details.documents} />;
-    }
+    return (
+      <Discount
+        reloadDetails={getConventionDetails}
+        agreementId={agreement.agreementId ?? ""}
+        discount={discount}
+        profile={details.profile}
+      />
+    );
+  }
+
+  switch (view) {
+    case "dati_operatore":
+      return <OperatorData profile={details.profile} state={agreement.state} />;
+    case "profilo":
+      return <Profile profile={details.profile} />;
+    case "referente":
+      return <Referent referent={details.profile.referent} />;
+    case "documenti":
+      return <Documents documents={details.documents} />;
   }
 };
 
@@ -99,13 +100,43 @@ const ConventionDetails = ({
     agreementId: agreement?.agreementId || ""
   });
 
-  return isPending ? (
-    <div className="mt-2 px-8 py-10 bg-white">
-      <CenteredLoading />
-    </div>
-  ) : (
-    <section>
-      <div className="d-flex align-items-center justify-content-between mt-2 px-8 py-10 bg-white">
+  const discountSubmenu = useMemo(() => {
+    if (!details?.discounts?.length) {
+      return null;
+    }
+    return (
+      <ul className="link-list">
+        {details.discounts.map((d, i) => {
+          const viewKey = `agevolazione${i + 1}`;
+          const isSelected = view.includes(viewKey);
+          const linkClass = `nav-link primary-color cursor-pointer${isSelected ? " fw-bold" : ""}`;
+          return (
+            <li
+              key={i}
+              className="nav-link d-flex flex-row align-items-center flex-nowrap ps-3"
+            >
+              <a className={linkClass} onClick={() => setView(viewKey)}>
+                {d.name}
+              </a>
+              <BadgePill {...discountBadgePill[d.state]} />
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }, [details?.discounts, view]);
+
+  if (isPending) {
+    return (
+      <div className="mt-2 px-8 py-10 bg-white">
+        <CenteredLoading />
+      </div>
+    );
+  }
+
+  return (
+    <section className="p-0">
+      <div className="d-flex align-items-center justify-content-between px-8 py-10 bg-white">
         <h4>{agreement.fullName}</h4>
         <div>
           <div className="mb-3 text-gray">Data convenzionamento</div>
@@ -123,56 +154,30 @@ const ConventionDetails = ({
           <Icon color="primary" icon="it-close" size="" />
         </div>
       </div>
-      <div className="d-flex mt-2">
-        <div className="col-4 p-0">
-          <div className="me-1 px-8 py-10 bg-white">
-            <nav className="navbar it-navscroll-wrapper navbar-expand-lg it-left-side">
-              <div className="menu-wrapper">
-                <div className="link-list-wrapper">
-                  <ul className="link-list">
-                    {menuLink(view, setView, "dati_operatore", "Profilo")}
-                    {menuLink(
-                      view,
-                      setView,
-                      "agevolazione",
-                      "Opportunità",
-                      details?.discounts?.length ? (
-                        <ul className="link-list">
-                          {details?.discounts?.map((d, i: number) => (
-                            <li
-                              className="nav-link d-flex flex-row align-items-center flex-nowrap ps-3"
-                              key={i}
-                            >
-                              <a
-                                className={`
-                                  nav-link primary-color cursor-pointer ${
-                                    view.includes(`agevolazione${i + 1}`)
-                                      ? "fw-bold"
-                                      : ""
-                                  }`}
-                                onClick={() => setView(`agevolazione${i + 1}`)}
-                              >
-                                {d.name}
-                              </a>
-                              <StateBadge {...discountStateBadge[d.state]} />
-                            </li>
-                          ))}
-                        </ul>
-                      ) : null
-                    )}
-                    {menuLink(view, setView, "profilo", "Dati dell'ente")}
-                    {menuLink(view, setView, "referente", "Dati del referente")}
-                    {menuLink(view, setView, "documenti", "Documenti")}
-                  </ul>
-                </div>
+      <div className="d-flex flex-column flex-lg-row gap-4 mt-4">
+        <div className="px-8 py-10 bg-white flex-shrink-0 align-self-lg-start">
+          <nav className="navbar it-navscroll-wrapper navbar-expand-lg it-left-side p-0">
+            <div className="menu-wrapper p-0">
+              <div className="link-list-wrapper">
+                <ul className="link-list m-0">
+                  {menuLink(view, setView, "dati_operatore", "Profilo")}
+                  {menuLink(
+                    view,
+                    setView,
+                    "agevolazione",
+                    "Opportunità",
+                    discountSubmenu
+                  )}
+                  {menuLink(view, setView, "profilo", "Dati dell'ente")}
+                  {menuLink(view, setView, "referente", "Dati del referente")}
+                  {menuLink(view, setView, "documenti", "Documenti")}
+                </ul>
               </div>
-            </nav>
-          </div>
+            </div>
+          </nav>
         </div>
-        <div className="col-8 p-0">
-          <div className="ms-1 px-8 py-10 bg-white">
-            {getView(details, view, () => refetch(), agreement)}
-          </div>
+        <div className="px-8 py-10 bg-white flex-grow-1">
+          {getView(details, view, () => refetch(), agreement)}
         </div>
       </div>
     </section>

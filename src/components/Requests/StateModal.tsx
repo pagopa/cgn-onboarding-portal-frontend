@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { FilterChip } from "../FilterChip";
+import { BadgePill } from "../BadgePill";
 
 const stateOptions = [
   "PendingAgreement",
@@ -58,7 +58,8 @@ const StateModal = ({ states, onSubmit }: StateModalProps) => {
 
   return (
     <>
-      <FilterChip
+      <BadgePill
+        color="secondary"
         label={getStatesLabel(states)}
         active={!!states}
         onClick={toggleStateModal}

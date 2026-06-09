@@ -1,20 +1,20 @@
 import { format } from "date-fns";
+import { Button } from "design-react-kit";
 import {
   ApprovedAgreementProfile,
   ApprovedAgreementState,
   BothChannels
 } from "../../api/generated_backoffice";
-import { StateBadge } from "../StateBadge";
-import { agreementStateBadge } from "../../utils/badges";
+import { BadgePill } from "../BadgePill";
+import { agreementBadgePill } from "../../utils/badges";
 import Item from "./Item";
 
 type OperatorDataProps = {
   profile: ApprovedAgreementProfile;
   state: ApprovedAgreementState;
-  stateDate: string;
 };
 
-const OperatorData = ({ profile, state, stateDate }: OperatorDataProps) => {
+const OperatorData = ({ profile, state }: OperatorDataProps) => {
   const salesChannel = profile.salesChannel as BothChannels;
   const showStateDate =
     state === ApprovedAgreementState.Inactive ||
@@ -60,13 +60,18 @@ const OperatorData = ({ profile, state, stateDate }: OperatorDataProps) => {
         label="Stato"
         value={
           <div className="d-flex align-items-center gap-2">
-            <StateBadge {...agreementStateBadge[state]} />
-            {showStateDate && (
-              <span>dal {format(new Date(stateDate), "dd/MM/yyyy")}</span>
-            )}
+            <BadgePill {...agreementBadgePill[state]} />
+            {showStateDate && <span>dal {"{gg-mm-aaaa}"}</span>}
           </div>
         }
       />
+      {state === ApprovedAgreementState.Inactive && (
+        <div className="mt-12">
+          <Button color="danger" outline onClick={() => undefined}>
+            Segnala in recesso
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

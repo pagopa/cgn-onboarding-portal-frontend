@@ -29,8 +29,8 @@ import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import { useSyncSorting } from "../../utils/useSyncSorting";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
-import { StateBadge } from "../StateBadge";
-import { requestStateBadge } from "../../utils/badges";
+import { BadgePill } from "../BadgePill";
+import { requestBadgePill } from "../../utils/badges";
 import RequestFilter from "./RequestsFilter";
 import RequestsDetails from "./RequestsDetails";
 
@@ -158,7 +158,7 @@ const Requests = () => {
     columnHelper.accessor(row => row.state, {
       id: "state",
       header: "Stato",
-      cell: ({ getValue }) => <StateBadge {...requestStateBadge[getValue()]} />
+      cell: ({ getValue }) => <BadgePill {...requestBadgePill[getValue()]} />
     }),
     columnHelper.accessor(
       row =>

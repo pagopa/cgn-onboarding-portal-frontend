@@ -22,7 +22,7 @@ import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { organizationStatusBadge } from "../../utils/badges";
-import { StateBadge } from "../StateBadge";
+import { BadgePill } from "../BadgePill";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import { useSyncSorting } from "../../utils/useSyncSorting";
@@ -143,7 +143,7 @@ const OperatorActivations = () => {
       header: "STATO",
       enableSorting: false,
       cell: ({ getValue }) => (
-        <StateBadge {...organizationStatusBadge[getValue()]} />
+        <BadgePill {...organizationStatusBadge[getValue()]} />
       )
     }),
 

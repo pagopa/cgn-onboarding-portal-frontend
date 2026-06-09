@@ -3,7 +3,7 @@ import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { format } from "date-fns";
 import DatePicker from "react-datepicker";
-import { FilterChip } from "./FilterChip";
+import { BadgePill } from "./BadgePill";
 
 type DateModalProps = {
   from?: Date;
@@ -50,7 +50,7 @@ const DateModal = ({
       fieldProps: { name: string; label: string },
       ref: React.Ref<HTMLInputElement>
     ) => (
-      <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
+      <div className="it-datepicker-wrapper w-100">
         <input
           {...fieldProps}
           ref={ref}
@@ -68,7 +68,8 @@ const DateModal = ({
 
   return (
     <>
-      <FilterChip
+      <BadgePill
+        color="secondary"
         label={getDateLabel(propDateFrom, propDateTo)}
         active={!!(propDateFrom || propDateTo)}
         onClick={toggleDateModal}

@@ -13,8 +13,8 @@ import {
 } from "../../utils/strings";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
 import AsyncButton from "../AsyncButton/AsyncButton";
-import { StateBadge } from "../StateBadge";
-import { discountStateBadge } from "../../utils/badges";
+import { BadgePill } from "../BadgePill";
+import { discountBadgePill } from "../../utils/badges";
 import BucketCodeModal from "./BucketCodeModal";
 import Item from "./Item";
 
@@ -212,7 +212,7 @@ const Discount = ({ discount, agreementId, profile, reloadDetails }: Props) => {
       <Item label="Descrizione opportunità" value={discount.description} />
       <Item
         label="Stato"
-        value={<StateBadge {...discountStateBadge[discount.state]} />}
+        value={<BadgePill {...discountBadgePill[discount.state]} />}
       />
       <Item
         label="Data d'inizio opportunità"

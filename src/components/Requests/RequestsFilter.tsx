@@ -1,13 +1,9 @@
 import DateModal from "../DateModal";
+import FilterBar from "../FilterBar";
 import StateModal from "./StateModal";
 import { RequestsFilterFormValues } from "./Requests";
 
-function RequestsFilter({
-  values,
-  onChange,
-  onReset,
-  hasActiveFitlers
-}: {
+type RequestsFilterProps = {
   values: RequestsFilterFormValues;
   onChange(
     update:
@@ -16,73 +12,60 @@ function RequestsFilter({
   ): void;
   onReset(): void;
   hasActiveFitlers: boolean;
-}) {
+};
+
+function RequestsFilter({
+  values,
+  onChange,
+  onReset,
+  hasActiveFitlers
+}: RequestsFilterProps) {
   return (
-    <form>
-      <div className="d-flex justify-content-between">
-        {hasActiveFitlers ? (
-          <h2 className="h4 fw-bold text-dark-blue">
-            Risultati della ricerca
-            <span
-              className="primary-color ms-2 text-sm fw-regular cursor-pointer"
-              onClick={() => {
-                onReset();
-              }}
-            >
-              Esci
-            </span>
-          </h2>
-        ) : (
-          <h2 className="h4 fw-bold text-dark-blue">
-            Richieste di convenzione
-          </h2>
-        )}
-
-        <div className="d-flex justify-content-end align-items-center flex-grow-1 flex-wrap gap-6">
-          <div className="d-flex align-items-center gap-4">
-            <DateModal
-              label="Data"
-              title="Filtra per data"
-              from={values.requestDateFrom}
-              to={values.requestDateTo}
-              onSubmit={(requestDateFrom, requestDateTo) => {
-                onChange(values => ({
-                  ...values,
-                  requestDateFrom,
-                  requestDateTo
-                }));
-              }}
-            />
-
-            <StateModal
-              states={values.states}
-              onSubmit={states => {
-                onChange(values => ({
-                  ...values,
-                  states
-                }));
-              }}
-            />
-          </div>
-
-          <input
-            id="profileFullName"
-            name="profileFullName"
-            type="text"
-            placeholder="Cerca Richiesta"
-            value={values.profileFullName || ""}
-            onChange={event => {
-              const profileFullName = event.currentTarget.value;
-              onChange(values => ({
-                ...values,
-                profileFullName
-              }));
-            }}
-            style={{ maxWidth: "275px" }}
-          />
-        </div>
+    <FilterBar
+      title="Richieste di convenzione"
+      hasActiveFilters={hasActiveFitlers}
+      onReset={onReset}
+    >
+      <div className="d-flex gap-4">
+        <DateModal
+          label="Data"
+          title="Filtra per data"
+          from={values.requestDateFrom}
+          to={values.requestDateTo}
+          onSubmit={(requestDateFrom, requestDateTo) => {
+            onChange(values => ({
+              ...values,
+              requestDateFrom,
+              requestDateTo
+            }));
+          }}
+        />
+        <StateModal
+          states={values.states}
+          onSubmit={states => {
+            onChange(values => ({
+              ...values,
+              states
+            }));
+          }}
+        />
       </div>
-    </form>
+      <input
+        id="profileFullName"
+        name="profileFullName"
+        type="text"
+        placeholder="Cerca Richiesta"
+        value={values.profileFullName || ""}
+        onChange={event => {
+          const profileFullName = event.currentTarget.value;
+          onChange(values => ({
+            ...values,
+            profileFullName
+          }));
+        }}
+        style={{ maxWidth: "275px" }}
+      />
+    </FilterBar>
   );
 }
 

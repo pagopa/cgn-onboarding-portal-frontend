@@ -26,8 +26,8 @@ import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { useSyncSorting } from "../../utils/useSyncSorting";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
-import { StateBadge } from "../StateBadge";
-import { agreementStateBadge, discountStateBadge } from "../../utils/badges";
+import { BadgePill } from "../BadgePill";
+import { agreementBadgePill, discountBadgePill } from "../../utils/badges";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
 
@@ -151,15 +151,13 @@ const OperatorConvention = () => {
       enableSorting: false,
       cell: ({ getValue }) =>
         getValue() ? (
-          <StateBadge {...discountStateBadge[DiscountState.TestPending]} />
+          <BadgePill {...discountBadgePill[DiscountState.TestPending]} />
         ) : null
     }),
     columnHelper.accessor("state", {
       header: "Stato",
       enableSorting: false,
-      cell: ({ getValue }) => (
-        <StateBadge {...agreementStateBadge[getValue()]} />
-      )
+      cell: ({ getValue }) => <BadgePill {...agreementBadgePill[getValue()]} />
     })
   ];
 

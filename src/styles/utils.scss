@@ -39,6 +39,14 @@
   letter-spacing: 0.5px;
 }
 
+.nav-link-active {
+  border-left: 2px solid #003366;
+
+  span {
+    color: #003366 !important;
+  }
+}
+
 .badge {
   height: 24px;
   display: inline-flex;

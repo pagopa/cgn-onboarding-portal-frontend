@@ -4,7 +4,7 @@ import {
   ApprovedAgreementState,
   OrganizationStatus
 } from "../api/generated_backoffice";
-import { BadgeColor } from "../components/StateBadge";
+import { BadgeColor } from "../components/BadgePill";
 
 export const organizationStatusBadge: Record<
   OrganizationStatus,
@@ -23,7 +23,7 @@ export const organizationStatusBadge: Record<
   [OrganizationStatus.Terminated]: { label: "Cessata", color: "secondary" }
 };
 
-export const agreementStateBadge: Record<
+export const agreementBadgePill: Record<
   ApprovedAgreementState,
   { label: string; color: BadgeColor }
 > = {
@@ -37,7 +37,7 @@ export const agreementStateBadge: Record<
   [ApprovedAgreementState.Terminated]: { label: "Cessato", color: "secondary" }
 };
 
-export const discountStateBadge: Record<
+export const discountBadgePill: Record<
   DiscountState,
   { label: string; color: BadgeColor }
 > = {
@@ -50,7 +50,7 @@ export const discountStateBadge: Record<
   [DiscountState.Expired]: { label: "Scaduta", color: "secondary" }
 };
 
-export const requestStateBadge: Record<
+export const requestBadgePill: Record<
   AgreementState,
   { label: string; color: BadgeColor }
 > = {
