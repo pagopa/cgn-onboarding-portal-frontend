@@ -73,7 +73,15 @@ const getView = (
 
   switch (view) {
     case "dati_operatore":
-      return <OperatorData profile={details.profile} state={agreement.state} />;
+      return (
+        <OperatorData
+          profile={details.profile}
+          state={agreement.state}
+          partnerName={details.profile.fullName}
+          agreementId={details.agreementId}
+          reloadDetails={getConventionDetails}
+        />
+      );
     case "profilo":
       return <Profile profile={details.profile} />;
     case "referente":
@@ -83,13 +91,12 @@ const getView = (
   }
 };
 
-const ConventionDetails = ({
-  agreement,
-  onClose
-}: {
+type ConventionDetailsProps = {
   agreement: ApprovedAgreement;
   onClose: () => void;
-}) => {
+};
+
+const ConventionDetails = ({ agreement, onClose }: ConventionDetailsProps) => {
   const [view, setView] = useState("dati_operatore");
 
   const {
