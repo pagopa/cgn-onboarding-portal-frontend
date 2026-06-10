@@ -4,7 +4,7 @@
 set -e
 
 # Set the API version tag (default: master)
-VERSION_TAG="${1:-master}"
+VERSION_TAG="${1:-IEG-2775}"
 
 # Define the base GitHub URL
 BASE_URL="https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/${VERSION_TAG}/openapi"
