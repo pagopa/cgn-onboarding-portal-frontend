@@ -7,28 +7,28 @@ import {
 } from "./tooltip";
 
 export function TooltipProvider({ children }: ProviderProps): ReactElement {
-  const [open, openTooltip] = useState(false);
+  const [isOpen, setOpen] = useState(false);
   const [{ severity, text, title }, setTooltip] =
     useState<TooltipProviderState>(initialState);
 
   const timeoutRef = useRef<number>(null);
 
   const closeTooltip = (): void => {
-    openTooltip(false);
+    setOpen(false);
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
   };
 
   const triggerTooltip = useCallback((tooltip: TooltipProviderState): void => {
-    openTooltip(true);
+    setOpen(true);
     setTooltip(tooltip);
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
     timeoutRef.current = window.setTimeout(() => {
-      openTooltip(false);
+      setOpen(false);
     }, 5000);
   }, []);
 
@@ -37,22 +37,30 @@ export function TooltipProvider({ children }: ProviderProps): ReactElement {
   return (
     <TooltipContext.Provider value={contextValue}>
       {children}
-      {open && (
-        <div className="fixed-bottom me-6" style={{ left: "auto" }}>
+      {isOpen && (
+        <div
+          className="fixed-bottom me-6"
+          style={{ left: "auto", width: "452px" }}
+        >
           <div
-            className={`alert bg-white alert-dismissible alert-${severity} fade show`}
+            className={`alert bg-white alert-${severity} fade show py-4`}
             role="alert"
           >
-            {title && <h4 className="alert-heading">{title}</h4>}
-            <p>{text}</p>
-            <button
-              type="button"
-              className="close"
-              data-bs-dismiss="alert"
-              onClick={closeTooltip}
-            >
-              <span>&times;</span>
-            </button>
+            {title && (
+              <div className="d-flex justify-content-between align-items-start">
+                <h4 className="alert-heading mb-4" style={{ fontSize: "24px" }}>
+                  {title}
+                </h4>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={closeTooltip}
+                />
+              </div>
+            )}
+            <p className="m-0" style={{ fontSize: "18px", fontWeight: 400 }}>
+              {text}
+            </p>
           </div>
         </div>
       )}

@@ -162,7 +162,10 @@ const ConventionDetails = ({ agreement, onClose }: ConventionDetailsProps) => {
         </div>
       </div>
       <div className="d-flex flex-column flex-lg-row gap-4 mt-4">
-        <div className="px-8 py-10 bg-white flex-shrink-0 align-self-lg-start">
+        <div
+          className="px-8 py-10 bg-white flex-shrink-0 align-self-lg-start"
+          style={{ maxWidth: 400 }}
+        >
           <nav className="navbar it-navscroll-wrapper navbar-expand-lg it-left-side p-0">
             <div className="menu-wrapper p-0">
               <div className="link-list-wrapper">

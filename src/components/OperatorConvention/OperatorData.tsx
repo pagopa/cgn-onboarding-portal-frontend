@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { format } from "date-fns";
-import { Button } from "design-react-kit";
+import { Button, Icon } from "design-react-kit";
 import {
   ApprovedAgreementProfile,
   ApprovedAgreementState,
@@ -22,6 +22,19 @@ type OperatorDataProps = {
   reloadDetails: () => void;
 };
 
+type TerminationModalConfig = {
+  title: string;
+  body: string;
+  successText: string;
+  successTitle: string;
+};
+
+const {
+  StartTerminationInProgress,
+  CompleteTermination,
+  CancelTerminationInProgress
+} = AgreementTerminationAction;
+
 const OperatorData = ({
   profile,
   state,
@@ -29,46 +42,129 @@ const OperatorData = ({
   agreementId,
   reloadDetails
 }: OperatorDataProps) => {
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [openModal, setOpenModal] = useState<AgreementTerminationAction | null>(
+    null
+  );
   const { triggerTooltip } = useTooltip();
 
-  const terminationMutation =
-    remoteData.Backoffice.Agreement.manageAgreementTermination.useMutation({
-      onSuccess() {
-        setModalOpen(false);
-        reloadDetails();
-        triggerTooltip({
-          severity: Severity.SUCCESS,
-          text: "La segnalazione di recesso è stata effettuata con successo.",
-          title: "Recesso segnalato"
-        });
-      },
-      onError() {
-        triggerTooltip({
-          severity: Severity.DANGER,
-          text: "Si è verificato un errore durante la segnalazione di recesso.",
-          title: "Errore"
-        });
-      }
-    });
+  const {
+    name,
+    description,
+    salesChannel: rawSalesChannel,
+    imageUrl,
+    lastUpateDate
+  } = profile;
+  const salesChannel = rawSalesChannel as BothChannels;
 
-  const startTermination = () => {
-    terminationMutation.mutate({
-      agreementId,
-      terminationCommand: {
-        action: AgreementTerminationAction.StartTerminationInProgress
+  const isInactive = state === ApprovedAgreementState.Inactive;
+  const isTerminationInProgress =
+    state === ApprovedAgreementState.TerminationInProgress;
+  const showSinceDate = isInactive || isTerminationInProgress;
+
+  const terminationModalConfig = useMemo<
+    Record<AgreementTerminationAction, TerminationModalConfig>
+  >(
+    () => ({
+      [StartTerminationInProgress]: {
+        title: `Vuoi segnalare ${partnerName} come in recesso?`,
+        body: "Il partner potrà continuare ad accedere al portale operatori e tutte le sue opportunità attive rimarranno visibili su IO. Potrai annullare l'operazione in un secondo momento.",
+        successText: "Hai segnalato il partner come in recesso",
+        successTitle: "Fatto!"
+      },
+      [CompleteTermination]: {
+        title: `Vuoi terminare la convenzione per ${partnerName}?`,
+        body: "Il partner non potrà più accedere al portale operatori e tutte le opportunità saranno rimosse da IO. Potrai annullare l'operazione in un secondo momento.",
+        successText: "Hai terminato la convenzione del partner.",
+        successTitle: "Fatto!"
+      },
+      [CancelTerminationInProgress]: {
+        title: `Vuoi annullare il recesso per ${partnerName}?`,
+        body: "L'ente potrà continuare a usare il portale e tutte le sue opportunità attive torneranno visibili su IO.",
+        successText: "L'ente può continuare ad usare il portale.",
+        successTitle: "Recesso annullato"
       }
-    });
+    }),
+    [partnerName]
+  );
+  const modalConfig = openModal ? terminationModalConfig[openModal] : null;
+
+  const terminationMutation =
+    remoteData.Backoffice.Agreement.manageAgreementTermination.useMutation();
+
+  const mutateTermination = (action: AgreementTerminationAction) => {
+    const { successText, successTitle } = terminationModalConfig[action];
+    terminationMutation.mutate(
+      { agreementId, terminationCommand: { action } },
+      {
+        onSuccess() {
+          setOpenModal(null);
+          reloadDetails();
+          triggerTooltip({
+            severity: Severity.SUCCESS,
+            text: successText,
+            title: successTitle
+          });
+        },
+        onError() {
+          triggerTooltip({
+            severity: Severity.DANGER,
+            text: "Si è verificato un errore.",
+            title: "Errore"
+          });
+        }
+      }
+    );
   };
-  const salesChannel = profile.salesChannel as BothChannels;
-  const showStateDate = state === ApprovedAgreementState.Inactive;
+
+  const renderTerminationActions = () => {
+    if (isInactive) {
+      return (
+        <div className="mt-12">
+          <Button
+            color="danger"
+            outline
+            onClick={() => setOpenModal(StartTerminationInProgress)}
+          >
+            Segnala in recesso
+          </Button>
+        </div>
+      );
+    }
+    if (isTerminationInProgress) {
+      return (
+        <div className="mt-12 d-flex gap-6">
+          <Button
+            color="danger"
+            outline
+            onClick={() => setOpenModal(CompleteTermination)}
+          >
+            Termina convenzione
+          </Button>
+          <Button
+            color="primary"
+            outline
+            onClick={() => setOpenModal(CancelTerminationInProgress)}
+          >
+            <Icon
+              icon="it-restore"
+              size="sm"
+              color="primary"
+              padding={false}
+              className="me-2"
+            />
+            Annulla recesso
+          </Button>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div>
       <h5 className="mb-7 fw-bold">Profilo</h5>
-      {profile.name && (
-        <Item label="Nome operatore visualizzato" value={profile.name} />
-      )}
-      <Item label="Descrizione dell'operatore" value={profile.description} />
+      {name && <Item label="Nome operatore visualizzato" value={name} />}
+      <Item label="Descrizione dell'operatore" value={description} />
       <Item label="Sito web" value={salesChannel.websiteUrl || "-"} />
       {salesChannel.addresses?.map((address, i: number) => {
         const textAddress = `${address}`;
@@ -83,11 +179,11 @@ const OperatorData = ({
       <div className="row mb-5">
         <div className="col-4 text-gray">Immagine operatore</div>
         <div className="col-8">
-          {profile.imageUrl ? (
+          {imageUrl ? (
             <img
               width="300"
               height="300"
-              src={`${import.meta.env.CGN_IMAGE_BASE_URL}/${profile.imageUrl}`}
+              src={`${import.meta.env.CGN_IMAGE_BASE_URL}/${imageUrl}`}
               alt="Immagine operatore"
             />
           ) : (
@@ -97,30 +193,24 @@ const OperatorData = ({
       </div>
       <Item
         label="Data ultima modifica"
-        value={format(new Date(profile.lastUpateDate), "dd/MM/yyyy")}
+        value={format(new Date(lastUpateDate), "dd/MM/yyyy")}
       />
       <Item
         label="Stato"
         value={
           <div className="d-flex align-items-center gap-2">
             <BadgePill {...agreementBadgePill[state]} />
-            {showStateDate && <span>dal {"{gg-mm-aaaa}"}</span>}
+            {showSinceDate && <span>dal {"{gg-mm-aaaa}"}</span>}
           </div>
         }
       />
-      {state === ApprovedAgreementState.Inactive && (
-        <div className="mt-12">
-          <Button color="danger" outline onClick={() => setModalOpen(true)}>
-            Segnala in recesso
-          </Button>
-        </div>
-      )}
+      {renderTerminationActions()}
       <ConfirmModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        title={`Vuoi segnalare ${partnerName} come in recesso?`}
-        body="Il partner potrà continuare ad accedere al portale operatori e tutte le sue opportunità attive rimarranno visibili su IO. Potrai annullare l'operazione in un secondo momento."
-        onConfirm={startTermination}
+        isOpen={openModal !== null}
+        onClose={() => setOpenModal(null)}
+        title={modalConfig?.title ?? ""}
+        body={modalConfig?.body ?? ""}
+        onConfirm={() => mutateTermination(openModal!)}
         isPending={terminationMutation.isPending}
       />
     </div>
