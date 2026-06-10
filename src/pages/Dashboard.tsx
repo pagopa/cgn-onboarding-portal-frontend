@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { AgreementState as AgreementStateType } from "../api/generated";
 import AgreementState from "../components/AgreementState/AgreementState";
 import Layout from "../components/Layout/Layout";
 import { ContainerFluid } from "../components/Container/Container";
@@ -17,13 +16,6 @@ const Dashboard = () => {
 
   const authentication = useAuthentication();
   const user = authentication.currentUserSession;
-
-  function hasStateSection(state: AgreementStateType) {
-    return (
-      state === AgreementStateType.PendingAgreement ||
-      state === AgreementStateType.ApprovedAgreement
-    );
-  }
 
   const handleClick = (newTab: number) => {
     setTab(newTab);
@@ -53,14 +45,12 @@ const Dashboard = () => {
           />
           {selectedTab()}
         </div>
-        {hasStateSection(AgreementStateType.ApprovedAgreement) && (
-          <div className="col-3 ">
-            <AgreementState
-              state={agreement.state}
-              startDate={agreement.startDate}
-            />
-          </div>
-        )}
+        <div className="col-3 ">
+          <AgreementState
+            state={agreement.state}
+            startDate={agreement.startDate}
+          />
+        </div>
       </ContainerFluid>
     </Layout>
   );

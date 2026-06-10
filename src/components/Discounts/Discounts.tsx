@@ -21,10 +21,11 @@ import { selectAgreement } from "../../store/agreement/selectors";
 import { useCgnSelector } from "../../store/hooks";
 import Pager from "../Table/Pager";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import { BadgePill } from "../BadgePill";
+import { discountBadgePill } from "../../utils/badges";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow from "./DiscountDetailRow";
-import { DiscountComponent } from "./getDiscountComponent";
 import UnpublishModal from "./UnpublishModal";
 import TestModal from "./TestModal";
 import { TestErrorModal } from "./TestErrorModal";
@@ -213,7 +214,7 @@ const Discounts = () => {
       enableSorting: false,
       cell: ({ getValue }) => (
         <span>
-          <DiscountComponent discountState={getValue()} />
+          <BadgePill {...discountBadgePill[getValue()]} />
         </span>
       )
     }),
@@ -371,6 +372,7 @@ const Discounts = () => {
                   <Fragment key={row.id}>
                     <tr
                       className="cursor-pointer"
+                      style={{ height: 70 }}
                       onClick={() => row.toggleExpanded()}
                     >
                       {row.getVisibleCells().map((cell, i) => (

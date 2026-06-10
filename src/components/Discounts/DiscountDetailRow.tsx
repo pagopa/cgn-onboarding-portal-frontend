@@ -22,8 +22,9 @@ import ProfileItem from "../Profile/ProfileItem";
 import { getEditDiscountRoute } from "../../navigation/utils";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
 import AsyncButton from "../AsyncButton/AsyncButton";
+import { BadgePill } from "../BadgePill";
+import { discountBadgePill } from "../../utils/badges";
 import ImportationStatus from "./ImportationStatus";
-import { DiscountComponent } from "./getDiscountComponent";
 
 type Props = {
   row: Row<Discount>;
@@ -207,7 +208,7 @@ const DiscountDetailRow = ({
               Stato opportunità
             </td>
             <td className={`border-bottom-0`}>
-              <DiscountComponent discountState={row.original.state} />
+              <BadgePill {...discountBadgePill[row.original.state]} />
             </td>
           </tr>
           <ProfileItem

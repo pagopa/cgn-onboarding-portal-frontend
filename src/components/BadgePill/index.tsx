@@ -24,26 +24,35 @@ export const BadgePill = ({
   onClick,
   active,
   onClear
-}: BadgePillProps) => (
-  <Badge
-    className="fw-normal badge cursor-pointer align-self-center"
-    pill
-    tag="span"
-    color={colorMap[color]}
-    style={{ backgroundColor: colorMap[color], color: "white" }}
-    onClick={onClick}
-  >
-    {label}
-    {active && onClear && (
-      <Icon
-        color="white"
-        icon="it-close"
-        size="sm"
-        onClick={e => {
-          e.stopPropagation();
-          onClear();
-        }}
-      />
-    )}
-  </Badge>
-);
+}: BadgePillProps) => {
+  const className = [
+    "fw-normal",
+    "align-self-center",
+    onClick && "badge-pointer"
+  ]
+    .filter(Boolean)
+    .join(" ");
+  return (
+    <Badge
+      className={className}
+      pill
+      tag="span"
+      color={colorMap[color]}
+      style={{ backgroundColor: colorMap[color], color: "white" }}
+      onClick={onClick}
+    >
+      {label}
+      {active && onClear && (
+        <Icon
+          color="white"
+          icon="it-close"
+          size="sm"
+          onClick={e => {
+            e.stopPropagation();
+            onClear();
+          }}
+        />
+      )}
+    </Badge>
+  );
+};
