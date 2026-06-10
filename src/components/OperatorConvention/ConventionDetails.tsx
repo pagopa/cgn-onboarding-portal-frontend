@@ -119,7 +119,7 @@ const ConventionDetails = ({ agreement, onClose }: ConventionDetailsProps) => {
           const linkClass = `nav-link primary-color cursor-pointer${isSelected ? " fw-bold" : ""}`;
           return (
             <li
-              key={i}
+              key={viewKey}
               className="nav-link d-flex flex-row align-items-center flex-nowrap ps-3"
             >
               <a className={linkClass} onClick={() => setView(viewKey)}>
