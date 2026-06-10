@@ -26,7 +26,7 @@ const menuLink = (
   const stateClass = isActive
     ? "nav-link-active"
     : "border-start border-2 border-white";
-  const className = `nav-link p-4 ${stateClass}${!child ? " cursor-pointer" : ""}`;
+  const className = `nav-link p-4 ${stateClass}${child ? "" : " cursor-pointer"}`;
 
   return (
     <li>
