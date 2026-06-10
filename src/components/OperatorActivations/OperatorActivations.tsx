@@ -1,10 +1,9 @@
-import { useState, useMemo, Fragment } from "react";
+import { useState, useMemo } from "react";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
   createColumnHelper,
   ExpandedState,
-  flexRender,
   getCoreRowModel,
   getExpandedRowModel,
   getPaginationRowModel,
@@ -20,6 +19,7 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import TableBody from "../Table/TableBody";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { organizationStatusBadge } from "../../utils/badges";
 import { BadgePill } from "../BadgePill";
@@ -224,47 +224,15 @@ const OperatorActivations = () => {
         <table style={{ width: "100%" }} className="mt-2 bg-white">
           <TableHeader headerGroups={table.getHeaderGroups()} />
 
-          <tbody>
-            {table.getRowModel().rows.map(row => (
-              <Fragment key={row.id}>
-                <tr
-                  className="cursor-pointer"
-                  style={{ height: "72px" }}
-                  onClick={() => row.toggleExpanded()}
-                >
-                  {row.getVisibleCells().map((cell, i, arr) => (
-                    <td
-                      key={cell.id}
-                      className={`${i === 0 ? "ps-6" : ""} ${
-                        i === arr.length - 1 ? "pe-6" : ""
-                      } px-3 border-bottom text-sm`}
-                      style={
-                        cell.column.id === "expander"
-                          ? { width: "calc(32px + 0.75rem * 2)" }
-                          : undefined
-                      }
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </td>
-                  ))}
-                </tr>
-
-                {row.getIsExpanded() && (
-                  <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                    <td colSpan={table.getVisibleLeafColumns().length}>
-                      <OperatorActivationDetail
-                        operator={row.original}
-                        getActivations={() => refetch()}
-                      />
-                    </td>
-                  </tr>
-                )}
-              </Fragment>
-            ))}
-          </tbody>
+          <TableBody
+            table={table}
+            renderExpanded={row => (
+              <OperatorActivationDetail
+                operator={row.original}
+                getActivations={() => refetch()}
+              />
+            )}
+          />
         </table>
       </div>
       <TableFooter

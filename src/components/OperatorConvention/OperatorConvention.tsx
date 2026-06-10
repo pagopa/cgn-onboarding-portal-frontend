@@ -4,7 +4,6 @@ import isEqual from "lodash/isEqual";
 import {
   createColumnHelper,
   ExpandedState,
-  flexRender,
   getCoreRowModel,
   getExpandedRowModel,
   getPaginationRowModel,
@@ -21,6 +20,7 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import TableBody from "../Table/TableBody";
 import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
@@ -238,30 +238,13 @@ const OperatorConvention = () => {
         <table style={{ width: "100%" }} className="mt-2 bg-white">
           <TableHeader headerGroups={table.getHeaderGroups()} />
 
-          <tbody>
-            {table.getRowModel().rows.map(row => (
-              <tr
-                key={row.id}
-                className="cursor-pointer"
-                style={{ height: "72px" }}
-                onClick={() => {
-                  setShowDetails(true);
-                  setSelectedConvention(row.original);
-                }}
-              >
-                {row.getVisibleCells().map((cell, i, arr) => (
-                  <td
-                    key={cell.id}
-                    className={`${i === 0 ? "ps-6" : ""} ${
-                      i === arr.length - 1 ? "pe-6" : ""
-                    } px-3 py-2 border-bottom text-sm`}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
+          <TableBody
+            table={table}
+            onRowClick={row => {
+              setShowDetails(true);
+              setSelectedConvention(row.original);
+            }}
+          />
         </table>
       </div>
       <TableFooter

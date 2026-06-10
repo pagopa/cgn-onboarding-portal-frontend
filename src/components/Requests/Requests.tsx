@@ -1,11 +1,10 @@
-import { useState, useMemo, useCallback, Fragment } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import { keepPreviousData } from "@tanstack/react-query";
 import {
   createColumnHelper,
   ExpandedState,
-  flexRender,
   getCoreRowModel,
   getExpandedRowModel,
   getPaginationRowModel,
@@ -23,6 +22,7 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import TableBody from "../Table/TableBody";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
@@ -258,46 +258,10 @@ const Requests = () => {
       <div className="overflow-auto">
         <table style={{ width: "100%" }} className="bg-white">
           <TableHeader headerGroups={table.getHeaderGroups()} />
-          <tbody>
-            {table.getRowModel().rows.map(row => (
-              <Fragment key={row.id}>
-                <tr
-                  className="cursor-pointer"
-                  style={{ height: "72px" }}
-                  onClick={() => row.toggleExpanded()}
-                >
-                  {row.getVisibleCells().map((cell, i) => (
-                    <td
-                      key={cell.id}
-                      className={`
-            ${i === 0 ? "ps-6" : ""}
-            ${i === table.getHeaderGroups()[0].headers.length - 1 ? "pe-6" : ""}
-            px-3 py-2 border-bottom text-sm
-          `}
-                      style={
-                        cell.column.id === "expander"
-                          ? { width: "calc(32px + 0.75rem * 2)" }
-                          : {}
-                      }
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </td>
-                  ))}
-                </tr>
-
-                {row.getIsExpanded() && (
-                  <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                    <td colSpan={table.getVisibleLeafColumns().length}>
-                      {renderRowSubComponent({ row })}
-                    </td>
-                  </tr>
-                )}
-              </Fragment>
-            ))}
-          </tbody>
+          <TableBody
+            table={table}
+            renderExpanded={row => renderRowSubComponent({ row })}
+          />
         </table>
       </div>
       <TableFooter

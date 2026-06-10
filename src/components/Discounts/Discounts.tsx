@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useState, Fragment } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
-  flexRender,
   getExpandedRowModel,
   createColumnHelper,
   getPaginationRowModel
@@ -16,6 +15,7 @@ import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { Severity, useTooltip } from "../../context/tooltip";
 import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
+import TableBody from "../Table/TableBody";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import { selectAgreement } from "../../store/agreement/selectors";
 import { useCgnSelector } from "../../store/hooks";
@@ -367,85 +367,46 @@ const Discounts = () => {
                     </td>
                   </tr>
                 )}
-
-                {tableInstance.getRowModel().rows.map(row => (
-                  <Fragment key={row.id}>
-                    <tr
-                      className="cursor-pointer"
-                      style={{ height: 70 }}
-                      onClick={() => row.toggleExpanded()}
-                    >
-                      {row.getVisibleCells().map((cell, i) => (
-                        <td
-                          key={cell.id}
-                          className={`
-                ${i === 0 ? "ps-6" : ""}
-                ${i === headerGroups[0].headers.length - 1 ? "pe-6" : ""}
-                px-3 py-2 border-bottom text-sm align-middle
-              `}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : {}
-                          }
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-
-                    {row.getIsExpanded() && (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                        <td
-                          colSpan={tableInstance.getVisibleLeafColumns().length}
-                        >
-                          <DiscountDetailRow
-                            row={row}
-                            agreement={agreement}
-                            profile={profile}
-                            onPublish={() =>
-                              setSelectedDiscountAction({
-                                action: "publish",
-                                discountId: row.original.id
-                              })
-                            }
-                            isPendingPublish={publishDiscountMutation.isPending}
-                            isPendingUnpublish={
-                              unpublishDiscountMutation.isPending
-                            }
-                            isPendingTest={testDiscountMutation.isPending}
-                            isPendingDelete={deleteDiscountMutation.isPending}
-                            onUnpublish={() =>
-                              setSelectedDiscountAction({
-                                action: "unpublish",
-                                discountId: row.original.id
-                              })
-                            }
-                            onDelete={() =>
-                              setSelectedDiscountAction({
-                                action: "delete",
-                                discountId: row.original.id
-                              })
-                            }
-                            onTest={() =>
-                              setSelectedDiscountAction({
-                                action: "test",
-                                discountId: row.original.id
-                              })
-                            }
-                            maxPublishedDiscountsReached={
-                              maxPublishedDiscountsReached
-                            }
-                          />
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                ))}
               </tbody>
+              <TableBody
+                table={tableInstance}
+                renderExpanded={row => (
+                  <DiscountDetailRow
+                    row={row}
+                    agreement={agreement}
+                    profile={profile}
+                    onPublish={() =>
+                      setSelectedDiscountAction({
+                        action: "publish",
+                        discountId: row.original.id
+                      })
+                    }
+                    isPendingPublish={publishDiscountMutation.isPending}
+                    isPendingUnpublish={unpublishDiscountMutation.isPending}
+                    isPendingTest={testDiscountMutation.isPending}
+                    isPendingDelete={deleteDiscountMutation.isPending}
+                    onUnpublish={() =>
+                      setSelectedDiscountAction({
+                        action: "unpublish",
+                        discountId: row.original.id
+                      })
+                    }
+                    onDelete={() =>
+                      setSelectedDiscountAction({
+                        action: "delete",
+                        discountId: row.original.id
+                      })
+                    }
+                    onTest={() =>
+                      setSelectedDiscountAction({
+                        action: "test",
+                        discountId: row.original.id
+                      })
+                    }
+                    maxPublishedDiscountsReached={maxPublishedDiscountsReached}
+                  />
+                )}
+              />
             </table>
           </div>
         </>
