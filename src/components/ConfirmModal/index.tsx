@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import AsyncButton from "../AsyncButton/AsyncButton";
 
 type ConfirmModalProps = {
   isOpen: boolean;
@@ -30,9 +31,9 @@ const ConfirmModal = ({
       <Button color="primary" outline onClick={onClose}>
         {cancelLabel}
       </Button>
-      <Button color="primary" onClick={onConfirm} disabled={isPending}>
+      <AsyncButton color="primary" onClick={onConfirm} isPending={isPending}>
         {confirmLabel}
-      </Button>
+      </AsyncButton>
     </ModalFooter>
   </Modal>
 );
