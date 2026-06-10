@@ -103,6 +103,7 @@ const ConventionFilter = ({
         name="fullName"
         type="text"
         placeholder="Cerca Operatore"
+        value={values.fullName ?? ""}
         onChange={event => {
           onChange(values => ({
             ...values,

@@ -55,7 +55,7 @@ function RequestsFilter({
         name="profileFullName"
         type="text"
         placeholder="Cerca Richiesta"
-        value={values.profileFullName || ""}
+        value={values.profileFullName ?? ""}
         onChange={event => {
           const profileFullName = event.currentTarget.value;
           onChange(values => ({

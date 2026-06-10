@@ -89,8 +89,7 @@ const OperatorConvention = () => {
 
   const params = useMemo(
     (): AgreementApiGetApprovedAgreementsRequest => ({
-      profileFullName:
-        values.fullName === undefined ? undefined : fullNameDebounced,
+      profileFullName: fullNameDebounced,
       lastUpdateDateFrom: values.lastUpdateDateFrom
         ? format(values.lastUpdateDateFrom, "yyyy-MM-dd")
         : undefined,
