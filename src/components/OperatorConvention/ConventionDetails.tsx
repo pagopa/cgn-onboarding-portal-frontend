@@ -80,6 +80,7 @@ const getView = (
           partnerName={details.profile.fullName}
           agreementId={details.agreementId}
           reloadDetails={getConventionDetails}
+          agreementStateSince={details.agreementStateSince}
         />
       );
     case "profilo":

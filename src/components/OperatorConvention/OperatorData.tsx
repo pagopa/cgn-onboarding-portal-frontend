@@ -4,6 +4,7 @@ import { Button, Icon } from "design-react-kit";
 import {
   ApprovedAgreementProfile,
   ApprovedAgreementState,
+  ApprovedAgreementDetail,
   AgreementTerminationAction,
   BothChannels
 } from "../../api/generated_backoffice";
@@ -20,6 +21,7 @@ type OperatorDataProps = {
   partnerName: string;
   agreementId: string;
   reloadDetails: () => void;
+  agreementStateSince?: ApprovedAgreementDetail["agreementStateSince"];
 };
 
 type TerminationModalConfig = {
@@ -40,7 +42,8 @@ const OperatorData = ({
   state,
   partnerName,
   agreementId,
-  reloadDetails
+  reloadDetails,
+  agreementStateSince
 }: OperatorDataProps) => {
   const [openModal, setOpenModal] = useState<AgreementTerminationAction | null>(
     null
@@ -59,7 +62,8 @@ const OperatorData = ({
   const isInactive = state === ApprovedAgreementState.Inactive;
   const isTerminationInProgress =
     state === ApprovedAgreementState.TerminationInProgress;
-  const showSinceDate = isInactive || isTerminationInProgress;
+  const isInactiveOrTermination = isInactive || isTerminationInProgress;
+  const showSinceDate = isInactiveOrTermination && !!agreementStateSince;
 
   const terminationModalConfig = useMemo<
     Record<AgreementTerminationAction, TerminationModalConfig>
@@ -200,7 +204,11 @@ const OperatorData = ({
         value={
           <div className="d-flex align-items-center gap-2">
             <BadgePill {...agreementBadgePill[state]} />
-            {showSinceDate && <span>dal {"{gg-mm-aaaa}"}</span>}
+            {showSinceDate && (
+              <span>
+                dal {format(new Date(agreementStateSince), "dd/MM/yyyy")}
+              </span>
+            )}
           </div>
         }
       />
