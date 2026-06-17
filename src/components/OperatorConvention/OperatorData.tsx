@@ -74,10 +74,10 @@ const OperatorData = ({
   >(
     () => ({
       [SendTerminationReminder]: {
-        title: `Vuoi segnalare ${partnerName} come sollecitato?`,
+        title: `Vuoi segnalare un richiamo per ${partnerName}?`,
         body: "Il partner potrà continuare ad accedere al portale operatori e tutte le sue opportunità attive rimarranno visibili su IO. Potrai annullare l’operazione in un secondo momento.",
         successText: "L’ente può continuare ad usare il portale.",
-        successTitle: "Sollecito segnalato"
+        successTitle: "Richiamo segnalato"
       },
       [StartTerminationInProgress]: {
         title: `Vuoi segnalare ${partnerName} come in recesso?`,
@@ -139,7 +139,7 @@ const OperatorData = ({
             outline
             onClick={() => setOpenModal(SendTerminationReminder)}
           >
-            Segnala sollecito
+            Segnala Richiamo
           </Button>
         </>
       );

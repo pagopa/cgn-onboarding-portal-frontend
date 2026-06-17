@@ -17,7 +17,7 @@ export const organizationStatusBadge: Record<
   [OrganizationStatus.Active]: { label: "Attivo", color: "success" },
   [OrganizationStatus.Inactive]: { label: "Inattiva", color: "warning" },
   [OrganizationStatus.TerminationReminderSent]: {
-    label: "Sollecito",
+    label: "Richiamo",
     color: "warning"
   },
   [OrganizationStatus.TerminationInProgress]: {
@@ -35,7 +35,7 @@ export const agreementBadgePill: Record<
   [ApprovedAgreementState.Active]: { label: "Attivo", color: "success" },
   [ApprovedAgreementState.Inactive]: { label: "Inattivo", color: "warning" },
   [ApprovedAgreementState.TerminationReminderSent]: {
-    label: "Sollecito",
+    label: "Richiamo",
     color: "warning"
   },
   [ApprovedAgreementState.TerminationInProgress]: {

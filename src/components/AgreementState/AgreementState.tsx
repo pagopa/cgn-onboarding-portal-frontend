@@ -69,13 +69,12 @@ const AgreementState = ({ state, startDate }: Props) => {
     ),
     [TerminationReminderSentAgreement]: (
       <>
-        <BadgePill label="Sollecito inviato" color="warning" />
+        <BadgePill label="Richiamo" color="warning" />
         <div className="p-3">
           <Exclamation />
         </div>
         <p className="text-sm text-center text-gray">
-          Hai ricevuto un sollecito di recesso. Contatta PagoPA per maggiori
-          informazioni.
+          Hai ricevuto un richiamo di recesso.
         </p>
       </>
     ),
