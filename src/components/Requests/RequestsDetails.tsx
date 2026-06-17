@@ -204,6 +204,8 @@ const RequestsDetails = ({ original, updateList }: Props) => {
     rejectAgreementMutation.isPending ||
     assignAgreementsMutation.isPending;
 
+  const isDraft = original.state === AgreementState.DraftAgreement;
+
   return (
     <section className="px-6 py-4 bg-white">
       <h1 className="h5 fw-bold text-dark-blue mb-5">Dettagli</h1>
@@ -234,47 +236,51 @@ const RequestsDetails = ({ original, updateList }: Props) => {
           </Fragment>
         )}
       </div>
-      <h1 className="h5 fw-bold text-dark-blue mb-5">
-        Dati del referente incaricato
-      </h1>
-      <div className="container">
-        <RequestItem
-          label="Nome e cognome"
-          value={`${original.profile?.referent.firstName} ${original.profile?.referent.lastName}`}
-        />
-        <RequestItem
-          label="Indirizzo e-mail"
-          value={original.profile?.referent.emailAddress}
-        />
-        <RequestItem
-          label="Numero di telefono diretto"
-          value={original.profile?.referent.telephoneNumber}
-        />
-      </div>
-      <RequestsDocuments
-        original={original}
-        assignedToMe={assignedToMe}
-        setCheckAllDocs={setCheckAllDocs}
-      />
-      {rejectMode ? (
-        <RejectButtons
-          rejectMessage={rejectMessage}
-          setRejectMessage={setRejectMessage}
-          setRejectMode={setRejectMode}
-          rejectAgreement={rejectAgreement}
-          isPending={isPending}
-        />
-      ) : (
-        <ActionButtons
-          assignedToMe={assignedToMe}
-          original={original}
-          checkAllDocs={checkAllDocs}
-          approveIsPending={approveAgreementMutation.isPending}
-          assignIsPending={assignAgreementsMutation.isPending}
-          approveAgreement={approveAgreement}
-          assignAgreements={assignAgreements}
-          setRejectMode={setRejectMode}
-        />
+      {!isDraft && (
+        <>
+          <h1 className="h5 fw-bold text-dark-blue mb-5">
+            Dati del referente incaricato
+          </h1>
+          <div className="container">
+            <RequestItem
+              label="Nome e cognome"
+              value={`${original.profile?.referent.firstName} ${original.profile?.referent.lastName}`}
+            />
+            <RequestItem
+              label="Indirizzo e-mail"
+              value={original.profile?.referent.emailAddress}
+            />
+            <RequestItem
+              label="Numero di telefono diretto"
+              value={original.profile?.referent.telephoneNumber}
+            />
+          </div>
+          <RequestsDocuments
+            original={original}
+            assignedToMe={assignedToMe}
+            setCheckAllDocs={setCheckAllDocs}
+          />
+          {rejectMode ? (
+            <RejectButtons
+              rejectMessage={rejectMessage}
+              setRejectMessage={setRejectMessage}
+              setRejectMode={setRejectMode}
+              rejectAgreement={rejectAgreement}
+              isPending={isPending}
+            />
+          ) : (
+            <ActionButtons
+              assignedToMe={assignedToMe}
+              original={original}
+              checkAllDocs={checkAllDocs}
+              approveIsPending={approveAgreementMutation.isPending}
+              assignIsPending={assignAgreementsMutation.isPending}
+              approveAgreement={approveAgreement}
+              assignAgreements={assignAgreements}
+              setRejectMode={setRejectMode}
+            />
+          )}
+        </>
       )}
     </section>
   );

@@ -8,6 +8,7 @@ import {
 import {
   AgreementState,
   AssignedAgreement,
+  DraftAgreement,
   PendingAgreement
 } from "./generated_backoffice";
 
@@ -41,6 +42,10 @@ export type NormalizedSalesChannel =
 
 /** Use this type instead of Agreement generated type since the generated type is not fully correct */
 export type NormalizedBackofficeAgreement =
+  | ({ state: typeof AgreementState.DraftAgreement } & Omit<
+      DraftAgreement,
+      "state"
+    >)
   | ({ state: typeof AgreementState.AssignedAgreement } & Omit<
       AssignedAgreement,
       "state"
