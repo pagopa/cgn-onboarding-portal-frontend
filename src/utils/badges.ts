@@ -16,6 +16,10 @@ export const organizationStatusBadge: Record<
   [OrganizationStatus.Rejected]: { label: "Rifiutata", color: "danger" },
   [OrganizationStatus.Active]: { label: "Attivo", color: "success" },
   [OrganizationStatus.Inactive]: { label: "Inattiva", color: "warning" },
+  [OrganizationStatus.TerminationReminderSent]: {
+    label: "Sollecito",
+    color: "warning"
+  },
   [OrganizationStatus.TerminationInProgress]: {
     label: "In Recesso",
     color: "danger"
@@ -30,6 +34,10 @@ export const agreementBadgePill: Record<
   [ApprovedAgreementState.Approved]: { label: "Approvato", color: "warning" },
   [ApprovedAgreementState.Active]: { label: "Attivo", color: "success" },
   [ApprovedAgreementState.Inactive]: { label: "Inattivo", color: "warning" },
+  [ApprovedAgreementState.TerminationReminderSent]: {
+    label: "Sollecito",
+    color: "warning"
+  },
   [ApprovedAgreementState.TerminationInProgress]: {
     label: "In recesso",
     color: "danger"

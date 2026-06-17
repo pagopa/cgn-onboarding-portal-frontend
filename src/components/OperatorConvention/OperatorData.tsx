@@ -32,6 +32,7 @@ type TerminationModalConfig = {
 };
 
 const {
+  SendTerminationReminder,
   StartTerminationInProgress,
   CompleteTermination,
   CancelTerminationInProgress
@@ -60,15 +61,24 @@ const OperatorData = ({
   const salesChannel = rawSalesChannel as BothChannels;
 
   const isInactive = state === ApprovedAgreementState.Inactive;
+  const isTerminationReminderSent =
+    state === ApprovedAgreementState.TerminationReminderSent;
   const isTerminationInProgress =
     state === ApprovedAgreementState.TerminationInProgress;
-  const isInactiveOrTermination = isInactive || isTerminationInProgress;
+  const isInactiveOrTermination =
+    isInactive || isTerminationReminderSent || isTerminationInProgress;
   const showSinceDate = isInactiveOrTermination && !!agreementStateSince;
 
   const terminationModalConfig = useMemo<
     Record<AgreementTerminationAction, TerminationModalConfig>
   >(
     () => ({
+      [SendTerminationReminder]: {
+        title: `Vuoi segnalare ${partnerName} come sollecitato?`,
+        body: "Il partner potrà continuare ad accedere al portale operatori e tutte le sue opportunità attive rimarranno visibili su IO. Potrai annullare l’operazione in un secondo momento.",
+        successText: "L’ente può continuare ad usare il portale.",
+        successTitle: "Sollecito segnalato"
+      },
       [StartTerminationInProgress]: {
         title: `Vuoi segnalare ${partnerName} come in recesso?`,
         body: "Il partner potrà continuare ad accedere al portale operatori e tutte le sue opportunità attive rimarranno visibili su IO. Potrai annullare l'operazione in un secondo momento.",
@@ -123,7 +133,20 @@ const OperatorData = ({
   const renderTerminationActions = () => {
     if (isInactive) {
       return (
-        <div className="mt-12">
+        <>
+          <Button
+            color="danger"
+            outline
+            onClick={() => setOpenModal(SendTerminationReminder)}
+          >
+            Segnala sollecito
+          </Button>
+        </>
+      );
+    }
+    if (isTerminationReminderSent) {
+      return (
+        <>
           <Button
             color="danger"
             outline
@@ -131,12 +154,12 @@ const OperatorData = ({
           >
             Segnala in recesso
           </Button>
-        </div>
+        </>
       );
     }
     if (isTerminationInProgress) {
       return (
-        <div className="mt-12 d-flex gap-6">
+        <>
           <Button
             color="danger"
             outline
@@ -158,7 +181,7 @@ const OperatorData = ({
             />
             Annulla recesso
           </Button>
-        </div>
+        </>
       );
     }
     return null;
@@ -205,14 +228,14 @@ const OperatorData = ({
           <div className="d-flex align-items-center gap-2">
             <BadgePill {...agreementBadgePill[state]} />
             {showSinceDate && (
-              <span>
+              <span className="fw-semibold">
                 dal {format(new Date(agreementStateSince), "dd/MM/yyyy")}
               </span>
             )}
           </div>
         }
       />
-      {renderTerminationActions()}
+      <div className="mt-12 d-flex gap-6">{renderTerminationActions()}</div>
       <ConfirmModal
         isOpen={openModal !== null}
         onClose={() => setOpenModal(null)}

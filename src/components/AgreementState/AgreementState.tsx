@@ -31,8 +31,12 @@ const DateLabel = ({
   );
 };
 
-const { ApprovedAgreement, PendingAgreement, TerminationInProgressAgreement } =
-  AgreementStateType;
+const {
+  ApprovedAgreement,
+  PendingAgreement,
+  TerminationReminderSentAgreement,
+  TerminationInProgressAgreement
+} = AgreementStateType;
 
 const AgreementState = ({ state, startDate }: Props) => {
   const contentMap: StateMap = {
@@ -60,6 +64,18 @@ const AgreementState = ({ state, startDate }: Props) => {
           La tua richiesta è in attesa di approvazione.
           <br />
           Il referente riceverà una e-mail appena sarà approvata.
+        </p>
+      </>
+    ),
+    [TerminationReminderSentAgreement]: (
+      <>
+        <BadgePill label="Sollecito inviato" color="warning" />
+        <div className="p-3">
+          <Exclamation />
+        </div>
+        <p className="text-sm text-center text-gray">
+          Hai ricevuto un sollecito di recesso. Contatta PagoPA per maggiori
+          informazioni.
         </p>
       </>
     ),
