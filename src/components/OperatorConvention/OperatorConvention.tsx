@@ -103,7 +103,6 @@ const OperatorConvention = () => {
     }),
     [
       fullNameDebounced,
-      values.fullName,
       pagination.pageIndex,
       pagination.pageSize,
       values.lastUpdateDateFrom,

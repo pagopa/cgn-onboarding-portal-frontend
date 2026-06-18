@@ -15,7 +15,7 @@ const FilterTitle = ({
     return <h2 className="h4 fw-bold text-dark-blue m-0">{title}</h2>;
   }
   return (
-    <h2 className="h4 fw-bold text-dark-blue">
+    <h2 className="h4 fw-bold text-dark-blue m-0">
       Risultati della ricerca
       <span
         className="primary-color ms-2 text-sm fw-regular cursor-pointer"

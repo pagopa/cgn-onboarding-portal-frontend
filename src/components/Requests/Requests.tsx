@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
-import { keepPreviousData } from "@tanstack/react-query";
 import {
   createColumnHelper,
   ExpandedState,
@@ -123,10 +122,7 @@ const Requests = () => {
   ]);
 
   const { data: agreements, isPending } =
-    remoteData.Backoffice.Agreement.getAgreements.useQuery(
-      params,
-      { placeholderData: keepPreviousData, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
-    );
+    remoteData.Backoffice.Agreement.getAgreements.useQuery(params);
 
   const data = useMemo(
     () => agreements?.items || [],
