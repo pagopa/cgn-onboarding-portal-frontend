@@ -136,17 +136,20 @@ const Requests = () => {
   const columnHelper = createColumnHelper<NormalizedBackofficeAgreement>();
 
   const columns = [
-    columnHelper.accessor(row => row.profile?.fullName ?? null, {
-      id: "profile.fullName",
-      header: "Operatore",
-      cell: ({ getValue, row }) => {
-        const name = getValue();
-        if (!name) {
-          return "-";
+    columnHelper.accessor(
+      row => row.profile?.fullName ?? row.organizationName,
+      {
+        id: "profile.fullName",
+        header: "Operatore",
+        cell: ({ getValue, row }) => {
+          const name = getValue();
+          if (!name) {
+            return "-";
+          }
+          return `[${getEntityTypeLabel(row.original.entityType)}] ${name}`;
         }
-        return `[${getEntityTypeLabel(row.original.entityType)}] ${name}`;
       }
-    }),
+    ),
     columnHelper.accessor(row => row.requestDate ?? null, {
       id: "requestDate",
       header: "Data Richiesta",
@@ -211,6 +214,7 @@ const Requests = () => {
     onExpandedChange: setExpanded,
     manualPagination: true,
     manualSorting: true,
+    sortDescFirst: false,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

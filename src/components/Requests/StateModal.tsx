@@ -7,10 +7,12 @@ const stateOptions = [
   "PendingAgreement",
   "AssignedAgreementMe",
   "AssignedAgreementOthers",
+  "DraftAgreement",
   "RejectedAgreement"
 ] as const;
 
 const stateLabels: Record<string, string> = {
+  DraftAgreement: "In Bozza",
   PendingAgreement: "Da valutare",
   AssignedAgreementMe: "In valutazione (da te)",
   AssignedAgreementOthers: "In valutazione (da altri)",

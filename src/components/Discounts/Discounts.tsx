@@ -245,6 +245,7 @@ const Discounts = () => {
     autoResetPageIndex: false,
     getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    sortDescFirst: false,
     getSortedRowModel: getSortedRowModel()
   });
 

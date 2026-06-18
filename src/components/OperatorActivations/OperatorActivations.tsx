@@ -176,6 +176,7 @@ const OperatorActivations = () => {
     onExpandedChange: setExpanded,
     manualPagination: true,
     manualSorting: true,
+    sortDescFirst: false,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

@@ -142,8 +142,7 @@ const OperatorConvention = () => {
       }
     }),
     columnHelper.accessor("publishedDiscounts", {
-      header: "Opportunità",
-      sortDescFirst: false
+      header: "Opportunità"
     }),
     columnHelper.accessor("testPending", {
       header: "TEST",
@@ -175,6 +174,7 @@ const OperatorConvention = () => {
     onExpandedChange: setExpanded,
     manualPagination: true,
     manualSorting: true,
+    sortDescFirst: false,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
