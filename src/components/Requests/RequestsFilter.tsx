@@ -8,7 +8,7 @@ type RequestsFilterProps = {
   onChange(
     update:
       | RequestsFilterFormValues
-      | ((values: RequestsFilterFormValues) => void)
+      | ((values: RequestsFilterFormValues) => RequestsFilterFormValues)
   ): void;
   onReset(): void;
   hasActiveFitlers: boolean;

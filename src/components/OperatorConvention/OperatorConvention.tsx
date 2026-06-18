@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
@@ -182,6 +182,18 @@ const OperatorConvention = () => {
     getPaginationRowModel: getPaginationRowModel()
   });
 
+  const handleFilterChange = useCallback(
+    (
+      update:
+        | ConventionFilterFormValues
+        | ((prev: ConventionFilterFormValues) => ConventionFilterFormValues)
+    ) => {
+      setValues(update);
+      setPagination(prev => ({ ...prev, pageIndex: 0 }));
+    },
+    []
+  );
+
   useSyncSorting(sorting, setValues, getConventionSortColumn);
   const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
     usePaginationHelpers(table);
@@ -213,10 +225,10 @@ const OperatorConvention = () => {
     <section className="px-8 py-10 bg-white">
       <ConventionFilter
         values={values}
-        onChange={setValues}
+        onChange={handleFilterChange}
         hasActiveFitlers={hasActiveFitlers}
         onReset={() => {
-          setValues(conventionFilterFormInitialValues);
+          handleFilterChange(conventionFilterFormInitialValues);
           setSorting([]);
         }}
       />
@@ -251,7 +263,7 @@ const OperatorConvention = () => {
         isEmpty={!conventions?.items.length}
         hasActiveFilters={hasActiveFitlers}
         emptyMessage="Nessuna convenzione trovata"
-        onReset={() => setValues(conventionFilterFormInitialValues)}
+        onReset={() => handleFilterChange(conventionFilterFormInitialValues)}
       />
     </section>
   );

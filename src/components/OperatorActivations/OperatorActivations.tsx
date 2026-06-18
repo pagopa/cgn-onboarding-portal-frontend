@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
@@ -184,6 +184,18 @@ const OperatorActivations = () => {
     getPaginationRowModel: getPaginationRowModel()
   });
 
+  const handleFilterChange = useCallback(
+    (
+      update:
+        | ActivationsFilterFormValues
+        | ((prev: ActivationsFilterFormValues) => ActivationsFilterFormValues)
+    ) => {
+      setValues(update);
+      setPagination(prev => ({ ...prev, pageIndex: 0 }));
+    },
+    []
+  );
+
   useSyncSorting(sorting, setValues, getActivationsSortColumn);
   const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
     usePaginationHelpers(table);
@@ -202,11 +214,9 @@ const OperatorActivations = () => {
     <section className="px-8 py-10 bg-white">
       <ActivationsFilter
         values={values}
-        onChange={setValues}
+        onChange={handleFilterChange}
         hasActiveFitlers={hasActiveFitlers}
-        onReset={() => {
-          setValues(activationsFilterFormInitialValues);
-        }}
+        onReset={() => handleFilterChange(activationsFilterFormInitialValues)}
       />
       <Pager
         canPreviousPage={canPreviousPage}
@@ -241,7 +251,7 @@ const OperatorActivations = () => {
         isEmpty={!operators?.items?.length}
         hasActiveFilters={hasActiveFitlers}
         emptyMessage="Nessun operatore trovato"
-        onReset={() => setValues(activationsFilterFormInitialValues)}
+        onReset={() => handleFilterChange(activationsFilterFormInitialValues)}
       />
     </section>
   );

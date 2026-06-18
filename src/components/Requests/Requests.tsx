@@ -219,6 +219,18 @@ const Requests = () => {
     getPaginationRowModel: getPaginationRowModel()
   });
 
+  const handleFilterChange = useCallback(
+    (
+      update:
+        | RequestsFilterFormValues
+        | ((prev: RequestsFilterFormValues) => RequestsFilterFormValues)
+    ) => {
+      setValues(update);
+      setPagination(prev => ({ ...prev, pageIndex: 0 }));
+    },
+    []
+  );
+
   useSyncSorting(sorting, setValues, getRequetsSortColumn);
   const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
     usePaginationHelpers(table);
@@ -237,10 +249,8 @@ const Requests = () => {
     <section className="px-8 py-10 bg-white">
       <RequestFilter
         values={values}
-        onChange={setValues}
-        onReset={() => {
-          setValues(requestFilterFormInitialValues);
-        }}
+        onChange={handleFilterChange}
+        onReset={() => handleFilterChange(requestFilterFormInitialValues)}
         hasActiveFitlers={hasActiveFitlers}
       />
       <Pager
