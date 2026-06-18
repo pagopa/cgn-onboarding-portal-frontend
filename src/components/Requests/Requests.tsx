@@ -56,7 +56,7 @@ const requestFilterFormInitialValues: RequestsFilterFormValues = {
 
 const getRequetsSortColumn = (id: string) => {
   switch (id) {
-    case "profile.fullName":
+    case "organizationName":
       return "Operator";
     case "requestDate":
       return "RequestDate";
@@ -136,20 +136,17 @@ const Requests = () => {
   const columnHelper = createColumnHelper<NormalizedBackofficeAgreement>();
 
   const columns = [
-    columnHelper.accessor(
-      row => row.profile?.fullName ?? row.organizationName,
-      {
-        id: "profile.fullName",
-        header: "Operatore",
-        cell: ({ getValue, row }) => {
-          const name = getValue();
-          if (!name) {
-            return "-";
-          }
-          return `[${getEntityTypeLabel(row.original.entityType)}] ${name}`;
+    columnHelper.accessor(row => row.organizationName, {
+      id: "organizationName",
+      header: "Operatore",
+      cell: ({ getValue, row }) => {
+        const name = getValue();
+        if (!name) {
+          return "-";
         }
+        return `[${getEntityTypeLabel(row.original.entityType)}] ${name}`;
       }
-    ),
+    }),
     columnHelper.accessor(row => row.requestDate ?? null, {
       id: "requestDate",
       header: "Data Richiesta",

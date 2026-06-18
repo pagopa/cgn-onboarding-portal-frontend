@@ -212,7 +212,7 @@ const RequestsDetails = ({ original, updateList }: Props) => {
       <div className="container">
         <RequestItem
           label="Ragione sociale operatore"
-          value={original.profile?.fullName}
+          value={original.organizationName}
         />
         <RequestItem
           label="Tipologia ente"
