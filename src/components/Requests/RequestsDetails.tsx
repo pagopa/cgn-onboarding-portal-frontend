@@ -33,6 +33,7 @@ type ActionButtonsProps = {
 type Props = {
   original: NormalizedBackofficeAgreement;
   updateList: () => void;
+  closeRow: () => void;
 };
 
 function RejectButtons({
@@ -131,7 +132,7 @@ function ActionButtons({
   );
 }
 
-const RequestsDetails = ({ original, updateList }: Props) => {
+const RequestsDetails = ({ original, updateList, closeRow }: Props) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [checkAllDocs, setCheckAllDocs] = useState(false);
@@ -151,6 +152,7 @@ const RequestsDetails = ({ original, updateList }: Props) => {
   const approveAgreementMutation =
     remoteData.Backoffice.Agreement.approveAgreement.useMutation({
       onSuccess() {
+        closeRow();
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,
@@ -172,6 +174,7 @@ const RequestsDetails = ({ original, updateList }: Props) => {
   const rejectAgreementMutation =
     remoteData.Backoffice.Agreement.rejectAgreement.useMutation({
       onSuccess() {
+        closeRow();
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,

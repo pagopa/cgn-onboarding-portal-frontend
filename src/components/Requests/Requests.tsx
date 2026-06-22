@@ -103,7 +103,7 @@ const Requests = () => {
       assignee: requestAssignedAgreements
         ? (values.states
             ?.split("AssignedAgreement")
-            .at(-1) as GetAgreementsAssigneeEnum)
+            .at(-1) as GetAgreementsAssigneeEnum) || undefined
         : undefined,
       states: requestAssignedAgreements ? "AssignedAgreement" : values.states,
       sortColumn: values.sortColumn,
@@ -183,9 +183,10 @@ const Requests = () => {
       row: { original: NormalizedBackofficeAgreement };
     }) => (
       <RequestsDetails
-        updateList={() => {
-          remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({});
-        }}
+        closeRow={() => setExpanded({})}
+        updateList={() =>
+          remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({})
+        }
         original={original}
       />
     ),

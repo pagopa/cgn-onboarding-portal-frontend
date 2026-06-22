@@ -33,27 +33,31 @@ const DateLabel = ({
 
 const {
   ApprovedAgreement,
+  ActiveAgreement,
   PendingAgreement,
   TerminationReminderSentAgreement,
   TerminationInProgressAgreement
 } = AgreementStateType;
 
 const AgreementState = ({ state, startDate }: Props) => {
+  const activeConventionContent = (
+    <>
+      <BadgePill label="Convenzione attiva" color="primary" />
+      <div className="p-3">
+        <Check />
+      </div>
+      <div
+        className="d-flex flex-row justify-content-around pb-10 flex-wrap"
+        style={{ width: "100%" }}
+      >
+        <DateLabel title="Data di inizio" date={startDate} />
+      </div>
+    </>
+  );
+
   const contentMap: StateMap = {
-    [ApprovedAgreement]: (
-      <>
-        <BadgePill label="Convenzione attiva" color="primary" />
-        <div className="p-3">
-          <Check />
-        </div>
-        <div
-          className="d-flex flex-row justify-content-around pb-10 flex-wrap"
-          style={{ width: "100%" }}
-        >
-          <DateLabel title="Data di inizio" date={startDate} />
-        </div>
-      </>
-    ),
+    [ApprovedAgreement]: activeConventionContent,
+    [ActiveAgreement]: activeConventionContent,
     [PendingAgreement]: (
       <>
         <BadgePill label="Richiesta di convenzione inviata" color="warning" />

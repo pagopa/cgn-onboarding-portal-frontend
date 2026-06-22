@@ -10,7 +10,6 @@ export function TooltipProvider({ children }: ProviderProps): ReactElement {
   const [isOpen, setOpen] = useState(false);
   const [{ severity, text, title }, setTooltip] =
     useState<TooltipProviderState>(initialState);
-
   const timeoutRef = useRef<number>(null);
 
   const closeTooltip = (): void => {
@@ -46,21 +45,29 @@ export function TooltipProvider({ children }: ProviderProps): ReactElement {
             className={`alert bg-white alert-${severity} fade show py-4`}
             role="alert"
           >
-            {title && (
-              <div className="d-flex justify-content-between align-items-start">
-                <h4 className="alert-heading mb-4" style={{ fontSize: "24px" }}>
-                  {title}
-                </h4>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={closeTooltip}
-                />
+            <div className="d-flex justify-content-between align-items-start">
+              <div>
+                {title && (
+                  <h4
+                    className="alert-heading mb-4"
+                    style={{ fontSize: "24px" }}
+                  >
+                    {title}
+                  </h4>
+                )}
+                <p
+                  className="m-0"
+                  style={{ fontSize: "18px", fontWeight: 400 }}
+                >
+                  {text}
+                </p>
               </div>
-            )}
-            <p className="m-0" style={{ fontSize: "18px", fontWeight: 400 }}>
-              {text}
-            </p>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={closeTooltip}
+              />
+            </div>
           </div>
         </div>
       )}

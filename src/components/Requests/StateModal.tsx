@@ -5,8 +5,7 @@ import { BadgePill } from "../BadgePill";
 
 const stateOptions = [
   "PendingAgreement",
-  "AssignedAgreementMe",
-  "AssignedAgreementOthers",
+  "AssignedAgreement",
   "DraftAgreement",
   "RejectedAgreement"
 ] as const;
@@ -14,8 +13,7 @@ const stateOptions = [
 const stateLabels: Record<string, string> = {
   DraftAgreement: "In Bozza",
   PendingAgreement: "Da valutare",
-  AssignedAgreementMe: "In valutazione (da te)",
-  AssignedAgreementOthers: "In valutazione (da altri)",
+  AssignedAgreement: "In valutazione",
   ApprovedAgreement: "Approvata",
   RejectedAgreement: "Respinta"
 };
