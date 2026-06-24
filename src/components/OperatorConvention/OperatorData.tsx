@@ -133,28 +133,24 @@ const OperatorData = ({
   const renderTerminationActions = () => {
     if (isInactive) {
       return (
-        <>
-          <Button
-            color="danger"
-            outline
-            onClick={() => setOpenModal(SendTerminationReminder)}
-          >
-            Segnala Richiamo
-          </Button>
-        </>
+        <Button
+          color="danger"
+          outline
+          onClick={() => setOpenModal(SendTerminationReminder)}
+        >
+          Segnala Richiamo
+        </Button>
       );
     }
     if (isTerminationReminderSent) {
       return (
-        <>
-          <Button
-            color="danger"
-            outline
-            onClick={() => setOpenModal(StartTerminationInProgress)}
-          >
-            Segnala in recesso
-          </Button>
-        </>
+        <Button
+          color="danger"
+          outline
+          onClick={() => setOpenModal(StartTerminationInProgress)}
+        >
+          Segnala in recesso
+        </Button>
       );
     }
     if (isTerminationInProgress) {
