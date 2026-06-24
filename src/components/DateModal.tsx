@@ -5,6 +5,27 @@ import { format } from "date-fns";
 import DatePicker from "react-datepicker";
 import { BadgePill } from "./BadgePill";
 
+const DatePickerInput = forwardRef(
+  (
+    fieldProps: { name: string; label: string },
+    ref: React.Ref<HTMLInputElement>
+  ) => (
+    <div className="it-datepicker-wrapper w-100">
+      <input
+        {...fieldProps}
+        ref={ref}
+        className="form-control it-date-datepicker"
+        id={fieldProps.name}
+        type="text"
+        placeholder="gg/mm/aaaa"
+      />
+      <label htmlFor={fieldProps.name} className="form-label">
+        {fieldProps.label}
+      </label>
+    </div>
+  )
+);
+
 type DateModalProps = {
   from?: Date;
   to?: Date;
@@ -44,27 +65,6 @@ const DateModal = ({
     }
     return label;
   };
-
-  const DatePickerInput = forwardRef(
-    (
-      fieldProps: { name: string; label: string },
-      ref: React.Ref<HTMLInputElement>
-    ) => (
-      <div className="it-datepicker-wrapper w-100">
-        <input
-          {...fieldProps}
-          ref={ref}
-          className="form-control it-date-datepicker"
-          id={fieldProps.name}
-          type="text"
-          placeholder="gg/mm/aaaa"
-        />
-        <label htmlFor={fieldProps.name} className="form-label">
-          {fieldProps.label}
-        </label>
-      </div>
-    )
-  );
 
   return (
     <>
