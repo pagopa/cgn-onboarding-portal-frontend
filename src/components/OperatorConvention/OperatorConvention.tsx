@@ -112,8 +112,11 @@ const OperatorConvention = () => {
     ]
   );
 
-  const { data: conventions, isPending } =
-    remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(params);
+  const {
+    data: conventions,
+    isPending,
+    refetch
+  } = remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(params);
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
   const columnHelper = createColumnHelper<ApprovedAgreement>();
@@ -197,15 +200,18 @@ const OperatorConvention = () => {
   const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
     usePaginationHelpers(table);
 
+  const handleCloseDetails = useCallback(() => {
+    setShowDetails(false);
+    setSelectedConvention(undefined);
+    setValues(conventionFilterFormInitialValues);
+    void refetch();
+  }, [refetch]);
+
   if (showDetails && selectedConvention) {
     return (
       <ConventionDetails
         agreement={selectedConvention}
-        onClose={() => {
-          setShowDetails(false);
-          setSelectedConvention(undefined);
-          setValues(conventionFilterFormInitialValues);
-        }}
+        onClose={handleCloseDetails}
       />
     );
   }
