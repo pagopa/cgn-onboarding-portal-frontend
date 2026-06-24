@@ -1,11 +1,9 @@
-import { useState, useMemo, Fragment } from "react";
-import { Badge, Button } from "design-react-kit";
+import { useState, useMemo, useCallback } from "react";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
   createColumnHelper,
   ExpandedState,
-  flexRender,
   getCoreRowModel,
   getExpandedRowModel,
   getPaginationRowModel,
@@ -14,17 +12,17 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import { remoteData } from "../../api/common";
-import CenteredLoading from "../CenteredLoading/CenteredLoading";
+import TableFooter from "../Table/TableFooter";
 import {
   AttributeauthorityApiGetOrganizationsRequest,
   OrganizationWithReferentsAndStatus
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
-import {
-  getEntityTypeLabel,
-  makeOrganizationStatusReadable
-} from "../../utils/strings";
+import TableBody from "../Table/TableBody";
+import { getEntityTypeLabel } from "../../utils/strings";
+import { organizationStatusBadge } from "../../utils/badges";
+import { BadgePill } from "../BadgePill";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import { useSyncSorting } from "../../utils/useSyncSorting";
@@ -145,14 +143,7 @@ const OperatorActivations = () => {
       header: "STATO",
       enableSorting: false,
       cell: ({ getValue }) => (
-        <Badge
-          className="fw-semibold border border-primary text-bg-light text-primary"
-          pill
-          tag="span"
-          color="white"
-        >
-          {makeOrganizationStatusReadable(getValue())}
-        </Badge>
+        <BadgePill {...organizationStatusBadge[getValue()]} />
       )
     }),
 
@@ -185,12 +176,25 @@ const OperatorActivations = () => {
     onExpandedChange: setExpanded,
     manualPagination: true,
     manualSorting: true,
+    sortDescFirst: false,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel()
   });
+
+  const handleFilterChange = useCallback(
+    (
+      update:
+        | ActivationsFilterFormValues
+        | ((prev: ActivationsFilterFormValues) => ActivationsFilterFormValues)
+    ) => {
+      setValues(update);
+      setPagination(prev => ({ ...prev, pageIndex: 0 }));
+    },
+    []
+  );
 
   useSyncSorting(sorting, setValues, getActivationsSortColumn);
   const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
@@ -207,100 +211,48 @@ const OperatorActivations = () => {
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
-    <section className="mt-2 px-8 py-10 bg-white">
+    <section className="px-8 py-10 bg-white">
       <ActivationsFilter
         values={values}
-        onChange={setValues}
+        onChange={handleFilterChange}
         hasActiveFitlers={hasActiveFitlers}
-        onReset={() => {
-          setValues(activationsFilterFormInitialValues);
-        }}
+        onReset={() => handleFilterChange(activationsFilterFormInitialValues)}
       />
-      {isPending ? (
-        <CenteredLoading />
-      ) : (
-        <>
-          <Pager
-            canPreviousPage={canPreviousPage}
-            canNextPage={canNextPage}
-            startRowIndex={startRowIndex}
-            endRowIndex={endRowIndex}
-            pageIndex={pagination.pageIndex}
-            onPreviousPage={previousPage}
-            onNextPage={nextPage}
-            onGotoPage={gotoPage}
-            pageArray={pageArray}
-            total={operators?.count}
+      <Pager
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        startRowIndex={startRowIndex}
+        endRowIndex={endRowIndex}
+        pageIndex={pagination.pageIndex}
+        onPreviousPage={previousPage}
+        onNextPage={nextPage}
+        onGotoPage={gotoPage}
+        pageArray={pageArray}
+        total={operators?.count}
+        isPending={isPending}
+      />
+      <div className="overflow-auto">
+        <table style={{ width: "100%" }} className="mt-2 bg-white">
+          <TableHeader headerGroups={table.getHeaderGroups()} />
+
+          <TableBody
+            table={table}
+            renderExpanded={row => (
+              <OperatorActivationDetail
+                operator={row.original}
+                getActivations={() => refetch()}
+              />
+            )}
           />
-          <div className="overflow-auto">
-            <table style={{ width: "100%" }} className="mt-2 bg-white">
-              <TableHeader headerGroups={table.getHeaderGroups()} />
-
-              <tbody>
-                {table.getRowModel().rows.map(row => (
-                  <Fragment key={row.id}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => row.toggleExpanded()}
-                    >
-                      {row.getVisibleCells().map((cell, i, arr) => (
-                        <td
-                          key={cell.id}
-                          className={`${i === 0 ? "ps-6" : ""} ${
-                            i === arr.length - 1 ? "pe-6" : ""
-                          } px-3 py-2 border-bottom text-sm`}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : undefined
-                          }
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-
-                    {row.getIsExpanded() && (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                        <td colSpan={table.getVisibleLeafColumns().length}>
-                          <OperatorActivationDetail
-                            operator={row.original}
-                            getActivations={() => refetch()}
-                          />
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {!operators?.items?.length &&
-            (hasActiveFitlers ? (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessun risultato corrisponde alla tua ricerca</p>
-                <Button
-                  color="primary"
-                  outline
-                  tag="button"
-                  className="mt-3"
-                  onClick={() => {
-                    setValues(activationsFilterFormInitialValues);
-                  }}
-                >
-                  Reimposta Tutto
-                </Button>
-              </div>
-            ) : (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessun operatore trovato</p>
-              </div>
-            ))}
-        </>
-      )}
+        </table>
+      </div>
+      <TableFooter
+        isPending={isPending}
+        isEmpty={!operators?.items?.length}
+        hasActiveFilters={hasActiveFitlers}
+        emptyMessage="Nessun operatore trovato"
+        onReset={() => handleFilterChange(activationsFilterFormInitialValues)}
+      />
     </section>
   );
 };

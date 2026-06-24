@@ -1,12 +1,9 @@
-import { useState, useMemo, useCallback, Fragment } from "react";
-import { Button } from "design-react-kit";
+import { useState, useMemo, useCallback } from "react";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
-import { keepPreviousData } from "@tanstack/react-query";
 import {
   createColumnHelper,
   ExpandedState,
-  flexRender,
   getCoreRowModel,
   getExpandedRowModel,
   getPaginationRowModel,
@@ -15,7 +12,7 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import { remoteData } from "../../api/common";
-import CenteredLoading from "../CenteredLoading/CenteredLoading";
+import TableFooter from "../Table/TableFooter";
 import {
   AgreementApiGetAgreementsRequest,
   AgreementState,
@@ -24,13 +21,16 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import TableBody from "../Table/TableBody";
+import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import { useSyncSorting } from "../../utils/useSyncSorting";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
+import { BadgePill } from "../BadgePill";
+import { requestBadgePill } from "../../utils/badges";
 import RequestFilter from "./RequestsFilter";
-import RequestStateBadge from "./RequestStateBadge";
 import RequestsDetails from "./RequestsDetails";
 
 export type RequestsFilterFormValues = {
@@ -55,7 +55,7 @@ const requestFilterFormInitialValues: RequestsFilterFormValues = {
 
 const getRequetsSortColumn = (id: string) => {
   switch (id) {
-    case "profile.fullName":
+    case "organizationName":
       return "Operator";
     case "requestDate":
       return "RequestDate";
@@ -103,7 +103,7 @@ const Requests = () => {
       assignee: requestAssignedAgreements
         ? (values.states
             ?.split("AssignedAgreement")
-            .at(-1) as GetAgreementsAssigneeEnum)
+            .at(-1) as GetAgreementsAssigneeEnum) || undefined
         : undefined,
       states: requestAssignedAgreements ? "AssignedAgreement" : values.states,
       sortColumn: values.sortColumn,
@@ -122,10 +122,7 @@ const Requests = () => {
   ]);
 
   const { data: agreements, isPending } =
-    remoteData.Backoffice.Agreement.getAgreements.useQuery(
-      params,
-      { placeholderData: keepPreviousData, refetchOnWindowFocus: false } // this fixes page reset when uploading a file since it defocuses the window
-    );
+    remoteData.Backoffice.Agreement.getAgreements.useQuery(params);
 
   const data = useMemo(
     () => agreements?.items || [],
@@ -135,10 +132,16 @@ const Requests = () => {
   const columnHelper = createColumnHelper<NormalizedBackofficeAgreement>();
 
   const columns = [
-    columnHelper.accessor(row => row.profile?.fullName ?? null, {
-      id: "profile.fullName",
+    columnHelper.accessor(row => row.organizationName, {
+      id: "organizationName",
       header: "Operatore",
-      cell: ({ getValue }) => getValue() ?? "-"
+      cell: ({ getValue, row }) => {
+        const name = getValue();
+        if (!name) {
+          return "-";
+        }
+        return `[${getEntityTypeLabel(row.original.entityType)}] ${name}`;
+      }
     }),
     columnHelper.accessor(row => row.requestDate ?? null, {
       id: "requestDate",
@@ -151,7 +154,7 @@ const Requests = () => {
     columnHelper.accessor(row => row.state, {
       id: "state",
       header: "Stato",
-      cell: ({ getValue }) => RequestStateBadge(getValue())
+      cell: ({ getValue }) => <BadgePill {...requestBadgePill[getValue()]} />
     }),
     columnHelper.accessor(
       row =>
@@ -180,9 +183,10 @@ const Requests = () => {
       row: { original: NormalizedBackofficeAgreement };
     }) => (
       <RequestsDetails
-        updateList={() => {
-          remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({});
-        }}
+        closeRow={() => setExpanded({})}
+        updateList={() =>
+          remoteData.Backoffice.Agreement.getAgreements.invalidateQueries({})
+        }
         original={original}
       />
     ),
@@ -204,12 +208,25 @@ const Requests = () => {
     onExpandedChange: setExpanded,
     manualPagination: true,
     manualSorting: true,
+    sortDescFirst: false,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel()
   });
+
+  const handleFilterChange = useCallback(
+    (
+      update:
+        | RequestsFilterFormValues
+        | ((prev: RequestsFilterFormValues) => RequestsFilterFormValues)
+    ) => {
+      setValues(update);
+      setPagination(prev => ({ ...prev, pageIndex: 0 }));
+    },
+    []
+  );
 
   useSyncSorting(sorting, setValues, getRequetsSortColumn);
   const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
@@ -226,102 +243,42 @@ const Requests = () => {
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
-    <section className="mt-2 px-8 py-10 bg-white">
+    <section className="px-8 py-10 bg-white">
       <RequestFilter
         values={values}
-        onChange={setValues}
-        onReset={() => {
-          setValues(requestFilterFormInitialValues);
-        }}
+        onChange={handleFilterChange}
+        onReset={() => handleFilterChange(requestFilterFormInitialValues)}
         hasActiveFitlers={hasActiveFitlers}
       />
-      {isPending ? (
-        <CenteredLoading />
-      ) : (
-        <>
-          <Pager
-            canPreviousPage={canPreviousPage}
-            canNextPage={canNextPage}
-            startRowIndex={startRowIndex}
-            endRowIndex={endRowIndex}
-            pageIndex={pagination.pageIndex}
-            onPreviousPage={previousPage}
-            onNextPage={nextPage}
-            onGotoPage={gotoPage}
-            pageArray={pageArray}
-            total={agreements?.total}
+      <Pager
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        startRowIndex={startRowIndex}
+        endRowIndex={endRowIndex}
+        pageIndex={pagination.pageIndex}
+        onPreviousPage={previousPage}
+        onNextPage={nextPage}
+        onGotoPage={gotoPage}
+        pageArray={pageArray}
+        total={agreements?.total}
+        isPending={isPending}
+      />
+      <div className="overflow-auto">
+        <table style={{ width: "100%" }} className="bg-white">
+          <TableHeader headerGroups={table.getHeaderGroups()} />
+          <TableBody
+            table={table}
+            renderExpanded={row => renderRowSubComponent({ row })}
           />
-          <div className="overflow-auto">
-            <table style={{ width: "100%" }} className="mt-2 bg-white">
-              <TableHeader headerGroups={table.getHeaderGroups()} />
-              <tbody>
-                {table.getRowModel().rows.map(row => (
-                  <Fragment key={row.id}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => row.toggleExpanded()}
-                    >
-                      {row.getVisibleCells().map((cell, i) => (
-                        <td
-                          key={cell.id}
-                          className={`
-                ${i === 0 ? "ps-6" : ""}
-                ${
-                  i === table.getHeaderGroups()[0].headers.length - 1
-                    ? "pe-6"
-                    : ""
-                }
-                px-3 py-2 border-bottom text-sm
-              `}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : {}
-                          }
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-
-                    {row.getIsExpanded() && (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                        <td colSpan={table.getVisibleLeafColumns().length}>
-                          {renderRowSubComponent({ row })}
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {!agreements?.items.length &&
-            (hasActiveFitlers ? (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessun risultato corrisponde alla tua ricerca</p>
-                <Button
-                  color="primary"
-                  outline
-                  tag="button"
-                  className="mt-3"
-                  onClick={() => {
-                    setValues(requestFilterFormInitialValues);
-                  }}
-                >
-                  Reimposta Tutto
-                </Button>
-              </div>
-            ) : (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessuna richiesta da elaborare</p>
-              </div>
-            ))}
-        </>
-      )}
+        </table>
+      </div>
+      <TableFooter
+        isPending={isPending}
+        isEmpty={!agreements?.items.length}
+        hasActiveFilters={hasActiveFitlers}
+        emptyMessage="Nessuna richiesta da elaborare"
+        onReset={() => setValues(requestFilterFormInitialValues)}
+      />
     </section>
   );
 };
