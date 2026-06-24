@@ -28,7 +28,7 @@ type StateModalProps = {
 
 const StateModal = ({ states, onSubmit }: StateModalProps) => {
   const [isOpenStateModal, setOpenStateModal] = useState(false);
-  const [statesField, setFieldStates] = useState<string | undefined>(states);
+  const [statesField, setStatesField] = useState<string | undefined>(states);
   const toggleStateModal = () => {
     setOpenStateModal(!isOpenStateModal);
   };
@@ -42,7 +42,7 @@ const StateModal = ({ states, onSubmit }: StateModalProps) => {
             type="radio"
             id={value}
             value={value}
-            onChange={() => setFieldStates(value)}
+            onChange={() => setStatesField(value)}
             checked={statesField === value}
           />
           <label
