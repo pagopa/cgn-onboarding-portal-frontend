@@ -41,16 +41,24 @@ const menuLink = (
 const getView = (
   details: ApprovedAgreementDetail | undefined,
   view: string,
-  getConventionDetails: () => void,
-  agreement: ApprovedAgreement
+  getConventionDetails: () => void
 ) => {
   if (!details) {
     return null;
   }
 
+  const {
+    discounts,
+    agreementId,
+    profile,
+    state,
+    agreementStateSince,
+    documents
+  } = details;
+
   if (view.includes("agevolazione")) {
     const discountIndex = Number(view.replace(/^\D+/g, "")) - 1;
-    const discount = details.discounts?.[discountIndex];
+    const discount = discounts?.[discountIndex];
     if (!discount) {
       return (
         <div>
@@ -64,9 +72,9 @@ const getView = (
     return (
       <Discount
         reloadDetails={getConventionDetails}
-        agreementId={agreement.agreementId ?? ""}
+        agreementId={agreementId}
         discount={discount}
-        profile={details.profile}
+        profile={profile}
       />
     );
   }
@@ -75,20 +83,20 @@ const getView = (
     case "dati_operatore":
       return (
         <OperatorData
-          profile={details.profile}
-          state={agreement.state}
-          partnerName={details.profile.fullName}
-          agreementId={details.agreementId}
+          profile={profile}
+          state={state}
+          partnerName={profile.fullName}
+          agreementId={agreementId}
           reloadDetails={getConventionDetails}
-          agreementStateSince={details.agreementStateSince}
+          agreementStateSince={agreementStateSince}
         />
       );
     case "profilo":
-      return <Profile profile={details.profile} />;
+      return <Profile profile={profile} />;
     case "referente":
-      return <Referent referent={details.profile.referent} />;
+      return <Referent referent={profile.referent} />;
     case "documenti":
-      return <Documents documents={details.documents} />;
+      return <Documents documents={documents} />;
   }
 };
 
@@ -108,13 +116,15 @@ const ConventionDetails = ({ agreement, onClose }: ConventionDetailsProps) => {
     agreementId: agreement?.agreementId || ""
   });
 
+  const { discounts } = details ?? {};
+
   const discountSubmenu = useMemo(() => {
-    if (!details?.discounts?.length) {
+    if (!discounts?.length) {
       return null;
     }
     return (
       <ul className="link-list">
-        {details.discounts.map((d, i) => {
+        {discounts.map((d, i) => {
           const viewKey = `agevolazione${i + 1}`;
           const isSelected = view.includes(viewKey);
           const linkClass = `nav-link primary-color cursor-pointer${isSelected ? " fw-bold" : ""}`;
@@ -132,7 +142,7 @@ const ConventionDetails = ({ agreement, onClose }: ConventionDetailsProps) => {
         })}
       </ul>
     );
-  }, [details?.discounts, view]);
+  }, [discounts, view]);
 
   if (isPending) {
     return (
@@ -188,7 +198,7 @@ const ConventionDetails = ({ agreement, onClose }: ConventionDetailsProps) => {
           </nav>
         </div>
         <div className="px-8 py-10 bg-white flex-grow-1">
-          {getView(details, view, () => refetch(), agreement)}
+          {getView(details, view, () => refetch())}
         </div>
       </div>
     </section>
