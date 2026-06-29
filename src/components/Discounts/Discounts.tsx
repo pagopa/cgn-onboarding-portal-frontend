@@ -17,7 +17,10 @@ import { AgreementState, Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import TableBody from "../Table/TableBody";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
-import { selectAgreement } from "../../store/agreement/selectors";
+import {
+  selectAgreement,
+  selectCanEditAgreement
+} from "../../store/agreement/selectors";
 import { useCgnSelector } from "../../store/hooks";
 import Pager from "../Table/Pager";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
@@ -32,6 +35,7 @@ import { TestErrorModal } from "./TestErrorModal";
 
 const Discounts = () => {
   const agreement = useCgnSelector(selectAgreement);
+  const canCreateDiscount = useCgnSelector(selectCanEditAgreement);
   const [selectedDiscountAction, setSelectedDiscountAction] = useState<{
     action: "publish" | "unpublish" | "test" | "delete";
     discountId: string;
@@ -412,7 +416,7 @@ const Discounts = () => {
           </div>
         </>
       )}
-      {agreement.state === AgreementState.ApprovedAgreement ? (
+      {canCreateDiscount ? (
         <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
           {discounts.length === 0 && (
             <div className="text-center text-gray pb-10">
