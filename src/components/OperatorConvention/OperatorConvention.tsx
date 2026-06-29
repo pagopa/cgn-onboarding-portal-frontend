@@ -124,6 +124,7 @@ const OperatorConvention = () => {
   const columns = [
     columnHelper.accessor("fullName", {
       header: "Operatore",
+      size: 370,
       cell: ({ getValue, row }) =>
         getValue()
           ? `[${getEntityTypeLabel(row.original.entityType)}] ${getValue()}`
@@ -251,7 +252,7 @@ const OperatorConvention = () => {
         isPending={isPending}
       />
       <div className="overflow-auto">
-        <table style={{ width: "100%" }} className="mt-2 bg-white">
+        <table className="w-100 bg-white">
           <TableHeader headerGroups={table.getHeaderGroups()} />
 
           <TableBody

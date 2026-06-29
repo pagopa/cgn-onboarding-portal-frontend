@@ -46,7 +46,11 @@ function TableHeader<D extends object>({
                 align-middle
                 ${header.column.getCanSort() ? "cursor-pointer" : ""}
               `}
-              style={{ fontSize: "12px", fontWeight: 600 }}
+              style={{
+                fontSize: "12px",
+                fontWeight: 600,
+                width: header.column.columnDef.size
+              }}
             >
               {flexRender(header.column.columnDef.header, header.getContext())}
 

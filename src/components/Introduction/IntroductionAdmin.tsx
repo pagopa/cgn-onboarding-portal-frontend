@@ -14,7 +14,7 @@ type Props = {
 };
 
 const IntroductionAdmin = ({ name, activeTab, handleClick }: Props) => (
-  <section className="bg-white text-start">
+  <section className="bg-white text-start p-0">
     <div className="px-8 pt-10">
       <div className="row">
         <div className="col-9">

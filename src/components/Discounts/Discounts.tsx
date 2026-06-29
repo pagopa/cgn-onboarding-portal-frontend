@@ -339,7 +339,7 @@ const Discounts = () => {
             isPending={isPending}
           />
           <div className="table-responsive mb-0 mt-2 bg-white table">
-            <table style={{ width: "100%" }} className="table mb-0">
+            <table className="table w-100 mb-0">
               <TableHeader headerGroups={headerGroups} />
               <tbody>
                 {maxPublishedDiscountsReached && (

@@ -135,6 +135,7 @@ const Requests = () => {
     columnHelper.accessor(row => row.organizationName, {
       id: "organizationName",
       header: "Operatore",
+      size: 370,
       cell: ({ getValue, row }) => {
         const name = getValue();
         if (!name) {
@@ -264,7 +265,7 @@ const Requests = () => {
         isPending={isPending}
       />
       <div className="overflow-auto">
-        <table style={{ width: "100%" }} className="bg-white">
+        <table className="w-100 bg-white">
           <TableHeader headerGroups={table.getHeaderGroups()} />
           <TableBody
             table={table}

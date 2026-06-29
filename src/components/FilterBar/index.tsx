@@ -41,7 +41,10 @@ const FilterBar = ({
   children
 }: FilterBarProps) => (
   <form>
-    <div className="d-flex justify-content-between align-items-center">
+    <div
+      className="d-flex justify-content-between align-items-center"
+      style={{ minHeight: 48 }}
+    >
       <FilterTitle
         title={title}
         hasActiveFilters={hasActiveFilters}
