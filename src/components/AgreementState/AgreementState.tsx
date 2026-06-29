@@ -1,9 +1,7 @@
 import { ReactNode } from "react";
 import { format } from "date-fns";
-import Hourglass from "../../assets/icons/hourglass.svg?react";
-import Exclamation from "../../assets/icons/exclamation.svg?react";
+import { Icon } from "design-react-kit";
 import { AgreementState as AgreementStateType } from "../../api/generated";
-import Check from "../../assets/icons/check.svg?react";
 import { BadgePill } from "../BadgePill";
 
 type Props = {
@@ -13,18 +11,15 @@ type Props = {
 
 type StateMap = Partial<Record<AgreementStateType, ReactNode>>;
 
-const DateLabel = ({
-  className = "",
-  title,
-  date
-}: {
-  className?: string;
+type DateLabelProps = {
   title: string;
   date: string | undefined;
-}) => {
+};
+
+const DateLabel = ({ title, date }: DateLabelProps) => {
   const newDate = format(new Date(date ?? ""), "dd/MM/yyyy");
   return (
-    <div className={`${className} d-flex flex-column text-center`}>
+    <div className="d-flex flex-column text-center gap-2">
       <span className="text-sm fw-light text-gray">{title}</span>
       <span className="text-sm fw-bold text-black">{newDate}</span>
     </div>
@@ -42,14 +37,14 @@ const {
 const AgreementState = ({ state, startDate }: Props) => {
   const activeConventionContent = (
     <>
-      <BadgePill label="Convenzione attiva" color="primary" />
-      <div className="p-3">
-        <Check />
+      <BadgePill label="Convenzione attiva" color="primary" fullWidth />
+      <div className="p-6">
+        <Icon
+          icon="it-check-circle"
+          style={{ fill: "#2BD6D0", width: 95, height: 95 }}
+        />
       </div>
-      <div
-        className="d-flex flex-row justify-content-around pb-10 flex-wrap"
-        style={{ width: "100%" }}
-      >
+      <div className="d-flex flex-row justify-content-around flex-wrap w-100">
         <DateLabel title="Data di inizio" date={startDate} />
       </div>
     </>
@@ -60,35 +55,47 @@ const AgreementState = ({ state, startDate }: Props) => {
     [ActiveAgreement]: activeConventionContent,
     [PendingAgreement]: (
       <>
-        <BadgePill label="Richiesta di convenzione inviata" color="warning" />
-        <div className="p-3">
-          <Hourglass />
+        <BadgePill
+          label="Richiesta di convenzione inviata"
+          color="warning"
+          fullWidth
+        />
+        <div className="p-6">
+          <Icon
+            icon="it-clock"
+            style={{ fill: "#0066CC", width: 95, height: 95 }}
+          />
         </div>
-        <p className="text-sm text-center text-gray">
-          La tua richiesta è in attesa di approvazione.
-          <br />
-          Il referente riceverà una e-mail appena sarà approvata.
+        <p className="fs-6 text-center text-black m-0 lh-base">
+          La tua richiesta è in attesa di approvazione. Il referente riceverà
+          una e-mail appena sarà approvata.
         </p>
       </>
     ),
     [TerminationReminderSentAgreement]: (
       <>
-        <BadgePill label="Richiamo" color="warning" />
-        <div className="p-3">
-          <Exclamation />
+        <BadgePill label="Richiamo" color="warning" fullWidth />
+        <div className="p-6">
+          <Icon
+            icon="it-warning-circle"
+            style={{ fill: "#2BD6D0", width: 95, height: 95 }}
+          />
         </div>
-        <p className="text-sm text-center text-gray">
+        <p className="fs-6 text-center text-black m-0 lh-base">
           Hai ricevuto un richiamo di recesso.
         </p>
       </>
     ),
     [TerminationInProgressAgreement]: (
       <>
-        <BadgePill label="In recesso" color="danger" />
-        <div className="p-3">
-          <Exclamation />
+        <BadgePill label="In recesso" color="danger" fullWidth />
+        <div className="p-6">
+          <Icon
+            icon="it-warning-circle"
+            style={{ fill: "#2BD6D0", width: 95, height: 95 }}
+          />
         </div>
-        <p className="text-sm text-center text-gray">
+        <p className="fs-6 text-center text-black m-0 lh-base">
           Quando la procedura di recesso sarà conclusa, non potrai più accedere
           al Portale operatori.
         </p>
@@ -97,11 +104,14 @@ const AgreementState = ({ state, startDate }: Props) => {
   };
 
   return (
-    <section className="bg-white d-flex flex-column align-items-center px-4">
-      <h1 className="pt-7 text-base fw-semibold text-dark-blue text-uppercase tracking">
+    <section
+      className="bg-white d-flex flex-column align-items-center py-6 px-10"
+      style={{ width: "292px" }}
+    >
+      <h1 className="text-base fw-semibold text-dark-blue text-uppercase tracking mb-4">
         PagoPA
       </h1>
-      <div className="d-flex flex-column align-items-center">
+      <div className="d-flex flex-column align-items-center w-100">
         {contentMap[state]}
       </div>
     </section>

@@ -32,7 +32,7 @@ const Dashboard = () => {
   return (
     <Layout>
       <ContainerFluid className="mt-10 mb-20" maxWidth="972px">
-        <div className="col-9">
+        <div className="col">
           <Introduction
             name={user ? `${user.first_name} ${user.last_name}` : ""}
             handleClick={handleClick}
@@ -40,7 +40,7 @@ const Dashboard = () => {
           />
           {tabComponents[tab]}
         </div>
-        <div className="col-3 ">
+        <div className="col-auto">
           <AgreementState
             state={agreement.state}
             startDate={agreement.startDate}

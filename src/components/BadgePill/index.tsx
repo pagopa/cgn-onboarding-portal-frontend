@@ -16,6 +16,7 @@ type BadgePillProps = {
   onClick?: () => void;
   active?: boolean;
   onClear?: () => void;
+  fullWidth?: boolean;
 };
 
 export const BadgePill = ({
@@ -23,12 +24,14 @@ export const BadgePill = ({
   color,
   onClick,
   active,
-  onClear
+  onClear,
+  fullWidth
 }: BadgePillProps) => {
   const className = [
     "fw-normal",
     "align-self-center",
-    onClick && "badge-pointer"
+    onClick && "badge-pointer",
+    fullWidth && "w-100"
   ]
     .filter(Boolean)
     .join(" ");
