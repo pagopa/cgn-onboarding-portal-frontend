@@ -12,10 +12,10 @@ export const organizationStatusBadge: Record<
 > = {
   [OrganizationStatus.Draft]: { label: "In Bozza", color: "primary" },
   [OrganizationStatus.Pending]: { label: "Da valutare", color: "warning" },
-  [OrganizationStatus.Approved]: { label: "Approvata", color: "warning" },
-  [OrganizationStatus.Rejected]: { label: "Rifiutata", color: "danger" },
+  [OrganizationStatus.Approved]: { label: "Approvato", color: "warning" },
+  [OrganizationStatus.Rejected]: { label: "Respinto", color: "danger" },
   [OrganizationStatus.Active]: { label: "Attivo", color: "success" },
-  [OrganizationStatus.Inactive]: { label: "Inattiva", color: "warning" },
+  [OrganizationStatus.Inactive]: { label: "Inattivo", color: "warning" },
   [OrganizationStatus.TerminationReminderSent]: {
     label: "Richiamo",
     color: "warning"
@@ -24,7 +24,7 @@ export const organizationStatusBadge: Record<
     label: "In Recesso",
     color: "danger"
   },
-  [OrganizationStatus.Terminated]: { label: "Cessata", color: "secondary" }
+  [OrganizationStatus.Terminated]: { label: "Cessato", color: "secondary" }
 };
 
 export const agreementBadgePill: Record<
@@ -50,12 +50,12 @@ export const discountBadgePill: Record<
   { label: string; color: BadgeColor }
 > = {
   [DiscountState.Draft]: { label: "Bozza", color: "secondary" },
-  [DiscountState.Suspended]: { label: "Sospesa", color: "warning" },
+  [DiscountState.Suspended]: { label: "Sospeso", color: "warning" },
   [DiscountState.TestPending]: { label: "Test", color: "warning" },
   [DiscountState.TestPassed]: { label: "Test superato", color: "success" },
   [DiscountState.TestFailed]: { label: "Test fallito", color: "danger" },
-  [DiscountState.Published]: { label: "Pubblicata", color: "primary" },
-  [DiscountState.Expired]: { label: "Scaduta", color: "secondary" }
+  [DiscountState.Published]: { label: "Pubblicato", color: "primary" },
+  [DiscountState.Expired]: { label: "Scaduto", color: "secondary" }
 };
 
 export const requestBadgePill: Record<
@@ -65,6 +65,6 @@ export const requestBadgePill: Record<
   DraftAgreement: { label: "In Bozza", color: "primary" },
   PendingAgreement: { label: "In valutazione", color: "warning" },
   AssignedAgreement: { label: "In valutazione", color: "warning" },
-  ApprovedAgreement: { label: "Approvata", color: "success" },
-  RejectedAgreement: { label: "Respinta", color: "secondary" }
+  ApprovedAgreement: { label: "Approvato", color: "success" },
+  RejectedAgreement: { label: "Respinto", color: "secondary" }
 };

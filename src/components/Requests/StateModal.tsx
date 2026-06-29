@@ -14,8 +14,8 @@ const stateLabels: Record<string, string> = {
   DraftAgreement: "In Bozza",
   PendingAgreement: "Da valutare",
   AssignedAgreement: "In valutazione",
-  ApprovedAgreement: "Approvata",
-  RejectedAgreement: "Respinta"
+  ApprovedAgreement: "Approvato",
+  RejectedAgreement: "Respinto"
 };
 
 const getStatesLabel = (states?: string): string =>
