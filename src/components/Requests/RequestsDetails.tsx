@@ -209,6 +209,8 @@ const RequestsDetails = ({ original, updateList, closeRow }: Props) => {
 
   const isDraft = original.state === AgreementState.DraftAgreement;
 
+  const isRejected = original.state === AgreementState.RejectedAgreement;
+
   return (
     <section className="px-6 py-4 bg-white">
       <h1 className="h5 fw-bold text-dark-blue mb-5">Dettagli</h1>
@@ -263,26 +265,27 @@ const RequestsDetails = ({ original, updateList, closeRow }: Props) => {
             assignedToMe={assignedToMe}
             setCheckAllDocs={setCheckAllDocs}
           />
-          {rejectMode ? (
-            <RejectButtons
-              rejectMessage={rejectMessage}
-              setRejectMessage={setRejectMessage}
-              setRejectMode={setRejectMode}
-              rejectAgreement={rejectAgreement}
-              isPending={isPending}
-            />
-          ) : (
-            <ActionButtons
-              assignedToMe={assignedToMe}
-              original={original}
-              checkAllDocs={checkAllDocs}
-              approveIsPending={approveAgreementMutation.isPending}
-              assignIsPending={assignAgreementsMutation.isPending}
-              approveAgreement={approveAgreement}
-              assignAgreements={assignAgreements}
-              setRejectMode={setRejectMode}
-            />
-          )}
+          {!isRejected &&
+            (rejectMode ? (
+              <RejectButtons
+                rejectMessage={rejectMessage}
+                setRejectMessage={setRejectMessage}
+                setRejectMode={setRejectMode}
+                rejectAgreement={rejectAgreement}
+                isPending={isPending}
+              />
+            ) : (
+              <ActionButtons
+                assignedToMe={assignedToMe}
+                original={original}
+                checkAllDocs={checkAllDocs}
+                approveIsPending={approveAgreementMutation.isPending}
+                assignIsPending={assignAgreementsMutation.isPending}
+                approveAgreement={approveAgreement}
+                assignAgreements={assignAgreements}
+                setRejectMode={setRejectMode}
+              />
+            ))}
         </>
       )}
     </section>

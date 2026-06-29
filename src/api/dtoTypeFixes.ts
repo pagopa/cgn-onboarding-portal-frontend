@@ -9,7 +9,8 @@ import {
   AgreementState,
   AssignedAgreement,
   DraftAgreement,
-  PendingAgreement
+  PendingAgreement,
+  RejectedAgreement
 } from "./generated_backoffice";
 
 type NormalizedAddresses<S> = Omit<S, "addresses"> & {
@@ -52,5 +53,9 @@ export type NormalizedBackofficeAgreement =
     >)
   | ({ state: typeof AgreementState.PendingAgreement } & Omit<
       PendingAgreement,
+      "state"
+    >)
+  | ({ state: typeof AgreementState.RejectedAgreement } & Omit<
+      RejectedAgreement,
       "state"
     >);

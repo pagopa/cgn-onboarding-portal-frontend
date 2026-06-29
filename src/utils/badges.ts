@@ -63,7 +63,7 @@ export const requestBadgePill: Record<
   { label: string; color: BadgeColor }
 > = {
   DraftAgreement: { label: "In Bozza", color: "primary" },
-  PendingAgreement: { label: "In valutazione", color: "warning" },
+  PendingAgreement: { label: "Da valutare", color: "warning" },
   AssignedAgreement: { label: "In valutazione", color: "warning" },
   ApprovedAgreement: { label: "Approvato", color: "success" },
   RejectedAgreement: { label: "Respinto", color: "secondary" }
