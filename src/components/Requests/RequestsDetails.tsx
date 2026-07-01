@@ -33,6 +33,7 @@ type ActionButtonsProps = {
 type Props = {
   original: NormalizedBackofficeAgreement;
   updateList: () => void;
+  closeRow: () => void;
 };
 
 function RejectButtons({
@@ -131,7 +132,7 @@ function ActionButtons({
   );
 }
 
-const RequestsDetails = ({ original, updateList }: Props) => {
+const RequestsDetails = ({ original, updateList, closeRow }: Props) => {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
   const [checkAllDocs, setCheckAllDocs] = useState(false);
@@ -151,6 +152,7 @@ const RequestsDetails = ({ original, updateList }: Props) => {
   const approveAgreementMutation =
     remoteData.Backoffice.Agreement.approveAgreement.useMutation({
       onSuccess() {
+        closeRow();
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,
@@ -172,6 +174,7 @@ const RequestsDetails = ({ original, updateList }: Props) => {
   const rejectAgreementMutation =
     remoteData.Backoffice.Agreement.rejectAgreement.useMutation({
       onSuccess() {
+        closeRow();
         updateList();
         triggerTooltip({
           severity: Severity.SUCCESS,
@@ -204,13 +207,17 @@ const RequestsDetails = ({ original, updateList }: Props) => {
     rejectAgreementMutation.isPending ||
     assignAgreementsMutation.isPending;
 
+  const isDraft = original.state === AgreementState.DraftAgreement;
+
+  const isRejected = original.state === AgreementState.RejectedAgreement;
+
   return (
     <section className="px-6 py-4 bg-white">
       <h1 className="h5 fw-bold text-dark-blue mb-5">Dettagli</h1>
       <div className="container">
         <RequestItem
           label="Ragione sociale operatore"
-          value={original.profile?.fullName}
+          value={original.organizationName}
         />
         <RequestItem
           label="Tipologia ente"
@@ -234,47 +241,52 @@ const RequestsDetails = ({ original, updateList }: Props) => {
           </Fragment>
         )}
       </div>
-      <h1 className="h5 fw-bold text-dark-blue mb-5">
-        Dati del referente incaricato
-      </h1>
-      <div className="container">
-        <RequestItem
-          label="Nome e cognome"
-          value={`${original.profile?.referent.firstName} ${original.profile?.referent.lastName}`}
-        />
-        <RequestItem
-          label="Indirizzo e-mail"
-          value={original.profile?.referent.emailAddress}
-        />
-        <RequestItem
-          label="Numero di telefono diretto"
-          value={original.profile?.referent.telephoneNumber}
-        />
-      </div>
-      <RequestsDocuments
-        original={original}
-        assignedToMe={assignedToMe}
-        setCheckAllDocs={setCheckAllDocs}
-      />
-      {rejectMode ? (
-        <RejectButtons
-          rejectMessage={rejectMessage}
-          setRejectMessage={setRejectMessage}
-          setRejectMode={setRejectMode}
-          rejectAgreement={rejectAgreement}
-          isPending={isPending}
-        />
-      ) : (
-        <ActionButtons
-          assignedToMe={assignedToMe}
-          original={original}
-          checkAllDocs={checkAllDocs}
-          approveIsPending={approveAgreementMutation.isPending}
-          assignIsPending={assignAgreementsMutation.isPending}
-          approveAgreement={approveAgreement}
-          assignAgreements={assignAgreements}
-          setRejectMode={setRejectMode}
-        />
+      {!isDraft && (
+        <>
+          <h1 className="h5 fw-bold text-dark-blue mb-5">
+            Dati del referente incaricato
+          </h1>
+          <div className="container">
+            <RequestItem
+              label="Nome e cognome"
+              value={`${original.profile?.referent.firstName} ${original.profile?.referent.lastName}`}
+            />
+            <RequestItem
+              label="Indirizzo e-mail"
+              value={original.profile?.referent.emailAddress}
+            />
+            <RequestItem
+              label="Numero di telefono diretto"
+              value={original.profile?.referent.telephoneNumber}
+            />
+          </div>
+          <RequestsDocuments
+            original={original}
+            assignedToMe={assignedToMe}
+            setCheckAllDocs={setCheckAllDocs}
+          />
+          {!isRejected &&
+            (rejectMode ? (
+              <RejectButtons
+                rejectMessage={rejectMessage}
+                setRejectMessage={setRejectMessage}
+                setRejectMode={setRejectMode}
+                rejectAgreement={rejectAgreement}
+                isPending={isPending}
+              />
+            ) : (
+              <ActionButtons
+                assignedToMe={assignedToMe}
+                original={original}
+                checkAllDocs={checkAllDocs}
+                approveIsPending={approveAgreementMutation.isPending}
+                assignIsPending={assignAgreementsMutation.isPending}
+                approveAgreement={approveAgreement}
+                assignAgreements={assignAgreements}
+                setRejectMode={setRejectMode}
+              />
+            ))}
+        </>
       )}
     </section>
   );

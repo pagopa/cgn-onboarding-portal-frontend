@@ -1,74 +1,134 @@
-import { Badge } from "design-react-kit";
 import { format } from "date-fns";
-import Hourglass from "../../assets/icons/hourglass.svg?react";
+import { Icon } from "design-react-kit";
 import { AgreementState as AgreementStateType } from "../../api/generated";
-import Check from "../../assets/icons/check.svg?react";
+import { BadgePill, BadgeColor } from "../BadgePill";
 
 type Props = {
   state: AgreementStateType;
   startDate?: string;
 };
 
-const DateLabel = ({
-  className = "",
-  title,
-  date
-}: {
-  className?: string;
+type DateLabelProps = {
   title: string;
   date: string | undefined;
-}) => {
+};
+
+type StateConfig = {
+  label: string;
+  color: BadgeColor;
+  icon: string;
+  iconFill: string;
+  description?: string;
+  showStartDate?: boolean;
+};
+
+type StateContentProps = StateConfig & {
+  startDate?: string;
+};
+
+const {
+  ApprovedAgreement,
+  ActiveAgreement,
+  PendingAgreement,
+  InactiveAgreement,
+  TerminationReminderSentAgreement,
+  TerminationInProgressAgreement,
+  TerminatedAgreement
+} = AgreementStateType;
+
+const activeConventionConfig: StateConfig = {
+  label: "Convenzione attiva",
+  color: "primary",
+  icon: "it-check-circle",
+  iconFill: "#2BD6D0",
+  showStartDate: true
+};
+
+const inactiveConfig: StateConfig = {
+  label: "Inattivo",
+  color: "warning",
+  icon: "it-warning-circle",
+  iconFill: "#2BD6D0",
+  description: "Non hai opportunità attive da molto tempo."
+};
+
+const terminationConfig: StateConfig = {
+  label: "In recesso",
+  color: "danger",
+  icon: "it-warning-circle",
+  iconFill: "#2BD6D0",
+  description:
+    "Quando la procedura di recesso sarà conclusa, non potrai più accedere al Portale operatori."
+};
+
+const configMap: Partial<Record<AgreementStateType, StateConfig>> = {
+  [ApprovedAgreement]: activeConventionConfig,
+  [ActiveAgreement]: activeConventionConfig,
+  [InactiveAgreement]: inactiveConfig,
+  [TerminationReminderSentAgreement]: inactiveConfig,
+  [PendingAgreement]: {
+    label: "Richiesta di convenzione inviata",
+    color: "warning",
+    icon: "it-clock",
+    iconFill: "#0066CC",
+    description:
+      "La tua richiesta è in attesa di approvazione. Il referente riceverà una e-mail appena sarà approvata."
+  },
+  [TerminationInProgressAgreement]: terminationConfig,
+  [TerminatedAgreement]: terminationConfig
+};
+
+const DateLabel = ({ title, date }: DateLabelProps) => {
   const newDate = format(new Date(date ?? ""), "dd/MM/yyyy");
   return (
-    <div className={`${className} d-flex flex-column text-center`}>
+    <div className="d-flex flex-column text-center gap-2">
       <span className="text-sm fw-light text-gray">{title}</span>
       <span className="text-sm fw-bold text-black">{newDate}</span>
     </div>
   );
 };
 
-const AgreementState = ({ state, startDate }: Props) => (
-  <section className="bg-white d-flex flex-column align-items-center px-4">
-    <h1 className="pt-7 text-base fw-semibold text-dark-blue text-uppercase tracking">
-      PagoPA
-    </h1>
-    <div>
-      {state === AgreementStateType.ApprovedAgreement && (
-        <Badge className="fw-normal" color="primary" pill tag="span">
-          Convenzione attiva
-        </Badge>
-      )}
-      {state === AgreementStateType.PendingAgreement && (
-        <Badge
-          className="fw-normal"
-          pill
-          tag="span"
-          style={{ backgroundColor: "#EA7614" }}
-        >
-          Richiesta di convenzione inviata
-        </Badge>
-      )}
+const StateContent = ({
+  label,
+  color,
+  icon,
+  iconFill,
+  description,
+  showStartDate,
+  startDate
+}: StateContentProps) => (
+  <>
+    <BadgePill label={label} color={color} fullWidth />
+    <div className="p-6">
+      <Icon icon={icon} style={{ fill: iconFill, width: 95, height: 95 }} />
     </div>
-    <div className="p-3">
-      {state === AgreementStateType.ApprovedAgreement && <Check />}
-      {state === AgreementStateType.PendingAgreement && <Hourglass />}
-    </div>
-    {state === AgreementStateType.ApprovedAgreement && (
-      <div
-        className="d-flex flex-row justify-content-around pb-10 flex-wrap"
-        style={{ width: "100%" }}
-      >
+    {showStartDate && (
+      <div className="d-flex flex-row justify-content-around flex-wrap w-100">
         <DateLabel title="Data di inizio" date={startDate} />
       </div>
     )}
-    {state === AgreementStateType.PendingAgreement && (
-      <p className="text-sm text-center text-gray">
-        La tua richiesta è in attesa di approvazione.
-        <br />
-        Il referente riceverà una e-mail appena sarà approvata.
-      </p>
+    {description && (
+      <p className="fs-6 text-center text-black m-0 lh-base">{description}</p>
     )}
-  </section>
+  </>
 );
+
+const AgreementState = ({ state, startDate }: Props) => {
+  const config = configMap[state];
+
+  return (
+    <section
+      className="bg-white d-flex flex-column align-items-center py-6 px-10"
+      style={{ width: "292px" }}
+    >
+      <h1 className="text-base fw-semibold text-dark-blue text-uppercase tracking mb-4">
+        PagoPA
+      </h1>
+      <div className="d-flex flex-column align-items-center w-100">
+        {config && <StateContent {...config} startDate={startDate} />}
+      </div>
+    </section>
+  );
+};
 
 export default AgreementState;

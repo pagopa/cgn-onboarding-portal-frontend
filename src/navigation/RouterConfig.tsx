@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AgreementState } from "../api/generated";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
+import TerminatedModal from "../components/TerminatedModal/TerminatedModal";
 import AdminPanel from "../pages/AdminPanel";
 import CreateActivation from "../pages/CreateActivation";
 import CreateDiscount from "../pages/CreateDiscount";
@@ -37,9 +38,11 @@ import {
 } from "./routes";
 
 const RouterConfig = () => {
-  const { value: agreement, loading } = useCgnSelector(
-    (state: RootState) => state.agreement
-  );
+  const {
+    value: agreement,
+    loading,
+    forbidden
+  } = useCgnSelector((state: RootState) => state.agreement);
   const dispatch = useCgnDispatch();
   const authentication = useAuthentication();
 
@@ -113,17 +116,25 @@ const RouterConfig = () => {
     }
     default: {
       return (
-        <Routes>
-          <Route path={LOGIN} element={<Login />} />
-          <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
-          <Route path={DASHBOARD} element={<Dashboard />} />
-          <Route path={EDIT_PROFILE} element={<EditProfile />} />
-          <Route path={CREATE_DISCOUNT} element={<CreateDiscount />} />
-          <Route path={EDIT_DISCOUNT} element={<EditDiscount />} />
-          <Route path={EDIT_OPERATOR_DATA} element={<EditOperatorData />} />
-          <Route path={REJECT_PROFILE} element={<RejectedProfile />} />
-          <Route path="*" element={<Navigate to={DASHBOARD} replace />} />
-        </Routes>
+        <>
+          <TerminatedModal
+            isOpen={forbidden}
+            onLogout={() =>
+              authentication.logout(authentication.currentSession)
+            }
+          />
+          <Routes>
+            <Route path={LOGIN} element={<Login />} />
+            <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+            <Route path={DASHBOARD} element={<Dashboard />} />
+            <Route path={EDIT_PROFILE} element={<EditProfile />} />
+            <Route path={CREATE_DISCOUNT} element={<CreateDiscount />} />
+            <Route path={EDIT_DISCOUNT} element={<EditDiscount />} />
+            <Route path={EDIT_OPERATOR_DATA} element={<EditOperatorData />} />
+            <Route path={REJECT_PROFILE} element={<RejectedProfile />} />
+            <Route path="*" element={<Navigate to={DASHBOARD} replace />} />
+          </Routes>
+        </>
       );
     }
   }

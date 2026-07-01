@@ -1,11 +1,9 @@
-import { useMemo, useState } from "react";
-import { Button } from "design-react-kit";
+import { useMemo, useState, useCallback } from "react";
 import { format } from "date-fns";
 import isEqual from "lodash/isEqual";
 import {
   createColumnHelper,
   ExpandedState,
-  flexRender,
   getCoreRowModel,
   getExpandedRowModel,
   getPaginationRowModel,
@@ -14,7 +12,7 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import { remoteData } from "../../api/common";
-import CenteredLoading from "../CenteredLoading/CenteredLoading";
+import TableFooter from "../Table/TableFooter";
 import {
   AgreementApiGetApprovedAgreementsRequest,
   ApprovedAgreement,
@@ -22,14 +20,16 @@ import {
 } from "../../api/generated_backoffice";
 import Pager from "../Table/Pager";
 import TableHeader from "../Table/TableHeader";
+import TableBody from "../Table/TableBody";
 import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { useSyncSorting } from "../../utils/useSyncSorting";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import { BadgePill } from "../BadgePill";
+import { agreementBadgePill, discountBadgePill } from "../../utils/badges";
 import ConventionFilter from "./ConventionFilter";
 import ConventionDetails from "./ConventionDetails";
-import { BadgeStatus } from "./BadgeStatus";
 
 export type ConventionFilterFormValues = {
   fullName: string | undefined;
@@ -112,30 +112,33 @@ const OperatorConvention = () => {
     ]
   );
 
-  const { data: conventions, isPending } =
-    remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(params);
+  const {
+    data: conventions,
+    isPending,
+    refetch
+  } = remoteData.Backoffice.Agreement.getApprovedAgreements.useQuery(params);
 
   const data = useMemo(() => conventions?.items || [], [conventions]);
   const columnHelper = createColumnHelper<ApprovedAgreement>();
 
   const columns = [
     columnHelper.accessor("fullName", {
-      header: "Operatore"
-    }),
-    columnHelper.accessor("entityType", {
-      header: "Tipologia ente",
-      enableSorting: false,
-      cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
+      header: "Operatore",
+      size: 370,
+      cell: ({ getValue, row }) =>
+        getValue()
+          ? `[${getEntityTypeLabel(row.original.entityType)}] ${getValue()}`
+          : "-"
     }),
     columnHelper.accessor("agreementStartDate", {
-      header: "Data Convenzionamento",
+      header: "Convenzionato il",
       cell: ({ getValue }) => {
         const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
       }
     }),
     columnHelper.accessor("agreementLastUpdateDate", {
-      header: "Data Ultima Modifica",
+      header: "Ultima modifica",
       cell: ({ getValue }) => {
         const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
@@ -149,8 +152,13 @@ const OperatorConvention = () => {
       enableSorting: false,
       cell: ({ getValue }) =>
         getValue() ? (
-          <BadgeStatus discountState={DiscountState.TestPending} />
+          <BadgePill {...discountBadgePill[DiscountState.TestPending]} />
         ) : null
+    }),
+    columnHelper.accessor("state", {
+      header: "Stato",
+      enableSorting: false,
+      cell: ({ getValue }) => <BadgePill {...agreementBadgePill[getValue()]} />
     })
   ];
 
@@ -169,6 +177,7 @@ const OperatorConvention = () => {
     onExpandedChange: setExpanded,
     manualPagination: true,
     manualSorting: true,
+    sortDescFirst: false,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -176,19 +185,34 @@ const OperatorConvention = () => {
     getPaginationRowModel: getPaginationRowModel()
   });
 
+  const handleFilterChange = useCallback(
+    (
+      update:
+        | ConventionFilterFormValues
+        | ((prev: ConventionFilterFormValues) => ConventionFilterFormValues)
+    ) => {
+      setValues(update);
+      setPagination(prev => ({ ...prev, pageIndex: 0 }));
+    },
+    []
+  );
+
   useSyncSorting(sorting, setValues, getConventionSortColumn);
   const { canPreviousPage, canNextPage, previousPage, nextPage, gotoPage } =
     usePaginationHelpers(table);
+
+  const handleCloseDetails = useCallback(() => {
+    setShowDetails(false);
+    setSelectedConvention(undefined);
+    setValues(conventionFilterFormInitialValues);
+    void refetch();
+  }, [refetch]);
 
   if (showDetails && selectedConvention) {
     return (
       <ConventionDetails
         agreement={selectedConvention}
-        onClose={() => {
-          setShowDetails(false);
-          setSelectedConvention(undefined);
-          setValues(conventionFilterFormInitialValues);
-        }}
+        onClose={handleCloseDetails}
       />
     );
   }
@@ -204,87 +228,49 @@ const OperatorConvention = () => {
   const pageArray = Array.from(Array(pageCount).keys());
 
   return (
-    <section className="mt-2 px-8 py-10 bg-white">
+    <section className="px-8 py-10 bg-white">
       <ConventionFilter
         values={values}
-        onChange={setValues}
+        onChange={handleFilterChange}
         hasActiveFitlers={hasActiveFitlers}
         onReset={() => {
-          setValues(conventionFilterFormInitialValues);
+          handleFilterChange(conventionFilterFormInitialValues);
           setSorting([]);
         }}
       />
-      {isPending ? (
-        <CenteredLoading />
-      ) : (
-        <>
-          <Pager
-            canPreviousPage={canPreviousPage}
-            canNextPage={canNextPage}
-            startRowIndex={startRowIndex}
-            endRowIndex={endRowIndex}
-            pageIndex={pagination.pageIndex}
-            onPreviousPage={previousPage}
-            onNextPage={nextPage}
-            onGotoPage={gotoPage}
-            pageArray={pageArray}
-            total={conventions?.total}
-          />
-          <div className="overflow-auto">
-            <table style={{ width: "100%" }} className="mt-2 bg-white">
-              <TableHeader headerGroups={table.getHeaderGroups()} />
+      <Pager
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        startRowIndex={startRowIndex}
+        endRowIndex={endRowIndex}
+        pageIndex={pagination.pageIndex}
+        onPreviousPage={previousPage}
+        onNextPage={nextPage}
+        onGotoPage={gotoPage}
+        pageArray={pageArray}
+        total={conventions?.total}
+        isPending={isPending}
+      />
+      <div className="overflow-auto">
+        <table className="w-100 bg-white">
+          <TableHeader headerGroups={table.getHeaderGroups()} />
 
-              <tbody>
-                {table.getRowModel().rows.map(row => (
-                  <tr
-                    key={row.id}
-                    className="cursor-pointer"
-                    onClick={() => {
-                      setShowDetails(true);
-                      setSelectedConvention(row.original);
-                    }}
-                  >
-                    {row.getVisibleCells().map((cell, i, arr) => (
-                      <td
-                        key={cell.id}
-                        className={`${i === 0 ? "ps-6" : ""} ${
-                          i === arr.length - 1 ? "pe-6" : ""
-                        } px-3 py-2 border-bottom text-sm`}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {!conventions?.items.length &&
-            (hasActiveFitlers ? (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessun risultato corrisponde alla tua ricerca</p>
-                <Button
-                  color="primary"
-                  outline
-                  tag="button"
-                  className="mt-3"
-                  onClick={() => {
-                    setValues(conventionFilterFormInitialValues);
-                  }}
-                >
-                  Reimposta Tutto
-                </Button>
-              </div>
-            ) : (
-              <div className="m-8 d-flex flex-column align-items-center">
-                <p>Nessuna convenzione trovata</p>
-              </div>
-            ))}
-        </>
-      )}
+          <TableBody
+            table={table}
+            onRowClick={row => {
+              setShowDetails(true);
+              setSelectedConvention(row.original);
+            }}
+          />
+        </table>
+      </div>
+      <TableFooter
+        isPending={isPending}
+        isEmpty={!conventions?.items.length}
+        hasActiveFilters={hasActiveFitlers}
+        emptyMessage="Nessuna convenzione trovata"
+        onReset={() => handleFilterChange(conventionFilterFormInitialValues)}
+      />
     </section>
   );
 };

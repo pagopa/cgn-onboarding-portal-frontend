@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { AgreementState as AgreementStateType } from "../api/generated";
+import { useState, type ReactElement } from "react";
 import AgreementState from "../components/AgreementState/AgreementState";
 import Layout from "../components/Layout/Layout";
 import { ContainerFluid } from "../components/Container/Container";
@@ -11,56 +10,42 @@ import { useAuthentication } from "../authentication/AuthenticationContext";
 import { selectAgreement } from "../store/agreement/selectors";
 import { useCgnSelector } from "../store/hooks";
 
+export type DashboardTab = "profileData" | "discounts" | "profile";
+
 const Dashboard = () => {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState<DashboardTab>("profileData");
   const agreement = useCgnSelector(selectAgreement);
 
   const authentication = useAuthentication();
   const user = authentication.currentUserSession;
 
-  function hasStateSection(state: AgreementStateType) {
-    return (
-      state === AgreementStateType.PendingAgreement ||
-      state === AgreementStateType.ApprovedAgreement
-    );
-  }
-
-  const handleClick = (newTab: number) => {
+  const handleClick = (newTab: DashboardTab) => {
     setTab(newTab);
   };
 
-  function selectedTab() {
-    switch (tab) {
-      case 0:
-        return <ProfileData />;
-      case 1:
-        return <Discounts />;
-      case 2:
-        return <Profile />;
-      default:
-        <div>error</div>;
-    }
-  }
+  const tabComponents: Record<DashboardTab, ReactElement> = {
+    profileData: <ProfileData />,
+    discounts: <Discounts />,
+    profile: <Profile />
+  };
 
   return (
     <Layout>
       <ContainerFluid className="mt-10 mb-20" maxWidth="972px">
-        <div className="col-9">
+        <div className="col">
           <Introduction
             name={user ? `${user.first_name} ${user.last_name}` : ""}
             handleClick={handleClick}
             activeTab={tab}
           />
-          {selectedTab()}
+          {tabComponents[tab]}
         </div>
-        {hasStateSection(AgreementStateType.ApprovedAgreement) && (
-          <div className="col-3 ">
-            <AgreementState
-              state={agreement.state}
-              startDate={agreement.startDate}
-            />
-          </div>
-        )}
+        <div className="col-auto">
+          <AgreementState
+            state={agreement.state}
+            startDate={agreement.startDate}
+          />
+        </div>
       </ContainerFluid>
     </Layout>
   );

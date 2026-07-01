@@ -12,42 +12,12 @@ function TableHeader<D extends object>({
   const getSortIcon = (sortState: SortState): JSX.Element => {
     if (!sortState) {
       return (
-        <div
-          style={{
-            display: "inline-flex",
-            flexDirection: "column",
-            lineHeight: 0.6,
-            position: "relative"
-          }}
-        >
-          <Icon
-            icon="it-arrow-up-triangle"
-            style={{
-              opacity: 0.3,
-              color: "#5C6F82",
-              position: "absolute",
-              bottom: "-18px"
-            }}
-          />
-          <Icon
-            icon="it-arrow-down-triangle"
-            style={{
-              opacity: 0.3,
-              color: "#5C6F82",
-              position: "absolute",
-              bottom: "-20px"
-            }}
-          />
-        </div>
+        <Icon icon="it-collapse" style={{ opacity: 0.3, color: "#5C6F82" }} />
       );
     }
     return (
       <Icon
-        icon={
-          sortState === "desc"
-            ? "it-arrow-down-triangle"
-            : "it-arrow-up-triangle"
-        }
+        icon={sortState === "desc" ? "it-expand" : "it-collapse"}
         style={{ color: "#5C6F82" }}
       />
     );
@@ -59,8 +29,9 @@ function TableHeader<D extends object>({
         <tr
           key={headerGroup.id}
           style={{
-            backgroundColor: "#F8F9F9",
-            borderBottom: "1px solid #5A6772"
+            backgroundColor: "#FAFAFA",
+            borderBottom: "1px solid #5C6F82",
+            height: "48px"
           }}
         >
           {headerGroup.headers.map((header, j) => (
@@ -70,12 +41,16 @@ function TableHeader<D extends object>({
               className={`
                 ${j === 0 ? "ps-6" : ""}
                 ${j === headerGroup.headers.length - 1 ? "pe-6" : ""}
-                px-3 py-2 fw-bold text-gray
+                px-3 py-2 text-gray
                 text-uppercase text-nowrap
                 align-middle
                 ${header.column.getCanSort() ? "cursor-pointer" : ""}
               `}
-              style={{ fontSize: "0.75rem" }}
+              style={{
+                fontSize: "12px",
+                fontWeight: 600,
+                width: header.column.columnDef.size
+              }}
             >
               {flexRender(header.column.columnDef.header, header.getContext())}
 
