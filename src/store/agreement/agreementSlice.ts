@@ -11,11 +11,13 @@ interface ExtendedAgreement extends Agreement {
 interface AgreementState {
   value: ExtendedAgreement;
   loading: boolean;
+  forbidden: boolean;
 }
 
 const initialState: AgreementState = {
   value: {} as ExtendedAgreement,
-  loading: true
+  loading: true,
+  forbidden: false
 };
 
 export const createAgreement = createAsyncThunk(
@@ -35,6 +37,9 @@ const agreementSlice = createSlice({
   reducers: {
     setImage(state, action: PayloadAction<string>) {
       state.value.imageUrl = action.payload;
+    },
+    setForbidden(state, action: PayloadAction<boolean>) {
+      state.forbidden = action.payload;
     }
   },
   extraReducers: builder => {
@@ -54,5 +59,5 @@ const agreementSlice = createSlice({
   }
 });
 
-export const { setImage } = agreementSlice.actions;
+export const { setImage, setForbidden } = agreementSlice.actions;
 export default agreementSlice.reducer;

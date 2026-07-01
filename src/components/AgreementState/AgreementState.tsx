@@ -32,7 +32,8 @@ const {
   PendingAgreement,
   InactiveAgreement,
   TerminationReminderSentAgreement,
-  TerminationInProgressAgreement
+  TerminationInProgressAgreement,
+  TerminatedAgreement
 } = AgreementStateType;
 
 const activeConventionConfig: StateConfig = {
@@ -43,16 +44,28 @@ const activeConventionConfig: StateConfig = {
   showStartDate: true
 };
 
+const inactiveConfig: StateConfig = {
+  label: "Inattivo",
+  color: "warning",
+  icon: "it-warning-circle",
+  iconFill: "#2BD6D0",
+  description: "Non hai opportunità attive da molto tempo."
+};
+
+const terminationConfig: StateConfig = {
+  label: "In recesso",
+  color: "danger",
+  icon: "it-warning-circle",
+  iconFill: "#2BD6D0",
+  description:
+    "Quando la procedura di recesso sarà conclusa, non potrai più accedere al Portale operatori."
+};
+
 const configMap: Partial<Record<AgreementStateType, StateConfig>> = {
   [ApprovedAgreement]: activeConventionConfig,
   [ActiveAgreement]: activeConventionConfig,
-  [InactiveAgreement]: {
-    label: "Inattivo",
-    color: "warning",
-    icon: "it-warning-circle",
-    iconFill: "#2BD6D0",
-    showStartDate: true
-  },
+  [InactiveAgreement]: inactiveConfig,
+  [TerminationReminderSentAgreement]: inactiveConfig,
   [PendingAgreement]: {
     label: "Richiesta di convenzione inviata",
     color: "warning",
@@ -61,21 +74,8 @@ const configMap: Partial<Record<AgreementStateType, StateConfig>> = {
     description:
       "La tua richiesta è in attesa di approvazione. Il referente riceverà una e-mail appena sarà approvata."
   },
-  [TerminationReminderSentAgreement]: {
-    label: "Richiamo",
-    color: "warning",
-    icon: "it-warning-circle",
-    iconFill: "#2BD6D0",
-    description: "Hai ricevuto un richiamo di recesso."
-  },
-  [TerminationInProgressAgreement]: {
-    label: "In recesso",
-    color: "danger",
-    icon: "it-warning-circle",
-    iconFill: "#2BD6D0",
-    description:
-      "Quando la procedura di recesso sarà conclusa, non potrai più accedere al Portale operatori."
-  }
+  [TerminationInProgressAgreement]: terminationConfig,
+  [TerminatedAgreement]: terminationConfig
 };
 
 const DateLabel = ({ title, date }: DateLabelProps) => {

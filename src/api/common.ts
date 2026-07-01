@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
+  QueryCache,
   QueryClient,
   UseQueryOptions,
   useQuery as reactQueryUseQuery,
@@ -11,6 +12,8 @@ import {
 } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse, RawAxiosRequestConfig } from "axios";
 import { authenticationStore } from "../authentication/authenticationStore";
+import { setForbidden } from "../store/agreement/agreementSlice";
+import { store } from "../store/store";
 import * as GeneratedPublic from "./generated_public";
 import * as GeneratedIndex from "./generated";
 import * as GeneratedBackoffice from "./generated_backoffice";
@@ -73,7 +76,31 @@ const BackofficeApi = {
   )
 };
 
-export const queryClient = new QueryClient({});
+// 403 for a logged-in operator = terminated agreement (operator no longer
+// allowed). Admin 403 is a normal error and must not trigger this handling.
+const isOperatorForbidden = (error: unknown): boolean =>
+  error instanceof AxiosError &&
+  error.response?.status === 403 &&
+  authenticationStore.get().currentSession.type === "user";
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Don't retry an operator 403: the agreement is terminated, retrying is
+      // pointless and delays the TerminatedModal. Admin 403 still retries.
+      retry: (failureCount, error) =>
+        !isOperatorForbidden(error) && failureCount < 3
+    }
+  },
+  queryCache: new QueryCache({
+    // Operator 403 = terminated agreement: flag it in Redux to drive TerminatedModal.
+    onError: error => {
+      if (isOperatorForbidden(error)) {
+        store.dispatch(setForbidden(true));
+      }
+    }
+  })
+});
 
 type VariablesOf<AxiosParams extends Array<any>> = AxiosParams extends [
   RawAxiosRequestConfig?
@@ -141,6 +168,8 @@ function makeReactQuery<AxiosParams extends Array<any>, Result>(
           // eslint-disable-next-line functional/immutable-data
           window.location.href = "/";
         }
+        // 403 on Index = terminated agreement (operator no longer allowed).
+        // Handled in the UI via TerminatedModal, which reads the query cache.
         throw error;
       }
     },
