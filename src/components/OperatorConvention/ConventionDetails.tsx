@@ -157,13 +157,13 @@ const ConventionDetails = ({ agreement, onClose }: ConventionDetailsProps) => {
       <div className="d-flex align-items-center justify-content-between px-8 py-10 bg-white">
         <h4>{agreement.fullName}</h4>
         <div>
-          <div className="mb-3 text-gray">Modifica convenzione</div>
+          <div className="mb-3 text-gray">Data convenzionamento</div>
           <div>
             {format(new Date(agreement.agreementStartDate), "dd/MM/yyyy")}
           </div>
         </div>
         <div>
-          <div className="mb-3 text-gray">Data ultima modifica</div>
+          <div className="mb-3 text-gray">Modifica convenzione</div>
           <div>
             {format(new Date(agreement.agreementLastUpdateDate), "dd/MM/yyyy")}
           </div>
