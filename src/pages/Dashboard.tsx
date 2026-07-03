@@ -32,7 +32,7 @@ const Dashboard = () => {
   return (
     <Layout>
       <ContainerFluid className="mt-10 mb-20" maxWidth="972px">
-        <div className="col">
+        <div className="col" style={{ minWidth: 0 }}>
           <Introduction
             name={user ? `${user.first_name} ${user.last_name}` : ""}
             handleClick={handleClick}

@@ -40,6 +40,9 @@ const agreementSlice = createSlice({
     },
     setForbidden(state, action: PayloadAction<boolean>) {
       state.forbidden = action.payload;
+    },
+    resetAgreement() {
+      return initialState;
     }
   },
   extraReducers: builder => {
@@ -59,5 +62,6 @@ const agreementSlice = createSlice({
   }
 });
 
-export const { setImage, setForbidden } = agreementSlice.actions;
+export const { setImage, setForbidden, resetAgreement } =
+  agreementSlice.actions;
 export default agreementSlice.reducer;

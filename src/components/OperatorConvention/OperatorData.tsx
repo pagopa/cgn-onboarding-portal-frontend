@@ -239,6 +239,7 @@ const OperatorData = ({
         body={modalConfig?.body ?? ""}
         onConfirm={() => mutateTermination(openModal!)}
         isPending={terminationMutation.isPending}
+        cancelLabel="No, torna indietro"
       />
     </div>
   );

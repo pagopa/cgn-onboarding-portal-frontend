@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AgreementState } from "../api/generated";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
-import TerminatedModal from "../components/TerminatedModal/TerminatedModal";
+import ConfirmModal from "../components/ConfirmModal";
 import AdminPanel from "../pages/AdminPanel";
 import CreateActivation from "../pages/CreateActivation";
 import CreateDiscount from "../pages/CreateDiscount";
@@ -17,6 +17,7 @@ import Login from "../pages/Login";
 import { LoginRedirect } from "../pages/LoginRedirect";
 import RejectedProfile from "../pages/RejectedProfile";
 import SelectCompany from "../pages/SelectCompany";
+import TerminatedAgreement from "../pages/TerminatedAgreement";
 import { createAgreement } from "../store/agreement/agreementSlice";
 import { useCgnDispatch, useCgnSelector } from "../store/hooks";
 import { RootState } from "../store/store";
@@ -34,7 +35,8 @@ import {
   EDIT_PROFILE,
   LOGIN,
   LOGIN_REDIRECT,
-  REJECT_PROFILE
+  REJECT_PROFILE,
+  TERMINATED_AGREEMENT
 } from "./routes";
 
 const RouterConfig = () => {
@@ -114,14 +116,34 @@ const RouterConfig = () => {
         </Routes>
       );
     }
+    case AgreementState.TerminatedAgreement: {
+      return (
+        <Routes>
+          <Route path={LOGIN} element={<Login />} />
+          <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+          <Route
+            path={TERMINATED_AGREEMENT}
+            element={<TerminatedAgreement />}
+          />
+          <Route
+            path="*"
+            element={<Navigate to={TERMINATED_AGREEMENT} replace />}
+          />
+        </Routes>
+      );
+    }
     default: {
       return (
         <>
-          <TerminatedModal
+          <ConfirmModal
             isOpen={forbidden}
-            onLogout={() =>
+            onClose={() => authentication.logout(authentication.currentSession)}
+            title="Convenzione terminata"
+            body="Da questo momento non potrai più utilizzare il portale Carta Giovani Nazionale e tutte le opportunità create saranno rimosse da IO."
+            onConfirm={() =>
               authentication.logout(authentication.currentSession)
             }
+            confirmLabel="Ho capito"
           />
           <Routes>
             <Route path={LOGIN} element={<Login />} />

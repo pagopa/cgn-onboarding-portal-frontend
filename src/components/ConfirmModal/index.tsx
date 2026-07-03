@@ -22,15 +22,17 @@ const ConfirmModal = ({
   onConfirm,
   isPending = false,
   confirmLabel = "Sì, continua",
-  cancelLabel = "No, torna indietro"
+  cancelLabel
 }: ConfirmModalProps) => (
   <Modal isOpen={isOpen} toggle={onClose}>
     <ModalHeader toggle={onClose}>{title}</ModalHeader>
     <ModalBody>{body}</ModalBody>
     <ModalFooter>
-      <Button color="primary" outline onClick={onClose}>
-        {cancelLabel}
-      </Button>
+      {cancelLabel && (
+        <Button color="primary" outline onClick={onClose}>
+          {cancelLabel}
+        </Button>
+      )}
       <AsyncButton color="primary" onClick={onConfirm} isPending={isPending}>
         {confirmLabel}
       </AsyncButton>

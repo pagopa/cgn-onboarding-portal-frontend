@@ -93,7 +93,7 @@ export const queryClient = new QueryClient({
     }
   },
   queryCache: new QueryCache({
-    // Operator 403 = terminated agreement: flag it in Redux to drive TerminatedModal.
+    // Operator 403 = terminated agreement: flag it in Redux to drive the ConfirmModal.
     onError: error => {
       if (isOperatorForbidden(error)) {
         store.dispatch(setForbidden(true));
@@ -169,7 +169,7 @@ function makeReactQuery<AxiosParams extends Array<any>, Result>(
           window.location.href = "/";
         }
         // 403 on Index = terminated agreement (operator no longer allowed).
-        // Handled in the UI via TerminatedModal, which reads the query cache.
+        // Handled in the UI via the ConfirmModal, which reads the query cache.
         throw error;
       }
     },
