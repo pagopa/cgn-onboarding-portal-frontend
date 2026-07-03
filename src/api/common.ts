@@ -12,8 +12,6 @@ import {
 } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse, RawAxiosRequestConfig } from "axios";
 import { authenticationStore } from "../authentication/authenticationStore";
-import { setForbidden } from "../store/agreement/agreementSlice";
-import { store } from "../store/store";
 import * as GeneratedPublic from "./generated_public";
 import * as GeneratedIndex from "./generated";
 import * as GeneratedBackoffice from "./generated_backoffice";
@@ -94,8 +92,16 @@ export const queryClient = new QueryClient({
   },
   queryCache: new QueryCache({
     // Operator 403 = terminated agreement: flag it in Redux to drive the ConfirmModal.
-    onError: error => {
+    // store/setForbidden imported lazily so common.ts has no top-level edge to
+    // the Redux store, which would form a circular dependency
+    // (store → agreementSlice → common → store) that crashes module init
+    // depending on import order.
+    onError: async error => {
       if (isOperatorForbidden(error)) {
+        const { store } = await import("../store/store");
+        const { setForbidden } = await import(
+          "../store/agreement/agreementSlice"
+        );
         store.dispatch(setForbidden(true));
       }
     }
