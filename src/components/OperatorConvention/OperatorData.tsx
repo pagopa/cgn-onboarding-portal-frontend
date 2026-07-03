@@ -87,7 +87,7 @@ const OperatorData = ({
       },
       [CompleteTermination]: {
         title: `Vuoi terminare la convenzione per ${partnerName}?`,
-        body: "Il partner non potrà più accedere al portale operatori e tutte le opportunità saranno rimosse da IO. Potrai annullare l'operazione in un secondo momento.",
+        body: "Il partner non potrà più accedere al portale operatori e tutte le opportunità saranno rimosse da IO.",
         successText: "Hai terminato la convenzione del partner.",
         successTitle: "Fatto!"
       },

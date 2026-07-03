@@ -135,7 +135,7 @@ const Requests = () => {
     columnHelper.accessor(row => row.organizationName, {
       id: "organizationName",
       header: "Operatore",
-      size: 370,
+      size: 350,
       cell: ({ getValue, row }) => {
         const name = getValue();
         if (!name) {
@@ -147,6 +147,7 @@ const Requests = () => {
     columnHelper.accessor(row => row.requestDate ?? null, {
       id: "requestDate",
       header: "Data Richiesta",
+      size: 250,
       cell: ({ getValue }) => {
         const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
@@ -155,6 +156,7 @@ const Requests = () => {
     columnHelper.accessor(row => row.state, {
       id: "state",
       header: "Stato",
+      size: 250,
       cell: ({ getValue }) => <BadgePill {...requestBadgePill[getValue()]} />
     }),
     columnHelper.accessor(
@@ -165,6 +167,7 @@ const Requests = () => {
       {
         id: "assignee.fullName",
         header: "Revisore",
+        size: 250,
         cell: ({ getValue }) => getValue() ?? "-"
       }
     ),

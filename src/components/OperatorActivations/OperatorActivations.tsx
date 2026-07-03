@@ -107,17 +107,19 @@ const OperatorActivations = () => {
   const columns = [
     columnHelper.accessor("organizationName", {
       header: "RAGIONE SOCIALE",
-      size: 370
+      size: 350
     }),
     columnHelper.display({
       id: "entityType",
       header: "TIPOLOGIA ENTE",
       enableSorting: false,
+      size: 150,
       cell: ({ row }) => getEntityTypeLabel(row.original.entityType)
     }),
     columnHelper.accessor("referents", {
       header: "UTENTI ABILITATI",
       enableSorting: false,
+      size: 200,
       cell: ({ getValue }) => {
         const list = getValue() ?? [];
         if (list.length === 0) {
@@ -135,6 +137,7 @@ const OperatorActivations = () => {
     }),
     columnHelper.accessor("insertedAt", {
       header: "AGGIUNTO IL",
+      size: 150,
       cell: ({ getValue }) => {
         const v = getValue();
         return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
@@ -142,6 +145,7 @@ const OperatorActivations = () => {
     }),
     columnHelper.accessor("status", {
       header: "STATO",
+      size: 150,
       enableSorting: false,
       cell: ({ getValue }) => (
         <BadgePill {...organizationStatusBadge[getValue()]} />
@@ -152,7 +156,7 @@ const OperatorActivations = () => {
       id: "expander",
       header: () => null,
       enableSorting: false,
-      size: 48,
+      size: 100,
       cell: ({ row }) => <ExpanderCell row={row} />
     })
   ];

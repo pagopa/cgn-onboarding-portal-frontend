@@ -124,7 +124,7 @@ const OperatorConvention = () => {
   const columns = [
     columnHelper.accessor("fullName", {
       header: "Operatore",
-      size: 370,
+      size: 350,
       cell: ({ getValue, row }) =>
         getValue()
           ? `[${getEntityTypeLabel(row.original.entityType)}] ${getValue()}`
@@ -132,24 +132,29 @@ const OperatorConvention = () => {
     }),
     columnHelper.accessor("agreementStartDate", {
       header: "Convenzionato il",
+      size: 160,
       cell: ({ getValue }) => {
         const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
       }
     }),
     columnHelper.accessor("agreementLastUpdateDate", {
-      header: "Ultima modifica",
+      header: "Modifica conv...",
+      size: 150,
+      meta: { tooltip: "Modifica convenzione" },
       cell: ({ getValue }) => {
         const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
       }
     }),
     columnHelper.accessor("publishedDiscounts", {
-      header: "Opportunità"
+      header: "Opportunità",
+      size: 150
     }),
     columnHelper.accessor("testPending", {
       header: "TEST",
       enableSorting: false,
+      size: 150,
       cell: ({ getValue }) =>
         getValue() ? (
           <BadgePill {...discountBadgePill[DiscountState.TestPending]} />
@@ -158,6 +163,7 @@ const OperatorConvention = () => {
     columnHelper.accessor("state", {
       header: "Stato",
       enableSorting: false,
+      size: 140,
       cell: ({ getValue }) => <BadgePill {...agreementBadgePill[getValue()]} />
     })
   ];

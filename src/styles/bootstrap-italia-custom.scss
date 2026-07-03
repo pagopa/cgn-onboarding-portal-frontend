@@ -77,3 +77,27 @@ textarea {
 }
 
 @import "~/bootstrap-italia/src/scss/bootstrap-italia.scss";
+
+/* header column tooltip: restore downward arrow (bootstrap-italia hides it).
+   Draw triangle on .tooltip-inner so it hugs the navy box, not the taller
+   .tooltip wrapper (which reserves arrow padding and leaves a gap). */
+.th-tooltip .tooltip-arrow {
+    display: none !important;
+}
+
+.th-tooltip .tooltip-inner {
+    position: relative;
+}
+
+.th-tooltip .tooltip-inner::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-style: solid;
+    border-color: transparent;
+    border-width: var(--bs-tooltip-arrow-height, 0.4rem)
+        calc(var(--bs-tooltip-arrow-width, 0.8rem) / 2) 0;
+    border-top-color: hsl(210, 54%, 20%);
+}
