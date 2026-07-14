@@ -25,7 +25,10 @@ import { DiscountState } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { useSyncSorting } from "../../utils/useSyncSorting";
-import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import {
+  usePaginationHelpers,
+  withExpandedReset
+} from "../../utils/usePaginationHelpers";
 import { BadgePill } from "../BadgePill";
 import { agreementBadgePill, discountBadgePill } from "../../utils/badges";
 import ConventionFilter from "./ConventionFilter";
@@ -178,8 +181,8 @@ const OperatorConvention = () => {
       sorting,
       expanded
     },
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
+    onPaginationChange: withExpandedReset(setExpanded, setPagination),
+    onSortingChange: withExpandedReset(setExpanded, setSorting),
     onExpandedChange: setExpanded,
     manualPagination: true,
     manualSorting: true,
@@ -198,6 +201,7 @@ const OperatorConvention = () => {
         | ((prev: ConventionFilterFormValues) => ConventionFilterFormValues)
     ) => {
       setValues(update);
+      setExpanded({});
       setPagination(prev => ({ ...prev, pageIndex: 0 }));
     },
     []

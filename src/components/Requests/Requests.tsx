@@ -26,7 +26,10 @@ import { getEntityTypeLabel } from "../../utils/strings";
 import { useDebouncedValue } from "../../utils/useDebounce";
 import { NormalizedBackofficeAgreement } from "../../api/dtoTypeFixes";
 import { useSyncSorting } from "../../utils/useSyncSorting";
-import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import {
+  usePaginationHelpers,
+  withExpandedReset
+} from "../../utils/usePaginationHelpers";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import { BadgePill } from "../BadgePill";
 import { requestBadgePill } from "../../utils/badges";
@@ -147,7 +150,7 @@ const Requests = () => {
     columnHelper.accessor(row => row.requestDate ?? null, {
       id: "requestDate",
       header: "Data Richiesta",
-      size: 250,
+      size: 200,
       cell: ({ getValue }) => {
         const v = getValue();
         return v ? format(new Date(v), "dd/MM/yyyy") : "-";
@@ -156,7 +159,7 @@ const Requests = () => {
     columnHelper.accessor(row => row.state, {
       id: "state",
       header: "Stato",
-      size: 250,
+      size: 200,
       cell: ({ getValue }) => <BadgePill {...requestBadgePill[getValue()]} />
     }),
     columnHelper.accessor(
@@ -167,7 +170,7 @@ const Requests = () => {
       {
         id: "assignee.fullName",
         header: "Revisore",
-        size: 250,
+        size: 200,
         cell: ({ getValue }) => getValue() ?? "-"
       }
     ),
@@ -175,7 +178,7 @@ const Requests = () => {
       id: "expander",
       header: () => null,
       enableSorting: false,
-      size: 48,
+      size: 100,
       cell: ({ row }) => <ExpanderCell row={row} />
     })
   ];
@@ -207,8 +210,8 @@ const Requests = () => {
       sorting,
       expanded
     },
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
+    onPaginationChange: withExpandedReset(setExpanded, setPagination),
+    onSortingChange: withExpandedReset(setExpanded, setSorting),
     onExpandedChange: setExpanded,
     manualPagination: true,
     manualSorting: true,
@@ -227,6 +230,7 @@ const Requests = () => {
         | ((prev: RequestsFilterFormValues) => RequestsFilterFormValues)
     ) => {
       setValues(update);
+      setExpanded({});
       setPagination(prev => ({ ...prev, pageIndex: 0 }));
     },
     []

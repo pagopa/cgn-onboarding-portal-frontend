@@ -188,6 +188,7 @@ const Discounts = () => {
     columnHelper.accessor("name", {
       header: "Nome opportunità",
       sortingFn: "alphanumeric",
+      size: 160,
       cell: ({ getValue }) => (
         <div
           style={{
@@ -208,6 +209,7 @@ const Discounts = () => {
     }),
     columnHelper.accessor("startDate", {
       header: "Aggiunta il",
+      size: 110,
       cell: ({ getValue }) => {
         const v = getValue();
         return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
@@ -216,6 +218,7 @@ const Discounts = () => {
     columnHelper.accessor("state", {
       header: "Stato",
       enableSorting: false,
+      size: 100,
       cell: ({ getValue }) => (
         <span>
           <BadgePill {...discountBadgePill[getValue()]} />

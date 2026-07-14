@@ -24,7 +24,10 @@ import { getEntityTypeLabel } from "../../utils/strings";
 import { organizationStatusBadge } from "../../utils/badges";
 import { BadgePill } from "../BadgePill";
 import { useDebouncedValue } from "../../utils/useDebounce";
-import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import {
+  usePaginationHelpers,
+  withExpandedReset
+} from "../../utils/usePaginationHelpers";
 import { useSyncSorting } from "../../utils/useSyncSorting";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
 import ActivationsFilter from "./ActivationsFilter";
@@ -176,8 +179,8 @@ const OperatorActivations = () => {
       sorting,
       expanded
     },
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
+    onPaginationChange: withExpandedReset(setExpanded, setPagination),
+    onSortingChange: withExpandedReset(setExpanded, setSorting),
     onExpandedChange: setExpanded,
     manualPagination: true,
     manualSorting: true,
@@ -196,6 +199,7 @@ const OperatorActivations = () => {
         | ((prev: ActivationsFilterFormValues) => ActivationsFilterFormValues)
     ) => {
       setValues(update);
+      setExpanded({});
       setPagination(prev => ({ ...prev, pageIndex: 0 }));
     },
     []

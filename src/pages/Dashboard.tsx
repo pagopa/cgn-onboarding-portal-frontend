@@ -40,7 +40,7 @@ const Dashboard = () => {
           />
           {tabComponents[tab]}
         </div>
-        <div className="col-auto">
+        <div className="col-auto p-0">
           <AgreementState
             state={agreement.state}
             startDate={agreement.startDate}
