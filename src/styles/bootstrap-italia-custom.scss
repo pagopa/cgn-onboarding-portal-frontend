@@ -93,4 +93,4 @@ textarea {
     border-top-color: hsl(210, 54%, 20%);
 }
 
-@import "~/bootstrap-italia/src/scss/bootstrap-italia.scss";
+@import "~/bootstrap-italia/src/scss/bootstrap-italia.scss"; // NOSONAR - import must stay here for variable overrides above to work
