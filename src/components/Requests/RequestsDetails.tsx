@@ -211,7 +211,7 @@ const RequestsDetails = ({ original, updateList, closeRow }: Props) => {
     original.profile?.referent.firstName && original.profile?.referent.lastName
   );
 
-  const isDraft = original.state === AgreementState.DraftAgreement;
+  const isNotDraft = original.state !== AgreementState.DraftAgreement;
 
   const isRejected = original.state === AgreementState.RejectedAgreement;
 
@@ -266,7 +266,7 @@ const RequestsDetails = ({ original, updateList, closeRow }: Props) => {
           </div>
         </>
       )}
-      {!isDraft && (
+      {isNotDraft && (
         <>
           <RequestsDocuments
             original={original}
