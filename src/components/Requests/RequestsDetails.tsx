@@ -207,6 +207,10 @@ const RequestsDetails = ({ original, updateList, closeRow }: Props) => {
     rejectAgreementMutation.isPending ||
     assignAgreementsMutation.isPending;
 
+  const hasReferent = Boolean(
+    original.profile?.referent.firstName && original.profile?.referent.lastName
+  );
+
   const isDraft = original.state === AgreementState.DraftAgreement;
 
   const isRejected = original.state === AgreementState.RejectedAgreement;
@@ -241,7 +245,7 @@ const RequestsDetails = ({ original, updateList, closeRow }: Props) => {
           </Fragment>
         )}
       </div>
-      {!isDraft && (
+      {hasReferent && (
         <>
           <h1 className="h5 fw-bold text-dark-blue mb-5">
             Dati del referente incaricato
@@ -260,6 +264,10 @@ const RequestsDetails = ({ original, updateList, closeRow }: Props) => {
               value={original.profile?.referent.telephoneNumber}
             />
           </div>
+        </>
+      )}
+      {!isDraft && (
+        <>
           <RequestsDocuments
             original={original}
             assignedToMe={assignedToMe}
