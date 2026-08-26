@@ -21,6 +21,8 @@ import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
 import { getEditDiscountRoute } from "../../navigation/utils";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
+import { selectCanEditAgreement } from "../../store/agreement/selectors";
+import { useCgnSelector } from "../../store/hooks";
 import AsyncButton from "../AsyncButton/AsyncButton";
 import { BadgePill } from "../BadgePill";
 import { discountBadgePill } from "../../utils/badges";
@@ -56,6 +58,7 @@ const DiscountDetailRow = ({
   maxPublishedDiscountsReached
 }: Props) => {
   const navigate = useNavigate();
+  const canEditAgreement = useCgnSelector(selectCanEditAgreement);
   const [canBePublished, setCanBePublished] = useState(
     row.original.lastBucketCodeLoadStatus
       ? row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
@@ -293,7 +296,7 @@ const DiscountDetailRow = ({
           )}
         </tbody>
       </table>
-      {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
+      {canEditAgreement && getDiscountButtons(row)}
     </section>
   );
 };
