@@ -31,6 +31,7 @@ const {
   ActiveAgreement,
   PendingAgreement,
   InactiveAgreement,
+  ExpiredAgreement,
   TerminationReminderSentAgreement,
   TerminationInProgressAgreement,
   TerminatedAgreement
@@ -64,6 +65,7 @@ const terminationConfig: StateConfig = {
 const configMap: Partial<Record<AgreementStateType, StateConfig>> = {
   [ApprovedAgreement]: activeConventionConfig,
   [ActiveAgreement]: activeConventionConfig,
+  [ExpiredAgreement]: activeConventionConfig,
   [InactiveAgreement]: inactiveConfig,
   [TerminationReminderSentAgreement]: inactiveConfig,
   [PendingAgreement]: {
