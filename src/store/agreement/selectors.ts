@@ -9,6 +9,7 @@ export const selectAgreement = (state: RootState) => state.agreement.value;
  */
 const OPERATOR_EDITABLE_STATES: ReadonlyArray<AgreementState> = [
   AgreementState.ApprovedAgreement,
+  AgreementState.ActiveAgreement,
   AgreementState.InactiveAgreement,
   AgreementState.ExpiredAgreement,
   AgreementState.TerminationReminderSentAgreement
