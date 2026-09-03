@@ -210,6 +210,7 @@ const Requests = () => {
       sorting,
       expanded
     },
+    getRowId: row => row.id,
     onPaginationChange: withExpandedReset(setExpanded, setPagination),
     onSortingChange: withExpandedReset(setExpanded, setSorting),
     onExpandedChange: setExpanded,
