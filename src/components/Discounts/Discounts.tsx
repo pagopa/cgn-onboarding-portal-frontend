@@ -13,7 +13,7 @@ import { compareAsc, format } from "date-fns";
 import { remoteData } from "../../api/common";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { Severity, useTooltip } from "../../context/tooltip";
-import { AgreementState, Discount, EntityType } from "../../api/generated";
+import { Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
 import TableBody from "../Table/TableBody";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
@@ -325,8 +325,7 @@ const Discounts = () => {
           onClose={() => setShowTestBucketErrorModal(false)}
         />
       </div>
-      {(agreement.state === AgreementState.ApprovedAgreement ||
-        entityType === EntityType.Private) && (
+      {(canCreateDiscount || entityType === EntityType.Private) && (
         <>
           <Pager
             canPreviousPage={canPreviousPage}
