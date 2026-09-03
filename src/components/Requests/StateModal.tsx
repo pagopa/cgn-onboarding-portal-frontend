@@ -1,110 +1,74 @@
-import { useState } from "react";
-import { Button, Icon } from "design-react-kit";
+import { useMemo, useState } from "react";
+import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { BadgePill } from "../BadgePill";
 
-const StateModal = ({
-  states,
-  onSubmit
-}: {
+const stateOptions = [
+  "PendingAgreement",
+  "AssignedAgreement",
+  "DraftAgreement",
+  "RejectedAgreement"
+] as const;
+
+const stateLabels: Record<string, string> = {
+  DraftAgreement: "In Bozza",
+  PendingAgreement: "Da valutare",
+  AssignedAgreement: "In valutazione",
+  ApprovedAgreement: "Approvato",
+  RejectedAgreement: "Respinto"
+};
+
+const getStatesLabel = (states?: string): string =>
+  (states && stateLabels[states]) || "Stato";
+
+type StateModalProps = {
   states: string | undefined;
   onSubmit(states: string | undefined): void;
-}) => {
+};
+
+const StateModal = ({ states, onSubmit }: StateModalProps) => {
   const [isOpenStateModal, setOpenStateModal] = useState(false);
-  const [statesField, setFieldStates] = useState<string | undefined>(states);
+  const [statesField, setStatesField] = useState<string | undefined>(states);
   const toggleStateModal = () => {
     setOpenStateModal(!isOpenStateModal);
   };
 
-  const getStatesLabel = (states?: string): string => {
-    switch (states) {
-      case "PendingAgreement":
-        return "Da valutare";
-      case "AssignedAgreementMe":
-        return "In valutazione (da te)";
-      case "AssignedAgreementOthers":
-        return "In valutazione (da altri)";
-      default:
-        return "Stato";
-    }
-  };
+  const stateRadios = useMemo(
+    () =>
+      stateOptions.map(value => (
+        <div key={value} className="form-check">
+          <input
+            name="states"
+            type="radio"
+            id={value}
+            value={value}
+            onChange={() => setStatesField(value)}
+            checked={statesField === value}
+          />
+          <label
+            className="text-sm fw-normal text-black form-label"
+            htmlFor={value}
+          >
+            <span className="text-sm">{getStatesLabel(value)}</span>
+          </label>
+        </div>
+      )),
+    [statesField]
+  );
 
   return (
     <>
-      <div
-        className="chip chip-lg m-1 cursor-pointer"
+      <BadgePill
+        color="secondary"
+        label={getStatesLabel(states)}
+        active={!!states}
         onClick={toggleStateModal}
-      >
-        <span className="chip-label">{getStatesLabel(states)}</span>
-        {states && (
-          <button
-            onClick={e => {
-              e.stopPropagation();
-              onSubmit(undefined);
-            }}
-          >
-            <Icon color="" icon="it-close" size="" />
-          </button>
-        )}
-      </div>
+        onClear={() => onSubmit(undefined)}
+      />
       <Modal isOpen={isOpenStateModal} toggle={toggleStateModal}>
         <ModalHeader toggle={toggleStateModal}>Filtra per stato</ModalHeader>
         <ModalBody>
-          <div className="d-flex flex-column mt-2">
-            <div className="form-check">
-              <input
-                name="states"
-                type="radio"
-                id="PendingAgreement"
-                value="PendingAgreement"
-                onChange={() => setFieldStates("PendingAgreement")}
-                checked={statesField === "PendingAgreement"}
-              />
-              <label
-                className="text-sm fw-normal text-black form-label"
-                htmlFor="PendingAgreement"
-              >
-                <span className="text-sm">
-                  {getStatesLabel("PendingAgreement")}
-                </span>
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                name="states"
-                type="radio"
-                value="AssignedAgreementMe"
-                id="AssignedAgreementMe"
-                onChange={() => setFieldStates("AssignedAgreementMe")}
-                checked={statesField === "AssignedAgreementMe"}
-              />
-              <label
-                className="text-sm fw-normal text-black form-label"
-                htmlFor="AssignedAgreementMe"
-              >
-                <span className="text-sm">
-                  {getStatesLabel("AssignedAgreementMe")}
-                </span>
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                name="states"
-                type="radio"
-                id="AssignedAgreementOthers"
-                value="AssignedAgreementOthers"
-                onChange={() => setFieldStates("AssignedAgreementOthers")}
-                checked={statesField === "AssignedAgreementOthers"}
-              />
-              <label
-                className="text-sm fw-normal text-black form-label"
-                htmlFor="AssignedAgreementOthers"
-              >
-                <span className="text-sm">
-                  {getStatesLabel("AssignedAgreementOthers")}
-                </span>
-              </label>
-            </div>
-          </div>
+          <div className="d-flex flex-column mt-2">{stateRadios}</div>
         </ModalBody>
         <ModalFooter>
           <Button

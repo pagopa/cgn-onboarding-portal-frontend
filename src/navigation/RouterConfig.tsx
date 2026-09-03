@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AgreementState } from "../api/generated";
 import { useAuthentication } from "../authentication/AuthenticationContext";
 import CenteredLoading from "../components/CenteredLoading/CenteredLoading";
+import ConfirmModal from "../components/ConfirmModal";
 import AdminPanel from "../pages/AdminPanel";
 import CreateActivation from "../pages/CreateActivation";
 import CreateDiscount from "../pages/CreateDiscount";
@@ -16,6 +17,7 @@ import Login from "../pages/Login";
 import { LoginRedirect } from "../pages/LoginRedirect";
 import RejectedProfile from "../pages/RejectedProfile";
 import SelectCompany from "../pages/SelectCompany";
+import TerminatedAgreement from "../pages/TerminatedAgreement";
 import { createAgreement } from "../store/agreement/agreementSlice";
 import { useCgnDispatch, useCgnSelector } from "../store/hooks";
 import { RootState } from "../store/store";
@@ -33,13 +35,16 @@ import {
   EDIT_PROFILE,
   LOGIN,
   LOGIN_REDIRECT,
-  REJECT_PROFILE
+  REJECT_PROFILE,
+  TERMINATED_AGREEMENT
 } from "./routes";
 
 const RouterConfig = () => {
-  const { value: agreement, loading } = useCgnSelector(
-    (state: RootState) => state.agreement
-  );
+  const {
+    value: agreement,
+    loading,
+    forbidden
+  } = useCgnSelector((state: RootState) => state.agreement);
   const dispatch = useCgnDispatch();
   const authentication = useAuthentication();
 
@@ -111,19 +116,47 @@ const RouterConfig = () => {
         </Routes>
       );
     }
-    default: {
+    case AgreementState.TerminatedAgreement: {
       return (
         <Routes>
           <Route path={LOGIN} element={<Login />} />
           <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
-          <Route path={DASHBOARD} element={<Dashboard />} />
-          <Route path={EDIT_PROFILE} element={<EditProfile />} />
-          <Route path={CREATE_DISCOUNT} element={<CreateDiscount />} />
-          <Route path={EDIT_DISCOUNT} element={<EditDiscount />} />
-          <Route path={EDIT_OPERATOR_DATA} element={<EditOperatorData />} />
-          <Route path={REJECT_PROFILE} element={<RejectedProfile />} />
-          <Route path="*" element={<Navigate to={DASHBOARD} replace />} />
+          <Route
+            path={TERMINATED_AGREEMENT}
+            element={<TerminatedAgreement />}
+          />
+          <Route
+            path="*"
+            element={<Navigate to={TERMINATED_AGREEMENT} replace />}
+          />
         </Routes>
+      );
+    }
+    default: {
+      return (
+        <>
+          <ConfirmModal
+            isOpen={forbidden}
+            onClose={() => authentication.logout(authentication.currentSession)}
+            title="Convenzione terminata"
+            body="Da questo momento non potrai più utilizzare il portale Carta Giovani Nazionale e tutte le opportunità create saranno rimosse da IO."
+            onConfirm={() =>
+              authentication.logout(authentication.currentSession)
+            }
+            confirmLabel="Ho capito"
+          />
+          <Routes>
+            <Route path={LOGIN} element={<Login />} />
+            <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+            <Route path={DASHBOARD} element={<Dashboard />} />
+            <Route path={EDIT_PROFILE} element={<EditProfile />} />
+            <Route path={CREATE_DISCOUNT} element={<CreateDiscount />} />
+            <Route path={EDIT_DISCOUNT} element={<EditDiscount />} />
+            <Route path={EDIT_OPERATOR_DATA} element={<EditOperatorData />} />
+            <Route path={REJECT_PROFILE} element={<RejectedProfile />} />
+            <Route path="*" element={<Navigate to={DASHBOARD} replace />} />
+          </Routes>
+        </>
       );
     }
   }

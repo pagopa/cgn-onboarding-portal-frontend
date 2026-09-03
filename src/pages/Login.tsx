@@ -41,7 +41,7 @@ const Login = () => (
               </div>
             )}
             <div className="mt-14 row variable-gutters">
-              <div className="col">
+              <div className="col d-flex flex-column justify-content-between">
                 <h2 className="h3 text-dark-blue">Sei un operatore?</h2>
                 <Button
                   type="button"
@@ -55,11 +55,13 @@ const Login = () => (
                   Entra con SPID/CIE
                 </Button>
               </div>
-              <div className="col">
-                <h2 className="h3 text-dark-blue">Sei un amministratore?</h2>
-                <span className="text-sm fw-normal text-dark-blue text-uppercase">
-                  Accedi con le tue credenziali
-                </span>
+              <div className="col d-flex flex-column justify-content-between">
+                <div>
+                  <h2 className="h3 text-dark-blue">Sei un amministratore?</h2>
+                  <span className="text-sm fw-normal text-dark-blue text-uppercase">
+                    Accedi con le tue credenziali
+                  </span>
+                </div>
                 <Button
                   type="button"
                   color="primary"

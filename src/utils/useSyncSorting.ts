@@ -8,15 +8,19 @@ export function useSyncSorting<T>(
   mapColumnFn: (id: string) => string | undefined
 ) {
   useEffect(() => {
-    const sortField = sorting[0] || {};
-    if (isUndefined(sortField.desc)) {
+    const sortField = sorting[0];
+    if (isUndefined(sortField)) {
+      setValues(values => ({
+        ...values,
+        sortColumn: undefined,
+        sortDirection: undefined
+      }));
       return;
     }
-    const sortFieldDesc = sortField.desc ? "DESC" : "ASC";
     setValues(values => ({
       ...values,
-      sortColumn: sortField ? mapColumnFn(sortField.id) : undefined,
-      sortDirection: sortField ? sortFieldDesc : undefined
+      sortColumn: mapColumnFn(sortField.id),
+      sortDirection: sortField.desc ? "DESC" : "ASC"
     }));
   }, [sorting, setValues, mapColumnFn]);
 }

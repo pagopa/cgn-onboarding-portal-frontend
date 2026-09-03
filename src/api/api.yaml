@@ -856,6 +856,9 @@ paths:
         "204":
           description: Request Received
           content: { }
+        "403":
+          description: Forbidden
+          content: { }
       x-codegen-request-body-name: helpRequest
 components:
   schemas:
@@ -901,6 +904,30 @@ components:
             firstDiscountPublishingDate:
               type: string
               format: date
+    ActiveAgreement:
+      allOf:
+        - $ref: '#/components/schemas/ApprovedAgreement'
+        - type: object
+    ExpiredAgreement:
+      allOf:
+        - $ref: '#/components/schemas/ApprovedAgreement'
+        - type: object
+    InactiveAgreement:
+      allOf:
+        - $ref: '#/components/schemas/ApprovedAgreement'
+        - type: object
+    TerminationReminderSentAgreement:
+      allOf:
+        - $ref: '#/components/schemas/ApprovedAgreement'
+        - type: object
+    TerminationInProgressAgreement:
+      allOf:
+        - $ref: '#/components/schemas/ApprovedAgreement'
+        - type: object
+    TerminatedAgreement:
+      allOf:
+        - $ref: '#/components/schemas/ApprovedAgreement'
+        - type: object
     RejectedAgreement:
       allOf:
         - $ref: '#/components/schemas/Agreement'
@@ -918,6 +945,12 @@ components:
         - PendingAgreement
         - ApprovedAgreement
         - RejectedAgreement
+        - ActiveAgreement
+        - ExpiredAgreement
+        - InactiveAgreement
+        - TerminationReminderSentAgreement
+        - TerminationInProgressAgreement
+        - TerminatedAgreement
     CompletedStep:
       type: string
       enum:
@@ -1695,6 +1728,7 @@ components:
         - CANNOT_HAVE_EMPTY_LANDING_PAGE_URL_FOR_PROFILE_LANDING_PAGE
         - CANNOT_PROCEED_WITH_DISCOUNT_WITH_BUCKET_LOAD_IN_PROGRESS
         - CANNOT_PROCEED_WITH_DISCOUNT_WITH_NOT_APPROVED_AGREEMENT
+        - CANNOT_PUBLISH_DISCOUNT_FOR_TERMINATION_IN_PROGRESS_AGREEMENT
         - CANNOT_PROCEED_WITH_SUSPENDED_DISCOUNT
         - CANNOT_PROCEED_WITH_EXPIRED_DISCOUNT
         - CANNOT_PROCEED_WITH_ONLINE_DISCOUNT_WITH_NOT_PASSED_TEST

@@ -3,7 +3,7 @@
 }
 
 .small-spinner {
-  .progress-spinner  {
+  .progress-spinner {
     width: 24px;
     height: 24px;
   }
@@ -37,4 +37,33 @@
 
 .tracking {
   letter-spacing: 0.5px;
+}
+
+.nav-link-active {
+  border-left: 2px solid #003366;
+
+  span {
+    color: #003366 !important;
+  }
+}
+
+.badge {
+  height: 24px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+
+  &.rounded-pill {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  &.badge-pointer {
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.25);
+    }
+  }
 }

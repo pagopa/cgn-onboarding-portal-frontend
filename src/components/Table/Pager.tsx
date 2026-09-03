@@ -7,54 +7,68 @@ type Props = {
   endRowIndex: number;
   pageIndex: number;
   total?: number;
+  isPending?: boolean;
   onPreviousPage: () => void;
   onNextPage: () => void;
   onGotoPage: (index: number) => void;
   pageArray: Array<number>;
 };
 
-const Pager = (props: Props) => (
-  <div className="mb-2 mt-4 d-flex justify-content-between">
-    {!!props.total && (
-      <strong>
-        {props.startRowIndex}-{props.endRowIndex} di {props.total}
-      </strong>
-    )}
-    <div className="d-flex align-items-center">
-      {props.canPreviousPage && (
-        <Icon
-          icon="it-arrow-left"
-          size="sm"
-          color="primary"
-          className="cursor-pointer mx-1"
-          onClick={() => props.onPreviousPage()}
-        />
-      )}
-      {props.pageArray.map(page => (
-        <div
-          className={`fw-bold mx-1 ${
-            page !== props.pageIndex ? "cursor-pointer primary-color" : ""
-          }`}
-          key={page}
-          onClick={() => {
-            if (page !== props.pageIndex) {
-              props.onGotoPage(page);
-            }
-          }}
-        >
-          {page + 1}
+const Pager = ({
+  canPreviousPage,
+  canNextPage,
+  startRowIndex,
+  endRowIndex,
+  pageIndex,
+  total,
+  isPending,
+  onPreviousPage,
+  onNextPage,
+  onGotoPage,
+  pageArray
+}: Props) => (
+  <div
+    className="my-6 d-flex justify-content-between px-3"
+    style={{ minHeight: "24px" }}
+  >
+    {!isPending && (
+      <>
+        {!!total && (
+          <span className="fw-semibold">
+            {startRowIndex}-{endRowIndex} di {total}
+          </span>
+        )}
+        <div className="d-flex align-items-center">
+          {canPreviousPage && (
+            <Icon
+              icon="it-arrow-left"
+              size="sm"
+              color="primary"
+              className="cursor-pointer mx-1"
+              onClick={onPreviousPage}
+            />
+          )}
+          {pageArray.map(page => (
+            <div
+              className={`fw-semibold mx-1 ${page !== pageIndex ? "cursor-pointer primary-color" : ""}`}
+              key={page}
+              onClick={() => page !== pageIndex && onGotoPage(page)}
+            >
+              {page + 1}
+            </div>
+          ))}
+          {canNextPage && (
+            <Icon
+              icon="it-arrow-right"
+              size="sm"
+              color="primary"
+              className="cursor-pointer mx-1"
+              onClick={onNextPage}
+            />
+          )}
         </div>
-      ))}
-      {props.canNextPage && (
-        <Icon
-          icon="it-arrow-right"
-          size="sm"
-          color="primary"
-          className="cursor-pointer mx-1"
-          onClick={() => props.onNextPage()}
-        />
-      )}
-    </div>
+      </>
+    )}
   </div>
 );
 
