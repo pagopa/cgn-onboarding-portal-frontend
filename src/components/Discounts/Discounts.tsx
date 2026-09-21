@@ -113,6 +113,13 @@ const Discounts = () => {
       onError(error) {
         if (error.status === 409) {
           throwErrorTooltip("Upload codici ancora in corso");
+        } else if (
+          error.response?.data ===
+          "CANNOT_PUBLISH_DISCOUNT_FOR_TERMINATION_IN_PROGRESS_AGREEMENT"
+        ) {
+          throwErrorTooltip(
+            "Operatore in recesso, non è possibile pubblicare l'opportunità"
+          );
         } else {
           throwErrorTooltip("Errore durante la pubblicazione dell'opportunità");
         }
