@@ -21,9 +21,12 @@ import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
 import ProfileItem from "../Profile/ProfileItem";
 import { getEditDiscountRoute } from "../../navigation/utils";
 import { getDiscountTypeChecks } from "../../utils/formChecks";
+import { selectCanEditAgreement } from "../../store/agreement/selectors";
+import { useCgnSelector } from "../../store/hooks";
 import AsyncButton from "../AsyncButton/AsyncButton";
+import { BadgePill } from "../BadgePill";
+import { discountBadgePill } from "../../utils/badges";
 import ImportationStatus from "./ImportationStatus";
-import { DiscountComponent } from "./getDiscountComponent";
 
 type Props = {
   row: Row<Discount>;
@@ -55,6 +58,7 @@ const DiscountDetailRow = ({
   maxPublishedDiscountsReached
 }: Props) => {
   const navigate = useNavigate();
+  const canEditAgreement = useCgnSelector(selectCanEditAgreement);
   const [canBePublished, setCanBePublished] = useState(
     row.original.lastBucketCodeLoadStatus
       ? row.original.lastBucketCodeLoadStatus === BucketCodeLoadStatus.Finished
@@ -207,7 +211,7 @@ const DiscountDetailRow = ({
               Stato opportunità
             </td>
             <td className={`border-bottom-0`}>
-              <DiscountComponent discountState={row.original.state} />
+              <BadgePill {...discountBadgePill[row.original.state]} />
             </td>
           </tr>
           <ProfileItem
@@ -292,7 +296,7 @@ const DiscountDetailRow = ({
           )}
         </tbody>
       </table>
-      {agreement.state === "ApprovedAgreement" && getDiscountButtons(row)}
+      {canEditAgreement && getDiscountButtons(row)}
     </section>
   );
 };

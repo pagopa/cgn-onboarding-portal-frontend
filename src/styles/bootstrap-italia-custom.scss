@@ -5,8 +5,7 @@ $secondary: #01254C;
 
 /* Spacers */
 
-$spacers: (
-    0: 0rem,
+$spacers: (0: 0rem,
     1: 0.25rem,
     2: 0.5rem,
     3: 0.75rem,
@@ -36,12 +35,13 @@ $spacers: (
     72: 18rem,
     80: 20rem,
     96: 24rem,
-    auto: auto
-);
+    auto: auto);
 
 /* Base */
 
-html, body, #root {
+html,
+body,
+#root {
     height: 100%;
     background-color: #E6E9F2;
 }
@@ -76,4 +76,21 @@ textarea {
     resize: none !important;
 }
 
-@import "~/bootstrap-italia/src/scss/bootstrap-italia.scss";
+/* header column tooltip: custom downward arrow */
+.th-tooltip .tooltip-inner {
+    position: relative;
+}
+
+.th-tooltip .tooltip-inner::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-style: solid;
+    border-color: transparent;
+    border-width: var(--bs-tooltip-arrow-height, 0.4rem) calc(var(--bs-tooltip-arrow-width, 0.8rem) / 2) 0;
+    border-top-color: hsl(210, 54%, 20%);
+}
+
+@import "~/bootstrap-italia/src/scss/bootstrap-italia.scss"; // NOSONAR - import must stay here for variable overrides above to work

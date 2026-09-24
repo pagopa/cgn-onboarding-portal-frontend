@@ -9,6 +9,7 @@ export const CREATE_DISCOUNT = "/admin/operatori/agevolazioni/crea";
 export const EDIT_DISCOUNT = getEditDiscountRoute(":discountId");
 export const EDIT_OPERATOR_DATA = "/admin/operatori/profilo/modifica";
 export const REJECT_PROFILE = "/admin/operatori/profilo/rifiutato";
+export const TERMINATED_AGREEMENT = "/admin/operatori/convenzione-terminata";
 export const ADMIN_PANEL_RICHIESTE = "/admin/operatori/richieste";
 export const ADMIN_PANEL_CONVENZIONATI =
   "/admin/operatori/operatori-convenzionati";

@@ -19,8 +19,15 @@ export function useDebouncedValue<Value>({
     () => debounce(setDebouncedValue, delay, { leading, trailing, maxWait }),
     [delay, leading, maxWait, trailing]
   );
+
   useEffect(() => {
-    debouncedSetter(value);
+    if (!value) {
+      debouncedSetter.cancel();
+      setDebouncedValue(value);
+    } else {
+      debouncedSetter(value);
+    }
   }, [debouncedSetter, value]);
+
   return debouncedValue;
 }

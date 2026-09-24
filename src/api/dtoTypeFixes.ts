@@ -8,7 +8,9 @@ import {
 import {
   AgreementState,
   AssignedAgreement,
-  PendingAgreement
+  DraftAgreement,
+  PendingAgreement,
+  RejectedAgreement
 } from "./generated_backoffice";
 
 type NormalizedAddresses<S> = Omit<S, "addresses"> & {
@@ -24,28 +26,24 @@ type NormalizedCoordinates = {
   latitude: number | null;
 };
 
+type WithChannel<T, C> = Omit<T, "channelType"> & { channelType: C };
+
 /** Use this type instead of SalesChannel generated type since the generated type is not fully correct */
 export type NormalizedSalesChannel =
-  | ({ channelType: typeof SalesChannelType.OnlineChannel } & Omit<
-      OnlineChannel,
-      "channelType"
-    >)
-  | ({ channelType: typeof SalesChannelType.OfflineChannel } & Omit<
+  | WithChannel<OnlineChannel, typeof SalesChannelType.OnlineChannel>
+  | WithChannel<
       NormalizedAddresses<OfflineChannel>,
-      "channelType"
-    >)
-  | ({ channelType: typeof SalesChannelType.BothChannels } & Omit<
+      typeof SalesChannelType.OfflineChannel
+    >
+  | WithChannel<
       NormalizedAddresses<BothChannels>,
-      "channelType"
-    >);
+      typeof SalesChannelType.BothChannels
+    >;
 
 /** Use this type instead of Agreement generated type since the generated type is not fully correct */
+type WithState<T, S> = Omit<T, "state"> & { state: S };
 export type NormalizedBackofficeAgreement =
-  | ({ state: typeof AgreementState.AssignedAgreement } & Omit<
-      AssignedAgreement,
-      "state"
-    >)
-  | ({ state: typeof AgreementState.PendingAgreement } & Omit<
-      PendingAgreement,
-      "state"
-    >);
+  | WithState<DraftAgreement, typeof AgreementState.DraftAgreement>
+  | WithState<AssignedAgreement, typeof AgreementState.AssignedAgreement>
+  | WithState<PendingAgreement, typeof AgreementState.PendingAgreement>
+  | WithState<RejectedAgreement, typeof AgreementState.RejectedAgreement>;
