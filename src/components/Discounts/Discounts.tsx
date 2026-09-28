@@ -26,6 +26,7 @@ import Pager from "../Table/Pager";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
 import { BadgePill } from "../BadgePill";
 import { discountBadgePill } from "../../utils/badges";
+import ConfirmModal from "../ConfirmModal";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow from "./DiscountDetailRow";
@@ -117,9 +118,7 @@ const Discounts = () => {
           error.response?.data ===
           "CANNOT_PUBLISH_DISCOUNT_FOR_TERMINATION_IN_PROGRESS_AGREEMENT"
         ) {
-          throwErrorTooltip(
-            "Operatore in recesso, non è possibile pubblicare l'opportunità"
-          );
+          setShowTerminationBlockedModal(true);
         } else {
           throwErrorTooltip("Errore durante la pubblicazione dell'opportunità");
         }
@@ -154,6 +153,8 @@ const Discounts = () => {
   };
 
   const [showTestBucketErrorModal, setShowTestBucketErrorModal] =
+    useState(false);
+  const [showTerminationBlockedModal, setShowTerminationBlockedModal] =
     useState(false);
 
   const testDiscountMutation =
@@ -330,6 +331,14 @@ const Discounts = () => {
         <TestErrorModal
           isOpen={showTestBucketErrorModal}
           onClose={() => setShowTestBucketErrorModal(false)}
+        />
+        <ConfirmModal
+          isOpen={showTerminationBlockedModal}
+          onClose={() => setShowTerminationBlockedModal(false)}
+          title="Impossibile pubblicare l'opportunità"
+          body="È in corso la procedura di recesso della convenzione al portale Carta Giovani Nazionale. Per ricevere assistenza, contatta il Dipartimento per le politiche giovanili e il Servizio civile universale."
+          onConfirm={() => setShowTerminationBlockedModal(false)}
+          confirmLabel="Ho capito"
         />
       </div>
       {(canCreateDiscount || entityType === EntityType.Private) && (

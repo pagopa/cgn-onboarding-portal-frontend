@@ -12,7 +12,8 @@ const OPERATOR_EDITABLE_STATES: ReadonlyArray<AgreementState> = [
   AgreementState.ActiveAgreement,
   AgreementState.InactiveAgreement,
   AgreementState.ExpiredAgreement,
-  AgreementState.TerminationReminderSentAgreement
+  AgreementState.TerminationReminderSentAgreement,
+  AgreementState.TerminationInProgressAgreement
 ];
 
 export const selectCanEditAgreement = (state: RootState): boolean =>
