@@ -15,7 +15,7 @@ interface ImportMetaEnv {
   readonly CGN_MSAL_REDIRECT_URI: string;
   readonly CGN_IMAGE_BASE_URL: string;
   readonly CGN_ALLOW_MULTIPLE_LOGIN?: string;
-  readonly CGN_MAINTENANCE_MODE?: string;
+  readonly CGN_MAINTENANCE_MODE?: "" | "short-downtime" | "long-downtime";
   readonly CGN_FRONTEND_URL?: string;
   readonly CGN_API_PROXY_TARGET_URL?: string;
 }

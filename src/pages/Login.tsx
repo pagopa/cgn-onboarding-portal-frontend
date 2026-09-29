@@ -7,6 +7,35 @@ import {
   goToUserLoginPage
 } from "../authentication/authentication";
 
+const MAINTENANCE_MODE = import.meta.env.CGN_MAINTENANCE_MODE;
+
+type AlertProps = {
+  title: string;
+  onClose: () => void;
+};
+
+function Alert({ title, onClose }: AlertProps) {
+  return (
+    <div className="d-flex border border-dark bg-white mb-14">
+      <div className="bg-warning px-1" />
+      <div className="d-flex flex-grow-1 align-items-start gap-3 gap-md-4 p-4 p-md-6">
+        <div className="fs-5 flex-shrink-0">
+          <Icon icon="it-warning-circle" color="warning" />
+        </div>
+        <div className="fs-5 fw-semibold flex-grow-1">{title}</div>
+        <div className="fs-5 flex-shrink-0">
+          <Icon
+            icon="it-close"
+            color="secondary"
+            className="cursor-pointer"
+            onClick={onClose}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Login = () => {
   const [isAlertDismissed, setIsAlertDismissed] = useState(false);
   const showAlert = !!MAINTENANCE_MODE && !isAlertDismissed;
@@ -14,7 +43,7 @@ const Login = () => {
   return (
     <Layout>
       <div className="container-xl px-2 px-md-12 px-lg-3 my-20">
-        <section className="mx-auto px-4 px-md-14 px-lg-24 pt-20 pb-24 bg-white login-box">
+        <section className="mx-auto px-4 px-md-14 px-lg-24 pt-24 pb-24 bg-white login-box">
           {showAlert && (
             <>
               {MAINTENANCE_MODE === "short-downtime" && (
@@ -49,7 +78,7 @@ const Login = () => {
             </div>
           </div>
           <div className="mt-10 row variable-gutters position-relative py-md-4">
-            <div className="position-absolute top-0 bottom-0 start-50 w-auto p-0 border-start d-none d-md-block" />
+            <div className="position-absolute top-0 bottom-0 start-50 w-auto p-0 border-start border-secondary d-none d-md-block" />
             <div className="col-12 col-md-6 pe-md-4 pe-lg-1 d-flex flex-column justify-content-between">
               <h2 className="h3 fs-3 text-dark-blue">Sei un operatore?</h2>
               <Button
@@ -65,7 +94,7 @@ const Login = () => {
                 Entra con SPID/CIE
               </Button>
             </div>
-            <hr className="d-md-none mt-14 mb-8" />
+            <hr className="d-md-none mt-14 mb-8 border-secondary opacity-100" />
             <div className="col-12 col-md-6 ps-md-4 ps-lg-20 d-flex flex-column justify-content-between">
               <div>
                 <h2 className="h3 fs-3 text-dark-blue">
@@ -96,32 +125,3 @@ const Login = () => {
 };
 
 export default Login;
-
-const MAINTENANCE_MODE = import.meta.env.CGN_MAINTENANCE_MODE;
-
-type AlertProps = {
-  title: string;
-  onClose: () => void;
-};
-
-function Alert({ title, onClose }: AlertProps) {
-  return (
-    <div className="d-flex border border-dark bg-white mb-14">
-      <div className="bg-warning px-1" />
-      <div className="d-flex flex-grow-1 align-items-start gap-3 gap-md-4 p-4 p-md-6">
-        <div className="fs-5 flex-shrink-0">
-          <Icon icon="it-warning-circle" color="warning" />
-        </div>
-        <div className="fs-5 fw-semibold flex-grow-1">{title}</div>
-        <div className="fs-5 flex-shrink-0">
-          <Icon
-            icon="it-close"
-            color="secondary"
-            className="cursor-pointer"
-            onClick={onClose}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
