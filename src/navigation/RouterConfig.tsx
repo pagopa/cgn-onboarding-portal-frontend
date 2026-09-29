@@ -15,6 +15,7 @@ import EditOperatorData from "../pages/EditOperatorData";
 import EditProfile from "../pages/EditProfile";
 import Login from "../pages/Login";
 import { LoginRedirect } from "../pages/LoginRedirect";
+import Maintenance from "../pages/Maintenance";
 import RejectedProfile from "../pages/RejectedProfile";
 import SelectCompany from "../pages/SelectCompany";
 import TerminatedAgreement from "../pages/TerminatedAgreement";
@@ -35,9 +36,12 @@ import {
   EDIT_PROFILE,
   LOGIN,
   LOGIN_REDIRECT,
+  MAINTENANCE,
   REJECT_PROFILE,
   TERMINATED_AGREEMENT
 } from "./routes";
+
+const MAINTENANCE_MODE = !!import.meta.env.CGN_MAINTENANCE_MODE;
 
 const RouterConfig = () => {
   const {
@@ -62,6 +66,16 @@ const RouterConfig = () => {
         <Route path={LOGIN} element={<Login />} />
         <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
         <Route path="*" element={<Navigate to={LOGIN} replace />} />
+      </Routes>
+    );
+  }
+  if (MAINTENANCE_MODE) {
+    return (
+      <Routes>
+        <Route path={LOGIN} element={<Login />} />
+        <Route path={LOGIN_REDIRECT} element={<LoginRedirect />} />
+        <Route path={MAINTENANCE} element={<Maintenance />} />
+        <Route path="*" element={<Navigate to={MAINTENANCE} replace />} />
       </Routes>
     );
   }
