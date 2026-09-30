@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useState, Fragment } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
-  flexRender,
   getExpandedRowModel,
   createColumnHelper,
   getPaginationRowModel
@@ -14,23 +13,30 @@ import { compareAsc, format } from "date-fns";
 import { remoteData } from "../../api/common";
 import { CREATE_DISCOUNT } from "../../navigation/routes";
 import { Severity, useTooltip } from "../../context/tooltip";
-import { AgreementState, Discount, EntityType } from "../../api/generated";
+import { Discount, EntityType } from "../../api/generated";
 import TableHeader from "../Table/TableHeader";
+import TableBody from "../Table/TableBody";
 import { ExpanderCell } from "../ExpanderCell/ExpanderCell";
-import { selectAgreement } from "../../store/agreement/selectors";
+import {
+  selectAgreement,
+  selectCanEditAgreement
+} from "../../store/agreement/selectors";
 import { useCgnSelector } from "../../store/hooks";
 import Pager from "../Table/Pager";
 import { usePaginationHelpers } from "../../utils/usePaginationHelpers";
+import { BadgePill } from "../BadgePill";
+import { discountBadgePill } from "../../utils/badges";
+import ConfirmModal from "../ConfirmModal";
 import PublishModal from "./PublishModal";
 import { DeleteModal } from "./DeleteModal";
 import DiscountDetailRow from "./DiscountDetailRow";
-import { DiscountComponent } from "./getDiscountComponent";
 import UnpublishModal from "./UnpublishModal";
 import TestModal from "./TestModal";
 import { TestErrorModal } from "./TestErrorModal";
 
 const Discounts = () => {
   const agreement = useCgnSelector(selectAgreement);
+  const canCreateDiscount = useCgnSelector(selectCanEditAgreement);
   const [selectedDiscountAction, setSelectedDiscountAction] = useState<{
     action: "publish" | "unpublish" | "test" | "delete";
     discountId: string;
@@ -63,17 +69,21 @@ const Discounts = () => {
   });
   const profile = profileQuery.data;
 
-  const discountsQuery = remoteData.Index.Discount.getDiscounts.useQuery({
+  const {
+    isPending,
+    error: discountsError,
+    data: discountsData
+  } = remoteData.Index.Discount.getDiscounts.useQuery({
     agreementId: agreement.id
   });
   useEffect(() => {
-    if (discountsQuery.error) {
+    if (discountsError) {
       throwErrorTooltip("Errore nel caricamento delle opportunità");
     }
-  }, [discountsQuery.error, throwErrorTooltip]);
+  }, [discountsError, throwErrorTooltip]);
   const discounts = useMemo(
-    () => discountsQuery.data?.items ?? [],
-    [discountsQuery.data?.items]
+    () => discountsData?.items ?? [],
+    [discountsData?.items]
   );
   const invalidateDiscountsQuery = (
     _: unknown,
@@ -104,6 +114,11 @@ const Discounts = () => {
       onError(error) {
         if (error.status === 409) {
           throwErrorTooltip("Upload codici ancora in corso");
+        } else if (
+          error.response?.data ===
+          "CANNOT_PUBLISH_DISCOUNT_FOR_TERMINATION_IN_PROGRESS_AGREEMENT"
+        ) {
+          setShowTerminationBlockedModal(true);
         } else {
           throwErrorTooltip("Errore durante la pubblicazione dell'opportunità");
         }
@@ -138,6 +153,8 @@ const Discounts = () => {
   };
 
   const [showTestBucketErrorModal, setShowTestBucketErrorModal] =
+    useState(false);
+  const [showTerminationBlockedModal, setShowTerminationBlockedModal] =
     useState(false);
 
   const testDiscountMutation =
@@ -179,6 +196,7 @@ const Discounts = () => {
     columnHelper.accessor("name", {
       header: "Nome opportunità",
       sortingFn: "alphanumeric",
+      size: 160,
       cell: ({ getValue }) => (
         <div
           style={{
@@ -199,6 +217,7 @@ const Discounts = () => {
     }),
     columnHelper.accessor("startDate", {
       header: "Aggiunta il",
+      size: 110,
       cell: ({ getValue }) => {
         const v = getValue();
         return <span>{v ? format(new Date(v), "dd/MM/yyyy") : "-"}</span>;
@@ -207,9 +226,10 @@ const Discounts = () => {
     columnHelper.accessor("state", {
       header: "Stato",
       enableSorting: false,
+      size: 100,
       cell: ({ getValue }) => (
         <span>
-          <DiscountComponent discountState={getValue()} />
+          <BadgePill {...discountBadgePill[getValue()]} />
         </span>
       )
     }),
@@ -240,6 +260,7 @@ const Discounts = () => {
     autoResetPageIndex: false,
     getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    sortDescFirst: false,
     getSortedRowModel: getSortedRowModel()
   });
 
@@ -311,9 +332,16 @@ const Discounts = () => {
           isOpen={showTestBucketErrorModal}
           onClose={() => setShowTestBucketErrorModal(false)}
         />
+        <ConfirmModal
+          isOpen={showTerminationBlockedModal}
+          onClose={() => setShowTerminationBlockedModal(false)}
+          title="Impossibile pubblicare l'opportunità"
+          body="È in corso la procedura di recesso della convenzione al portale Carta Giovani Nazionale. Per ricevere assistenza, contatta il Dipartimento per le politiche giovanili e il Servizio civile universale."
+          onConfirm={() => setShowTerminationBlockedModal(false)}
+          confirmLabel="Ho capito"
+        />
       </div>
-      {(agreement.state === AgreementState.ApprovedAgreement ||
-        entityType === EntityType.Private) && (
+      {(canCreateDiscount || entityType === EntityType.Private) && (
         <>
           <Pager
             canPreviousPage={canPreviousPage}
@@ -326,9 +354,10 @@ const Discounts = () => {
             onGotoPage={gotoPage}
             pageArray={pageArray}
             total={discounts.length}
+            isPending={isPending}
           />
           <div className="table-responsive mb-0 mt-2 bg-white table">
-            <table style={{ width: "100%" }} className="table mb-0">
+            <table className="table w-100 mb-0">
               <TableHeader headerGroups={headerGroups} />
               <tbody>
                 {maxPublishedDiscountsReached && (
@@ -361,89 +390,51 @@ const Discounts = () => {
                     </td>
                   </tr>
                 )}
-
-                {tableInstance.getRowModel().rows.map(row => (
-                  <Fragment key={row.id}>
-                    <tr
-                      className="cursor-pointer"
-                      onClick={() => row.toggleExpanded()}
-                    >
-                      {row.getVisibleCells().map((cell, i) => (
-                        <td
-                          key={cell.id}
-                          className={`
-                ${i === 0 ? "ps-6" : ""}
-                ${i === headerGroups[0].headers.length - 1 ? "pe-6" : ""}
-                px-3 py-2 border-bottom text-sm align-middle
-              `}
-                          style={
-                            cell.column.id === "expander"
-                              ? { width: "calc(32px + 0.75rem * 2)" }
-                              : {}
-                          }
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-
-                    {row.getIsExpanded() && (
-                      <tr className="px-8 py-4 border-bottom text-sm fw-normal text-black">
-                        <td
-                          colSpan={tableInstance.getVisibleLeafColumns().length}
-                        >
-                          <DiscountDetailRow
-                            row={row}
-                            agreement={agreement}
-                            profile={profile}
-                            onPublish={() =>
-                              setSelectedDiscountAction({
-                                action: "publish",
-                                discountId: row.original.id
-                              })
-                            }
-                            isPendingPublish={publishDiscountMutation.isPending}
-                            isPendingUnpublish={
-                              unpublishDiscountMutation.isPending
-                            }
-                            isPendingTest={testDiscountMutation.isPending}
-                            isPendingDelete={deleteDiscountMutation.isPending}
-                            onUnpublish={() =>
-                              setSelectedDiscountAction({
-                                action: "unpublish",
-                                discountId: row.original.id
-                              })
-                            }
-                            onDelete={() =>
-                              setSelectedDiscountAction({
-                                action: "delete",
-                                discountId: row.original.id
-                              })
-                            }
-                            onTest={() =>
-                              setSelectedDiscountAction({
-                                action: "test",
-                                discountId: row.original.id
-                              })
-                            }
-                            maxPublishedDiscountsReached={
-                              maxPublishedDiscountsReached
-                            }
-                          />
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                ))}
               </tbody>
+              <TableBody
+                table={tableInstance}
+                renderExpanded={row => (
+                  <DiscountDetailRow
+                    row={row}
+                    agreement={agreement}
+                    profile={profile}
+                    onPublish={() =>
+                      setSelectedDiscountAction({
+                        action: "publish",
+                        discountId: row.original.id
+                      })
+                    }
+                    isPendingPublish={publishDiscountMutation.isPending}
+                    isPendingUnpublish={unpublishDiscountMutation.isPending}
+                    isPendingTest={testDiscountMutation.isPending}
+                    isPendingDelete={deleteDiscountMutation.isPending}
+                    onUnpublish={() =>
+                      setSelectedDiscountAction({
+                        action: "unpublish",
+                        discountId: row.original.id
+                      })
+                    }
+                    onDelete={() =>
+                      setSelectedDiscountAction({
+                        action: "delete",
+                        discountId: row.original.id
+                      })
+                    }
+                    onTest={() =>
+                      setSelectedDiscountAction({
+                        action: "test",
+                        discountId: row.original.id
+                      })
+                    }
+                    maxPublishedDiscountsReached={maxPublishedDiscountsReached}
+                  />
+                )}
+              />
             </table>
           </div>
         </>
       )}
-      {agreement.state === AgreementState.ApprovedAgreement ? (
+      {canCreateDiscount ? (
         <div className="bg-white px-8 pt-10 pb-10 flex align-items-center flex-column">
           {discounts.length === 0 && (
             <div className="text-center text-gray pb-10">

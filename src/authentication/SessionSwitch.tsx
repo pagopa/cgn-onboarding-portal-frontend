@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { resetAgreement } from "../store/agreement/agreementSlice";
+import { useCgnDispatch } from "../store/hooks";
 import { useAuthentication } from "./AuthenticationContext";
 import { adminLogoutPopup } from "./authentication";
 
@@ -6,7 +8,13 @@ import { adminLogoutPopup } from "./authentication";
 
 export function SessionSwitch() {
   const authentication = useAuthentication();
+  const dispatch = useCgnDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  // Wipe stale agreement state + cached queries so a switched identity does not
+  // inherit the previous one's data (e.g. the terminated/forbidden flag).
+  const resetSessionData = () => {
+    dispatch(resetAgreement());
+  };
   if (import.meta.env.CGN_ALLOW_MULTIPLE_LOGIN !== "true") {
     return null;
   }
@@ -51,6 +59,7 @@ export function SessionSwitch() {
                   padding: "0px 16px"
                 }}
                 onClick={() => {
+                  resetSessionData();
                   authentication.setCurrentSession({ type: "admin", name });
                 }}
               >
@@ -68,6 +77,7 @@ export function SessionSwitch() {
                   padding: "0px 16px"
                 }}
                 onClick={() => {
+                  resetSessionData();
                   authentication.setCurrentSession({
                     type: "user",
                     userFiscalCode: fiscal_code,

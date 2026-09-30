@@ -8,7 +8,10 @@ import {
 } from "../../api/generated";
 import { getEntityTypeLabel } from "../../utils/strings";
 import { NormalizedSalesChannel } from "../../api/dtoTypeFixes";
-import { selectAgreement } from "../../store/agreement/selectors";
+import {
+  selectAgreement,
+  selectCanEditAgreement
+} from "../../store/agreement/selectors";
 import { useCgnSelector } from "../../store/hooks";
 import ProfileItem from "./ProfileItem";
 import ProfileDocuments from "./ProfileDocuments";
@@ -16,6 +19,7 @@ import ProfileApiToken from "./ProfileApiToken";
 
 const Profile = () => {
   const agreement = useCgnSelector(selectAgreement);
+  const canEditProfile = useCgnSelector(selectCanEditAgreement);
 
   const { data: profile } = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
@@ -96,15 +100,14 @@ const Profile = () => {
                       />
                     </tbody>
                   </table>
-                  {index === array.length - 1 &&
-                    agreement.state === "ApprovedAgreement" && (
-                      <Link
-                        className="mt-4 btn btn-outline-primary"
-                        to={EDIT_PROFILE}
-                      >
-                        Modifica dati
-                      </Link>
-                    )}
+                  {index === array.length - 1 && canEditProfile && (
+                    <Link
+                      className="mt-4 btn btn-outline-primary"
+                      to={EDIT_PROFILE}
+                    >
+                      Modifica dati
+                    </Link>
+                  )}
                 </section>
               );
             }
