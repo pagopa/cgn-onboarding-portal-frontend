@@ -1,8 +1,5 @@
 import { ProductCategory, EntityType as EntityTypeA } from "../api/generated";
-import {
-  OrganizationStatus,
-  EntityType as EntityTypeB
-} from "../api/generated_backoffice";
+import { EntityType as EntityTypeB } from "../api/generated_backoffice";
 
 type CategoryElement = {
   name: string;
@@ -54,16 +51,6 @@ export const categoriesMap: Record<ProductCategory, CategoryElement> = {
     description: "(Concorsi, offerte di lavoro)"
   }
 };
-
-const organizationStatusMap: Record<OrganizationStatus, string> = {
-  [OrganizationStatus.Draft]: "In Bozza",
-  [OrganizationStatus.Enabled]: "Abilitato",
-  [OrganizationStatus.Active]: "Convenzionato",
-  [OrganizationStatus.Pending]: "Da valutare"
-};
-
-export const makeOrganizationStatusReadable = (status: OrganizationStatus) =>
-  organizationStatusMap[status] ?? "";
 
 export const makeProductCategoriesString = (
   productCategories: Array<ProductCategory>

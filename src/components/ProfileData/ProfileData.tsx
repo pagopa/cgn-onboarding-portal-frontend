@@ -2,12 +2,16 @@ import { Link } from "react-router-dom";
 import { remoteData } from "../../api/common";
 import { EDIT_OPERATOR_DATA } from "../../navigation/routes";
 import MultilanguageProfileItem from "../Profile/MultilanguageProfileItem";
-import { selectAgreement } from "../../store/agreement/selectors";
+import {
+  selectAgreement,
+  selectCanEditAgreement
+} from "../../store/agreement/selectors";
 import { useCgnSelector } from "../../store/hooks";
 import ProfileDataItem from "./ProfileDataItem";
 
 const ProfileData = () => {
   const agreement = useCgnSelector(selectAgreement);
+  const canEditOperatorData = useCgnSelector(selectCanEditAgreement);
 
   const { data: profile } = remoteData.Index.Profile.getProfile.useQuery({
     agreementId: agreement.id
@@ -69,7 +73,7 @@ const ProfileData = () => {
                 </tr>
               </tbody>
             </table>
-            {agreement.state === "ApprovedAgreement" && (
+            {canEditOperatorData && (
               <Link
                 className="mt-8 btn btn-outline-primary"
                 to={EDIT_OPERATOR_DATA}

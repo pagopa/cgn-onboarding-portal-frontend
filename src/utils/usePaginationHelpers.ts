@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
+import { ExpandedState } from "@tanstack/react-table";
+
 interface PaginationTable {
   getCanPreviousPage: () => boolean;
   getCanNextPage: () => boolean;
@@ -13,5 +16,17 @@ export function usePaginationHelpers(table: PaginationTable) {
     previousPage: () => table.previousPage(),
     nextPage: () => table.nextPage(),
     gotoPage: (page: number) => table.setPageIndex(page)
+  };
+}
+
+// wraps a state setter so any change (page, sort, filter) collapses expanded rows first —
+// prevents stale row-index expansion carrying over onto different data after the change
+export function withExpandedReset<T>(
+  setExpanded: Dispatch<SetStateAction<ExpandedState>>,
+  setState: Dispatch<SetStateAction<T>>
+): Dispatch<SetStateAction<T>> {
+  return updater => {
+    setExpanded({});
+    setState(updater);
   };
 }

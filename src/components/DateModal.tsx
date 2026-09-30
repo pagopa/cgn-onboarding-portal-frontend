@@ -1,8 +1,38 @@
 import { useState, forwardRef } from "react";
-import { Button, Icon } from "design-react-kit";
+import { Button } from "design-react-kit";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { format } from "date-fns";
 import DatePicker from "react-datepicker";
+import { BadgePill } from "./BadgePill";
+
+const DatePickerInput = forwardRef(
+  (
+    fieldProps: { name: string; label: string },
+    ref: React.Ref<HTMLInputElement>
+  ) => (
+    <div className="it-datepicker-wrapper w-100">
+      <input
+        {...fieldProps}
+        ref={ref}
+        className="form-control it-date-datepicker"
+        id={fieldProps.name}
+        type="text"
+        placeholder="gg/mm/aaaa"
+      />
+      <label htmlFor={fieldProps.name} className="form-label">
+        {fieldProps.label}
+      </label>
+    </div>
+  )
+);
+
+type DateModalProps = {
+  from?: Date;
+  to?: Date;
+  onSubmit(from: Date | undefined, to: Date | undefined): void;
+  label: string;
+  title: string;
+};
 
 const DateModal = ({
   from: propDateFrom,
@@ -10,13 +40,7 @@ const DateModal = ({
   onSubmit,
   label,
   title
-}: {
-  from?: Date;
-  to?: Date;
-  onSubmit(propDateFrom: Date | undefined, propDateTo: Date | undefined): void;
-  label: string;
-  title: string;
-}) => {
+}: DateModalProps) => {
   const [dateFrom, setDateFrom] = useState<Date | undefined>(propDateFrom);
   const [dateTo, setDateTo] = useState<Date | undefined>(propDateTo);
   const [showOpenDateModal, setShowOpenDateModal] = useState(false);
@@ -42,47 +66,15 @@ const DateModal = ({
     return label;
   };
 
-  const DatePickerInput = forwardRef(
-    (
-      fieldProps: { name: string; label: string },
-      ref: React.Ref<HTMLInputElement>
-    ) => (
-      <div className="it-datepicker-wrapper" style={{ width: "100%" }}>
-        <input
-          {...fieldProps}
-          ref={ref}
-          className="form-control it-date-datepicker"
-          id={fieldProps.name}
-          type="text"
-          placeholder="gg/mm/aaaa"
-        />
-        <label htmlFor={fieldProps.name} className="form-label">
-          {fieldProps.label}
-        </label>
-      </div>
-    )
-  );
-
   return (
     <>
-      <div
-        className="chip chip-lg pe-3 m-1 cursor-pointer"
+      <BadgePill
+        color="secondary"
+        label={getDateLabel(propDateFrom, propDateTo)}
+        active={!!(propDateFrom || propDateTo)}
         onClick={toggleDateModal}
-      >
-        <span className="chip-label">
-          {getDateLabel(propDateFrom, propDateTo)}
-        </span>
-        {(propDateFrom || propDateTo) && (
-          <button
-            onClick={e => {
-              e.stopPropagation();
-              onSubmit(undefined, undefined);
-            }}
-          >
-            <Icon color="" icon="it-close" size="" />
-          </button>
-        )}
-      </div>
+        onClear={() => onSubmit(undefined, undefined)}
+      />
 
       <Modal isOpen={showOpenDateModal} toggle={toggleDateModal}>
         <ModalHeader toggle={toggleDateModal}>{title}</ModalHeader>
