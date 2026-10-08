@@ -60,6 +60,7 @@ const OperatorData = ({
   } = profile;
   const salesChannel = rawSalesChannel as BothChannels;
 
+  const isApproved = state === ApprovedAgreementState.Approved;
   const isInactive = state === ApprovedAgreementState.Inactive;
   const isTerminationReminderSent =
     state === ApprovedAgreementState.TerminationReminderSent;
@@ -131,7 +132,7 @@ const OperatorData = ({
   };
 
   const renderTerminationActions = () => {
-    if (isInactive) {
+    if (isApproved || isInactive) {
       return (
         <Button
           color="danger"

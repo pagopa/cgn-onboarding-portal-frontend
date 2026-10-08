@@ -60,6 +60,10 @@ const getConventionSortColumn = (id: string) => {
       return "LastModifyDate";
     case "publishedDiscounts":
       return "PublishedDiscounts";
+    case "testPending":
+      return "TestPending";
+    case "state":
+      return "State";
   }
 };
 
@@ -156,7 +160,6 @@ const OperatorConvention = () => {
     }),
     columnHelper.accessor("testPending", {
       header: "TEST",
-      enableSorting: false,
       size: 150,
       cell: ({ getValue }) =>
         getValue() ? (
@@ -165,7 +168,6 @@ const OperatorConvention = () => {
     }),
     columnHelper.accessor("state", {
       header: "Stato",
-      enableSorting: false,
       size: 140,
       cell: ({ getValue }) => <BadgePill {...agreementBadgePill[getValue()]} />
     })
