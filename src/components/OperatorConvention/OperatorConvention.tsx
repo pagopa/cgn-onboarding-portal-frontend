@@ -50,6 +50,10 @@ const conventionFilterFormInitialValues: ConventionFilterFormValues = {
   sortDirection: undefined
 };
 
+// sort sent when no column sort is active
+const DEFAULT_SORT_COLUMN = GetApprovedAgreementsSortColumnEnum.Test;
+const DEFAULT_SORT_DIRECTION = "DESC";
+
 const getConventionSortColumn = (id: string) => {
   switch (id) {
     case "fullName":
@@ -60,6 +64,8 @@ const getConventionSortColumn = (id: string) => {
       return "LastModifyDate";
     case "publishedDiscounts":
       return "PublishedDiscounts";
+    case "state":
+      return "State";
   }
 };
 
@@ -99,8 +105,8 @@ const OperatorConvention = () => {
       lastUpdateDateTo: values.lastUpdateDateTo
         ? format(values.lastUpdateDateTo, "yyyy-MM-dd")
         : undefined,
-      sortColumn: values.sortColumn,
-      sortDirection: values.sortDirection,
+      sortColumn: values.sortColumn ?? DEFAULT_SORT_COLUMN,
+      sortDirection: values.sortDirection ?? DEFAULT_SORT_DIRECTION,
       pageSize: pagination.pageSize,
       page: pagination.pageIndex
     }),
@@ -156,8 +162,8 @@ const OperatorConvention = () => {
     }),
     columnHelper.accessor("testPending", {
       header: "TEST",
-      enableSorting: false,
       size: 150,
+      enableSorting: false,
       cell: ({ getValue }) =>
         getValue() ? (
           <BadgePill {...discountBadgePill[DiscountState.TestPending]} />
@@ -165,7 +171,6 @@ const OperatorConvention = () => {
     }),
     columnHelper.accessor("state", {
       header: "Stato",
-      enableSorting: false,
       size: 140,
       cell: ({ getValue }) => <BadgePill {...agreementBadgePill[getValue()]} />
     })
