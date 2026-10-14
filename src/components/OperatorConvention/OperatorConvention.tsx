@@ -220,7 +220,6 @@ const OperatorConvention = () => {
   const handleCloseDetails = useCallback(() => {
     setShowDetails(false);
     setSelectedConvention(undefined);
-    setValues(conventionFilterFormInitialValues);
     void refetch();
   }, [refetch]);
 
