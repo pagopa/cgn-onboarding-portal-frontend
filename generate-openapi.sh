@@ -3,9 +3,8 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Set the API version tag (default: IEG-3213)
-# TODO: restore master as default once backend PR #340 (IEG-3213) is merged
-VERSION_TAG="${1:-IEG-3213}"
+# Set the API version tag (default: master)
+VERSION_TAG="${1:-master}"
 
 # Define the base GitHub URL
 BASE_URL="https://raw.githubusercontent.com/pagopa/cgn-onboarding-portal-backend/${VERSION_TAG}/openapi"
