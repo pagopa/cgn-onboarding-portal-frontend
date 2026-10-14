@@ -64,6 +64,8 @@ const getConventionSortColumn = (id: string) => {
       return "LastModifyDate";
     case "publishedDiscounts":
       return "PublishedDiscounts";
+    case "testPending":
+      return "Test";
     case "state":
       return "State";
   }
@@ -163,7 +165,6 @@ const OperatorConvention = () => {
     columnHelper.accessor("testPending", {
       header: "TEST",
       size: 150,
-      enableSorting: false,
       cell: ({ getValue }) =>
         getValue() ? (
           <BadgePill {...discountBadgePill[DiscountState.TestPending]} />
