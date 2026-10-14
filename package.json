@@ -1,6 +1,6 @@
 {
   "name": "cgn-onboarding-portal-frontend",
-  "version": "3.33.16",
+  "version": "3.33.17",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -81,6 +81,7 @@
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^3.5.3",
     "sass": "^1.89.2",
+    "ts-unused-exports": "11.0.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.26.1",
     "vite": "^7.0.0",
