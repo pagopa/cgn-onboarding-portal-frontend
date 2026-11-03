@@ -115,7 +115,7 @@ const Bucket = ({ label, agreementId, formLens }: Props) => {
       title="Carica la lista di codici sconto"
       description={
         <>
-          Caricare un file .CSV con la lista di almeno 10.000 di codici sconto
+          Caricare un file .CSV con la lista di almeno 1.000 di codici sconto
           statici relativi all’opportunità.
           <br />
           Per maggiori informazioni, consultare la{" "}
@@ -206,7 +206,7 @@ const ERROR_MESSAGES = {
   BUCKET_CODES_MUST_BE_ALPHANUM_WITH_AT_LEAST_ONE_DIGIT_AND_CHAR:
     "Ogni codice della lista deve avere almeno un numero e una lettera.",
   CANNOT_LOAD_BUCKET_FOR_NOT_RESPECTED_MINIMUM_BOUND:
-    "La lista caricata deve contenere almeno 10000 codici. Carica un'altra lista e riprova.",
+    "La lista caricata deve contenere almeno 1.000 codici. Carica un'altra lista e riprova.",
   BUCKET_CODES_MUST_BE_ALPHANUM_WITH_AT_LEAST_ONE_DIGIT_AND_ONE_CHAR:
     "Ogni codice della lista deve avere almeno un numero e una lettera.",
   NOT_ALLOWED_SPECIAL_CHARS:
